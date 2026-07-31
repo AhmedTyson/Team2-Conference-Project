@@ -32,7 +32,7 @@ class Trip extends Model
         return $this->belongsTo(User::class);
     }
 
-    // M:N - visits, via trip_destinations (with extra pivot columns -> handled through TripDestination model)
+    // M:N 
     public function tripDestinations(): HasMany
     {
         return $this->hasMany(TripDestination::class);
@@ -45,25 +45,23 @@ class Trip extends Model
             ->withTimestamps();
     }
 
-    // 1:M - includes Flight
+
     public function flights(): HasMany
     {
         return $this->hasMany(Flight::class);
     }
 
-    // 1:M - contains ItineraryItem
     public function itineraryItems(): HasMany
     {
         return $this->hasMany(ItineraryItem::class);
     }
 
-    // 1:M - generates AiRecommendation
     public function aiRecommendations(): HasMany
     {
         return $this->hasMany(AiRecommendation::class);
     }
 
-    // POLYMORPHIC: tripable (includes) -> Hotel / Attraction / Restaurant, unified M:N
+ //-> Hotel / Attraction / Restaurant, unified M:N
     public function hotels(): MorphToMany
     {
         return $this->morphedByMany(Hotel::class, 'tripable', 'tripables')->withTimestamps();
