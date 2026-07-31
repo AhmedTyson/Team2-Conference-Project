@@ -21,7 +21,6 @@ class ItineraryItem extends Model
         return $this->belongsTo(Trip::class);
     }
 
-    // POLYMORPHIC: refers_to -> Hotel | Attraction | Restaurant (nullable)
     public function itemable(): MorphTo
     {
         return $this->morphTo();
