@@ -29,19 +29,16 @@ class Hotel extends Model
         return $this->belongsTo(Destination::class);
     }
 
-    // POLYMORPHIC: reviewable (rates)
     public function reviews(): MorphMany
     {
         return $this->morphMany(Review::class, 'reviewable');
     }
 
-    // POLYMORPHIC: itemable (refers_to, from itinerary_items)
     public function itineraryItems(): MorphMany
     {
         return $this->morphMany(ItineraryItem::class, 'itemable');
     }
 
-    // POLYMORPHIC: tripable (includes, M:N with Trip)
     public function trips(): MorphToMany
     {
         return $this->morphToMany(Trip::class, 'tripable', 'tripables')->withTimestamps();
