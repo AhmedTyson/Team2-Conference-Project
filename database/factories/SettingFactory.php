@@ -15,6 +15,7 @@ class SettingFactory extends Factory
     public function definition(): array
     {
         return [
+            'Setting_id' => Setting::factory(),
             'key' => fake()->unique()->slug(2, false),
             'value' => fake()->sentence(),
         ];

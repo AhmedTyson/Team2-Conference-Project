@@ -15,6 +15,7 @@ class ContactMessageFactory extends Factory
     public function definition(): array
     {
         return [
+            'ContactMessage_id' => ContactMessage::factory(),
             'name' => fake()->name(),
             'email' => fake()->safeEmail(),
             'subject' => fake()->sentence(4),

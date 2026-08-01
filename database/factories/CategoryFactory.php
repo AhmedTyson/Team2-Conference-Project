@@ -15,6 +15,7 @@ class CategoryFactory extends Factory
     public function definition(): array
     {
         return [
+            'Category_id' => Category::factory(),
             'name' => fake()->randomElement([
                 'Beaches', 'Museums', 'Historical Sites', 'Nightlife', 'Nature & Parks',
                 'Shopping', 'Fine Dining', 'Street Food', 'Adventure', 'Family Friendly',
