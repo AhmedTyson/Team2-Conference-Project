@@ -55,4 +55,4 @@ return Application::configure(basePath: dirname(DIR))
         });
     })
 
-    ->create()
+    ->create();
