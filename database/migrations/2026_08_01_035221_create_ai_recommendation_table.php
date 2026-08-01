@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('ai_recommendation', function (Blueprint $table) {
             $table->id();
+
+            $table->foreignId('trip_id')->constrained()->onDelete('cascade');
+
+                
             $table->string('prompt_text');
             $table->string('response_text');
             $table->string('generated_it');

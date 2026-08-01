@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('itinerary_item',function (Blueprint $table){
             $table->id();
+
+            $table->foreignId('trip_id')->constrained()->onDelete('cascade');
+            $table->morphs('itemable');
+
             $table->decimal('day_number');
             $table->decimal('item_order');
             $table->string('type');

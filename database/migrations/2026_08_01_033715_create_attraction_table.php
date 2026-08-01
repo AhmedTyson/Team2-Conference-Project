@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('attraction', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->foreignId('destination_id')->constrained()->onDelete('cascade');
+            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+
+
             $table->string('name');
             $table->string('description');
             $table->string('image');
