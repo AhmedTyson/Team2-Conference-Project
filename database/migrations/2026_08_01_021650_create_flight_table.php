@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('flight',function(Blueprint $table){
             $table->id();
+
+            $table->foreignId('trip_id')->constrained()->onDelete('cascade');
+
+            
             $table->string('airline');
             $table->string('flight_number');
             $table->string('departure_airport');
