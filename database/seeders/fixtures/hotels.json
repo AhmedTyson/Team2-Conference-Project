@@ -1,0 +1,5 @@
+[
+  {"name": "Le Meurice", "price": 450.00, "rating": 4.8, "stars": 5, "image": "hotels/lemeurice.jpg"},
+  {"name": "Tokyo Station Hotel", "price": 320.00, "rating": 4.7, "stars": 5, "image": "hotels/tokyostation.jpg"},
+  {"name": "Holiday Inn Express", "price": 89.99, "rating": 3.9, "stars": 3, "image": "hotels/holidayinn.jpg"}
+]
