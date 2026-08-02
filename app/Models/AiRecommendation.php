@@ -11,13 +11,14 @@ class AiRecommendation extends Model
     use HasFactory;
 
     protected $fillable = [
-        'trip_id', 'prompt_text', 'response_text', 'model_used', 'tokens_used', 
+        'trip_id', 'prompt_text', 'response_text', 'model_used', 'tokens_used',
     ];
 
     protected function casts(): array
     {
         return [
-             => 'datetime',
+            'created_at' => 'datetime',
+            'updated_at' => 'datetime',
         ];
     }
 
