@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('favourites', function (Blueprint $table) {
             $table->id();
-            $table->string('note');
+            $table->string('note')->nullable();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->morphs('favorable');
             $table->timestamps();

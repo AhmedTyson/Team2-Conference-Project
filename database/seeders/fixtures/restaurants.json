@@ -1,5 +1,380 @@
 [
-  {"name": "Gusto Italiano", "cuisine": "Italian", "price_range": "$$$", "rating": 4.6, "image": "restaurants/gusto.jpg"},
-  {"name": "Sushi Dai", "cuisine": "Japanese", "price_range": "$$$$", "rating": 4.9, "image": "restaurants/sushidai.jpg"},
-  {"name": "Burger Joint", "cuisine": "American", "price_range": "$", "rating": 4.1, "image": "restaurants/burger.jpg"}
+  {
+    "name": "Gusto Italiano",
+    "cuisine": "Italian",
+    "price_range": "$$$",
+    "rating": 4.6,
+    "image": "restaurants/gusto.jpg"
+  },
+  {
+    "name": "Le Jules Verne",
+    "cuisine": "French",
+    "price_range": "$$$$",
+    "rating": 4.8,
+    "image": "restaurants/julesverne.jpg"
+  },
+  {
+    "name": "L'As du Fallafel",
+    "cuisine": "Middle Eastern",
+    "price_range": "$",
+    "rating": 4.5,
+    "image": "restaurants/fallafel.jpg"
+  },
+  {
+    "name": "Bouillon Pigalle",
+    "cuisine": "French Bistro",
+    "price_range": "$",
+    "rating": 4.3,
+    "image": "restaurants/pigalle.jpg"
+  },
+  {
+    "name": "Café de Flore",
+    "cuisine": "Café",
+    "price_range": "$$",
+    "rating": 4.4,
+    "image": "restaurants/flore.jpg"
+  },
+  {
+    "name": "Le Comptoir du Relais",
+    "cuisine": "French",
+    "price_range": "$$$$",
+    "rating": 4.7,
+    "image": "restaurants/comptoir.jpg"
+  },
+  {
+    "name": "Breizh Café Paris",
+    "cuisine": "Crêperie",
+    "price_range": "$$",
+    "rating": 4.5,
+    "image": "restaurants/breizh.jpg"
+  },
+  {
+    "name": "Sushi Dai",
+    "cuisine": "Japanese",
+    "price_range": "$$$$",
+    "rating": 4.9,
+    "image": "restaurants/sushidai.jpg"
+  },
+  {
+    "name": "Narisawa",
+    "cuisine": "Japanese Fine Dining",
+    "price_range": "$$$$",
+    "rating": 4.9,
+    "image": "restaurants/narisawa.jpg"
+  },
+  {
+    "name": "Ichiran Ramen",
+    "cuisine": "Ramen",
+    "price_range": "$$",
+    "rating": 4.6,
+    "image": "restaurants/ichiran.jpg"
+  },
+  {
+    "name": "Tsukiji Sushi Tama",
+    "cuisine": "Sushi",
+    "price_range": "$$$",
+    "rating": 4.7,
+    "image": "restaurants/tama.jpg"
+  },
+  {
+    "name": "Kobe Beef Kaiseki 511",
+    "cuisine": "Wagyu",
+    "price_range": "$$$$",
+    "rating": 4.8,
+    "image": "restaurants/kobebeef.jpg"
+  },
+  {
+    "name": "Menya Musashi",
+    "cuisine": "Ramen",
+    "price_range": "$$",
+    "rating": 4.5,
+    "image": "restaurants/menya.jpg"
+  },
+  {
+    "name": "Gonpachi Nishiazabu",
+    "cuisine": "Izakaya",
+    "price_range": "$$$",
+    "rating": 4.4,
+    "image": "restaurants/gonpachi.jpg"
+  },
+  {
+    "name": "Gordon Ramsay Restaurant",
+    "cuisine": "French",
+    "price_range": "$$$$",
+    "rating": 4.8,
+    "image": "restaurants/ramsay.jpg"
+  },
+  {
+    "name": "Dishoom Covent Garden",
+    "cuisine": "Indian",
+    "price_range": "$$",
+    "rating": 4.7,
+    "image": "restaurants/dishoom.jpg"
+  },
+  {
+    "name": "Burger & Lobster",
+    "cuisine": "Seafood / Burger",
+    "price_range": "$$",
+    "rating": 4.4,
+    "image": "restaurants/burgerlobster.jpg"
+  },
+  {
+    "name": "The Ledbury",
+    "cuisine": "Modern British",
+    "price_range": "$$$$",
+    "rating": 4.8,
+    "image": "restaurants/ledbury.jpg"
+  },
+  {
+    "name": "Duck & Waffle",
+    "cuisine": "British / European",
+    "price_range": "$$$",
+    "rating": 4.5,
+    "image": "restaurants/duckwaffle.jpg"
+  },
+  {
+    "name": "Nando's Leicester Square",
+    "cuisine": "Peri-Peri",
+    "price_range": "$$",
+    "rating": 4.3,
+    "image": "restaurants/nandos.jpg"
+  },
+  {
+    "name": "Lau Pa Sat Hawker Centre",
+    "cuisine": "Singaporean",
+    "price_range": "$",
+    "rating": 4.4,
+    "image": "restaurants/laupasat.jpg"
+  },
+  {
+    "name": "Din Tai Fung",
+    "cuisine": "Taiwanese / Dim Sum",
+    "price_range": "$$",
+    "rating": 4.6,
+    "image": "restaurants/dintaifung.jpg"
+  },
+  {
+    "name": "Burnt Ends",
+    "cuisine": "Modern Barbecue",
+    "price_range": "$$$$",
+    "rating": 4.8,
+    "image": "restaurants/burntends.jpg"
+  },
+  {
+    "name": "Liao Fan Hawker Chan",
+    "cuisine": "Chinese",
+    "price_range": "$",
+    "rating": 4.5,
+    "image": "restaurants/liaofan.jpg"
+  },
+  {
+    "name": "Maxwell Road Hawker Centre",
+    "cuisine": "Hawker",
+    "price_range": "$",
+    "rating": 4.3,
+    "image": "restaurants/maxwell.jpg"
+  },
+  {
+    "name": "Jumbo Seafood East Coast",
+    "cuisine": "Seafood",
+    "price_range": "$$$$",
+    "rating": 4.6,
+    "image": "restaurants/jumbo.jpg"
+  },
+  {
+    "name": "Zuma Dubai",
+    "cuisine": "Japanese / Izakaya",
+    "price_range": "$$$$",
+    "rating": 4.8,
+    "image": "restaurants/zuma.jpg"
+  },
+  {
+    "name": "Al Ustadadi Special Kebab",
+    "cuisine": "Persian",
+    "price_range": "$",
+    "rating": 4.5,
+    "image": "restaurants/alustadi.jpg"
+  },
+  {
+    "name": "Pierchic",
+    "cuisine": "Mediterranean Seafood",
+    "price_range": "$$$$",
+    "rating": 4.7,
+    "image": "restaurants/pierchic.jpg"
+  },
+  {
+    "name": "Bu Qtair Restaurant",
+    "cuisine": "Indian Seafood",
+    "price_range": "$",
+    "rating": 4.6,
+    "image": "restaurants/buqtair.jpg"
+  },
+  {
+    "name": "At.mosphere Burj Khalifa",
+    "cuisine": "European",
+    "price_range": "$$$$",
+    "rating": 4.7,
+    "image": "restaurants/atmosphere.jpg"
+  },
+  {
+    "name": "Operette",
+    "cuisine": "French Bistro",
+    "price_range": "$$",
+    "rating": 4.5,
+    "image": "restaurants/operette.jpg"
+  },
+  {
+    "name": "Tickets Barcelona",
+    "cuisine": "Tapas",
+    "price_range": "$$$$",
+    "rating": 4.7,
+    "image": "restaurants/tickets.jpg"
+  },
+  {
+    "name": "Cerveceria Catalana",
+    "cuisine": "Spanish Tapas",
+    "price_range": "$$",
+    "rating": 4.6,
+    "image": "restaurants/catalana.jpg"
+  },
+  {
+    "name": "Disfrutar Barcelona",
+    "cuisine": "Modern Catalan",
+    "price_range": "$$$$",
+    "rating": 4.8,
+    "image": "restaurants/disfrutar.jpg"
+  },
+  {
+    "name": "La Boqueria Market",
+    "cuisine": "Market Food",
+    "price_range": "$",
+    "rating": 4.4,
+    "image": "restaurants/boqueria.jpg"
+  },
+  {
+    "name": "El Xampanyet",
+    "cuisine": "Tapas",
+    "price_range": "$$",
+    "rating": 4.5,
+    "image": "restaurants/xampanyet.jpg"
+  },
+  {
+    "name": "Can Paixano (La Xampanyeria)",
+    "cuisine": "Cava Bar",
+    "price_range": "$",
+    "rating": 4.6,
+    "image": "restaurants/canpaixano.jpg"
+  },
+  {
+    "name": "Zitouni Nile Maxims",
+    "cuisine": "Lebanese",
+    "price_range": "$$$$",
+    "rating": 4.6,
+    "image": "restaurants/zitouni.jpg"
+  },
+  {
+    "name": "Abou El Sid",
+    "cuisine": "Egyptian",
+    "price_range": "$$",
+    "rating": 4.5,
+    "image": "restaurants/abouelsid.jpg"
+  },
+  {
+    "name": "Felfela Cairo",
+    "cuisine": "Egyptian",
+    "price_range": "$",
+    "rating": 4.3,
+    "image": "restaurants/felfela.jpg"
+  },
+  {
+    "name": "Sofra Restaurant",
+    "cuisine": "Egyptian",
+    "price_range": "$$",
+    "rating": 4.6,
+    "image": "restaurants/sofra.jpg"
+  },
+  {
+    "name": "Kebabgy",
+    "cuisine": "Grill / Middle Eastern",
+    "price_range": "$$",
+    "rating": 4.4,
+    "image": "restaurants/kebabgy.jpg"
+  },
+  {
+    "name": "Zoban",
+    "cuisine": "Levantine",
+    "price_range": "$$",
+    "rating": 4.5,
+    "image": "restaurants/zoban.jpg"
+  },
+  {
+    "name": "Katz's Delicatessen",
+    "cuisine": "Deli",
+    "price_range": "$$",
+    "rating": 4.6,
+    "image": "restaurants/katzs.jpg"
+  },
+  {
+    "name": "Shake Shack Madison Square Park",
+    "cuisine": "Burger",
+    "price_range": "$",
+    "rating": 4.4,
+    "image": "restaurants/shakeshack.jpg"
+  },
+  {
+    "name": "Eleven Madison Park",
+    "cuisine": "Modern American",
+    "price_range": "$$$$",
+    "rating": 4.8,
+    "image": "restaurants/elevenmadison.jpg"
+  },
+  {
+    "name": "Joe's Pizza",
+    "cuisine": "Pizza",
+    "price_range": "$",
+    "rating": 4.5,
+    "image": "restaurants/joespizza.jpg"
+  },
+  {
+    "name": "The Halal Guys",
+    "cuisine": "Middle Eastern",
+    "price_range": "$",
+    "rating": 4.3,
+    "image": "restaurants/halalguys.jpg"
+  },
+  {
+    "name": "Roscioli",
+    "cuisine": "Italian / Deli",
+    "price_range": "$$$",
+    "rating": 4.7,
+    "image": "restaurants/roscioli.jpg"
+  },
+  {
+    "name": "Da Enzo al 29",
+    "cuisine": "Roman",
+    "price_range": "$$",
+    "rating": 4.6,
+    "image": "restaurants/daenzo.jpg"
+  },
+  {
+    "name": "Trattoria Da Cesare al Casaletto",
+    "cuisine": "Roman",
+    "price_range": "$$",
+    "rating": 4.7,
+    "image": "restaurants/cesare.jpg"
+  },
+  {
+    "name": "Pizzarium",
+    "cuisine": "Pizza al Taglio",
+    "price_range": "$$",
+    "rating": 4.5,
+    "image": "restaurants/pizzarium.jpg"
+  },
+  {
+    "name": "Antico Forno Roscioli",
+    "cuisine": "Bakery / Pizza",
+    "price_range": "$",
+    "rating": 4.6,
+    "image": "restaurants/anticoforno.jpg"
+  }
 ]
