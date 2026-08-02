@@ -22,6 +22,13 @@ return [
         'key' => env('RESEND_API_KEY'),
     ],
 
+    'rapidapi' => [
+        'key' => env('RAPIDAPI_KEY'),
+        'hotels_host' => env('RAPIDAPI_HOTELS_HOST', 'travel-advisor.p.rapidapi.com'),
+        'flights_host' => env('RAPIDAPI_FLIGHTS_HOST', 'travel-advisor.p.rapidapi.com'),
+        'restaurants_host' => env('RAPIDAPI_RESTAURANTS_HOST', 'travel-advisor.p.rapidapi.com'),
+    ],
+
     'ses' => [
         'key' => env('AWS_ACCESS_KEY_ID'),
         'secret' => env('AWS_SECRET_ACCESS_KEY'),

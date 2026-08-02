@@ -4,33 +4,29 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
+use App\Services\Fixtures\CountryFixtureService;
 
 class CountrySeeder extends Seeder
 {
     public function run()
     {
         $insertData = [];
+        $service = app(CountryFixtureService::class);
 
-        // Attempt live API
+        // Attempt live API using the Service class
         try {
-            $response = Http::timeout(10)->get('https://restcountries.com/v3.1/all');
-            if ($response->successful() && is_array($response->json()) && count($response->json()) > 0) {
-                $countries = $response->json();
-                foreach ($countries as $country) {
-                    if (isset($country['name']['common'])) {
-                        $insertData[] = [
-                            'name' => $country['name']['common'],
-                            'iso_code' => $country['cca2'] ?? null,
-                            'capital' => $country['capital'][0] ?? null,
-                            'flag_url' => $country['flags']['png'] ?? null,
-                            'currency' => isset($country['currencies']) ? array_key_first($country['currencies']) : null,
-                            'languages' => json_encode(array_values($country['languages'] ?? [])),
-                            'created_at' => now(),
-                            'updated_at' => now(),
-                        ];
-                    }
-                }
+            $countries = $service->sync();
+            foreach ($countries as $country) {
+                $insertData[] = [
+                    'name' => $country['name'],
+                    'iso_code' => $country['iso_code'],
+                    'capital' => $country['capital'],
+                    'flag_url' => $country['flag_url'],
+                    'currency' => $country['currency'],
+                    'languages' => json_encode($country['languages']),
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
             }
         } catch (\Exception $e) {
             // Live API failed, fallback to local fixture
