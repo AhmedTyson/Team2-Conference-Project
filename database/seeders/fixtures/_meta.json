@@ -1,5 +1,8 @@
 {
     "flights": {
-        "last_synced_at": "2026-08-02T09:09:26+00:00"
+        "last_synced_at": "2026-08-02T09:26:17+00:00"
+    },
+    "countries": {
+        "last_synced_at": "2026-08-02T09:18:48+00:00"
     }
 }
