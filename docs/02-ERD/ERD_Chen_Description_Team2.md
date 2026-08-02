@@ -50,7 +50,7 @@ This document provides the "4 Ws" (What, Who, When, Why) for the database archit
 
 ### COUNTRY
 * **What:** Top-level geographic boundary. Includes `flag_url` and `languages`.
-* **When:** Synced/seeded via the external RestCountries API.
+* **When:** Synced/seeded via the mledoze countries dataset (RestCountries v3.1 deprecated).
 * **Why:** Required to group destinations and provide localized data (currency, flag) without duplicating that data on every single city.
 
 ### DESTINATION
