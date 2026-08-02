@@ -353,31 +353,34 @@ CREATE TABLE surveys (
 
 ### 6.1 Countries API
 
-**URL:** `https://restcountries.com/`
-**Auth:** None required — free and public
-**Strategy:** Fetch once, cache in `countries` table for 7 days
+**URL:** `https://restcountries.com/` — **DEPRECATED / DEAD** (v3.1 returns deprecation error; v5 requires paid Bearer key)
+**Replacement (in use):** mledoze countries dataset
+**URL:** `https://raw.githubusercontent.com/mledoze/countries/master/countries.json`
+**Auth:** None — free, keyless, public GitHub raw
+**Strategy:** Fetch once, cache in `countries` table (implemented in `app/Services/Fixtures/CountryFixtureService.php`)
 
 ```php
-// app/Services/CountriesService.php
+// app/Services/Fixtures/CountryFixtureService.php
 class CountriesService
 {
     public function getCountry(string $name): array
     {
         return Cache::remember("country_{$name}", now()->addDays(7), function () use ($name) {
-            $response = Http::get("https://restcountries.com/v3.1/name/{$name}");
+            $response = Http::timeout(30)->get('https://raw.githubusercontent.com/mledoze/countries/master/countries.json');
 
             if ($response->failed()) {
                 return [];
             }
 
-            $data = $response->json()[0] ?? [];
+            $data = collect($response->json())
+                ->first(fn ($c) => strtolower($c['name']['common'] ?? '') === strtolower($name)) ?? [];
 
             // Persist to DB for offline access
             Country::updateOrCreate(['iso_code' => $data['cca2']], [
                 'name'      => $data['name']['common'],
-                'currency'  => array_key_first($data['currencies'] ?? []),
+                'currency'  => array_key_first($data['currency'] ?? []),
                 'languages' => json_encode(array_values($data['languages'] ?? [])),
-                'flag_url'  => $data['flags']['png'] ?? null,
+                'flag_url'  => "https://flagcdn.com/w320/" . strtolower($data['cca2']) . ".png",
                 'capital'   => $data['capital'][0] ?? null,
                 'cached_at' => now(),
             ]);
