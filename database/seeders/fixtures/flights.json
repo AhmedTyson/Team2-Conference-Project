@@ -1,4 +1,3502 @@
 [
-  {"departure_airport": "JFK", "arrival_airport": "CDG", "departure_date": "2026-09-01 18:30:00", "arrival_date": "2026-09-02 07:45:00", "price": 650.00},
-  {"departure_airport": "LHR", "arrival_airport": "HND", "departure_date": "2026-10-15 12:00:00", "arrival_date": "2026-10-16 09:30:00", "price": 1120.00}
+    {
+        "departure_airport": "AER",
+        "arrival_airport": "KZN",
+        "departure_date": "2026-08-22 21:22:00",
+        "arrival_date": "2026-08-22 23:38:00",
+        "price": 219.31
+    },
+    {
+        "departure_airport": "ASF",
+        "arrival_airport": "KZN",
+        "departure_date": "2026-09-08 11:00:00",
+        "arrival_date": "2026-09-08 12:43:00",
+        "price": 160.07
+    },
+    {
+        "departure_airport": "ASF",
+        "arrival_airport": "MRV",
+        "departure_date": "2026-08-05 00:12:00",
+        "arrival_date": "2026-08-05 01:14:00",
+        "price": 117.48
+    },
+    {
+        "departure_airport": "CEK",
+        "arrival_airport": "KZN",
+        "departure_date": "2026-08-26 17:44:00",
+        "arrival_date": "2026-08-26 19:08:00",
+        "price": 129.77
+    },
+    {
+        "departure_airport": "CEK",
+        "arrival_airport": "OVB",
+        "departure_date": "2026-08-06 14:51:00",
+        "arrival_date": "2026-08-06 16:55:00",
+        "price": 237.2
+    },
+    {
+        "departure_airport": "DME",
+        "arrival_airport": "KZN",
+        "departure_date": "2026-09-04 20:46:00",
+        "arrival_date": "2026-09-04 22:07:00",
+        "price": 131.02
+    },
+    {
+        "departure_airport": "DME",
+        "arrival_airport": "NBC",
+        "departure_date": "2026-08-11 12:12:00",
+        "arrival_date": "2026-08-11 13:45:00",
+        "price": 170.19
+    },
+    {
+        "departure_airport": "DME",
+        "arrival_airport": "TGK",
+        "departure_date": "2026-09-03 06:22:00",
+        "arrival_date": "2026-09-03 07:57:00",
+        "price": 156.59
+    },
+    {
+        "departure_airport": "DME",
+        "arrival_airport": "UUA",
+        "departure_date": "2026-08-17 04:09:00",
+        "arrival_date": "2026-08-17 05:46:00",
+        "price": 192.86
+    },
+    {
+        "departure_airport": "EGO",
+        "arrival_airport": "KGD",
+        "departure_date": "2026-09-15 01:47:00",
+        "arrival_date": "2026-09-15 03:40:00",
+        "price": 168.24
+    },
+    {
+        "departure_airport": "EGO",
+        "arrival_airport": "KZN",
+        "departure_date": "2026-09-11 23:56:00",
+        "arrival_date": "2026-09-12 01:37:00",
+        "price": 174.23
+    },
+    {
+        "departure_airport": "GYD",
+        "arrival_airport": "NBC",
+        "departure_date": "2026-09-12 04:44:00",
+        "arrival_date": "2026-09-12 07:13:00",
+        "price": 249.53
+    },
+    {
+        "departure_airport": "KGD",
+        "arrival_airport": "EGO",
+        "departure_date": "2026-09-14 14:07:00",
+        "arrival_date": "2026-09-14 16:00:00",
+        "price": 234.75
+    },
+    {
+        "departure_airport": "KZN",
+        "arrival_airport": "AER",
+        "departure_date": "2026-08-21 15:28:00",
+        "arrival_date": "2026-08-21 17:44:00",
+        "price": 214.6
+    },
+    {
+        "departure_airport": "KZN",
+        "arrival_airport": "ASF",
+        "departure_date": "2026-08-21 01:16:00",
+        "arrival_date": "2026-08-21 02:59:00",
+        "price": 199.64
+    },
+    {
+        "departure_airport": "KZN",
+        "arrival_airport": "CEK",
+        "departure_date": "2026-09-04 22:03:00",
+        "arrival_date": "2026-09-04 23:27:00",
+        "price": 131.24
+    },
+    {
+        "departure_airport": "KZN",
+        "arrival_airport": "DME",
+        "departure_date": "2026-08-30 19:24:00",
+        "arrival_date": "2026-08-30 20:45:00",
+        "price": 139.47
+    },
+    {
+        "departure_airport": "KZN",
+        "arrival_airport": "EGO",
+        "departure_date": "2026-08-23 02:30:00",
+        "arrival_date": "2026-08-23 04:11:00",
+        "price": 186.55
+    },
+    {
+        "departure_airport": "KZN",
+        "arrival_airport": "LED",
+        "departure_date": "2026-09-02 17:29:00",
+        "arrival_date": "2026-09-02 19:25:00",
+        "price": 217.1
+    },
+    {
+        "departure_airport": "KZN",
+        "arrival_airport": "SVX",
+        "departure_date": "2026-09-09 05:48:00",
+        "arrival_date": "2026-09-09 07:09:00",
+        "price": 168.77
+    },
+    {
+        "departure_airport": "LED",
+        "arrival_airport": "KZN",
+        "departure_date": "2026-08-06 07:24:00",
+        "arrival_date": "2026-08-06 09:20:00",
+        "price": 180.92
+    },
+    {
+        "departure_airport": "LED",
+        "arrival_airport": "NBC",
+        "departure_date": "2026-09-09 16:16:00",
+        "arrival_date": "2026-09-09 18:23:00",
+        "price": 263.7
+    },
+    {
+        "departure_airport": "LED",
+        "arrival_airport": "UUA",
+        "departure_date": "2026-09-12 14:09:00",
+        "arrival_date": "2026-09-12 16:22:00",
+        "price": 219.15
+    },
+    {
+        "departure_airport": "MRV",
+        "arrival_airport": "ASF",
+        "departure_date": "2026-09-15 22:03:00",
+        "arrival_date": "2026-09-15 23:05:00",
+        "price": 118.57
+    },
+    {
+        "departure_airport": "NBC",
+        "arrival_airport": "DME",
+        "departure_date": "2026-09-09 22:36:00",
+        "arrival_date": "2026-09-10 00:09:00",
+        "price": 186.4
+    },
+    {
+        "departure_airport": "NBC",
+        "arrival_airport": "GYD",
+        "departure_date": "2026-09-14 19:08:00",
+        "arrival_date": "2026-09-14 21:37:00",
+        "price": 272.69
+    },
+    {
+        "departure_airport": "NBC",
+        "arrival_airport": "LED",
+        "departure_date": "2026-08-24 09:01:00",
+        "arrival_date": "2026-08-24 11:08:00",
+        "price": 239.52
+    },
+    {
+        "departure_airport": "NBC",
+        "arrival_airport": "SVX",
+        "departure_date": "2026-09-06 02:43:00",
+        "arrival_date": "2026-09-06 03:52:00",
+        "price": 126.43
+    },
+    {
+        "departure_airport": "NJC",
+        "arrival_airport": "SVX",
+        "departure_date": "2026-09-01 18:52:00",
+        "arrival_date": "2026-09-01 20:33:00",
+        "price": 172.98
+    },
+    {
+        "departure_airport": "NJC",
+        "arrival_airport": "UUA",
+        "departure_date": "2026-09-15 13:41:00",
+        "arrival_date": "2026-09-15 16:01:00",
+        "price": 244.28
+    },
+    {
+        "departure_airport": "NUX",
+        "arrival_airport": "SVX",
+        "departure_date": "2026-08-06 16:49:00",
+        "arrival_date": "2026-08-06 18:53:00",
+        "price": 248.19
+    },
+    {
+        "departure_airport": "OVB",
+        "arrival_airport": "CEK",
+        "departure_date": "2026-09-11 23:34:00",
+        "arrival_date": "2026-09-12 01:38:00",
+        "price": 235.04
+    },
+    {
+        "departure_airport": "OVB",
+        "arrival_airport": "SVX",
+        "departure_date": "2026-08-07 17:16:00",
+        "arrival_date": "2026-08-07 19:23:00",
+        "price": 223.82
+    },
+    {
+        "departure_airport": "SVX",
+        "arrival_airport": "KZN",
+        "departure_date": "2026-08-31 10:03:00",
+        "arrival_date": "2026-08-31 11:24:00",
+        "price": 136.15
+    },
+    {
+        "departure_airport": "SVX",
+        "arrival_airport": "NBC",
+        "departure_date": "2026-09-11 07:43:00",
+        "arrival_date": "2026-09-11 08:52:00",
+        "price": 111.84
+    },
+    {
+        "departure_airport": "SVX",
+        "arrival_airport": "NJC",
+        "departure_date": "2026-09-13 21:10:00",
+        "arrival_date": "2026-09-13 22:51:00",
+        "price": 178.28
+    },
+    {
+        "departure_airport": "SVX",
+        "arrival_airport": "NUX",
+        "departure_date": "2026-08-21 03:32:00",
+        "arrival_date": "2026-08-21 05:36:00",
+        "price": 248.19
+    },
+    {
+        "departure_airport": "SVX",
+        "arrival_airport": "OVB",
+        "departure_date": "2026-08-13 16:31:00",
+        "arrival_date": "2026-08-13 18:38:00",
+        "price": 226.02
+    },
+    {
+        "departure_airport": "TGK",
+        "arrival_airport": "DME",
+        "departure_date": "2026-09-10 09:50:00",
+        "arrival_date": "2026-09-10 11:25:00",
+        "price": 174.72
+    },
+    {
+        "departure_airport": "UUA",
+        "arrival_airport": "DME",
+        "departure_date": "2026-09-14 17:47:00",
+        "arrival_date": "2026-09-14 19:24:00",
+        "price": 148.87
+    },
+    {
+        "departure_airport": "UUA",
+        "arrival_airport": "LED",
+        "departure_date": "2026-08-27 02:36:00",
+        "arrival_date": "2026-08-27 04:49:00",
+        "price": 205.31
+    },
+    {
+        "departure_airport": "UUA",
+        "arrival_airport": "NJC",
+        "departure_date": "2026-08-23 08:48:00",
+        "arrival_date": "2026-08-23 11:08:00",
+        "price": 273.3
+    },
+    {
+        "departure_airport": "BTK",
+        "arrival_airport": "IKT",
+        "departure_date": "2026-08-11 03:35:00",
+        "arrival_date": "2026-08-11 04:39:00",
+        "price": 126.1
+    },
+    {
+        "departure_airport": "BTK",
+        "arrival_airport": "OVB",
+        "departure_date": "2026-09-16 14:55:00",
+        "arrival_date": "2026-09-16 16:50:00",
+        "price": 214.84
+    },
+    {
+        "departure_airport": "CEK",
+        "arrival_airport": "OVB",
+        "departure_date": "2026-08-30 17:44:00",
+        "arrival_date": "2026-08-30 19:48:00",
+        "price": 217.79
+    },
+    {
+        "departure_airport": "HTA",
+        "arrival_airport": "IKT",
+        "departure_date": "2026-08-23 08:54:00",
+        "arrival_date": "2026-08-23 10:07:00",
+        "price": 120.35
+    },
+    {
+        "departure_airport": "IKT",
+        "arrival_airport": "BTK",
+        "departure_date": "2026-09-12 15:34:00",
+        "arrival_date": "2026-09-12 16:38:00",
+        "price": 131.78
+    },
+    {
+        "departure_airport": "IKT",
+        "arrival_airport": "HTA",
+        "departure_date": "2026-08-10 07:52:00",
+        "arrival_date": "2026-08-10 09:05:00",
+        "price": 139.56
+    },
+    {
+        "departure_airport": "IKT",
+        "arrival_airport": "KCK",
+        "departure_date": "2026-08-13 03:42:00",
+        "arrival_date": "2026-08-13 04:58:00",
+        "price": 145.65
+    },
+    {
+        "departure_airport": "IKT",
+        "arrival_airport": "ODO",
+        "departure_date": "2026-08-23 06:04:00",
+        "arrival_date": "2026-08-23 07:36:00",
+        "price": 151.21
+    },
+    {
+        "departure_airport": "IKT",
+        "arrival_airport": "OVB",
+        "departure_date": "2026-09-14 21:29:00",
+        "arrival_date": "2026-09-14 23:42:00",
+        "price": 223.16
+    },
+    {
+        "departure_airport": "IKT",
+        "arrival_airport": "UKX",
+        "departure_date": "2026-09-06 04:38:00",
+        "arrival_date": "2026-09-06 05:45:00",
+        "price": 113.59
+    },
+    {
+        "departure_airport": "IKT",
+        "arrival_airport": "ULK",
+        "departure_date": "2026-09-15 19:52:00",
+        "arrival_date": "2026-09-15 21:42:00",
+        "price": 172.03
+    },
+    {
+        "departure_airport": "IKT",
+        "arrival_airport": "YKS",
+        "departure_date": "2026-08-23 12:29:00",
+        "arrival_date": "2026-08-23 15:10:00",
+        "price": 314.37
+    },
+    {
+        "departure_airport": "KCK",
+        "arrival_airport": "IKT",
+        "departure_date": "2026-09-12 05:43:00",
+        "arrival_date": "2026-09-12 06:59:00",
+        "price": 138.97
+    },
+    {
+        "departure_airport": "MJZ",
+        "arrival_airport": "OVB",
+        "departure_date": "2026-09-14 18:35:00",
+        "arrival_date": "2026-09-14 21:24:00",
+        "price": 247.43
+    },
+    {
+        "departure_airport": "ODO",
+        "arrival_airport": "IKT",
+        "departure_date": "2026-08-21 04:38:00",
+        "arrival_date": "2026-08-21 06:10:00",
+        "price": 183.38
+    },
+    {
+        "departure_airport": "OVB",
+        "arrival_airport": "BTK",
+        "departure_date": "2026-09-10 10:14:00",
+        "arrival_date": "2026-09-10 12:09:00",
+        "price": 200.91
+    },
+    {
+        "departure_airport": "OVB",
+        "arrival_airport": "CEK",
+        "departure_date": "2026-08-10 00:48:00",
+        "arrival_date": "2026-08-10 02:52:00",
+        "price": 241.51
+    },
+    {
+        "departure_airport": "OVB",
+        "arrival_airport": "IKT",
+        "departure_date": "2026-09-13 05:28:00",
+        "arrival_date": "2026-09-13 07:41:00",
+        "price": 207.05
+    },
+    {
+        "departure_airport": "UKX",
+        "arrival_airport": "IKT",
+        "departure_date": "2026-09-14 16:28:00",
+        "arrival_date": "2026-09-14 17:35:00",
+        "price": 131.15
+    },
+    {
+        "departure_airport": "ULK",
+        "arrival_airport": "IKT",
+        "departure_date": "2026-08-14 05:22:00",
+        "arrival_date": "2026-08-14 07:12:00",
+        "price": 194.97
+    },
+    {
+        "departure_airport": "YKS",
+        "arrival_airport": "IKT",
+        "departure_date": "2026-08-25 13:56:00",
+        "arrival_date": "2026-08-25 16:37:00",
+        "price": 322.71
+    },
+    {
+        "departure_airport": "AYP",
+        "arrival_airport": "LIM",
+        "departure_date": "2026-08-08 01:54:00",
+        "arrival_date": "2026-08-08 02:48:00",
+        "price": 97.71
+    },
+    {
+        "departure_airport": "CUZ",
+        "arrival_airport": "LIM",
+        "departure_date": "2026-08-24 21:43:00",
+        "arrival_date": "2026-08-24 22:54:00",
+        "price": 106.51
+    },
+    {
+        "departure_airport": "CUZ",
+        "arrival_airport": "PEM",
+        "departure_date": "2026-09-11 16:33:00",
+        "arrival_date": "2026-09-11 17:25:00",
+        "price": 86.77
+    },
+    {
+        "departure_airport": "HUU",
+        "arrival_airport": "LIM",
+        "departure_date": "2026-09-01 22:09:00",
+        "arrival_date": "2026-09-01 22:57:00",
+        "price": 93.72
+    },
+    {
+        "departure_airport": "IQT",
+        "arrival_airport": "PCL",
+        "departure_date": "2026-09-09 00:42:00",
+        "arrival_date": "2026-09-09 01:49:00",
+        "price": 138.7
+    },
+    {
+        "departure_airport": "IQT",
+        "arrival_airport": "TPP",
+        "departure_date": "2026-08-08 02:09:00",
+        "arrival_date": "2026-08-08 03:11:00",
+        "price": 126.02
+    },
+    {
+        "departure_airport": "LIM",
+        "arrival_airport": "AYP",
+        "departure_date": "2026-08-10 20:00:00",
+        "arrival_date": "2026-08-10 20:54:00",
+        "price": 94.84
+    },
+    {
+        "departure_airport": "LIM",
+        "arrival_airport": "CUZ",
+        "departure_date": "2026-08-18 00:49:00",
+        "arrival_date": "2026-08-18 02:00:00",
+        "price": 130.32
+    },
+    {
+        "departure_airport": "LIM",
+        "arrival_airport": "HUU",
+        "departure_date": "2026-08-14 11:20:00",
+        "arrival_date": "2026-08-14 12:08:00",
+        "price": 83.4
+    },
+    {
+        "departure_airport": "LIM",
+        "arrival_airport": "PCL",
+        "departure_date": "2026-08-06 02:44:00",
+        "arrival_date": "2026-08-06 03:49:00",
+        "price": 110.54
+    },
+    {
+        "departure_airport": "LIM",
+        "arrival_airport": "TPP",
+        "departure_date": "2026-08-31 00:03:00",
+        "arrival_date": "2026-08-31 01:17:00",
+        "price": 148.59
+    },
+    {
+        "departure_airport": "PCL",
+        "arrival_airport": "IQT",
+        "departure_date": "2026-08-05 11:19:00",
+        "arrival_date": "2026-08-05 12:26:00",
+        "price": 105.51
+    },
+    {
+        "departure_airport": "PCL",
+        "arrival_airport": "LIM",
+        "departure_date": "2026-08-07 20:31:00",
+        "arrival_date": "2026-08-07 21:36:00",
+        "price": 102.57
+    },
+    {
+        "departure_airport": "PCL",
+        "arrival_airport": "TPP",
+        "departure_date": "2026-09-16 06:43:00",
+        "arrival_date": "2026-09-16 07:33:00",
+        "price": 105.58
+    },
+    {
+        "departure_airport": "PEM",
+        "arrival_airport": "CUZ",
+        "departure_date": "2026-09-05 20:33:00",
+        "arrival_date": "2026-09-05 21:25:00",
+        "price": 109.85
+    },
+    {
+        "departure_airport": "TPP",
+        "arrival_airport": "IQT",
+        "departure_date": "2026-08-27 16:34:00",
+        "arrival_date": "2026-08-27 17:36:00",
+        "price": 122.73
+    },
+    {
+        "departure_airport": "TPP",
+        "arrival_airport": "LIM",
+        "departure_date": "2026-09-10 16:30:00",
+        "arrival_date": "2026-09-10 17:44:00",
+        "price": 155.05
+    },
+    {
+        "departure_airport": "TPP",
+        "arrival_airport": "PCL",
+        "departure_date": "2026-08-31 01:22:00",
+        "arrival_date": "2026-08-31 02:12:00",
+        "price": 99.32
+    },
+    {
+        "departure_airport": "ABJ",
+        "arrival_airport": "BOY",
+        "departure_date": "2026-09-11 02:22:00",
+        "arrival_date": "2026-09-11 03:38:00",
+        "price": 152.63
+    },
+    {
+        "departure_airport": "ABJ",
+        "arrival_airport": "OUA",
+        "departure_date": "2026-09-12 15:30:00",
+        "arrival_date": "2026-09-12 16:59:00",
+        "price": 139.35
+    },
+    {
+        "departure_airport": "ACC",
+        "arrival_airport": "OUA",
+        "departure_date": "2026-09-02 01:30:00",
+        "arrival_date": "2026-09-02 02:54:00",
+        "price": 162.91
+    },
+    {
+        "departure_airport": "BKO",
+        "arrival_airport": "ABJ",
+        "departure_date": "2026-08-17 14:22:00",
+        "arrival_date": "2026-08-17 15:57:00",
+        "price": 149.01
+    },
+    {
+        "departure_airport": "BKO",
+        "arrival_airport": "DKR",
+        "departure_date": "2026-08-17 21:08:00",
+        "arrival_date": "2026-08-17 22:53:00",
+        "price": 180.33
+    },
+    {
+        "departure_airport": "BKO",
+        "arrival_airport": "OUA",
+        "departure_date": "2026-09-07 06:39:00",
+        "arrival_date": "2026-09-07 07:58:00",
+        "price": 161.14
+    },
+    {
+        "departure_airport": "BOY",
+        "arrival_airport": "ABJ",
+        "departure_date": "2026-09-13 11:01:00",
+        "arrival_date": "2026-09-13 12:17:00",
+        "price": 141.92
+    },
+    {
+        "departure_airport": "BOY",
+        "arrival_airport": "OUA",
+        "departure_date": "2026-08-20 00:06:00",
+        "arrival_date": "2026-08-20 01:00:00",
+        "price": 85.6
+    },
+    {
+        "departure_airport": "COO",
+        "arrival_airport": "LFW",
+        "departure_date": "2026-08-11 22:41:00",
+        "arrival_date": "2026-08-11 23:26:00",
+        "price": 80.73
+    },
+    {
+        "departure_airport": "COO",
+        "arrival_airport": "OUA",
+        "departure_date": "2026-08-15 17:43:00",
+        "arrival_date": "2026-08-15 19:09:00",
+        "price": 136.53
+    },
+    {
+        "departure_airport": "DKR",
+        "arrival_airport": "BKO",
+        "departure_date": "2026-09-13 11:23:00",
+        "arrival_date": "2026-09-13 13:08:00",
+        "price": 162.11
+    },
+    {
+        "departure_airport": "DKR",
+        "arrival_airport": "OUA",
+        "departure_date": "2026-08-23 05:09:00",
+        "arrival_date": "2026-08-23 07:42:00",
+        "price": 314.93
+    },
+    {
+        "departure_airport": "LFW",
+        "arrival_airport": "OUA",
+        "departure_date": "2026-09-01 16:27:00",
+        "arrival_date": "2026-09-01 17:50:00",
+        "price": 135.07
+    },
+    {
+        "departure_airport": "NIM",
+        "arrival_airport": "OUA",
+        "departure_date": "2026-08-29 01:07:00",
+        "arrival_date": "2026-08-29 02:07:00",
+        "price": 95.89
+    },
+    {
+        "departure_airport": "OUA",
+        "arrival_airport": "ABJ",
+        "departure_date": "2026-09-01 00:24:00",
+        "arrival_date": "2026-09-01 01:53:00",
+        "price": 148.64
+    },
+    {
+        "departure_airport": "OUA",
+        "arrival_airport": "ACC",
+        "departure_date": "2026-08-20 17:03:00",
+        "arrival_date": "2026-08-20 18:27:00",
+        "price": 133.56
+    },
+    {
+        "departure_airport": "OUA",
+        "arrival_airport": "BKO",
+        "departure_date": "2026-08-08 19:29:00",
+        "arrival_date": "2026-08-08 20:48:00",
+        "price": 136.13
+    },
+    {
+        "departure_airport": "OUA",
+        "arrival_airport": "BOY",
+        "departure_date": "2026-08-17 05:02:00",
+        "arrival_date": "2026-08-17 05:56:00",
+        "price": 91.31
+    },
+    {
+        "departure_airport": "OUA",
+        "arrival_airport": "COO",
+        "departure_date": "2026-08-15 15:50:00",
+        "arrival_date": "2026-08-15 17:16:00",
+        "price": 144.03
+    },
+    {
+        "departure_airport": "OUA",
+        "arrival_airport": "DKR",
+        "departure_date": "2026-09-05 00:00:00",
+        "arrival_date": "2026-09-05 02:33:00",
+        "price": 246.12
+    },
+    {
+        "departure_airport": "OUA",
+        "arrival_airport": "LFW",
+        "departure_date": "2026-08-16 06:22:00",
+        "arrival_date": "2026-08-16 07:45:00",
+        "price": 127.81
+    },
+    {
+        "departure_airport": "OUA",
+        "arrival_airport": "NIM",
+        "departure_date": "2026-08-18 20:47:00",
+        "arrival_date": "2026-08-18 21:47:00",
+        "price": 114.85
+    },
+    {
+        "departure_airport": "BOG",
+        "arrival_airport": "GYE",
+        "departure_date": "2026-09-04 12:37:00",
+        "arrival_date": "2026-09-04 14:17:00",
+        "price": 149.87
+    },
+    {
+        "departure_airport": "BOG",
+        "arrival_airport": "UIO",
+        "departure_date": "2026-08-18 20:26:00",
+        "arrival_date": "2026-08-18 21:46:00",
+        "price": 168.56
+    },
+    {
+        "departure_airport": "CLO",
+        "arrival_airport": "GYE",
+        "departure_date": "2026-09-15 10:27:00",
+        "arrival_date": "2026-09-15 11:50:00",
+        "price": 167.34
+    },
+    {
+        "departure_airport": "GYE",
+        "arrival_airport": "BOG",
+        "departure_date": "2026-08-14 17:09:00",
+        "arrival_date": "2026-08-14 18:49:00",
+        "price": 149.87
+    },
+    {
+        "departure_airport": "GYE",
+        "arrival_airport": "CLO",
+        "departure_date": "2026-08-07 01:49:00",
+        "arrival_date": "2026-08-07 03:12:00",
+        "price": 137.05
+    },
+    {
+        "departure_airport": "GYE",
+        "arrival_airport": "SCY",
+        "departure_date": "2026-09-15 17:29:00",
+        "arrival_date": "2026-09-15 19:16:00",
+        "price": 221.22
+    },
+    {
+        "departure_airport": "GYE",
+        "arrival_airport": "UIO",
+        "departure_date": "2026-09-06 01:21:00",
+        "arrival_date": "2026-09-06 02:11:00",
+        "price": 100.42
+    },
+    {
+        "departure_airport": "OCC",
+        "arrival_airport": "UIO",
+        "departure_date": "2026-09-12 17:55:00",
+        "arrival_date": "2026-09-12 18:40:00",
+        "price": 76.78
+    },
+    {
+        "departure_airport": "SCY",
+        "arrival_airport": "GYE",
+        "departure_date": "2026-08-31 13:24:00",
+        "arrival_date": "2026-08-31 15:11:00",
+        "price": 185.89
+    },
+    {
+        "departure_airport": "UIO",
+        "arrival_airport": "BOG",
+        "departure_date": "2026-08-05 08:10:00",
+        "arrival_date": "2026-08-05 09:30:00",
+        "price": 161.54
+    },
+    {
+        "departure_airport": "UIO",
+        "arrival_airport": "GYE",
+        "departure_date": "2026-08-05 08:57:00",
+        "arrival_date": "2026-08-05 09:47:00",
+        "price": 103.08
+    },
+    {
+        "departure_airport": "UIO",
+        "arrival_airport": "OCC",
+        "departure_date": "2026-08-15 07:48:00",
+        "arrival_date": "2026-08-15 08:33:00",
+        "price": 74.56
+    },
+    {
+        "departure_airport": "BDS",
+        "arrival_airport": "ZRH",
+        "departure_date": "2026-08-21 07:55:00",
+        "arrival_date": "2026-08-21 09:40:00",
+        "price": 201.05
+    },
+    {
+        "departure_airport": "BOD",
+        "arrival_airport": "ZRH",
+        "departure_date": "2026-09-11 05:11:00",
+        "arrival_date": "2026-09-11 06:35:00",
+        "price": 165.22
+    },
+    {
+        "departure_airport": "BRS",
+        "arrival_airport": "ZRH",
+        "departure_date": "2026-08-14 18:11:00",
+        "arrival_date": "2026-08-14 19:46:00",
+        "price": 178.99
+    },
+    {
+        "departure_airport": "GVA",
+        "arrival_airport": "LPA",
+        "departure_date": "2026-08-14 15:45:00",
+        "arrival_date": "2026-08-14 19:31:00",
+        "price": 383.66
+    },
+    {
+        "departure_airport": "LCA",
+        "arrival_airport": "ZRH",
+        "departure_date": "2026-08-10 20:24:00",
+        "arrival_date": "2026-08-10 23:51:00",
+        "price": 426.75
+    },
+    {
+        "departure_airport": "LPA",
+        "arrival_airport": "ZRH",
+        "departure_date": "2026-08-17 15:37:00",
+        "arrival_date": "2026-08-17 19:39:00",
+        "price": 377.78
+    },
+    {
+        "departure_airport": "RMF",
+        "arrival_airport": "ZRH",
+        "departure_date": "2026-08-27 11:25:00",
+        "arrival_date": "2026-08-27 15:51:00",
+        "price": 496.49
+    },
+    {
+        "departure_airport": "TFS",
+        "arrival_airport": "GVA",
+        "departure_date": "2026-08-11 23:28:00",
+        "arrival_date": "2026-08-12 03:18:00",
+        "price": 390.93
+    },
+    {
+        "departure_airport": "ZRH",
+        "arrival_airport": "BDS",
+        "departure_date": "2026-09-16 01:44:00",
+        "arrival_date": "2026-09-16 03:29:00",
+        "price": 206.53
+    },
+    {
+        "departure_airport": "ZRH",
+        "arrival_airport": "BOD",
+        "departure_date": "2026-08-23 13:01:00",
+        "arrival_date": "2026-08-23 14:25:00",
+        "price": 165.22
+    },
+    {
+        "departure_airport": "ZRH",
+        "arrival_airport": "BRS",
+        "departure_date": "2026-09-14 20:26:00",
+        "arrival_date": "2026-09-14 22:01:00",
+        "price": 144.19
+    },
+    {
+        "departure_airport": "ZRH",
+        "arrival_airport": "LCA",
+        "departure_date": "2026-09-12 20:14:00",
+        "arrival_date": "2026-09-12 23:41:00",
+        "price": 305.83
+    },
+    {
+        "departure_airport": "ZRH",
+        "arrival_airport": "LPA",
+        "departure_date": "2026-09-12 15:05:00",
+        "arrival_date": "2026-09-12 19:07:00",
+        "price": 423.44
+    },
+    {
+        "departure_airport": "ZRH",
+        "arrival_airport": "RMF",
+        "departure_date": "2026-08-18 21:11:00",
+        "arrival_date": "2026-08-19 01:37:00",
+        "price": 473.71
+    },
+    {
+        "departure_airport": "AJR",
+        "arrival_airport": "LYC",
+        "departure_date": "2026-09-01 22:24:00",
+        "arrival_date": "2026-09-01 23:09:00",
+        "price": 76.88
+    },
+    {
+        "departure_airport": "ARN",
+        "arrival_airport": "GEV",
+        "departure_date": "2026-08-26 21:53:00",
+        "arrival_date": "2026-08-26 23:23:00",
+        "price": 135.96
+    },
+    {
+        "departure_airport": "ARN",
+        "arrival_airport": "HAD",
+        "departure_date": "2026-09-09 08:48:00",
+        "arrival_date": "2026-09-09 09:49:00",
+        "price": 95.34
+    },
+    {
+        "departure_airport": "ARN",
+        "arrival_airport": "JKG",
+        "departure_date": "2026-09-02 10:06:00",
+        "arrival_date": "2026-09-02 10:58:00",
+        "price": 81.65
+    },
+    {
+        "departure_airport": "ARN",
+        "arrival_airport": "KRF",
+        "departure_date": "2026-09-06 05:52:00",
+        "arrival_date": "2026-09-06 06:49:00",
+        "price": 113.38
+    },
+    {
+        "departure_airport": "ARN",
+        "arrival_airport": "KSD",
+        "departure_date": "2026-08-28 20:18:00",
+        "arrival_date": "2026-08-28 21:06:00",
+        "price": 92.99
+    },
+    {
+        "departure_airport": "ARN",
+        "arrival_airport": "LYC",
+        "departure_date": "2026-08-10 00:06:00",
+        "arrival_date": "2026-08-10 01:15:00",
+        "price": 107.27
+    },
+    {
+        "departure_airport": "ARN",
+        "arrival_airport": "MHQ",
+        "departure_date": "2026-08-11 23:56:00",
+        "arrival_date": "2026-08-12 00:41:00",
+        "price": 64.79
+    },
+    {
+        "departure_airport": "ARN",
+        "arrival_airport": "OER",
+        "departure_date": "2026-09-07 20:37:00",
+        "arrival_date": "2026-09-07 21:37:00",
+        "price": 99.25
+    },
+    {
+        "departure_airport": "ARN",
+        "arrival_airport": "POR",
+        "departure_date": "2026-08-25 12:50:00",
+        "arrival_date": "2026-08-25 13:41:00",
+        "price": 89.18
+    },
+    {
+        "departure_airport": "ARN",
+        "arrival_airport": "TRF",
+        "departure_date": "2026-08-16 12:38:00",
+        "arrival_date": "2026-08-16 13:39:00",
+        "price": 118.07
+    },
+    {
+        "departure_airport": "ARN",
+        "arrival_airport": "VBY",
+        "departure_date": "2026-08-22 23:31:00",
+        "arrival_date": "2026-08-23 00:17:00",
+        "price": 97.23
+    },
+    {
+        "departure_airport": "ARN",
+        "arrival_airport": "VHM",
+        "departure_date": "2026-08-10 19:32:00",
+        "arrival_date": "2026-08-10 20:41:00",
+        "price": 133.2
+    },
+    {
+        "departure_airport": "ARN",
+        "arrival_airport": "VXO",
+        "departure_date": "2026-09-15 04:50:00",
+        "arrival_date": "2026-09-15 05:45:00",
+        "price": 104.49
+    },
+    {
+        "departure_airport": "GEV",
+        "arrival_airport": "ARN",
+        "departure_date": "2026-08-31 01:19:00",
+        "arrival_date": "2026-08-31 02:49:00",
+        "price": 182.84
+    },
+    {
+        "departure_airport": "GEV",
+        "arrival_airport": "KRF",
+        "departure_date": "2026-08-06 21:54:00",
+        "arrival_date": "2026-08-06 22:58:00",
+        "price": 112.1
+    },
+    {
+        "departure_airport": "HAD",
+        "arrival_airport": "ARN",
+        "departure_date": "2026-09-04 05:27:00",
+        "arrival_date": "2026-09-04 06:28:00",
+        "price": 124.59
+    },
+    {
+        "departure_airport": "HAD",
+        "arrival_airport": "JKG",
+        "departure_date": "2026-09-09 08:14:00",
+        "arrival_date": "2026-09-09 08:59:00",
+        "price": 74
+    },
+    {
+        "departure_airport": "HAD",
+        "arrival_airport": "VXO",
+        "departure_date": "2026-08-20 21:18:00",
+        "arrival_date": "2026-08-20 22:03:00",
+        "price": 81.76
+    },
+    {
+        "departure_airport": "HMV",
+        "arrival_airport": "VHM",
+        "departure_date": "2026-08-16 18:20:00",
+        "arrival_date": "2026-08-16 19:05:00",
+        "price": 83.71
+    },
+    {
+        "departure_airport": "JKG",
+        "arrival_airport": "ARN",
+        "departure_date": "2026-08-21 23:41:00",
+        "arrival_date": "2026-08-22 00:33:00",
+        "price": 99.08
+    },
+    {
+        "departure_airport": "JKG",
+        "arrival_airport": "HAD",
+        "departure_date": "2026-08-26 13:25:00",
+        "arrival_date": "2026-08-26 14:10:00",
+        "price": 83.34
+    },
+    {
+        "departure_airport": "KOK",
+        "arrival_airport": "POR",
+        "departure_date": "2026-09-14 04:02:00",
+        "arrival_date": "2026-09-14 04:50:00",
+        "price": 85.39
+    },
+    {
+        "departure_airport": "KRF",
+        "arrival_airport": "ARN",
+        "departure_date": "2026-08-22 21:31:00",
+        "arrival_date": "2026-08-22 22:28:00",
+        "price": 114.38
+    },
+    {
+        "departure_airport": "KRF",
+        "arrival_airport": "GEV",
+        "departure_date": "2026-08-20 04:20:00",
+        "arrival_date": "2026-08-20 05:24:00",
+        "price": 133.4
+    },
+    {
+        "departure_airport": "KSD",
+        "arrival_airport": "ARN",
+        "departure_date": "2026-08-13 00:56:00",
+        "arrival_date": "2026-08-13 01:44:00",
+        "price": 75.77
+    },
+    {
+        "departure_airport": "LYC",
+        "arrival_airport": "AJR",
+        "departure_date": "2026-09-11 04:19:00",
+        "arrival_date": "2026-09-11 05:04:00",
+        "price": 76.19
+    },
+    {
+        "departure_airport": "LYC",
+        "arrival_airport": "ARN",
+        "departure_date": "2026-08-06 18:01:00",
+        "arrival_date": "2026-08-06 19:10:00",
+        "price": 118.11
+    },
+    {
+        "departure_airport": "MHQ",
+        "arrival_airport": "ARN",
+        "departure_date": "2026-09-11 04:16:00",
+        "arrival_date": "2026-09-11 05:01:00",
+        "price": 69.66
+    },
+    {
+        "departure_airport": "MHQ",
+        "arrival_airport": "TKU",
+        "departure_date": "2026-08-20 22:24:00",
+        "arrival_date": "2026-08-20 23:09:00",
+        "price": 67.9
+    },
+    {
+        "departure_airport": "OER",
+        "arrival_airport": "ARN",
+        "departure_date": "2026-09-01 19:33:00",
+        "arrival_date": "2026-09-01 20:33:00",
+        "price": 108.75
+    },
+    {
+        "departure_airport": "OSL",
+        "arrival_airport": "VXO",
+        "departure_date": "2026-09-16 18:34:00",
+        "arrival_date": "2026-09-16 19:33:00",
+        "price": 110.97
+    },
+    {
+        "departure_airport": "POR",
+        "arrival_airport": "ARN",
+        "departure_date": "2026-08-11 02:27:00",
+        "arrival_date": "2026-08-11 03:18:00",
+        "price": 78.37
+    },
+    {
+        "departure_airport": "POR",
+        "arrival_airport": "KOK",
+        "departure_date": "2026-09-10 21:55:00",
+        "arrival_date": "2026-09-10 22:43:00",
+        "price": 87.12
+    },
+    {
+        "departure_airport": "TKU",
+        "arrival_airport": "MHQ",
+        "departure_date": "2026-09-11 14:57:00",
+        "arrival_date": "2026-09-11 15:42:00",
+        "price": 67.19
+    },
+    {
+        "departure_airport": "TRF",
+        "arrival_airport": "ARN",
+        "departure_date": "2026-09-02 00:16:00",
+        "arrival_date": "2026-09-02 01:17:00",
+        "price": 122.37
+    },
+    {
+        "departure_airport": "VBY",
+        "arrival_airport": "ARN",
+        "departure_date": "2026-08-13 21:38:00",
+        "arrival_date": "2026-08-13 22:24:00",
+        "price": 70.27
+    },
+    {
+        "departure_airport": "VHM",
+        "arrival_airport": "ARN",
+        "departure_date": "2026-09-06 23:42:00",
+        "arrival_date": "2026-09-07 00:51:00",
+        "price": 140.47
+    },
+    {
+        "departure_airport": "VHM",
+        "arrival_airport": "HMV",
+        "departure_date": "2026-09-15 05:11:00",
+        "arrival_date": "2026-09-15 05:56:00",
+        "price": 77.04
+    },
+    {
+        "departure_airport": "VXO",
+        "arrival_airport": "ARN",
+        "departure_date": "2026-09-11 17:48:00",
+        "arrival_date": "2026-09-11 18:43:00",
+        "price": 114.26
+    },
+    {
+        "departure_airport": "VXO",
+        "arrival_airport": "OSL",
+        "departure_date": "2026-08-11 04:29:00",
+        "arrival_date": "2026-08-11 05:28:00",
+        "price": 116.2
+    },
+    {
+        "departure_airport": "ADQ",
+        "arrival_airport": "KLN",
+        "departure_date": "2026-09-16 13:10:00",
+        "arrival_date": "2026-09-16 13:55:00",
+        "price": 71.26
+    },
+    {
+        "departure_airport": "KLN",
+        "arrival_airport": "KYK",
+        "departure_date": "2026-09-10 18:47:00",
+        "arrival_date": "2026-09-10 19:32:00",
+        "price": 52.57
+    },
+    {
+        "departure_airport": "BSO",
+        "arrival_airport": "MNL",
+        "departure_date": "2026-08-30 00:13:00",
+        "arrival_date": "2026-08-30 01:30:00",
+        "price": 156.87
+    },
+    {
+        "departure_airport": "BXU",
+        "arrival_airport": "MNL",
+        "departure_date": "2026-08-11 11:10:00",
+        "arrival_date": "2026-08-11 12:35:00",
+        "price": 147.79
+    },
+    {
+        "departure_airport": "CBO",
+        "arrival_airport": "MNL",
+        "departure_date": "2026-09-01 03:51:00",
+        "arrival_date": "2026-09-01 05:24:00",
+        "price": 151.83
+    },
+    {
+        "departure_airport": "CGY",
+        "arrival_airport": "MNL",
+        "departure_date": "2026-08-24 01:14:00",
+        "arrival_date": "2026-08-24 02:37:00",
+        "price": 163.06
+    },
+    {
+        "departure_airport": "CRM",
+        "arrival_airport": "MNL",
+        "departure_date": "2026-09-11 03:33:00",
+        "arrival_date": "2026-09-11 04:35:00",
+        "price": 111.19
+    },
+    {
+        "departure_airport": "DGT",
+        "arrival_airport": "MNL",
+        "departure_date": "2026-08-20 14:59:00",
+        "arrival_date": "2026-08-20 16:13:00",
+        "price": 128.89
+    },
+    {
+        "departure_airport": "DWC",
+        "arrival_airport": "MNL",
+        "departure_date": "2026-08-20 22:14:00",
+        "arrival_date": "2026-08-21 06:53:00",
+        "price": 948.54
+    },
+    {
+        "departure_airport": "GES",
+        "arrival_airport": "MNL",
+        "departure_date": "2026-08-20 22:23:00",
+        "arrival_date": "2026-08-21 00:06:00",
+        "price": 210.36
+    },
+    {
+        "departure_airport": "KLO",
+        "arrival_airport": "MNL",
+        "departure_date": "2026-08-20 12:54:00",
+        "arrival_date": "2026-08-20 13:49:00",
+        "price": 93.76
+    },
+    {
+        "departure_airport": "LGP",
+        "arrival_airport": "MNL",
+        "departure_date": "2026-09-14 23:24:00",
+        "arrival_date": "2026-09-15 00:17:00",
+        "price": 92.64
+    },
+    {
+        "departure_airport": "MNL",
+        "arrival_airport": "BSO",
+        "departure_date": "2026-08-18 11:21:00",
+        "arrival_date": "2026-08-18 12:38:00",
+        "price": 133.88
+    },
+    {
+        "departure_airport": "MNL",
+        "arrival_airport": "BXU",
+        "departure_date": "2026-09-03 18:28:00",
+        "arrival_date": "2026-09-03 19:53:00",
+        "price": 140.32
+    },
+    {
+        "departure_airport": "MNL",
+        "arrival_airport": "CBO",
+        "departure_date": "2026-08-14 11:19:00",
+        "arrival_date": "2026-08-14 12:52:00",
+        "price": 164.75
+    },
+    {
+        "departure_airport": "MNL",
+        "arrival_airport": "CGY",
+        "departure_date": "2026-09-01 09:34:00",
+        "arrival_date": "2026-09-01 10:57:00",
+        "price": 141.22
+    },
+    {
+        "departure_airport": "MNL",
+        "arrival_airport": "CRM",
+        "departure_date": "2026-08-23 22:06:00",
+        "arrival_date": "2026-08-23 23:08:00",
+        "price": 124.27
+    },
+    {
+        "departure_airport": "MNL",
+        "arrival_airport": "DGT",
+        "departure_date": "2026-09-12 13:48:00",
+        "arrival_date": "2026-09-12 15:02:00",
+        "price": 131.49
+    },
+    {
+        "departure_airport": "MNL",
+        "arrival_airport": "DWC",
+        "departure_date": "2026-09-05 09:20:00",
+        "arrival_date": "2026-09-05 17:59:00",
+        "price": 1010.6
+    },
+    {
+        "departure_airport": "MNL",
+        "arrival_airport": "GES",
+        "departure_date": "2026-09-08 15:55:00",
+        "arrival_date": "2026-09-08 17:38:00",
+        "price": 194.17
+    },
+    {
+        "departure_airport": "MNL",
+        "arrival_airport": "KLO",
+        "departure_date": "2026-08-08 10:10:00",
+        "arrival_date": "2026-08-08 11:05:00",
+        "price": 94.73
+    },
+    {
+        "departure_airport": "MNL",
+        "arrival_airport": "LGP",
+        "departure_date": "2026-09-06 18:48:00",
+        "arrival_date": "2026-09-06 19:41:00",
+        "price": 89.8
+    },
+    {
+        "departure_airport": "MNL",
+        "arrival_airport": "MPH",
+        "departure_date": "2026-09-07 15:14:00",
+        "arrival_date": "2026-09-07 16:06:00",
+        "price": 93.38
+    },
+    {
+        "departure_airport": "MNL",
+        "arrival_airport": "OZC",
+        "departure_date": "2026-09-03 09:19:00",
+        "arrival_date": "2026-09-03 10:43:00",
+        "price": 136.87
+    },
+    {
+        "departure_airport": "MNL",
+        "arrival_airport": "PPS",
+        "departure_date": "2026-08-13 05:06:00",
+        "arrival_date": "2026-08-13 06:17:00",
+        "price": 148.87
+    },
+    {
+        "departure_airport": "MNL",
+        "arrival_airport": "RXS",
+        "departure_date": "2026-09-10 14:27:00",
+        "arrival_date": "2026-09-10 15:23:00",
+        "price": 88.9
+    },
+    {
+        "departure_airport": "MNL",
+        "arrival_airport": "SUG",
+        "departure_date": "2026-08-18 13:27:00",
+        "arrival_date": "2026-08-18 14:48:00",
+        "price": 131.19
+    },
+    {
+        "departure_airport": "MNL",
+        "arrival_airport": "TUG",
+        "departure_date": "2026-08-17 04:03:00",
+        "arrival_date": "2026-08-17 04:58:00",
+        "price": 93.9
+    },
+    {
+        "departure_airport": "MNL",
+        "arrival_airport": "ZAM",
+        "departure_date": "2026-09-05 16:57:00",
+        "arrival_date": "2026-09-05 18:27:00",
+        "price": 144.57
+    },
+    {
+        "departure_airport": "MPH",
+        "arrival_airport": "MNL",
+        "departure_date": "2026-08-24 18:08:00",
+        "arrival_date": "2026-08-24 19:00:00",
+        "price": 85.14
+    },
+    {
+        "departure_airport": "OZC",
+        "arrival_airport": "MNL",
+        "departure_date": "2026-09-11 08:21:00",
+        "arrival_date": "2026-09-11 09:45:00",
+        "price": 133.93
+    },
+    {
+        "departure_airport": "PPS",
+        "arrival_airport": "MNL",
+        "departure_date": "2026-09-14 23:05:00",
+        "arrival_date": "2026-09-15 00:16:00",
+        "price": 140.12
+    },
+    {
+        "departure_airport": "RXS",
+        "arrival_airport": "MNL",
+        "departure_date": "2026-09-09 01:10:00",
+        "arrival_date": "2026-09-09 02:06:00",
+        "price": 115.88
+    },
+    {
+        "departure_airport": "SUG",
+        "arrival_airport": "MNL",
+        "departure_date": "2026-08-30 14:18:00",
+        "arrival_date": "2026-08-30 15:39:00",
+        "price": 148.11
+    },
+    {
+        "departure_airport": "TUG",
+        "arrival_airport": "MNL",
+        "departure_date": "2026-08-11 04:06:00",
+        "arrival_date": "2026-08-11 05:01:00",
+        "price": 113.47
+    },
+    {
+        "departure_airport": "ZAM",
+        "arrival_airport": "MNL",
+        "departure_date": "2026-09-14 09:39:00",
+        "arrival_date": "2026-09-14 11:09:00",
+        "price": 168.14
+    },
+    {
+        "departure_airport": "AUX",
+        "arrival_airport": "PMW",
+        "departure_date": "2026-08-18 04:42:00",
+        "arrival_date": "2026-08-18 05:36:00",
+        "price": 83.44
+    },
+    {
+        "departure_airport": "BRA",
+        "arrival_airport": "BSB",
+        "departure_date": "2026-09-15 19:01:00",
+        "arrival_date": "2026-09-15 20:08:00",
+        "price": 106.27
+    },
+    {
+        "departure_airport": "BRA",
+        "arrival_airport": "SSA",
+        "departure_date": "2026-08-23 14:19:00",
+        "arrival_date": "2026-08-23 15:41:00",
+        "price": 159.94
+    },
+    {
+        "departure_airport": "BSB",
+        "arrival_airport": "BRA",
+        "departure_date": "2026-08-24 23:46:00",
+        "arrival_date": "2026-08-25 00:53:00",
+        "price": 100.37
+    },
+    {
+        "departure_airport": "BSB",
+        "arrival_airport": "OPS",
+        "departure_date": "2026-08-10 10:20:00",
+        "arrival_date": "2026-08-10 11:56:00",
+        "price": 144.14
+    },
+    {
+        "departure_airport": "BSB",
+        "arrival_airport": "RAO",
+        "departure_date": "2026-08-05 15:45:00",
+        "arrival_date": "2026-08-05 16:56:00",
+        "price": 111.52
+    },
+    {
+        "departure_airport": "CAC",
+        "arrival_airport": "GRU",
+        "departure_date": "2026-09-16 10:31:00",
+        "arrival_date": "2026-09-16 11:53:00",
+        "price": 165.9
+    },
+    {
+        "departure_airport": "CGB",
+        "arrival_airport": "GYN",
+        "departure_date": "2026-08-19 02:12:00",
+        "arrival_date": "2026-08-19 03:35:00",
+        "price": 165.99
+    },
+    {
+        "departure_airport": "CGB",
+        "arrival_airport": "OPS",
+        "departure_date": "2026-08-05 02:26:00",
+        "arrival_date": "2026-08-05 03:26:00",
+        "price": 119.49
+    },
+    {
+        "departure_airport": "CGR",
+        "arrival_airport": "DOU",
+        "departure_date": "2026-08-30 06:22:00",
+        "arrival_date": "2026-08-30 07:07:00",
+        "price": 86.18
+    },
+    {
+        "departure_airport": "DOU",
+        "arrival_airport": "CGR",
+        "departure_date": "2026-08-23 21:57:00",
+        "arrival_date": "2026-08-23 22:42:00",
+        "price": 82.26
+    },
+    {
+        "departure_airport": "DOU",
+        "arrival_airport": "GRU",
+        "departure_date": "2026-08-24 15:07:00",
+        "arrival_date": "2026-08-24 16:39:00",
+        "price": 187.49
+    },
+    {
+        "departure_airport": "GIG",
+        "arrival_airport": "RAO",
+        "departure_date": "2026-08-24 05:00:00",
+        "arrival_date": "2026-08-24 06:05:00",
+        "price": 98
+    },
+    {
+        "departure_airport": "GRU",
+        "arrival_airport": "CAC",
+        "departure_date": "2026-08-24 18:34:00",
+        "arrival_date": "2026-08-24 19:56:00",
+        "price": 124.43
+    },
+    {
+        "departure_airport": "GRU",
+        "arrival_airport": "DOU",
+        "departure_date": "2026-08-21 10:02:00",
+        "arrival_date": "2026-08-21 11:34:00",
+        "price": 150.63
+    },
+    {
+        "departure_airport": "GRU",
+        "arrival_airport": "RAO",
+        "departure_date": "2026-09-11 13:10:00",
+        "arrival_date": "2026-09-11 14:00:00",
+        "price": 79.78
+    },
+    {
+        "departure_airport": "GRU",
+        "arrival_airport": "UBA",
+        "departure_date": "2026-08-10 20:55:00",
+        "arrival_date": "2026-08-10 21:56:00",
+        "price": 93.41
+    },
+    {
+        "departure_airport": "GRU",
+        "arrival_airport": "UDI",
+        "departure_date": "2026-08-14 03:19:00",
+        "arrival_date": "2026-08-14 04:27:00",
+        "price": 126.7
+    },
+    {
+        "departure_airport": "GRU",
+        "arrival_airport": "VDC",
+        "departure_date": "2026-08-12 17:58:00",
+        "arrival_date": "2026-08-12 19:47:00",
+        "price": 189.43
+    },
+    {
+        "departure_airport": "GYN",
+        "arrival_airport": "CGB",
+        "departure_date": "2026-09-03 09:34:00",
+        "arrival_date": "2026-09-03 10:57:00",
+        "price": 158.78
+    },
+    {
+        "departure_airport": "GYN",
+        "arrival_airport": "PMW",
+        "departure_date": "2026-08-14 10:58:00",
+        "arrival_date": "2026-08-14 12:18:00",
+        "price": 133.32
+    },
+    {
+        "departure_airport": "GYN",
+        "arrival_airport": "RAO",
+        "departure_date": "2026-08-17 04:48:00",
+        "arrival_date": "2026-08-17 05:55:00",
+        "price": 110.74
+    },
+    {
+        "departure_airport": "GYN",
+        "arrival_airport": "UDI",
+        "departure_date": "2026-09-08 08:44:00",
+        "arrival_date": "2026-09-08 09:33:00",
+        "price": 90.23
+    },
+    {
+        "departure_airport": "OPS",
+        "arrival_airport": "BSB",
+        "departure_date": "2026-08-29 19:16:00",
+        "arrival_date": "2026-08-29 20:52:00",
+        "price": 157.55
+    },
+    {
+        "departure_airport": "OPS",
+        "arrival_airport": "CGB",
+        "departure_date": "2026-08-26 11:43:00",
+        "arrival_date": "2026-08-26 12:43:00",
+        "price": 100.46
+    },
+    {
+        "departure_airport": "PLU",
+        "arrival_airport": "RAO",
+        "departure_date": "2026-08-09 18:47:00",
+        "arrival_date": "2026-08-09 19:47:00",
+        "price": 90.99
+    },
+    {
+        "departure_airport": "PMW",
+        "arrival_airport": "AUX",
+        "departure_date": "2026-09-01 08:18:00",
+        "arrival_date": "2026-09-01 09:12:00",
+        "price": 87.28
+    },
+    {
+        "departure_airport": "PMW",
+        "arrival_airport": "GYN",
+        "departure_date": "2026-08-28 10:12:00",
+        "arrival_date": "2026-08-28 11:32:00",
+        "price": 123.5
+    },
+    {
+        "departure_airport": "RAO",
+        "arrival_airport": "BSB",
+        "departure_date": "2026-08-06 12:40:00",
+        "arrival_date": "2026-08-06 13:51:00",
+        "price": 109.02
+    },
+    {
+        "departure_airport": "RAO",
+        "arrival_airport": "GIG",
+        "departure_date": "2026-08-13 14:18:00",
+        "arrival_date": "2026-08-13 15:23:00",
+        "price": 118.75
+    },
+    {
+        "departure_airport": "RAO",
+        "arrival_airport": "GRU",
+        "departure_date": "2026-08-20 04:52:00",
+        "arrival_date": "2026-08-20 05:42:00",
+        "price": 87.85
+    },
+    {
+        "departure_airport": "RAO",
+        "arrival_airport": "GYN",
+        "departure_date": "2026-08-12 03:56:00",
+        "arrival_date": "2026-08-12 05:03:00",
+        "price": 102.49
+    },
+    {
+        "departure_airport": "RAO",
+        "arrival_airport": "PLU",
+        "departure_date": "2026-08-30 09:39:00",
+        "arrival_date": "2026-08-30 10:39:00",
+        "price": 119.56
+    },
+    {
+        "departure_airport": "RAO",
+        "arrival_airport": "SJP",
+        "departure_date": "2026-08-16 09:58:00",
+        "arrival_date": "2026-08-16 10:43:00",
+        "price": 64.39
+    },
+    {
+        "departure_airport": "RAO",
+        "arrival_airport": "UDI",
+        "departure_date": "2026-08-07 00:12:00",
+        "arrival_date": "2026-08-07 01:00:00",
+        "price": 88.15
+    },
+    {
+        "departure_airport": "SJP",
+        "arrival_airport": "RAO",
+        "departure_date": "2026-08-05 00:45:00",
+        "arrival_date": "2026-08-05 01:30:00",
+        "price": 76.51
+    },
+    {
+        "departure_airport": "SSA",
+        "arrival_airport": "BRA",
+        "departure_date": "2026-08-30 12:43:00",
+        "arrival_date": "2026-08-30 14:05:00",
+        "price": 148.52
+    },
+    {
+        "departure_airport": "SSA",
+        "arrival_airport": "VDC",
+        "departure_date": "2026-08-15 01:32:00",
+        "arrival_date": "2026-08-15 02:27:00",
+        "price": 114.44
+    },
+    {
+        "departure_airport": "UBA",
+        "arrival_airport": "GRU",
+        "departure_date": "2026-08-30 00:54:00",
+        "arrival_date": "2026-08-30 01:55:00",
+        "price": 107.37
+    },
+    {
+        "departure_airport": "UBA",
+        "arrival_airport": "UDI",
+        "departure_date": "2026-09-07 21:10:00",
+        "arrival_date": "2026-09-07 21:55:00",
+        "price": 58.47
+    },
+    {
+        "departure_airport": "UDI",
+        "arrival_airport": "GRU",
+        "departure_date": "2026-08-05 11:49:00",
+        "arrival_date": "2026-08-05 12:57:00",
+        "price": 125.51
+    },
+    {
+        "departure_airport": "UDI",
+        "arrival_airport": "GYN",
+        "departure_date": "2026-08-29 18:51:00",
+        "arrival_date": "2026-08-29 19:40:00",
+        "price": 98.99
+    },
+    {
+        "departure_airport": "UDI",
+        "arrival_airport": "RAO",
+        "departure_date": "2026-08-31 07:58:00",
+        "arrival_date": "2026-08-31 08:46:00",
+        "price": 77.88
+    },
+    {
+        "departure_airport": "UDI",
+        "arrival_airport": "UBA",
+        "departure_date": "2026-08-15 11:43:00",
+        "arrival_date": "2026-08-15 12:28:00",
+        "price": 62.5
+    },
+    {
+        "departure_airport": "VDC",
+        "arrival_airport": "GRU",
+        "departure_date": "2026-08-06 22:04:00",
+        "arrival_date": "2026-08-06 23:53:00",
+        "price": 162.91
+    },
+    {
+        "departure_airport": "VDC",
+        "arrival_airport": "SSA",
+        "departure_date": "2026-08-11 19:52:00",
+        "arrival_date": "2026-08-11 20:47:00",
+        "price": 115.41
+    },
+    {
+        "departure_airport": "BRL",
+        "arrival_airport": "ORD",
+        "departure_date": "2026-08-12 14:37:00",
+        "arrival_date": "2026-08-12 15:28:00",
+        "price": 83.69
+    },
+    {
+        "departure_airport": "BRL",
+        "arrival_airport": "STL",
+        "departure_date": "2026-08-08 22:08:00",
+        "arrival_date": "2026-08-08 22:55:00",
+        "price": 84.06
+    },
+    {
+        "departure_airport": "DEC",
+        "arrival_airport": "ORD",
+        "departure_date": "2026-09-07 21:26:00",
+        "arrival_date": "2026-09-07 22:14:00",
+        "price": 97.13
+    },
+    {
+        "departure_airport": "DEC",
+        "arrival_airport": "STL",
+        "departure_date": "2026-08-20 20:17:00",
+        "arrival_date": "2026-08-20 21:02:00",
+        "price": 72.43
+    },
+    {
+        "departure_airport": "JBR",
+        "arrival_airport": "STL",
+        "departure_date": "2026-08-12 02:03:00",
+        "arrival_date": "2026-08-12 02:56:00",
+        "price": 108.14
+    },
+    {
+        "departure_airport": "ORD",
+        "arrival_airport": "BRL",
+        "departure_date": "2026-08-18 22:27:00",
+        "arrival_date": "2026-08-18 23:18:00",
+        "price": 96.43
+    },
+    {
+        "departure_airport": "ORD",
+        "arrival_airport": "DEC",
+        "departure_date": "2026-08-31 20:51:00",
+        "arrival_date": "2026-08-31 21:39:00",
+        "price": 93.72
+    },
+    {
+        "departure_airport": "STL",
+        "arrival_airport": "BRL",
+        "departure_date": "2026-08-12 17:08:00",
+        "arrival_date": "2026-08-12 17:55:00",
+        "price": 93.22
+    },
+    {
+        "departure_airport": "STL",
+        "arrival_airport": "DEC",
+        "departure_date": "2026-08-05 10:26:00",
+        "arrival_date": "2026-08-05 11:11:00",
+        "price": 74.72
+    },
+    {
+        "departure_airport": "STL",
+        "arrival_airport": "JBR",
+        "departure_date": "2026-09-10 22:49:00",
+        "arrival_date": "2026-09-10 23:42:00",
+        "price": 110.96
+    },
+    {
+        "departure_airport": "KTN",
+        "arrival_airport": "MTM",
+        "departure_date": "2026-09-13 14:21:00",
+        "arrival_date": "2026-09-13 15:06:00",
+        "price": 61.08
+    },
+    {
+        "departure_airport": "MTM",
+        "arrival_airport": "KTN",
+        "departure_date": "2026-09-09 04:14:00",
+        "arrival_date": "2026-09-09 04:59:00",
+        "price": 54.1
+    },
+    {
+        "departure_airport": "ACC",
+        "arrival_airport": "DKR",
+        "departure_date": "2026-08-29 05:29:00",
+        "arrival_date": "2026-08-29 08:31:00",
+        "price": 372.3
+    },
+    {
+        "departure_airport": "ACC",
+        "arrival_airport": "LOS",
+        "departure_date": "2026-08-07 19:37:00",
+        "arrival_date": "2026-08-07 20:35:00",
+        "price": 97.91
+    },
+    {
+        "departure_airport": "ACC",
+        "arrival_airport": "ROB",
+        "departure_date": "2026-09-16 22:35:00",
+        "arrival_date": "2026-09-17 00:25:00",
+        "price": 163.89
+    },
+    {
+        "departure_airport": "BCN",
+        "arrival_airport": "BJL",
+        "departure_date": "2026-08-11 15:06:00",
+        "arrival_date": "2026-08-11 19:50:00",
+        "price": 564.9
+    },
+    {
+        "departure_airport": "BJL",
+        "arrival_airport": "BCN",
+        "departure_date": "2026-08-30 23:44:00",
+        "arrival_date": "2026-08-31 04:28:00",
+        "price": 574.64
+    },
+    {
+        "departure_airport": "BJL",
+        "arrival_airport": "DKR",
+        "departure_date": "2026-08-09 02:23:00",
+        "arrival_date": "2026-08-09 03:08:00",
+        "price": 75.86
+    },
+    {
+        "departure_airport": "BJL",
+        "arrival_airport": "FNA",
+        "departure_date": "2026-08-12 14:44:00",
+        "arrival_date": "2026-08-12 16:00:00",
+        "price": 159.09
+    },
+    {
+        "departure_airport": "CKY",
+        "arrival_airport": "OXB",
+        "departure_date": "2026-08-19 00:20:00",
+        "arrival_date": "2026-08-19 01:14:00",
+        "price": 98.78
+    },
+    {
+        "departure_airport": "DKR",
+        "arrival_airport": "ACC",
+        "departure_date": "2026-08-07 13:10:00",
+        "arrival_date": "2026-08-07 16:12:00",
+        "price": 269.05
+    },
+    {
+        "departure_airport": "DKR",
+        "arrival_airport": "BJL",
+        "departure_date": "2026-09-08 02:24:00",
+        "arrival_date": "2026-09-08 03:09:00",
+        "price": 83.52
+    },
+    {
+        "departure_airport": "DKR",
+        "arrival_airport": "DLA",
+        "departure_date": "2026-08-24 13:23:00",
+        "arrival_date": "2026-08-24 17:40:00",
+        "price": 510.61
+    },
+    {
+        "departure_airport": "DKR",
+        "arrival_airport": "FNA",
+        "departure_date": "2026-08-10 05:00:00",
+        "arrival_date": "2026-08-10 06:28:00",
+        "price": 175.68
+    },
+    {
+        "departure_airport": "DKR",
+        "arrival_airport": "LOS",
+        "departure_date": "2026-08-27 15:49:00",
+        "arrival_date": "2026-08-27 19:12:00",
+        "price": 359
+    },
+    {
+        "departure_airport": "DKR",
+        "arrival_airport": "OXB",
+        "departure_date": "2026-09-12 09:39:00",
+        "arrival_date": "2026-09-12 10:35:00",
+        "price": 119.79
+    },
+    {
+        "departure_airport": "DLA",
+        "arrival_airport": "DKR",
+        "departure_date": "2026-08-05 00:52:00",
+        "arrival_date": "2026-08-05 05:09:00",
+        "price": 515.01
+    },
+    {
+        "departure_airport": "DLA",
+        "arrival_airport": "LOS",
+        "departure_date": "2026-09-09 15:32:00",
+        "arrival_date": "2026-09-09 16:56:00",
+        "price": 126.13
+    },
+    {
+        "departure_airport": "FNA",
+        "arrival_airport": "BJL",
+        "departure_date": "2026-08-23 23:44:00",
+        "arrival_date": "2026-08-24 01:00:00",
+        "price": 136.55
+    },
+    {
+        "departure_airport": "FNA",
+        "arrival_airport": "DKR",
+        "departure_date": "2026-08-06 19:29:00",
+        "arrival_date": "2026-08-06 20:57:00",
+        "price": 161.81
+    },
+    {
+        "departure_airport": "FNA",
+        "arrival_airport": "LGW",
+        "departure_date": "2026-08-06 18:03:00",
+        "arrival_date": "2026-08-07 00:17:00",
+        "price": 653.09
+    },
+    {
+        "departure_airport": "FNA",
+        "arrival_airport": "ROB",
+        "departure_date": "2026-08-06 04:26:00",
+        "arrival_date": "2026-08-06 05:25:00",
+        "price": 97.9
+    },
+    {
+        "departure_airport": "LGW",
+        "arrival_airport": "FNA",
+        "departure_date": "2026-08-29 11:31:00",
+        "arrival_date": "2026-08-29 17:45:00",
+        "price": 755.54
+    },
+    {
+        "departure_airport": "LOS",
+        "arrival_airport": "ACC",
+        "departure_date": "2026-09-01 03:21:00",
+        "arrival_date": "2026-09-01 04:19:00",
+        "price": 108.21
+    },
+    {
+        "departure_airport": "LOS",
+        "arrival_airport": "DKR",
+        "departure_date": "2026-08-22 15:49:00",
+        "arrival_date": "2026-08-22 19:12:00",
+        "price": 411.29
+    },
+    {
+        "departure_airport": "LOS",
+        "arrival_airport": "DLA",
+        "departure_date": "2026-08-06 20:13:00",
+        "arrival_date": "2026-08-06 21:37:00",
+        "price": 142.27
+    },
+    {
+        "departure_airport": "LOS",
+        "arrival_airport": "ROB",
+        "departure_date": "2026-08-23 18:51:00",
+        "arrival_date": "2026-08-23 21:08:00",
+        "price": 274.34
+    },
+    {
+        "departure_airport": "OXB",
+        "arrival_airport": "CKY",
+        "departure_date": "2026-08-26 20:26:00",
+        "arrival_date": "2026-08-26 21:20:00",
+        "price": 110.29
+    },
+    {
+        "departure_airport": "OXB",
+        "arrival_airport": "DKR",
+        "departure_date": "2026-09-09 13:47:00",
+        "arrival_date": "2026-09-09 14:43:00",
+        "price": 97.83
+    },
+    {
+        "departure_airport": "ROB",
+        "arrival_airport": "ACC",
+        "departure_date": "2026-08-30 20:41:00",
+        "arrival_date": "2026-08-30 22:31:00",
+        "price": 186.76
+    },
+    {
+        "departure_airport": "ROB",
+        "arrival_airport": "FNA",
+        "departure_date": "2026-09-03 13:28:00",
+        "arrival_date": "2026-09-03 14:27:00",
+        "price": 99.99
+    },
+    {
+        "departure_airport": "ROB",
+        "arrival_airport": "LOS",
+        "departure_date": "2026-08-13 00:13:00",
+        "arrival_date": "2026-08-13 02:30:00",
+        "price": 276.7
+    },
+    {
+        "departure_airport": "AKV",
+        "arrival_airport": "YIK",
+        "departure_date": "2026-08-27 18:55:00",
+        "arrival_date": "2026-08-27 19:40:00",
+        "price": 75.62
+    },
+    {
+        "departure_airport": "AKV",
+        "arrival_airport": "YPX",
+        "departure_date": "2026-08-20 00:21:00",
+        "arrival_date": "2026-08-20 01:06:00",
+        "price": 71.38
+    },
+    {
+        "departure_airport": "XGR",
+        "arrival_airport": "YVP",
+        "departure_date": "2026-08-06 22:57:00",
+        "arrival_date": "2026-08-06 23:42:00",
+        "price": 65.03
+    },
+    {
+        "departure_airport": "YGL",
+        "arrival_airport": "YGW",
+        "departure_date": "2026-08-16 14:31:00",
+        "arrival_date": "2026-08-16 15:16:00",
+        "price": 70.17
+    },
+    {
+        "departure_airport": "YGL",
+        "arrival_airport": "YPX",
+        "departure_date": "2026-08-25 22:06:00",
+        "arrival_date": "2026-08-25 23:26:00",
+        "price": 132.34
+    },
+    {
+        "departure_airport": "YGL",
+        "arrival_airport": "YUL",
+        "departure_date": "2026-08-24 20:40:00",
+        "arrival_date": "2026-08-24 22:17:00",
+        "price": 202.86
+    },
+    {
+        "departure_airport": "YGW",
+        "arrival_airport": "YGL",
+        "departure_date": "2026-09-03 13:20:00",
+        "arrival_date": "2026-09-03 14:05:00",
+        "price": 74.8
+    },
+    {
+        "departure_airport": "YGW",
+        "arrival_airport": "YPH",
+        "departure_date": "2026-08-13 18:31:00",
+        "arrival_date": "2026-08-13 19:26:00",
+        "price": 90.79
+    },
+    {
+        "departure_airport": "YGW",
+        "arrival_airport": "YSK",
+        "departure_date": "2026-08-12 20:59:00",
+        "arrival_date": "2026-08-12 21:44:00",
+        "price": 75.09
+    },
+    {
+        "departure_airport": "YGW",
+        "arrival_airport": "YUD",
+        "departure_date": "2026-08-30 12:56:00",
+        "arrival_date": "2026-08-30 13:41:00",
+        "price": 64.52
+    },
+    {
+        "departure_airport": "YGW",
+        "arrival_airport": "YUL",
+        "departure_date": "2026-09-01 05:23:00",
+        "arrival_date": "2026-09-01 07:13:00",
+        "price": 171.24
+    },
+    {
+        "departure_airport": "YGW",
+        "arrival_airport": "YUY",
+        "departure_date": "2026-09-05 19:06:00",
+        "arrival_date": "2026-09-05 20:32:00",
+        "price": 142.33
+    },
+    {
+        "departure_airport": "YIK",
+        "arrival_airport": "AKV",
+        "departure_date": "2026-09-03 13:34:00",
+        "arrival_date": "2026-09-03 14:19:00",
+        "price": 89.36
+    },
+    {
+        "departure_airport": "YIK",
+        "arrival_airport": "YZG",
+        "departure_date": "2026-09-14 01:40:00",
+        "arrival_date": "2026-09-14 02:25:00",
+        "price": 72.83
+    },
+    {
+        "departure_airport": "YKG",
+        "arrival_airport": "YPJ",
+        "departure_date": "2026-08-31 11:28:00",
+        "arrival_date": "2026-08-31 12:13:00",
+        "price": 69.02
+    },
+    {
+        "departure_airport": "YKG",
+        "arrival_airport": "YQC",
+        "departure_date": "2026-09-13 04:38:00",
+        "arrival_date": "2026-09-13 05:23:00",
+        "price": 60.57
+    },
+    {
+        "departure_airport": "YKG",
+        "arrival_airport": "YVP",
+        "departure_date": "2026-08-09 01:42:00",
+        "arrival_date": "2026-08-09 02:28:00",
+        "price": 89.57
+    },
+    {
+        "departure_airport": "YKL",
+        "arrival_airport": "YQB",
+        "departure_date": "2026-09-03 13:01:00",
+        "arrival_date": "2026-09-03 14:38:00",
+        "price": 146.73
+    },
+    {
+        "departure_airport": "YKL",
+        "arrival_airport": "YVP",
+        "departure_date": "2026-08-22 07:07:00",
+        "arrival_date": "2026-08-22 08:04:00",
+        "price": 119.6
+    },
+    {
+        "departure_airport": "YKL",
+        "arrival_airport": "YWK",
+        "departure_date": "2026-08-24 09:16:00",
+        "arrival_date": "2026-08-24 10:01:00",
+        "price": 92.16
+    },
+    {
+        "departure_airport": "YKL",
+        "arrival_airport": "YZV",
+        "departure_date": "2026-08-15 13:50:00",
+        "arrival_date": "2026-08-15 14:56:00",
+        "price": 137.23
+    },
+    {
+        "departure_airport": "YPH",
+        "arrival_airport": "YPX",
+        "departure_date": "2026-08-27 15:12:00",
+        "arrival_date": "2026-08-27 15:57:00",
+        "price": 84.42
+    },
+    {
+        "departure_airport": "YPH",
+        "arrival_airport": "YUD",
+        "departure_date": "2026-08-23 05:48:00",
+        "arrival_date": "2026-08-23 06:35:00",
+        "price": 88.96
+    },
+    {
+        "departure_airport": "YPH",
+        "arrival_airport": "YVP",
+        "departure_date": "2026-09-05 00:47:00",
+        "arrival_date": "2026-09-05 01:57:00",
+        "price": 114.22
+    },
+    {
+        "departure_airport": "YPJ",
+        "arrival_airport": "YKG",
+        "departure_date": "2026-08-27 05:43:00",
+        "arrival_date": "2026-08-27 06:28:00",
+        "price": 74.88
+    },
+    {
+        "departure_airport": "YPJ",
+        "arrival_airport": "YTQ",
+        "departure_date": "2026-08-29 23:19:00",
+        "arrival_date": "2026-08-30 00:04:00",
+        "price": 72.67
+    },
+    {
+        "departure_airport": "YPJ",
+        "arrival_airport": "YVP",
+        "departure_date": "2026-09-02 22:29:00",
+        "arrival_date": "2026-09-02 23:14:00",
+        "price": 85.37
+    },
+    {
+        "departure_airport": "YPX",
+        "arrival_airport": "AKV",
+        "departure_date": "2026-08-21 18:30:00",
+        "arrival_date": "2026-08-21 19:15:00",
+        "price": 66.05
+    },
+    {
+        "departure_airport": "YPX",
+        "arrival_airport": "YGL",
+        "departure_date": "2026-08-14 05:11:00",
+        "arrival_date": "2026-08-14 06:31:00",
+        "price": 125.3
+    },
+    {
+        "departure_airport": "YPX",
+        "arrival_airport": "YPH",
+        "departure_date": "2026-08-06 17:59:00",
+        "arrival_date": "2026-08-06 18:44:00",
+        "price": 92.09
+    },
+    {
+        "departure_airport": "YPX",
+        "arrival_airport": "YVP",
+        "departure_date": "2026-09-12 12:18:00",
+        "arrival_date": "2026-09-12 13:27:00",
+        "price": 116.21
+    },
+    {
+        "departure_airport": "YQB",
+        "arrival_airport": "YKL",
+        "departure_date": "2026-08-24 20:30:00",
+        "arrival_date": "2026-08-24 22:07:00",
+        "price": 160.23
+    },
+    {
+        "departure_airport": "YQB",
+        "arrival_airport": "YUL",
+        "departure_date": "2026-08-27 02:33:00",
+        "arrival_date": "2026-08-27 03:19:00",
+        "price": 87.1
+    },
+    {
+        "departure_airport": "YQC",
+        "arrival_airport": "YKG",
+        "departure_date": "2026-08-17 19:13:00",
+        "arrival_date": "2026-08-17 19:58:00",
+        "price": 67.45
+    },
+    {
+        "departure_airport": "YQC",
+        "arrival_airport": "YWB",
+        "departure_date": "2026-08-12 06:11:00",
+        "arrival_date": "2026-08-12 06:56:00",
+        "price": 79.34
+    },
+    {
+        "departure_airport": "YSK",
+        "arrival_airport": "YGW",
+        "departure_date": "2026-08-19 10:03:00",
+        "arrival_date": "2026-08-19 10:48:00",
+        "price": 78.09
+    },
+    {
+        "departure_airport": "YSK",
+        "arrival_airport": "YUD",
+        "departure_date": "2026-08-27 08:10:00",
+        "arrival_date": "2026-08-27 08:55:00",
+        "price": 74.32
+    },
+    {
+        "departure_airport": "YTQ",
+        "arrival_airport": "YPJ",
+        "departure_date": "2026-08-08 04:57:00",
+        "arrival_date": "2026-08-08 05:42:00",
+        "price": 71.39
+    },
+    {
+        "departure_airport": "YTQ",
+        "arrival_airport": "YVP",
+        "departure_date": "2026-08-11 03:10:00",
+        "arrival_date": "2026-08-11 03:55:00",
+        "price": 59.28
+    },
+    {
+        "departure_airport": "YUD",
+        "arrival_airport": "YGW",
+        "departure_date": "2026-09-12 06:19:00",
+        "arrival_date": "2026-09-12 07:04:00",
+        "price": 66
+    },
+    {
+        "departure_airport": "YUD",
+        "arrival_airport": "YPH",
+        "departure_date": "2026-09-06 10:30:00",
+        "arrival_date": "2026-09-06 11:17:00",
+        "price": 75.66
+    },
+    {
+        "departure_airport": "YUD",
+        "arrival_airport": "YSK",
+        "departure_date": "2026-08-19 17:42:00",
+        "arrival_date": "2026-08-19 18:27:00",
+        "price": 78.08
+    },
+    {
+        "departure_airport": "YUL",
+        "arrival_airport": "YGL",
+        "departure_date": "2026-08-15 00:23:00",
+        "arrival_date": "2026-08-15 02:00:00",
+        "price": 194.4
+    },
+    {
+        "departure_airport": "YUL",
+        "arrival_airport": "YGW",
+        "departure_date": "2026-08-14 08:29:00",
+        "arrival_date": "2026-08-14 10:19:00",
+        "price": 161.72
+    },
+    {
+        "departure_airport": "YUL",
+        "arrival_airport": "YQB",
+        "departure_date": "2026-08-31 12:44:00",
+        "arrival_date": "2026-08-31 13:30:00",
+        "price": 70.51
+    },
+    {
+        "departure_airport": "YUL",
+        "arrival_airport": "YUY",
+        "departure_date": "2026-08-29 20:15:00",
+        "arrival_date": "2026-08-29 21:20:00",
+        "price": 119.8
+    },
+    {
+        "departure_airport": "YUY",
+        "arrival_airport": "YGW",
+        "departure_date": "2026-08-17 12:46:00",
+        "arrival_date": "2026-08-17 14:12:00",
+        "price": 148.33
+    },
+    {
+        "departure_airport": "YUY",
+        "arrival_airport": "YUL",
+        "departure_date": "2026-08-22 20:13:00",
+        "arrival_date": "2026-08-22 21:18:00",
+        "price": 135.77
+    },
+    {
+        "departure_airport": "YVP",
+        "arrival_airport": "XGR",
+        "departure_date": "2026-09-04 11:09:00",
+        "arrival_date": "2026-09-04 11:54:00",
+        "price": 87.19
+    },
+    {
+        "departure_airport": "YVP",
+        "arrival_airport": "YGW",
+        "departure_date": "2026-09-11 09:32:00",
+        "arrival_date": "2026-09-11 10:48:00",
+        "price": 113.02
+    },
+    {
+        "departure_airport": "YVP",
+        "arrival_airport": "YKG",
+        "departure_date": "2026-08-28 00:36:00",
+        "arrival_date": "2026-08-28 01:22:00",
+        "price": 82.93
+    },
+    {
+        "departure_airport": "YVP",
+        "arrival_airport": "YKL",
+        "departure_date": "2026-08-19 20:02:00",
+        "arrival_date": "2026-08-19 20:59:00",
+        "price": 107.54
+    },
+    {
+        "departure_airport": "YVP",
+        "arrival_airport": "YPH",
+        "departure_date": "2026-08-26 21:33:00",
+        "arrival_date": "2026-08-26 22:43:00",
+        "price": 117.91
+    },
+    {
+        "departure_airport": "YVP",
+        "arrival_airport": "YPJ",
+        "departure_date": "2026-09-05 08:05:00",
+        "arrival_date": "2026-09-05 08:50:00",
+        "price": 67.86
+    },
+    {
+        "departure_airport": "YVP",
+        "arrival_airport": "YPX",
+        "departure_date": "2026-09-07 13:37:00",
+        "arrival_date": "2026-09-07 14:46:00",
+        "price": 127.11
+    },
+    {
+        "departure_airport": "YVP",
+        "arrival_airport": "YTQ",
+        "departure_date": "2026-09-02 12:09:00",
+        "arrival_date": "2026-09-02 12:54:00",
+        "price": 78.36
+    },
+    {
+        "departure_airport": "YWB",
+        "arrival_airport": "YQC",
+        "departure_date": "2026-09-09 07:24:00",
+        "arrival_date": "2026-09-09 08:09:00",
+        "price": 82.2
+    },
+    {
+        "departure_airport": "YWB",
+        "arrival_airport": "YZG",
+        "departure_date": "2026-08-07 16:44:00",
+        "arrival_date": "2026-08-07 17:29:00",
+        "price": 90.96
+    },
+    {
+        "departure_airport": "YWK",
+        "arrival_airport": "YKL",
+        "departure_date": "2026-08-18 16:01:00",
+        "arrival_date": "2026-08-18 16:46:00",
+        "price": 68.92
+    },
+    {
+        "departure_airport": "YWK",
+        "arrival_airport": "YZV",
+        "departure_date": "2026-08-22 02:00:00",
+        "arrival_date": "2026-08-22 02:51:00",
+        "price": 98.66
+    },
+    {
+        "departure_airport": "YZG",
+        "arrival_airport": "YIK",
+        "departure_date": "2026-08-11 21:36:00",
+        "arrival_date": "2026-08-11 22:21:00",
+        "price": 76.99
+    },
+    {
+        "departure_airport": "YZG",
+        "arrival_airport": "YWB",
+        "departure_date": "2026-09-16 18:26:00",
+        "arrival_date": "2026-09-16 19:11:00",
+        "price": 90.16
+    },
+    {
+        "departure_airport": "YZV",
+        "arrival_airport": "YKL",
+        "departure_date": "2026-09-06 09:38:00",
+        "arrival_date": "2026-09-06 10:44:00",
+        "price": 138.39
+    },
+    {
+        "departure_airport": "YZV",
+        "arrival_airport": "YWK",
+        "departure_date": "2026-09-11 02:46:00",
+        "arrival_date": "2026-09-11 03:37:00",
+        "price": 98.66
+    },
+    {
+        "departure_airport": "JIB",
+        "arrival_airport": "DXB",
+        "departure_date": "2026-08-14 14:56:00",
+        "arrival_date": "2026-08-14 17:47:00",
+        "price": 282.32
+    },
+    {
+        "departure_airport": "JIB",
+        "arrival_airport": "JED",
+        "departure_date": "2026-08-22 01:24:00",
+        "arrival_date": "2026-08-22 03:19:00",
+        "price": 233.45
+    },
+    {
+        "departure_airport": "JIB",
+        "arrival_airport": "MGQ",
+        "departure_date": "2026-08-10 20:52:00",
+        "arrival_date": "2026-08-10 22:39:00",
+        "price": 203.86
+    },
+    {
+        "departure_airport": "MGQ",
+        "arrival_airport": "NBO",
+        "departure_date": "2026-08-27 08:12:00",
+        "arrival_date": "2026-08-27 09:53:00",
+        "price": 182.3
+    },
+    {
+        "departure_airport": "NBO",
+        "arrival_airport": "MGQ",
+        "departure_date": "2026-09-06 03:50:00",
+        "arrival_date": "2026-09-06 05:31:00",
+        "price": 152.5
+    },
+    {
+        "departure_airport": "BKK",
+        "arrival_airport": "SIN",
+        "departure_date": "2026-08-14 00:45:00",
+        "arrival_date": "2026-08-14 02:55:00",
+        "price": 249.78
+    },
+    {
+        "departure_airport": "DRW",
+        "arrival_airport": "SIN",
+        "departure_date": "2026-08-14 14:35:00",
+        "arrival_date": "2026-08-14 19:01:00",
+        "price": 423.8
+    },
+    {
+        "departure_airport": "HAK",
+        "arrival_airport": "SIN",
+        "departure_date": "2026-09-08 19:34:00",
+        "arrival_date": "2026-09-08 22:38:00",
+        "price": 301.09
+    },
+    {
+        "departure_airport": "HGH",
+        "arrival_airport": "SIN",
+        "departure_date": "2026-09-01 00:39:00",
+        "arrival_date": "2026-09-01 05:27:00",
+        "price": 458.49
+    },
+    {
+        "departure_airport": "HKG",
+        "arrival_airport": "SIN",
+        "departure_date": "2026-08-16 20:30:00",
+        "arrival_date": "2026-08-17 00:01:00",
+        "price": 424.56
+    },
+    {
+        "departure_airport": "HKT",
+        "arrival_airport": "SIN",
+        "departure_date": "2026-08-31 08:24:00",
+        "arrival_date": "2026-08-31 10:03:00",
+        "price": 169.17
+    },
+    {
+        "departure_airport": "KIX",
+        "arrival_airport": "MNL",
+        "departure_date": "2026-08-28 08:26:00",
+        "arrival_date": "2026-08-28 12:02:00",
+        "price": 334.06
+    },
+    {
+        "departure_airport": "KIX",
+        "arrival_airport": "TPE",
+        "departure_date": "2026-08-10 21:54:00",
+        "arrival_date": "2026-08-11 00:24:00",
+        "price": 295.66
+    },
+    {
+        "departure_airport": "KUL",
+        "arrival_airport": "SIN",
+        "departure_date": "2026-09-16 04:35:00",
+        "arrival_date": "2026-09-16 05:26:00",
+        "price": 97.95
+    },
+    {
+        "departure_airport": "MNL",
+        "arrival_airport": "KIX",
+        "departure_date": "2026-09-11 11:40:00",
+        "arrival_date": "2026-09-11 15:16:00",
+        "price": 352.62
+    },
+    {
+        "departure_airport": "MNL",
+        "arrival_airport": "SIN",
+        "departure_date": "2026-08-19 10:19:00",
+        "arrival_date": "2026-08-19 13:37:00",
+        "price": 390.98
+    },
+    {
+        "departure_airport": "PEN",
+        "arrival_airport": "SIN",
+        "departure_date": "2026-08-24 02:58:00",
+        "arrival_date": "2026-08-24 04:11:00",
+        "price": 119.64
+    },
+    {
+        "departure_airport": "PER",
+        "arrival_airport": "SIN",
+        "departure_date": "2026-08-05 14:28:00",
+        "arrival_date": "2026-08-05 19:34:00",
+        "price": 450.89
+    },
+    {
+        "departure_airport": "PNH",
+        "arrival_airport": "SIN",
+        "departure_date": "2026-09-13 03:24:00",
+        "arrival_date": "2026-09-13 05:14:00",
+        "price": 183.86
+    },
+    {
+        "departure_airport": "REP",
+        "arrival_airport": "SIN",
+        "departure_date": "2026-08-29 22:24:00",
+        "arrival_date": "2026-08-30 00:29:00",
+        "price": 244.02
+    },
+    {
+        "departure_airport": "RGN",
+        "arrival_airport": "SIN",
+        "departure_date": "2026-08-26 19:40:00",
+        "arrival_date": "2026-08-26 22:26:00",
+        "price": 295.43
+    },
+    {
+        "departure_airport": "SGN",
+        "arrival_airport": "SIN",
+        "departure_date": "2026-08-21 10:03:00",
+        "arrival_date": "2026-08-21 11:50:00",
+        "price": 171.27
+    },
+    {
+        "departure_airport": "SIN",
+        "arrival_airport": "BKK",
+        "departure_date": "2026-08-09 01:06:00",
+        "arrival_date": "2026-08-09 03:16:00",
+        "price": 216.03
+    },
+    {
+        "departure_airport": "SIN",
+        "arrival_airport": "DRW",
+        "departure_date": "2026-08-19 05:44:00",
+        "arrival_date": "2026-08-19 10:10:00",
+        "price": 505.82
+    },
+    {
+        "departure_airport": "SIN",
+        "arrival_airport": "HAK",
+        "departure_date": "2026-09-07 10:40:00",
+        "arrival_date": "2026-09-07 13:44:00",
+        "price": 332.79
+    },
+    {
+        "departure_airport": "SIN",
+        "arrival_airport": "HGH",
+        "departure_date": "2026-08-13 20:19:00",
+        "arrival_date": "2026-08-14 01:07:00",
+        "price": 512.72
+    },
+    {
+        "departure_airport": "SIN",
+        "arrival_airport": "HKG",
+        "departure_date": "2026-09-12 23:00:00",
+        "arrival_date": "2026-09-13 02:31:00",
+        "price": 319.32
+    },
+    {
+        "departure_airport": "SIN",
+        "arrival_airport": "HKT",
+        "departure_date": "2026-09-04 18:09:00",
+        "arrival_date": "2026-09-04 19:48:00",
+        "price": 207.15
+    },
+    {
+        "departure_airport": "SIN",
+        "arrival_airport": "KUL",
+        "departure_date": "2026-08-25 15:58:00",
+        "arrival_date": "2026-08-25 16:49:00",
+        "price": 85.25
+    },
+    {
+        "departure_airport": "SIN",
+        "arrival_airport": "MNL",
+        "departure_date": "2026-09-12 02:24:00",
+        "arrival_date": "2026-09-12 05:42:00",
+        "price": 292.38
+    },
+    {
+        "departure_airport": "SIN",
+        "arrival_airport": "PEN",
+        "departure_date": "2026-09-08 23:24:00",
+        "arrival_date": "2026-09-09 00:37:00",
+        "price": 109.46
+    },
+    {
+        "departure_airport": "SIN",
+        "arrival_airport": "PER",
+        "departure_date": "2026-08-22 06:47:00",
+        "arrival_date": "2026-08-22 11:53:00",
+        "price": 560.99
+    },
+    {
+        "departure_airport": "SIN",
+        "arrival_airport": "PNH",
+        "departure_date": "2026-09-06 14:43:00",
+        "arrival_date": "2026-09-06 16:33:00",
+        "price": 180.03
+    },
+    {
+        "departure_airport": "SIN",
+        "arrival_airport": "REP",
+        "departure_date": "2026-09-05 18:20:00",
+        "arrival_date": "2026-09-05 20:25:00",
+        "price": 228.9
+    },
+    {
+        "departure_airport": "SIN",
+        "arrival_airport": "RGN",
+        "departure_date": "2026-08-29 22:35:00",
+        "arrival_date": "2026-08-30 01:21:00",
+        "price": 306.91
+    },
+    {
+        "departure_airport": "SIN",
+        "arrival_airport": "SGN",
+        "departure_date": "2026-09-07 20:12:00",
+        "arrival_date": "2026-09-07 21:59:00",
+        "price": 215.95
+    },
+    {
+        "departure_airport": "SIN",
+        "arrival_airport": "SWA",
+        "departure_date": "2026-09-11 03:39:00",
+        "arrival_date": "2026-09-11 07:28:00",
+        "price": 447.51
+    },
+    {
+        "departure_airport": "SIN",
+        "arrival_airport": "TPE",
+        "departure_date": "2026-08-22 20:17:00",
+        "arrival_date": "2026-08-23 00:34:00",
+        "price": 415.18
+    },
+    {
+        "departure_airport": "SWA",
+        "arrival_airport": "SIN",
+        "departure_date": "2026-08-13 14:54:00",
+        "arrival_date": "2026-08-13 18:43:00",
+        "price": 384.7
+    },
+    {
+        "departure_airport": "TPE",
+        "arrival_airport": "KIX",
+        "departure_date": "2026-08-14 15:19:00",
+        "arrival_date": "2026-08-14 17:49:00",
+        "price": 238.6
+    },
+    {
+        "departure_airport": "TPE",
+        "arrival_airport": "SIN",
+        "departure_date": "2026-09-02 01:55:00",
+        "arrival_date": "2026-09-02 06:12:00",
+        "price": 490.27
+    },
+    {
+        "departure_airport": "ACH",
+        "arrival_airport": "EBA",
+        "departure_date": "2026-08-21 06:53:00",
+        "arrival_date": "2026-08-21 08:00:00",
+        "price": 130.2
+    },
+    {
+        "departure_airport": "DRS",
+        "arrival_airport": "ZRH",
+        "departure_date": "2026-08-22 01:01:00",
+        "arrival_date": "2026-08-22 02:10:00",
+        "price": 131.47
+    },
+    {
+        "departure_airport": "DUS",
+        "arrival_airport": "FDH",
+        "departure_date": "2026-09-01 05:22:00",
+        "arrival_date": "2026-09-01 06:24:00",
+        "price": 126.23
+    },
+    {
+        "departure_airport": "EBA",
+        "arrival_airport": "ACH",
+        "departure_date": "2026-09-10 07:07:00",
+        "arrival_date": "2026-09-10 08:14:00",
+        "price": 120.73
+    },
+    {
+        "departure_airport": "EBA",
+        "arrival_airport": "FDH",
+        "departure_date": "2026-08-20 19:37:00",
+        "arrival_date": "2026-08-20 20:46:00",
+        "price": 120.88
+    },
+    {
+        "departure_airport": "EBA",
+        "arrival_airport": "MUC",
+        "departure_date": "2026-08-25 09:48:00",
+        "arrival_date": "2026-08-25 11:03:00",
+        "price": 151.98
+    },
+    {
+        "departure_airport": "EBA",
+        "arrival_airport": "ZRH",
+        "departure_date": "2026-08-27 01:05:00",
+        "arrival_date": "2026-08-27 02:13:00",
+        "price": 126.94
+    },
+    {
+        "departure_airport": "FDH",
+        "arrival_airport": "DUS",
+        "departure_date": "2026-08-24 13:51:00",
+        "arrival_date": "2026-08-24 14:53:00",
+        "price": 97.93
+    },
+    {
+        "departure_airport": "FDH",
+        "arrival_airport": "EBA",
+        "departure_date": "2026-09-12 23:04:00",
+        "arrival_date": "2026-09-13 00:13:00",
+        "price": 136.6
+    },
+    {
+        "departure_airport": "FDH",
+        "arrival_airport": "HAM",
+        "departure_date": "2026-08-08 00:28:00",
+        "arrival_date": "2026-08-08 01:45:00",
+        "price": 156.15
+    },
+    {
+        "departure_airport": "FDH",
+        "arrival_airport": "OLB",
+        "departure_date": "2026-09-02 05:14:00",
+        "arrival_date": "2026-09-02 06:37:00",
+        "price": 141.01
+    },
+    {
+        "departure_airport": "FDH",
+        "arrival_airport": "TXL",
+        "departure_date": "2026-09-10 17:54:00",
+        "arrival_date": "2026-09-10 19:07:00",
+        "price": 126.49
+    },
+    {
+        "departure_airport": "FDH",
+        "arrival_airport": "ZAD",
+        "departure_date": "2026-08-20 03:41:00",
+        "arrival_date": "2026-08-20 04:53:00",
+        "price": 133.41
+    },
+    {
+        "departure_airport": "FMM",
+        "arrival_airport": "NAP",
+        "departure_date": "2026-08-27 20:02:00",
+        "arrival_date": "2026-08-27 21:32:00",
+        "price": 147.86
+    },
+    {
+        "departure_airport": "GRZ",
+        "arrival_airport": "ZRH",
+        "departure_date": "2026-08-21 10:26:00",
+        "arrival_date": "2026-08-21 11:33:00",
+        "price": 124.8
+    },
+    {
+        "departure_airport": "HAM",
+        "arrival_airport": "FDH",
+        "departure_date": "2026-09-09 09:19:00",
+        "arrival_date": "2026-09-09 10:36:00",
+        "price": 156.15
+    },
+    {
+        "departure_airport": "MUC",
+        "arrival_airport": "EBA",
+        "departure_date": "2026-09-01 19:00:00",
+        "arrival_date": "2026-09-01 20:15:00",
+        "price": 128.4
+    },
+    {
+        "departure_airport": "NAP",
+        "arrival_airport": "FMM",
+        "departure_date": "2026-09-02 16:25:00",
+        "arrival_date": "2026-09-02 17:55:00",
+        "price": 144.71
+    },
+    {
+        "departure_airport": "OLB",
+        "arrival_airport": "FDH",
+        "departure_date": "2026-09-08 20:27:00",
+        "arrival_date": "2026-09-08 21:50:00",
+        "price": 171.54
+    },
+    {
+        "departure_airport": "SZG",
+        "arrival_airport": "ZRH",
+        "departure_date": "2026-09-03 00:21:00",
+        "arrival_date": "2026-09-03 01:15:00",
+        "price": 108.64
+    },
+    {
+        "departure_airport": "TXL",
+        "arrival_airport": "FDH",
+        "departure_date": "2026-08-24 03:48:00",
+        "arrival_date": "2026-08-24 05:01:00",
+        "price": 145.65
+    },
+    {
+        "departure_airport": "ZAD",
+        "arrival_airport": "FDH",
+        "departure_date": "2026-08-17 22:21:00",
+        "arrival_date": "2026-08-17 23:33:00",
+        "price": 113.08
+    },
+    {
+        "departure_airport": "ZRH",
+        "arrival_airport": "DRS",
+        "departure_date": "2026-09-04 21:22:00",
+        "arrival_date": "2026-09-04 22:31:00",
+        "price": 109.56
+    },
+    {
+        "departure_airport": "ZRH",
+        "arrival_airport": "EBA",
+        "departure_date": "2026-09-12 23:31:00",
+        "arrival_date": "2026-09-13 00:39:00",
+        "price": 113.77
+    },
+    {
+        "departure_airport": "ZRH",
+        "arrival_airport": "GRZ",
+        "departure_date": "2026-09-05 15:51:00",
+        "arrival_date": "2026-09-05 16:58:00",
+        "price": 138.93
+    },
+    {
+        "departure_airport": "ZRH",
+        "arrival_airport": "SZG",
+        "departure_date": "2026-09-06 03:17:00",
+        "arrival_date": "2026-09-06 04:11:00",
+        "price": 108.64
+    },
+    {
+        "departure_airport": "ATL",
+        "arrival_airport": "LWB",
+        "departure_date": "2026-09-07 08:48:00",
+        "arrival_date": "2026-09-07 10:00:00",
+        "price": 147.69
+    },
+    {
+        "departure_airport": "ATL",
+        "arrival_airport": "MCN",
+        "departure_date": "2026-08-18 14:29:00",
+        "arrival_date": "2026-08-18 15:14:00",
+        "price": 62.57
+    },
+    {
+        "departure_airport": "ATL",
+        "arrival_airport": "MEI",
+        "departure_date": "2026-08-25 22:33:00",
+        "arrival_date": "2026-08-25 23:33:00",
+        "price": 94.72
+    },
+    {
+        "departure_airport": "ATL",
+        "arrival_airport": "MSL",
+        "departure_date": "2026-08-05 02:59:00",
+        "arrival_date": "2026-08-05 03:51:00",
+        "price": 97.76
+    },
+    {
+        "departure_airport": "ATL",
+        "arrival_airport": "PIB",
+        "departure_date": "2026-08-18 13:32:00",
+        "arrival_date": "2026-08-18 14:39:00",
+        "price": 111.46
+    },
+    {
+        "departure_airport": "ATL",
+        "arrival_airport": "TUP",
+        "departure_date": "2026-09-14 01:50:00",
+        "arrival_date": "2026-09-14 02:49:00",
+        "price": 117.28
+    },
+    {
+        "departure_airport": "BIM",
+        "arrival_airport": "FLL",
+        "departure_date": "2026-09-09 17:23:00",
+        "arrival_date": "2026-09-09 18:08:00",
+        "price": 73.44
+    },
+    {
+        "departure_airport": "ELH",
+        "arrival_airport": "FLL",
+        "departure_date": "2026-08-13 17:55:00",
+        "arrival_date": "2026-08-13 18:50:00",
+        "price": 101.34
+    },
+    {
+        "departure_airport": "ELH",
+        "arrival_airport": "PBI",
+        "departure_date": "2026-08-27 05:17:00",
+        "arrival_date": "2026-08-27 06:13:00",
+        "price": 112.81
+    },
+    {
+        "departure_airport": "EYW",
+        "arrival_airport": "FLL",
+        "departure_date": "2026-08-17 10:30:00",
+        "arrival_date": "2026-08-17 11:16:00",
+        "price": 95.47
+    },
+    {
+        "departure_airport": "EYW",
+        "arrival_airport": "RSW",
+        "departure_date": "2026-08-26 01:47:00",
+        "arrival_date": "2026-08-26 02:33:00",
+        "price": 73.28
+    },
+    {
+        "departure_airport": "EYW",
+        "arrival_airport": "TPA",
+        "departure_date": "2026-08-23 15:21:00",
+        "arrival_date": "2026-08-23 16:18:00",
+        "price": 100.54
+    },
+    {
+        "departure_airport": "FLL",
+        "arrival_airport": "BIM",
+        "departure_date": "2026-09-12 01:17:00",
+        "arrival_date": "2026-09-12 02:02:00",
+        "price": 58.08
+    },
+    {
+        "departure_airport": "FLL",
+        "arrival_airport": "ELH",
+        "departure_date": "2026-08-22 21:00:00",
+        "arrival_date": "2026-08-22 21:55:00",
+        "price": 109.13
+    },
+    {
+        "departure_airport": "FLL",
+        "arrival_airport": "EYW",
+        "departure_date": "2026-09-03 20:37:00",
+        "arrival_date": "2026-09-03 21:23:00",
+        "price": 97.13
+    },
+    {
+        "departure_airport": "FLL",
+        "arrival_airport": "FPO",
+        "departure_date": "2026-09-07 00:26:00",
+        "arrival_date": "2026-09-07 01:11:00",
+        "price": 72.12
+    },
+    {
+        "departure_airport": "FLL",
+        "arrival_airport": "GGT",
+        "departure_date": "2026-08-17 00:09:00",
+        "arrival_date": "2026-08-17 01:15:00",
+        "price": 104.99
+    },
+    {
+        "departure_airport": "FLL",
+        "arrival_airport": "GHB",
+        "departure_date": "2026-08-25 22:30:00",
+        "arrival_date": "2026-08-25 23:28:00",
+        "price": 102.14
+    },
+    {
+        "departure_airport": "FLL",
+        "arrival_airport": "MCO",
+        "departure_date": "2026-08-31 11:28:00",
+        "arrival_date": "2026-08-31 12:18:00",
+        "price": 77.7
+    },
+    {
+        "departure_airport": "FLL",
+        "arrival_airport": "MHH",
+        "departure_date": "2026-08-18 03:26:00",
+        "arrival_date": "2026-08-18 04:18:00",
+        "price": 81.12
+    },
+    {
+        "departure_airport": "FLL",
+        "arrival_airport": "TCB",
+        "departure_date": "2026-08-31 14:17:00",
+        "arrival_date": "2026-08-31 15:07:00",
+        "price": 90.98
+    },
+    {
+        "departure_airport": "FLL",
+        "arrival_airport": "TPA",
+        "departure_date": "2026-08-20 15:54:00",
+        "arrival_date": "2026-08-20 16:46:00",
+        "price": 111.62
+    },
+    {
+        "departure_airport": "FPO",
+        "arrival_airport": "FLL",
+        "departure_date": "2026-09-16 00:59:00",
+        "arrival_date": "2026-09-16 01:44:00",
+        "price": 69.18
+    },
+    {
+        "departure_airport": "GGT",
+        "arrival_airport": "FLL",
+        "departure_date": "2026-08-22 11:13:00",
+        "arrival_date": "2026-08-22 12:19:00",
+        "price": 99.15
+    },
+    {
+        "departure_airport": "GGT",
+        "arrival_airport": "GHB",
+        "departure_date": "2026-08-15 13:21:00",
+        "arrival_date": "2026-08-15 14:06:00",
+        "price": 75.48
+    },
+    {
+        "departure_airport": "GHB",
+        "arrival_airport": "FLL",
+        "departure_date": "2026-09-16 20:06:00",
+        "arrival_date": "2026-09-16 21:04:00",
+        "price": 87.84
+    },
+    {
+        "departure_airport": "GLH",
+        "arrival_airport": "TUP",
+        "departure_date": "2026-08-21 20:36:00",
+        "arrival_date": "2026-08-21 21:22:00",
+        "price": 85.77
+    },
+    {
+        "departure_airport": "GNV",
+        "arrival_airport": "MCO",
+        "departure_date": "2026-09-16 03:49:00",
+        "arrival_date": "2026-09-16 04:34:00",
+        "price": 83.5
+    },
+    {
+        "departure_airport": "GNV",
+        "arrival_airport": "TPA",
+        "departure_date": "2026-08-16 14:07:00",
+        "arrival_date": "2026-08-16 14:52:00",
+        "price": 66.37
+    },
+    {
+        "departure_airport": "JAX",
+        "arrival_airport": "MHH",
+        "departure_date": "2026-08-31 20:09:00",
+        "arrival_date": "2026-08-31 21:24:00",
+        "price": 122.9
+    },
+    {
+        "departure_airport": "JAX",
+        "arrival_airport": "TPA",
+        "departure_date": "2026-09-06 16:05:00",
+        "arrival_date": "2026-09-06 16:56:00",
+        "price": 78.32
+    },
+    {
+        "departure_airport": "LWB",
+        "arrival_airport": "ATL",
+        "departure_date": "2026-08-26 21:58:00",
+        "arrival_date": "2026-08-26 23:10:00",
+        "price": 138.86
+    },
+    {
+        "departure_airport": "MCN",
+        "arrival_airport": "ATL",
+        "departure_date": "2026-09-05 23:16:00",
+        "arrival_date": "2026-09-06 00:01:00",
+        "price": 69.6
+    },
+    {
+        "departure_airport": "MCN",
+        "arrival_airport": "MCO",
+        "departure_date": "2026-08-26 08:08:00",
+        "arrival_date": "2026-08-26 09:15:00",
+        "price": 120.28
+    },
+    {
+        "departure_airport": "MCO",
+        "arrival_airport": "FLL",
+        "departure_date": "2026-08-12 07:19:00",
+        "arrival_date": "2026-08-12 08:09:00",
+        "price": 100.92
+    },
+    {
+        "departure_airport": "MCO",
+        "arrival_airport": "GNV",
+        "departure_date": "2026-08-16 21:25:00",
+        "arrival_date": "2026-08-16 22:10:00",
+        "price": 84.25
+    },
+    {
+        "departure_airport": "MCO",
+        "arrival_airport": "MCN",
+        "departure_date": "2026-08-25 05:00:00",
+        "arrival_date": "2026-08-25 06:07:00",
+        "price": 101.41
+    },
+    {
+        "departure_airport": "MCO",
+        "arrival_airport": "MHH",
+        "departure_date": "2026-09-06 14:24:00",
+        "arrival_date": "2026-09-06 15:27:00",
+        "price": 106.74
+    },
+    {
+        "departure_airport": "MCO",
+        "arrival_airport": "PNS",
+        "departure_date": "2026-08-26 12:21:00",
+        "arrival_date": "2026-08-26 13:34:00",
+        "price": 124.67
+    },
+    {
+        "departure_airport": "MCO",
+        "arrival_airport": "RSW",
+        "departure_date": "2026-09-03 02:47:00",
+        "arrival_date": "2026-09-03 03:32:00",
+        "price": 88.08
+    },
+    {
+        "departure_airport": "MCO",
+        "arrival_airport": "TLH",
+        "departure_date": "2026-08-25 01:13:00",
+        "arrival_date": "2026-08-25 02:09:00",
+        "price": 107.94
+    },
+    {
+        "departure_airport": "MEI",
+        "arrival_airport": "ATL",
+        "departure_date": "2026-08-05 21:40:00",
+        "arrival_date": "2026-08-05 22:40:00",
+        "price": 92.59
+    },
+    {
+        "departure_airport": "MHH",
+        "arrival_airport": "FLL",
+        "departure_date": "2026-08-20 20:49:00",
+        "arrival_date": "2026-08-20 21:41:00",
+        "price": 109.69
+    },
+    {
+        "departure_airport": "MHH",
+        "arrival_airport": "JAX",
+        "departure_date": "2026-08-23 14:13:00",
+        "arrival_date": "2026-08-23 15:28:00",
+        "price": 154.27
+    },
+    {
+        "departure_airport": "MHH",
+        "arrival_airport": "MCO",
+        "departure_date": "2026-08-23 15:12:00",
+        "arrival_date": "2026-08-23 16:15:00",
+        "price": 94.51
+    },
+    {
+        "departure_airport": "MHH",
+        "arrival_airport": "PBI",
+        "departure_date": "2026-08-29 21:45:00",
+        "arrival_date": "2026-08-29 22:36:00",
+        "price": 103.75
+    },
+    {
+        "departure_airport": "MSL",
+        "arrival_airport": "ATL",
+        "departure_date": "2026-08-14 00:07:00",
+        "arrival_date": "2026-08-14 00:59:00",
+        "price": 101.49
+    },
+    {
+        "departure_airport": "PBI",
+        "arrival_airport": "ELH",
+        "departure_date": "2026-08-14 07:36:00",
+        "arrival_date": "2026-08-14 08:32:00",
+        "price": 105.88
+    },
+    {
+        "departure_airport": "PBI",
+        "arrival_airport": "MHH",
+        "departure_date": "2026-08-15 01:10:00",
+        "arrival_date": "2026-08-15 02:01:00",
+        "price": 107.39
+    },
+    {
+        "departure_airport": "PBI",
+        "arrival_airport": "TPA",
+        "departure_date": "2026-09-14 17:51:00",
+        "arrival_date": "2026-09-14 18:41:00",
+        "price": 81.56
+    },
+    {
+        "departure_airport": "PIB",
+        "arrival_airport": "ATL",
+        "departure_date": "2026-08-15 06:26:00",
+        "arrival_date": "2026-08-15 07:33:00",
+        "price": 140.8
+    },
+    {
+        "departure_airport": "PNS",
+        "arrival_airport": "MCO",
+        "departure_date": "2026-08-19 07:52:00",
+        "arrival_date": "2026-08-19 09:05:00",
+        "price": 119.53
+    },
+    {
+        "departure_airport": "PNS",
+        "arrival_airport": "TPA",
+        "departure_date": "2026-08-06 00:33:00",
+        "arrival_date": "2026-08-06 01:40:00",
+        "price": 134.03
+    },
+    {
+        "departure_airport": "RSW",
+        "arrival_airport": "EYW",
+        "departure_date": "2026-09-04 15:56:00",
+        "arrival_date": "2026-09-04 16:42:00",
+        "price": 79.79
+    },
+    {
+        "departure_airport": "RSW",
+        "arrival_airport": "MCO",
+        "departure_date": "2026-08-12 00:17:00",
+        "arrival_date": "2026-08-12 01:02:00",
+        "price": 77.58
+    },
+    {
+        "departure_airport": "TCB",
+        "arrival_airport": "FLL",
+        "departure_date": "2026-09-16 21:54:00",
+        "arrival_date": "2026-09-16 22:44:00",
+        "price": 79.39
+    },
+    {
+        "departure_airport": "TLH",
+        "arrival_airport": "MCO",
+        "departure_date": "2026-09-11 00:57:00",
+        "arrival_date": "2026-09-11 01:53:00",
+        "price": 84.17
+    },
+    {
+        "departure_airport": "TLH",
+        "arrival_airport": "TPA",
+        "departure_date": "2026-08-26 11:01:00",
+        "arrival_date": "2026-08-26 11:54:00",
+        "price": 102.98
+    },
+    {
+        "departure_airport": "TPA",
+        "arrival_airport": "EYW",
+        "departure_date": "2026-08-31 17:12:00",
+        "arrival_date": "2026-08-31 18:09:00",
+        "price": 91.4
+    },
+    {
+        "departure_airport": "TPA",
+        "arrival_airport": "FLL",
+        "departure_date": "2026-08-09 01:41:00",
+        "arrival_date": "2026-08-09 02:33:00",
+        "price": 106.97
+    },
+    {
+        "departure_airport": "TPA",
+        "arrival_airport": "GNV",
+        "departure_date": "2026-08-25 13:07:00",
+        "arrival_date": "2026-08-25 13:52:00",
+        "price": 87.45
+    },
+    {
+        "departure_airport": "TPA",
+        "arrival_airport": "JAX",
+        "departure_date": "2026-08-29 07:47:00",
+        "arrival_date": "2026-08-29 08:38:00",
+        "price": 87.32
+    },
+    {
+        "departure_airport": "TPA",
+        "arrival_airport": "PBI",
+        "departure_date": "2026-08-17 07:14:00",
+        "arrival_date": "2026-08-17 08:04:00",
+        "price": 96.63
+    },
+    {
+        "departure_airport": "TPA",
+        "arrival_airport": "PNS",
+        "departure_date": "2026-09-09 15:20:00",
+        "arrival_date": "2026-09-09 16:27:00",
+        "price": 131.66
+    },
+    {
+        "departure_airport": "TPA",
+        "arrival_airport": "TLH",
+        "departure_date": "2026-08-17 19:31:00",
+        "arrival_date": "2026-08-17 20:24:00",
+        "price": 90.81
+    },
+    {
+        "departure_airport": "TUP",
+        "arrival_airport": "ATL",
+        "departure_date": "2026-08-12 23:01:00",
+        "arrival_date": "2026-08-13 00:00:00",
+        "price": 89.26
+    },
+    {
+        "departure_airport": "TUP",
+        "arrival_airport": "GLH",
+        "departure_date": "2026-09-13 10:01:00",
+        "arrival_date": "2026-09-13 10:47:00",
+        "price": 71.07
+    },
+    {
+        "departure_airport": "AMS",
+        "arrival_airport": "NDR",
+        "departure_date": "2026-08-30 00:34:00",
+        "arrival_date": "2026-08-30 03:27:00",
+        "price": 300.68
+    },
+    {
+        "departure_airport": "AMS",
+        "arrival_airport": "TNG",
+        "departure_date": "2026-09-15 09:50:00",
+        "arrival_date": "2026-09-15 12:43:00",
+        "price": 292.27
+    },
+    {
+        "departure_airport": "BCN",
+        "arrival_airport": "CMN",
+        "departure_date": "2026-08-30 04:23:00",
+        "arrival_date": "2026-08-30 06:20:00",
+        "price": 196.12
+    },
+    {
+        "departure_airport": "BCN",
+        "arrival_airport": "NDR",
+        "departure_date": "2026-08-23 16:37:00",
+        "arrival_date": "2026-08-23 18:06:00",
+        "price": 148.55
+    },
+    {
+        "departure_airport": "BCN",
+        "arrival_airport": "TNG",
+        "departure_date": "2026-08-09 10:08:00",
+        "arrival_date": "2026-08-09 11:44:00",
+        "price": 188.35
+    },
+    {
+        "departure_airport": "BGY",
+        "arrival_airport": "CMN",
+        "departure_date": "2026-08-10 01:42:00",
+        "arrival_date": "2026-08-10 04:34:00",
+        "price": 278.44
+    },
+    {
+        "departure_airport": "BLQ",
+        "arrival_airport": "CMN",
+        "departure_date": "2026-08-20 03:34:00",
+        "arrival_date": "2026-08-20 06:28:00",
+        "price": 273.11
+    },
+    {
+        "departure_airport": "BRU",
+        "arrival_airport": "CMN",
+        "departure_date": "2026-08-16 15:47:00",
+        "arrival_date": "2026-08-16 18:51:00",
+        "price": 272.55
+    }
 ]
