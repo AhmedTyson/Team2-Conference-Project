@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Enums\FlightStatus;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Flight extends Model
@@ -14,12 +14,12 @@ class Flight extends Model
 
     protected $fillable = [
         'airline', 'flight_number', 'departure_airport', 'arrival_airport',
-        'departure_date', 'arrival_date', 'price', 'booking_status',
-    ];
+        'departure_date', 'arrival_date', ];
 
     protected function casts(): array
     {
         return [
+            => FlightStatus::class,
             'departure_date' => 'datetime',
             'arrival_date' => 'datetime',
         ];

@@ -11,14 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notifications', function (Blueprint $table) {
+        Schema::create('trip_items', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('type');
-            $table->text('body');
-            $table->json('data')->nullable();
-            $table->string('status')->default('unread');
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('trip_id')->constrained()->cascadeOnDelete();
+            // This creates 'item_type' and 'item_id'
+            $table->morphs('item');
             $table->timestamps();
         });
     }
@@ -28,7 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('notifications');
+        Schema::dropIfExists('trip_items');
     }
 };
-

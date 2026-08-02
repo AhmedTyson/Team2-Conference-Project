@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Enums\TripStatus;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -15,12 +16,12 @@ class Trip extends Model
 
     protected $fillable = [
         'user_id', 'title', 'travel_style', 'interests', 'no_of_travelers',
-        'budget', 'no_of_days', 'start_date', 'end_date', 'status', 'estimated_cost',
-    ];
+        'budget', 'no_of_days', 'start_date', 'end_date', ];
 
     protected function casts(): array
     {
         return [
+            => TripStatus::class,
             'interests' => 'array',
             'start_date' => 'date',
             'end_date' => 'date',
