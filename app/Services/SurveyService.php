@@ -20,6 +20,11 @@ public function getAllSurveys()
     return $this->surveyRepository->getAllSurveys();
 }
 
+
+public function getSurveyByUserId($userId)
+{
+    return $this->surveyRepository->getSurveyByUserId($userId);
+}
 public function getSurveyById($surveyId)
 {
     return $this->surveyRepository->getSurveyById($surveyId);

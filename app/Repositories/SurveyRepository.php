@@ -13,10 +13,14 @@ class SurveyRepository implements SurveyRepositoryInterface
 
 }
 
+public function getSurveyByUserId($userId)
+{
+    return Survey::where('user_id', $userId)->get();
+
+}
 public function getSurveyById($surveyId)
 {
     return Survey::findOrFail($surveyId);
-
 }
 
 public function createSurvey(array $surveyDetails)

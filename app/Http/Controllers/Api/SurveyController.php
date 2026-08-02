@@ -17,7 +17,7 @@ class SurveyController extends Controller
 
     public function index()
     {
-          $surveys = $this->surveyService->getAllSurveys();
+        $surveys = $this->surveyService->getSurveysByUserId(auth()->id());
 
     return response()->json([
         'message' => 'Surveys retrieved successfully',
@@ -28,15 +28,18 @@ class SurveyController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        $survey = $this->surveyService->createSurvey($request->all());
+   public function store(Request $request)
+{
+    $data = $request->all();
+    $data['user_id'] = auth()->id();
 
-        return response()->json([
+    $survey = $this->surveyService->createSurvey($data);
+
+    return response()->json([
         'message' => 'Survey created successfully',
         'data' => $survey
     ], 201);
-    }
+}
 
     /**
      * Display the specified resource.

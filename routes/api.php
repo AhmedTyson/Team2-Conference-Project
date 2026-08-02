@@ -8,9 +8,8 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::apiResource('surveys', SurveyController::class);
 
-use App\Http\Controllers\Auth\AuthController;
+
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
@@ -37,4 +36,5 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/email/resend', [AuthController::class, 'resendVerificationEmail'])
         ->middleware(['throttle:6,1'])
         ->name('verification.resend');
+    Route::apiResource('surveys', SurveyController::class);
 });
