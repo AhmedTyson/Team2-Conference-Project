@@ -14,7 +14,7 @@ class Destination extends Model
     use HasFactory;
 
     protected $fillable = [
-        'country_id', 'category_id', 'name', 'city_name', 'description',
+        'country_id',  'name', 'city_name', 'description',
         'image', 'latitude', 'longitude',
     ];
 
