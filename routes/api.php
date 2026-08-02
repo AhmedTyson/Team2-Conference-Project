@@ -11,7 +11,7 @@ Route::prefix('v1')->group(function () {
 });
 
 // Admin Categories
-Route::middleware(['auth:api'])->prefix('v1/admin')->group(function () {
+Route::middleware(['auth:api', 'role:admin'])->prefix('v1/admin')->group(function () {
     Route::post('/categories', [CategoryController::class, 'store']);
     Route::put('/categories/{category}', [CategoryController::class, 'update']);
 });
