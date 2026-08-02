@@ -7,7 +7,8 @@ This report outlines the strategy for fetching and managing external API data (a
 Seeding from external APIs is a powerful way to populate your application with realistic data rather than `Faker` gibberish. Laravel’s `Http` facade makes this seamless.
 
 ### Strategy 1: Live Seeding (Best for Free/Unlimited APIs)
-**Target:** RestCountries API
+**Target:** mledoze countries dataset (RestCountries v3.1 is deprecated/dead; v5 requires paid key)
+* **Source:** `https://raw.githubusercontent.com/mledoze/countries/master/countries.json` (free, keyless)
 * **How:** In `CountrySeeder.php`, use `Http::get()` to fetch the live endpoint.
 * **Code Example:**
 ```php
@@ -19,7 +20,7 @@ class CountrySeeder extends Seeder
 {
     public function run()
     {
-        $response = Http::get('https://restcountries.com/v3.1/all');
+        $response = Http::timeout(30)->get('https://raw.githubusercontent.com/mledoze/countries/master/countries.json');
         $countries = $response->json();
 
         foreach ($countries as $country) {
@@ -28,9 +29,9 @@ class CountrySeeder extends Seeder
                 [
                     'name' => $country['name']['common'],
                     'capital' => $country['capital'][0] ?? null,
-                    'flag_url' => $country['flags']['png'] ?? null,
-                    'languages' => $country['languages'] ?? [],
-                    // mapping other fields...
+                    'flag_url' => "https://flagcdn.com/w320/" . strtolower($country['cca2']) . ".png",
+                    'currency' => array_key_first($country['currency'] ?? []),
+                    'languages' => array_values($country['languages'] ?? []),
                 ]
             );
         }
@@ -372,14 +373,14 @@ Based on the 19-entity ERD, the Laravel Models/Migrations guide, the API researc
 ---
 
 ## Phase 5: Geographic Data Seeding (Live API)
-**Goal:** Seed the `countries` table dynamically from the RestCountries API, then manually seed sample `destinations`.
+**Goal:** Seed the `countries` table dynamically from the mledoze countries dataset (RestCountries v3.1 is dead; v5 needs paid key), then manually seed sample `destinations`.
 
 **Tasks:**
 1. Create `CountrySeeder`:
    ```bash
    php artisan make:seeder CountrySeeder
    ```
-   Implementation — use `Http::get('https://restcountries.com/v3.1/all')` and `Country::updateOrCreate()` to populate `name`, `iso_code`, `capital`, `flag_url`, `currency`, `languages` (see Strategy 1 in API Research section above).
+   Implementation — use `Http::timeout(30)->get('https://raw.githubusercontent.com/mledoze/countries/master/countries.json')` and `Country::updateOrCreate()` to populate `name`, `iso_code`, `capital`, `flag_url` (flagcdn), `currency`, `languages` (see Strategy 1 in API Research section above).
 2. Create `DestinationSeeder`:
    ```bash
    php artisan make:seeder DestinationSeeder
@@ -396,9 +397,9 @@ Based on the 19-entity ERD, the Laravel Models/Migrations guide, the API researc
    ```
 4. Add error handling to `CountrySeeder` — if the API is unreachable, log a warning and skip gracefully:
    ```php
-   $response = Http::timeout(15)->get('https://restcountries.com/v3.1/all');
+   $response = Http::timeout(30)->get('https://raw.githubusercontent.com/mledoze/countries/master/countries.json');
    if ($response->failed()) {
-       $this->command->warn('RestCountries API unreachable. Skipping.');
+       $this->command->warn('mledoze countries dataset unreachable. Skipping.');
        return;
    }
    ```
@@ -411,13 +412,13 @@ Based on the 19-entity ERD, the Laravel Models/Migrations guide, the API researc
 ---
 
 ## Phase 6: Places & Categories Seeding (Fixture API)
-**Goal:** Seed Categories, Hotels, Restaurants, Attractions, and Flights using JSON fixture files (captured from RapidAPI) and factories.
+**Goal:** Seed Categories, Hotels, Restaurants, Attractions, and Flights using JSON fixture files (Hotels/Restaurants curated manually; Flights fetched live from OpenFlights) and factories.
 
 **Tasks:**
 1. Create the fixture directory: `database/seeders/fixtures/`.
-2. Make one manual RapidAPI request per resource type via Postman. Save responses as:
-   - `database/seeders/fixtures/hotels.json`
-   - `database/seeders/fixtures/flights.json`
+2. Gather data:
+   - Hotels/Restaurants: curated real venues in `database/seeders/fixtures/hotels.json` / `restaurants.json` (RapidAPI needs a paid key — no free keyless source; hotels/restaurants stay curated).
+   - Flights: fetched live from OpenFlights (`airports.dat` + `routes.dat`) by `FlightFixtureService` — only direct routes (`stops=0`) with valid 3-letter IATA codes.
 3. Create seeders:
    ```bash
    php artisan make:seeder CategorySeeder
@@ -430,7 +431,7 @@ Based on the 19-entity ERD, the Laravel Models/Migrations guide, the API researc
 5. `HotelSeeder` — read `fixtures/hotels.json`, loop through entries, create Hotel records linked to matching `destination_id` by city name. Fields: `name`, `address`, `price_per_night`, `rating`, `stars`, `availability`, `image`.
 6. `RestaurantSeeder` — seed 20–30 restaurants across seeded destinations using Factory + manual data. Link `category_id` and `destination_id`.
 7. `AttractionSeeder` — seed 30–40 attractions across destinations, linked to categories (Beaches, Museums, etc.) and destinations.
-8. `FlightSeeder` — read `fixtures/flights.json`, create Flight records with `departure_airport`, `arrival_airport`, `departure_date`, `arrival_date`, `price`, `booking_status`.
+8. `FlightSeeder` — read synced flight data (via `php artisan fixtures:sync --only=flights`, source = OpenFlights), create Flight records with `departure_airport`, `arrival_airport`, `departure_date`, `arrival_date`, `price`, `booking_status`.
 9. Create Eloquent Factories for testing:
    ```bash
    php artisan make:factory HotelFactory
