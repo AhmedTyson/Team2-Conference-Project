@@ -1,0 +1,142 @@
+[
+    {
+        "departure_airport": "AER",
+        "arrival_airport": "KZN",
+        "departure_date": "2026-09-13 11:33:00",
+        "arrival_date": "2026-09-13 13:49:00",
+        "price": 209.88
+    },
+    {
+        "departure_airport": "ASF",
+        "arrival_airport": "KZN",
+        "departure_date": "2026-08-13 14:03:00",
+        "arrival_date": "2026-08-13 15:46:00",
+        "price": 194.24
+    },
+    {
+        "departure_airport": "ASF",
+        "arrival_airport": "MRV",
+        "departure_date": "2026-09-11 09:41:00",
+        "arrival_date": "2026-09-11 10:43:00",
+        "price": 121.83
+    },
+    {
+        "departure_airport": "CEK",
+        "arrival_airport": "KZN",
+        "departure_date": "2026-09-10 13:03:00",
+        "arrival_date": "2026-09-10 14:27:00",
+        "price": 140.09
+    },
+    {
+        "departure_airport": "CEK",
+        "arrival_airport": "OVB",
+        "departure_date": "2026-09-10 07:49:00",
+        "arrival_date": "2026-09-10 09:53:00",
+        "price": 200.54
+    },
+    {
+        "departure_airport": "DME",
+        "arrival_airport": "KZN",
+        "departure_date": "2026-08-24 13:20:00",
+        "arrival_date": "2026-08-24 14:41:00",
+        "price": 163.42
+    },
+    {
+        "departure_airport": "DME",
+        "arrival_airport": "NBC",
+        "departure_date": "2026-08-10 11:39:00",
+        "arrival_date": "2026-08-10 13:12:00",
+        "price": 165.33
+    },
+    {
+        "departure_airport": "DME",
+        "arrival_airport": "TGK",
+        "departure_date": "2026-08-15 22:04:00",
+        "arrival_date": "2026-08-15 23:39:00",
+        "price": 171.43
+    },
+    {
+        "departure_airport": "DME",
+        "arrival_airport": "UUA",
+        "departure_date": "2026-08-27 03:36:00",
+        "arrival_date": "2026-08-27 05:13:00",
+        "price": 199.62
+    },
+    {
+        "departure_airport": "EGO",
+        "arrival_airport": "KGD",
+        "departure_date": "2026-08-13 06:35:00",
+        "arrival_date": "2026-08-13 08:28:00",
+        "price": 183.89
+    },
+    {
+        "departure_airport": "EGO",
+        "arrival_airport": "KZN",
+        "departure_date": "2026-08-20 10:13:00",
+        "arrival_date": "2026-08-20 11:54:00",
+        "price": 168.95
+    },
+    {
+        "departure_airport": "GYD",
+        "arrival_airport": "NBC",
+        "departure_date": "2026-09-15 17:29:00",
+        "arrival_date": "2026-09-15 19:58:00",
+        "price": 221.24
+    },
+    {
+        "departure_airport": "KGD",
+        "arrival_airport": "EGO",
+        "departure_date": "2026-08-06 01:07:00",
+        "arrival_date": "2026-08-06 03:00:00",
+        "price": 199.54
+    },
+    {
+        "departure_airport": "KZN",
+        "arrival_airport": "AER",
+        "departure_date": "2026-08-10 22:16:00",
+        "arrival_date": "2026-08-11 00:32:00",
+        "price": 257.04
+    },
+    {
+        "departure_airport": "KZN",
+        "arrival_airport": "ASF",
+        "departure_date": "2026-09-06 17:36:00",
+        "arrival_date": "2026-09-06 19:19:00",
+        "price": 187.05
+    },
+    {
+        "departure_airport": "KZN",
+        "arrival_airport": "CEK",
+        "departure_date": "2026-09-02 10:53:00",
+        "arrival_date": "2026-09-02 12:17:00",
+        "price": 162.21
+    },
+    {
+        "departure_airport": "KZN",
+        "arrival_airport": "DME",
+        "departure_date": "2026-08-29 23:15:00",
+        "arrival_date": "2026-08-30 00:36:00",
+        "price": 140.88
+    },
+    {
+        "departure_airport": "KZN",
+        "arrival_airport": "EGO",
+        "departure_date": "2026-08-16 15:03:00",
+        "arrival_date": "2026-08-16 16:44:00",
+        "price": 170.71
+    },
+    {
+        "departure_airport": "KZN",
+        "arrival_airport": "LED",
+        "departure_date": "2026-08-07 12:35:00",
+        "arrival_date": "2026-08-07 14:31:00",
+        "price": 186.95
+    },
+    {
+        "departure_airport": "KZN",
+        "arrival_airport": "SVX",
+        "departure_date": "2026-09-03 14:13:00",
+        "arrival_date": "2026-09-03 15:34:00",
+        "price": 131.9
+    }
+]

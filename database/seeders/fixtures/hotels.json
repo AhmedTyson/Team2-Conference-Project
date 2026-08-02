@@ -1,5 +1,373 @@
 [
-  {"name": "Le Meurice", "price": 450.00, "rating": 4.8, "stars": 5, "image": "hotels/lemeurice.jpg"},
-  {"name": "Tokyo Station Hotel", "price": 320.00, "rating": 4.7, "stars": 5, "image": "hotels/tokyostation.jpg"},
-  {"name": "Holiday Inn Express", "price": 89.99, "rating": 3.9, "stars": 3, "image": "hotels/holidayinn.jpg"}
+  {
+    "name": "Le Meurice",
+    "price": 450.00,
+    "rating": 4.8,
+    "stars": 5,
+    "image": "hotels/lemeurice.jpg"
+  },
+  {
+    "name": "Hotel Plaza Athenee",
+    "price": 600.00,
+    "rating": 4.9,
+    "stars": 5,
+    "image": "hotels/plaza.jpg"
+  },
+  {
+    "name": "The Ritz Paris",
+    "price": 750.00,
+    "rating": 4.9,
+    "stars": 5,
+    "image": "hotels/ritz.jpg"
+  },
+  {
+    "name": "Hotel Lutetia",
+    "price": 420.00,
+    "rating": 4.7,
+    "stars": 5,
+    "image": "hotels/lutetia.jpg"
+  },
+  {
+    "name": "Shangri-La Paris",
+    "price": 680.00,
+    "rating": 4.9,
+    "stars": 5,
+    "image": "hotels/shangrilaparis.jpg"
+  },
+  {
+    "name": "Novotel Paris Les Halles",
+    "price": 210.00,
+    "rating": 4.3,
+    "stars": 4,
+    "image": "hotels/novotelparis.jpg"
+  },
+  {
+    "name": "ibis Paris Gare de Lyon",
+    "price": 110.00,
+    "rating": 4.0,
+    "stars": 3,
+    "image": "hotels/ibisparis.jpg"
+  },
+  {
+    "name": "Holiday Inn Paris Notre Dame",
+    "price": 185.00,
+    "rating": 4.2,
+    "stars": 4,
+    "image": "hotels/holidayinnotredame.jpg"
+  },
+  {
+    "name": "Park Hyatt Tokyo",
+    "price": 550.00,
+    "rating": 4.8,
+    "stars": 5,
+    "image": "hotels/parkhyatt.jpg"
+  },
+  {
+    "name": "Tokyo Station Hotel",
+    "price": 320.00,
+    "rating": 4.7,
+    "stars": 5,
+    "image": "hotels/tokyostation.jpg"
+  },
+  {
+    "name": "The Peninsula Tokyo",
+    "price": 620.00,
+    "rating": 4.9,
+    "stars": 5,
+    "image": "hotels/peninsulatokyo.jpg"
+  },
+  {
+    "name": "Aman Tokyo",
+    "price": 890.00,
+    "rating": 4.9,
+    "stars": 5,
+    "image": "hotels/aman.jpg"
+  },
+  {
+    "name": "Shibuya Stream Excel Hotel Tokyu",
+    "price": 180.00,
+    "rating": 4.4,
+    "stars": 4,
+    "image": "hotels/shibuya.jpg"
+  },
+  {
+    "name": "The Gate Hotel Asakusa",
+    "price": 160.00,
+    "rating": 4.5,
+    "stars": 4,
+    "image": "hotels/gateasakusa.jpg"
+  },
+  {
+    "name": "APA Hotel Shinjuku",
+    "price": 95.00,
+    "rating": 4.0,
+    "stars": 3,
+    "image": "hotels/apa.jpg"
+  },
+  {
+    "name": "The Langham London",
+    "price": 420.00,
+    "rating": 4.7,
+    "stars": 5,
+    "image": "hotels/langham.jpg"
+  },
+  {
+    "name": "The Savoy London",
+    "price": 560.00,
+    "rating": 4.8,
+    "stars": 5,
+    "image": "hotels/savoy.jpg"
+  },
+  {
+    "name": "The Ritz London",
+    "price": 700.00,
+    "rating": 4.8,
+    "stars": 5,
+    "image": "hotels/ritzlondon.jpg"
+  },
+  {
+    "name": "Premier Inn London City",
+    "price": 110.00,
+    "rating": 4.2,
+    "stars": 3,
+    "image": "hotels/premierinn.jpg"
+  },
+  {
+    "name": "The Hoxton Shoreditch",
+    "price": 190.00,
+    "rating": 4.4,
+    "stars": 4,
+    "image": "hotels/hoxton.jpg"
+  },
+  {
+    "name": "Shangri-La at The Shard",
+    "price": 480.00,
+    "rating": 4.8,
+    "stars": 5,
+    "image": "hotels/shard.jpg"
+  },
+  {
+    "name": "Marina Bay Sands Singapore",
+    "price": 550.00,
+    "rating": 4.8,
+    "stars": 5,
+    "image": "hotels/mbs.jpg"
+  },
+  {
+    "name": "Raffles Hotel Singapore",
+    "price": 800.00,
+    "rating": 4.9,
+    "stars": 5,
+    "image": "hotels/raffles.jpg"
+  },
+  {
+    "name": "The Fullerton Hotel Singapore",
+    "price": 380.00,
+    "rating": 4.8,
+    "stars": 5,
+    "image": "hotels/fullerton.jpg"
+  },
+  {
+    "name": "Orchard Hotel Singapore",
+    "price": 210.00,
+    "rating": 4.4,
+    "stars": 4,
+    "image": "hotels/orchard.jpg"
+  },
+  {
+    "name": "YOTEL Singapore",
+    "price": 130.00,
+    "rating": 4.2,
+    "stars": 4,
+    "image": "hotels/yotel.jpg"
+  },
+  {
+    "name": "Burj Al Arab Dubai",
+    "price": 1200.00,
+    "rating": 4.9,
+    "stars": 5,
+    "image": "hotels/burj.jpg"
+  },
+  {
+    "name": "Atlantis The Palm Dubai",
+    "price": 400.00,
+    "rating": 4.7,
+    "stars": 5,
+    "image": "hotels/atlantis.jpg"
+  },
+  {
+    "name": "Armani Hotel Dubai",
+    "price": 680.00,
+    "rating": 4.9,
+    "stars": 5,
+    "image": "hotels/armani.jpg"
+  },
+  {
+    "name": "Jumeirah Beach Hotel",
+    "price": 300.00,
+    "rating": 4.6,
+    "stars": 5,
+    "image": "hotels/jumeirah.jpg"
+  },
+  {
+    "name": "Rove Downtown Dubai",
+    "price": 140.00,
+    "rating": 4.5,
+    "stars": 4,
+    "image": "hotels/rove.jpg"
+  },
+  {
+    "name": "Hotel Riu Plaza Espana",
+    "price": 160.00,
+    "rating": 4.5,
+    "stars": 4,
+    "image": "hotels/riu.jpg"
+  },
+  {
+    "name": "Mandarin Oriental Barcelona",
+    "price": 500.00,
+    "rating": 4.7,
+    "stars": 5,
+    "image": "hotels/mandarin.jpg"
+  },
+  {
+    "name": "W Barcelona",
+    "price": 330.00,
+    "rating": 4.6,
+    "stars": 5,
+    "image": "hotels/wbarcelona.jpg"
+  },
+  {
+    "name": "Hotel Arts Barcelona",
+    "price": 360.00,
+    "rating": 4.7,
+    "stars": 5,
+    "image": "hotels/hotelarts.jpg"
+  },
+  {
+    "name": "Barceló Sants",
+    "price": 150.00,
+    "rating": 4.3,
+    "stars": 4,
+    "image": "hotels/barcelosants.jpg"
+  },
+  {
+    "name": "H10 Casa Mimosa",
+    "price": 200.00,
+    "rating": 4.5,
+    "stars": 4,
+    "image": "hotels/casamimosa.jpg"
+  },
+  {
+    "name": "Four Seasons Cairo at Nile Plaza",
+    "price": 350.00,
+    "rating": 4.8,
+    "stars": 5,
+    "image": "hotels/fscairo.jpg"
+  },
+  {
+    "name": "The Nile Ritz-Carlton",
+    "price": 320.00,
+    "rating": 4.7,
+    "stars": 5,
+    "image": "hotels/nilerc.jpg"
+  },
+  {
+    "name": "Sofitel Cairo Nile El Gezirah",
+    "price": 220.00,
+    "rating": 4.5,
+    "stars": 5,
+    "image": "hotels/sofitelcairo.jpg"
+  },
+  {
+    "name": "Steigenberger Hotel El Tahrir",
+    "price": 140.00,
+    "rating": 4.4,
+    "stars": 4,
+    "image": "hotels/steigenberger.jpg"
+  },
+  {
+    "name": "Tolip Hotel El Nasr",
+    "price": 95.00,
+    "rating": 4.2,
+    "stars": 4,
+    "image": "hotels/tolip.jpg"
+  },
+  {
+    "name": "Hilton Cairo Zamalek Residences",
+    "price": 180.00,
+    "rating": 4.5,
+    "stars": 5,
+    "image": "hotels/hiltonzamalek.jpg"
+  },
+  {
+    "name": "The Plaza New York",
+    "price": 680.00,
+    "rating": 4.7,
+    "stars": 5,
+    "image": "hotels/plazany.jpg"
+  },
+  {
+    "name": "The St. Regis New York",
+    "price": 720.00,
+    "rating": 4.8,
+    "stars": 5,
+    "image": "hotels/stregisny.jpg"
+  },
+  {
+    "name": "Moxy Times Square",
+    "price": 220.00,
+    "rating": 4.3,
+    "stars": 4,
+    "image": "hotels/moxy.jpg"
+  },
+  {
+    "name": "Hilton Midtown Manhattan",
+    "price": 260.00,
+    "rating": 4.4,
+    "stars": 4,
+    "image": "hotels/hiltonmidtown.jpg"
+  },
+  {
+    "name": "The Bowery Hotel",
+    "price": 280.00,
+    "rating": 4.5,
+    "stars": 4,
+    "image": "hotels/bowery.jpg"
+  },
+  {
+    "name": "The Waldorf Astoria Rome Cavalieri",
+    "price": 390.00,
+    "rating": 4.8,
+    "stars": 5,
+    "image": "hotels/cavalieri.jpg"
+  },
+  {
+    "name": "Hotel de Russie Rome",
+    "price": 460.00,
+    "rating": 4.7,
+    "stars": 5,
+    "image": "hotels/derussie.jpg"
+  },
+  {
+    "name": "NH Collection Roma Palazzo Cinquecento",
+    "price": 210.00,
+    "rating": 4.6,
+    "stars": 4,
+    "image": "hotels/cinquecento.jpg"
+  },
+  {
+    "name": "Hotel Artemide Rome",
+    "price": 190.00,
+    "rating": 4.6,
+    "stars": 4,
+    "image": "hotels/artemide.jpg"
+  },
+  {
+    "name": "Villa Borghese",
+    "price": 150.00,
+    "rating": 4.3,
+    "stars": 4,
+    "image": "hotels/villaborghese.jpg"
+  }
 ]
