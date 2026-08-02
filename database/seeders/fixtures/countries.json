@@ -1,0 +1,42 @@
+[
+  {
+    "name": "France",
+    "iso_code": "FR",
+    "capital": "Paris",
+    "flag_url": "https://flagcdn.com/w320/fr.png",
+    "currency": "EUR",
+    "languages": ["French"]
+  },
+  {
+    "name": "Japan",
+    "iso_code": "JP",
+    "capital": "Tokyo",
+    "flag_url": "https://flagcdn.com/w320/jp.png",
+    "currency": "JPY",
+    "languages": ["Japanese"]
+  },
+  {
+    "name": "United States",
+    "iso_code": "US",
+    "capital": "Washington, D.C.",
+    "flag_url": "https://flagcdn.com/w320/us.png",
+    "currency": "USD",
+    "languages": ["English"]
+  },
+  {
+    "name": "Egypt",
+    "iso_code": "EG",
+    "capital": "Cairo",
+    "flag_url": "https://flagcdn.com/w320/eg.png",
+    "currency": "EGP",
+    "languages": ["Arabic"]
+  },
+  {
+    "name": "United Kingdom",
+    "iso_code": "GB",
+    "capital": "London",
+    "flag_url": "https://flagcdn.com/w320/gb.png",
+    "currency": "GBP",
+    "languages": ["English"]
+  }
+]
