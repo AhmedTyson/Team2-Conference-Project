@@ -28,4 +28,3 @@ Route::middleware(['auth:api'])->group(function () {
         ->middleware(['throttle:6,1'])
         ->name('verification.resend');
 });
-
