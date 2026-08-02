@@ -11,16 +11,20 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('flight',function(Blueprint $table){
+        Schema::create('flights',function(Blueprint $table){
             $table->id();
-            $table->string('airline');
-            $table->string('flight_number');
+
+            
+
+            
+            $table->string('airline')->nullable();
+            $table->string('flight_number')->nullable();
             $table->string('departure_airport');
             $table->string('arrival_airport');
             $table->dateTime('departure_date');
             $table->dateTime('arrival_date');
-            $table->decimal('price');
-            $table->string('booking_status');
+            $table->decimal('price')->nullable();
+            $table->string('booking_status')->nullable();
             $table->timestamps();
         
         
