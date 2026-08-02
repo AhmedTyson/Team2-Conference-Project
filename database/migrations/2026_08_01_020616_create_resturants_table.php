@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('image')->nullable();
 
             $table->foreignId('destination_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('category_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });
     }
@@ -36,3 +36,4 @@ return new class extends Migration
         Schema::dropIfExists('restaurants');
     }
 };
+

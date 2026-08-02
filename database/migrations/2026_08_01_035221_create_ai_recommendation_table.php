@@ -19,7 +19,7 @@ return new class extends Migration
                 
             $table->string('prompt_text');
             $table->string('response_text');
-            $table->string('generated_it');
+            $table->string('generated_at');
             $table->string('model_used');
             $table->string('tokens_used');
             $table->timestamps();
@@ -34,3 +34,4 @@ return new class extends Migration
         Schema::dropIfExists('ai_recommendations');
     }
 };
+

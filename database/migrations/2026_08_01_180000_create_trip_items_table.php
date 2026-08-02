@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('attraction_trip', function (Blueprint $table) {
+        Schema::create('trip_items', function (Blueprint $table) {
             $table->id();
-
-            $table->foreignId('attraction_id')->constrained()->onDelete('cascade');
-            $table->foreignId('trip_id')->constrained()->onDelete('cascade');
+            $table->foreignId('trip_id')->constrained()->cascadeOnDelete();
+            // This creates 'item_type' and 'item_id'
+            $table->morphs('item');
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('attraction_trip');
+        Schema::dropIfExists('trip_items');
     }
 };
