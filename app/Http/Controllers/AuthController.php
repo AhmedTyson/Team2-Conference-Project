@@ -4,84 +4,138 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
-use Illuminate\Http\JsonResponse;
+use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use Tymon\JWTAuth\Facades\JWTAuth;
-
 
 class AuthController extends Controller
 {
- /**
-     * Register a new user and return a JWT token.
-     */
-    public function register(Request $request): JsonResponse
+ 
+   
+    //Register a new user 
+    public function register(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
+        try {
+           
+            $role = Role::where('name', 'LIKE', '%user%')->firstOrFail();
 
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $validator->errors(),
-            ], 422);
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => $request->password,
+                'role_id' => $role->id,
+            ]);
+
+            $token = auth('api')->login($user);
+        } catch (Exception $ex) {
+            return response()->json(['exception' => $ex->getMessage()]);
         }
 
-        $customerRole = Role::where('name', 'Customer')->first();
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role_id' => $customerRole?->id,
-        ]);
-
-        $token = JWTAuth::fromUser($user);
-
-        return $this->respondWithToken($token, $user, 201);
+        return response()->json([
+            'message' => 'user created',
+            'token' => $token,
+        ], 201);
     }
-
-    /**
-     * Log the user in and return a JWT token.
-     */
-    public function login(Request $request): JsonResponse
+    
+    
+    // Verify email & login
+    public function login(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string'],
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'message' => 'Validation failed',
-                'errors' => $validator->errors(),
-            ], 422);
-        }
-
         $credentials = $request->only('email', 'password');
+        $token = auth('api')->attempt($credentials);
 
-        if (! $token = Auth::guard('api')->attempt($credentials)) {
+        if (! $token) {
             return response()->json([
                 'message' => 'Invalid email or password',
             ], 401);
         }
 
-        $user = Auth::guard('api')->user();
-
-        return $this->respondWithToken($token, $user);
+        return response()->json([
+            'message' => 'user logged in successfully',
+            'token' => $token,
+        ]);
     }
-    public function me(Request $request)
+    
+    // Return
+    public function me()
+    {
+        $user = auth('api')->user();
+
+        return response()->json([
+            'success' => true,
+            'user' => $user,
+        ]);
+    }
+    
+    
+    //verfication notifaction
+    public function verificationNotice()
     {
         return response()->json([
-            'message' => 'User profile fetched successfully',
-            'data'    => new AuthResource($request->user()),
+            'success' => false,
+            'message' => 'Please verify your email address.',
+        ], 403);
+    }
+    
+    
+    //verify Email
+    public function verifyEmail(Request $request, $id, $hash)
+    {
+        $user = User::findOrFail($id);
+
+        if (! hash_equals(
+            (string) $hash,
+            sha1($user->getEmailForVerification())
+        )) {
+            return response()->json([
+                'message' => 'Invalid verification link',
+            ], 403);
+        }
+
+        if ($user->hasVerifiedEmail()) {
+            return response()->json([
+                'message' => 'Email already verified',
+            ]);
+        }
+
+        $user->markEmailAsVerified();
+
+        event(new Verified($user));
+
+        return response()->json([
+            'message' => 'Email verified successfully',
+        ]);
+    }
+    
+    
+    //Resend the verification email 
+    public function resendVerificationEmail(Request $request)
+    {
+        if ($request->user()->hasVerifiedEmail()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'Email already verified.',
+            ], 200);
+        }
+
+        $request->user()->sendEmailVerificationNotification();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Verification link sent successfully.',
         ], 200);
     }
+    
+    
+    //LOGOUT
+    public function logout()
+    {
+        auth('api')->logout();
+
+        return response()->json([
+            'message' => 'User Logged out Successfully',
+        ]);
+    }
+
 
     public function refresh()
     {
