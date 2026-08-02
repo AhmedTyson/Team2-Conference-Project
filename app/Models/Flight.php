@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Flight extends Model
 {
@@ -23,5 +24,7 @@ class Flight extends Model
         ];
     }
 
-    public function trips() { return $this->belongsToMany(Trip::class); }
+    public function trips(): MorphToMany { return $this->morphToMany(Trip::class, 'item', 'trip_items')->withTimestamps(); }
 }
+
+

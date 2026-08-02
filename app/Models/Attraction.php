@@ -39,6 +39,7 @@ class Attraction extends Model
 
     public function trips(): MorphToMany
     {
-        return $this->morphToMany(Trip::class, 'tripable', 'tripables')->withTimestamps();
+        return $this->morphToMany(Trip::class, 'item', 'trip_items')->withTimestamps();
     }
 }
+
