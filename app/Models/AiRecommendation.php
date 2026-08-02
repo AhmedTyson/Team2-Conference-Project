@@ -11,7 +11,7 @@ class AiRecommendation extends Model
     use HasFactory;
 
     protected $fillable = [
-        'trip_id', 'prompt_text', 'response_text', 'model_used', 'tokens_used',
+        'trip_id', 'prompt_text', 'response_text', 'generated_at', 'model_used', 'tokens_used',
     ];
 
     protected function casts(): array
@@ -27,3 +27,4 @@ class AiRecommendation extends Model
         return $this->belongsTo(Trip::class);
     }
 }
+

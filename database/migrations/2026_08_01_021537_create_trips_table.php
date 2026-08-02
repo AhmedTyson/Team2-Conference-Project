@@ -26,12 +26,7 @@ return new class extends Migration
             $table->date('start_date');
             $table->date('end_date');
 
-            $table->enum('status', [
-                'pending',
-                'planning',
-                'completed',
-                'cancelled'
-            ])->default('pending');
+            $table->string('status')->default('pending');
 
             $table->decimal('estimated_cost', 10, 2)->nullable();
 
@@ -48,3 +43,5 @@ return new class extends Migration
         Schema::dropIfExists('trips');
     }
 };
+
+
