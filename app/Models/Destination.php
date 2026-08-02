@@ -43,9 +43,9 @@ class Destination extends Model
         return $this->hasMany(Restaurant::class);
     }
 
-    public function favourites(): HasMany
+    public function favourites(): MorphMany
     {
-        return $this->hasMany(Favourite::class);
+        return $this->morphMany(Favourite::class, 'favorable');
     }
 
     public function tripDestinations(): HasMany
@@ -65,3 +65,5 @@ class Destination extends Model
         return $this->morphMany(Review::class, 'reviewable');
     }
 }
+
+
