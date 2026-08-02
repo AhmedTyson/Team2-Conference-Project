@@ -145,12 +145,12 @@ class AuthController extends Controller
         ]);
     }
 
-    public function forgetPassword(Request $request)
-    {
-        $request->validate([
-            'email'=>['required', 'email', 'exists:users,email']
-        ]);
+    // public function forgetPassword(Request $request)
+    // {
+    //     $request->validate([
+    //         'email'=>['required', 'email', 'exists:users,email']
+    //     ]);
 
-        $status = Password::sendResetLink();
-    }
+    //     $status = Password::sendResetLink();
+    // }
 }
