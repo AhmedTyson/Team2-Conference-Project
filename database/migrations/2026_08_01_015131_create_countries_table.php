@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('iso_code',3)->unique();
-            $table->string('capital');
+            $table->string('capital')->nullable();
             $table->string('flag_url')->nullable();
-            $table->string('currency',10);
+            $table->string('currency',10)->nullable();
             $table->json('languages');
             $table->timestamps();
         });

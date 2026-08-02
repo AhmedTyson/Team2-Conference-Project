@@ -26,7 +26,7 @@ return new class extends Migration
 
 
             $table->unsignedTinyInteger('rating');
-            $table->text('comment');
+            $table->text('comment')->nullable();
             $table->string('status');
             $table->timestamps();
         });
