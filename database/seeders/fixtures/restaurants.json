@@ -1,0 +1,5 @@
+[
+  {"name": "Gusto Italiano", "cuisine": "Italian", "price_range": "$$$", "rating": 4.6, "image": "restaurants/gusto.jpg"},
+  {"name": "Sushi Dai", "cuisine": "Japanese", "price_range": "$$$$", "rating": 4.9, "image": "restaurants/sushidai.jpg"},
+  {"name": "Burger Joint", "cuisine": "American", "price_range": "$", "rating": 4.1, "image": "restaurants/burger.jpg"}
+]
