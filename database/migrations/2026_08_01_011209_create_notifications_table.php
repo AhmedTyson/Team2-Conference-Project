@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('type');
             $table->text('body');
             $table->json('data')->nullable();
-            $table->enum('status',['read','unread'])->default('unread');
+            $table->string('status')->default('unread');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
         });
@@ -31,3 +31,4 @@ return new class extends Migration
         Schema::dropIfExists('notifications');
     }
 };
+
