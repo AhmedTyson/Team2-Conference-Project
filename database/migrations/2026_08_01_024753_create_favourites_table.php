@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('note');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('destination_id')->constrained()->cascadeOnDelete();
+            $table->morphs('favorable');
             $table->timestamps();
         });
     }

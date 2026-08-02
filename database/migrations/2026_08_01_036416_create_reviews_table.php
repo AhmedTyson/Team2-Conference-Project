@@ -20,10 +20,7 @@ return new class extends Migration
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('destination_id')->constrained()->onDelete('cascade');
-            $table->foreignId('restaurant_id')->constrained()->onDelete('cascade');
-            $table->foreignId('hotel_id')->constrained()->onDelete('cascade');
-            $table->foreignId('attraction_id')->constrained()->onDelete('cascade');
+            $table->morphs('reviewable');
 
 
 
@@ -43,3 +40,4 @@ return new class extends Migration
         Schema::dropIfExists('reviews');
     }
 };
+

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('itinerary_item',function (Blueprint $table){
+        Schema::create('itinerary_items',function (Blueprint $table){
             $table->id();
 
             $table->foreignId('trip_id')->constrained()->onDelete('cascade');
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('itinerary_item');
+        Schema::dropIfExists('itinerary_items');
     }
 };
