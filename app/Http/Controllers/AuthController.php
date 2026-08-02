@@ -6,6 +6,8 @@ use App\Models\Role;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -56,8 +58,8 @@ class AuthController extends Controller
         ]);
     }
     
-    // Return
-    public function me()
+    // Profile
+    public function profile()
     {
         $user = auth('api')->user();
 
@@ -137,7 +139,7 @@ class AuthController extends Controller
         ]);
     }
 
-
+    // Refresh
     public function refresh()
     {
         $token = auth('api')->refresh();
@@ -146,12 +148,52 @@ class AuthController extends Controller
         ]);
     }
 
-    // public function forgetPassword(Request $request)
-    // {
-    //     $request->validate([
-    //         'email'=>['required', 'email', 'exists:users,email']
-    //     ]);
+    // ForgetPass
+    public function forgetPassword(Request $request)
+    {
+        $request->validate([
+            'email'=>['required', 'email', 'exists:users,email']
+        ]);
 
-    //     $status = Password::sendResetLink();
-    // }
+        $stat = Password::sendResetLink($request->only('email'));
+
+        if($stat == Password::RESET_LINK_SENT){
+            return response()->json(["message"->$stat]);
+        }
+        return response()->json(["message" => $stat], 422);
+    }
+
+    // ResetPass
+    public function resetPassword(Request $request){
+        $request->validate([
+            'email' => 'required|email',
+            'token' => 'required',
+            'password' => 'required|confirmed|min:8'
+        ]);
+
+        $stat = Password::reset(
+            $request->only(
+                'email',
+                'password',
+                'passwrod_confirmation',
+                'token'
+            ),
+            function (User $user, string $password) {
+                $user->update([
+                    'password' => Hash::make($password)
+                ]);
+            }
+        );
+
+        if($stat == Password::PASSWORD_RESET){
+            return response()->json([
+                'message'=> "Passwrod reset successfully"
+            ], 200);
+        }
+
+        return response()->json([
+            'message' => $stat
+        ], 422);
+
+    }
 }

@@ -12,6 +12,8 @@ Route::apiResource('categories', CategoryController::class);
 // Public routes 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/forgot-password', [AuthController::class, 'forgetPassword']);
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
 // verification email 
 Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
@@ -27,4 +29,5 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/email/resend', [AuthController::class, 'resendVerificationEmail'])
         ->middleware(['throttle:6,1'])
         ->name('verification.resend');
+    Route::post('/refresh', [AuthController::class, 'refresh']);
 });
