@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('attractions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->foreignId('category_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('destination_id')->constrained()->onDelete('cascade');
 
             $table->string('name');
@@ -33,3 +33,4 @@ return new class extends Migration
         Schema::dropIfExists('attractions');
     }
 };
+
