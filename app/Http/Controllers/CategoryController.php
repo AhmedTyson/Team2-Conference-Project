@@ -10,7 +10,7 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        return Category::all(new CategoryResource());
+        return new CategoryResource(Category::all());
     }
 
     public function store(Request $request)
