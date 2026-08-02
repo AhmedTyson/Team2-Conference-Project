@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('attraction', function (Blueprint $table) {
+        Schema::create('attractions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('category_id')->constrained()->onDelete('cascade');
             $table->foreignId('destination_id')->constrained()->onDelete('cascade');
 
             $table->string('name');
-            $table->string('description');
-            $table->string('image');
-            $table->decimal('latitude');
-            $table->decimal('longitude');
+            $table->text('description')->nullable();
+            $table->string('image')->nullable();
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('attraction');
+        Schema::dropIfExists('attractions');
     }
 };

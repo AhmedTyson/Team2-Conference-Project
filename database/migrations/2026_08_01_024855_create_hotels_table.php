@@ -16,12 +16,12 @@ return new class extends Migration
 
             $table->foreignId('destination_id')->constrained()->onDelete('cascade');
             $table->string('name');
-            $table->text('address');
-            $table->decimal('price_per_night');
-            $table->decimal('rating',3,1);
-            $table->unsignedTinyInteger('stars');
-            $table->string('availability');
-            $table->text('image');
+            $table->text('address')->nullable();
+            $table->decimal('price_per_night')->nullable();
+            $table->decimal('rating',3,1)->nullable();
+            $table->unsignedTinyInteger('stars')->nullable();
+            $table->string('availability')->nullable();
+            $table->text('image')->nullable();
             $table->timestamps();
         });
     }

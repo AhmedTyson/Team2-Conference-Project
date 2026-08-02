@@ -1,0 +1,186 @@
+[
+  {
+    "name": "France",
+    "iso_code": "FR",
+    "capital": "Paris",
+    "flag_url": "https://flagcdn.com/w320/fr.png",
+    "currency": "EUR",
+    "languages": ["French"]
+  },
+  {
+    "name": "Japan",
+    "iso_code": "JP",
+    "capital": "Tokyo",
+    "flag_url": "https://flagcdn.com/w320/jp.png",
+    "currency": "JPY",
+    "languages": ["Japanese"]
+  },
+  {
+    "name": "United States",
+    "iso_code": "US",
+    "capital": "Washington, D.C.",
+    "flag_url": "https://flagcdn.com/w320/us.png",
+    "currency": "USD",
+    "languages": ["English"]
+  },
+  {
+    "name": "Egypt",
+    "iso_code": "EG",
+    "capital": "Cairo",
+    "flag_url": "https://flagcdn.com/w320/eg.png",
+    "currency": "EGP",
+    "languages": ["Arabic"]
+  },
+  {
+    "name": "United Kingdom",
+    "iso_code": "GB",
+    "capital": "London",
+    "flag_url": "https://flagcdn.com/w320/gb.png",
+    "currency": "GBP",
+    "languages": ["English"]
+  },
+  {
+    "name": "Spain",
+    "iso_code": "ES",
+    "capital": "Madrid",
+    "flag_url": "https://flagcdn.com/w320/es.png",
+    "currency": "EUR",
+    "languages": ["Spanish"]
+  },
+  {
+    "name": "Italy",
+    "iso_code": "IT",
+    "capital": "Rome",
+    "flag_url": "https://flagcdn.com/w320/it.png",
+    "currency": "EUR",
+    "languages": ["Italian"]
+  },
+  {
+    "name": "United Arab Emirates",
+    "iso_code": "AE",
+    "capital": "Abu Dhabi",
+    "flag_url": "https://flagcdn.com/w320/ae.png",
+    "currency": "AED",
+    "languages": ["Arabic"]
+  },
+  {
+    "name": "Singapore",
+    "iso_code": "SG",
+    "capital": "Singapore",
+    "flag_url": "https://flagcdn.com/w320/sg.png",
+    "currency": "SGD",
+    "languages": ["English", "Malay", "Mandarin", "Tamil"]
+  },
+  {
+    "name": "Turkey",
+    "iso_code": "TR",
+    "capital": "Ankara",
+    "flag_url": "https://flagcdn.com/w320/tr.png",
+    "currency": "TRY",
+    "languages": ["Turkish"]
+  },
+  {
+    "name": "Germany",
+    "iso_code": "DE",
+    "capital": "Berlin",
+    "flag_url": "https://flagcdn.com/w320/de.png",
+    "currency": "EUR",
+    "languages": ["German"]
+  },
+  {
+    "name": "Netherlands",
+    "iso_code": "NL",
+    "capital": "Amsterdam",
+    "flag_url": "https://flagcdn.com/w320/nl.png",
+    "currency": "EUR",
+    "languages": ["Dutch"]
+  },
+  {
+    "name": "Saudi Arabia",
+    "iso_code": "SA",
+    "capital": "Riyadh",
+    "flag_url": "https://flagcdn.com/w320/sa.png",
+    "currency": "SAR",
+    "languages": ["Arabic"]
+  },
+  {
+    "name": "India",
+    "iso_code": "IN",
+    "capital": "New Delhi",
+    "flag_url": "https://flagcdn.com/w320/in.png",
+    "currency": "INR",
+    "languages": ["Hindi", "English"]
+  },
+  {
+    "name": "Thailand",
+    "iso_code": "TH",
+    "capital": "Bangkok",
+    "flag_url": "https://flagcdn.com/w320/th.png",
+    "currency": "THB",
+    "languages": ["Thai"]
+  },
+  {
+    "name": "Switzerland",
+    "iso_code": "CH",
+    "capital": "Bern",
+    "flag_url": "https://flagcdn.com/w320/ch.png",
+    "currency": "CHF",
+    "languages": ["German", "French", "Italian"]
+  },
+  {
+    "name": "Canada",
+    "iso_code": "CA",
+    "capital": "Ottawa",
+    "flag_url": "https://flagcdn.com/w320/ca.png",
+    "currency": "CAD",
+    "languages": ["English", "French"]
+  },
+  {
+    "name": "Australia",
+    "iso_code": "AU",
+    "capital": "Canberra",
+    "flag_url": "https://flagcdn.com/w320/au.png",
+    "currency": "AUD",
+    "languages": ["English"]
+  },
+  {
+    "name": "Brazil",
+    "iso_code": "BR",
+    "capital": "Brasília",
+    "flag_url": "https://flagcdn.com/w320/br.png",
+    "currency": "BRL",
+    "languages": ["Portuguese"]
+  },
+  {
+    "name": "Greece",
+    "iso_code": "GR",
+    "capital": "Athens",
+    "flag_url": "https://flagcdn.com/w320/gr.png",
+    "currency": "EUR",
+    "languages": ["Greek"]
+  },
+  {
+    "name": "Morocco",
+    "iso_code": "MA",
+    "capital": "Rabat",
+    "flag_url": "https://flagcdn.com/w320/ma.png",
+    "currency": "MAD",
+    "languages": ["Arabic", "Berber"]
+  },
+  {
+    "name": "Malaysia",
+    "iso_code": "MY",
+    "capital": "Kuala Lumpur",
+    "flag_url": "https://flagcdn.com/w320/my.png",
+    "currency": "MYR",
+    "languages": ["Malay"]
+  },
+  {
+    "name": "South Korea",
+    "iso_code": "KR",
+    "capital": "Seoul",
+    "flag_url": "https://flagcdn.com/w320/kr.png",
+    "currency": "KRW",
+    "languages": ["Korean"]
+  }
+]

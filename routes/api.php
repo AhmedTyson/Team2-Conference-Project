@@ -12,6 +12,12 @@ Route::apiResource('surveys', SurveyController::class);
 
 use App\Http\Controllers\Auth\AuthController;
 
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
+
+
+// Category Routes
+Route::apiResource('categories', CategoryController::class);
 
 // Public routes 
 Route::post('/register', [AuthController::class, 'register']);

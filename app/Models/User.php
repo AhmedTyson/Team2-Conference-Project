@@ -10,11 +10,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
+
+    protected $guard_name = 'api';
 
     /**
      * The attributes that are mass assignable.
@@ -22,7 +25,6 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'role_id',
         'name',
         'email',
         'password',
@@ -52,11 +54,7 @@ class User extends Authenticatable
         ];
     }
 
-    // belongs_to Role
-    public function role(): BelongsTo
-    {
-        return $this->belongsTo(Role::class);
-    }
+    
 
     // 1:1 - takes Survey
     public function survey(): HasOne

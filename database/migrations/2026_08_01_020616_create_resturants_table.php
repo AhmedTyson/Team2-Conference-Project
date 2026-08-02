@@ -11,19 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('resturants', function (Blueprint $table) {
+        Schema::create('restaurants', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('cuisine');
 
-            $table->enum('price_range',[
-                'low',
-                'medium',
-                'high'
-            ]);
+            $table->string('price_range')->nullable();
             
             $table->decimal('rating',2,1)->nullable();
-            $table->string('address');
+            $table->string('address')->nullable();
             $table->string('image')->nullable();
 
             $table->foreignId('destination_id')->constrained()->cascadeOnDelete();
@@ -37,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('resturants');
+        Schema::dropIfExists('restaurants');
     }
 };

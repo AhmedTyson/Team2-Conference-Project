@@ -1,0 +1,2663 @@
+[
+    {
+        "name": "Aruba",
+        "iso_code": "AW",
+        "capital": "Oranjestad",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/aw.png",
+        "currency": "AWG",
+        "languages": [
+            "Dutch",
+            "Papiamento"
+        ]
+    },
+    {
+        "name": "Afghanistan",
+        "iso_code": "AF",
+        "capital": "Kabul",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/af.png",
+        "currency": "AFN",
+        "languages": [
+            "Dari",
+            "Pashto",
+            "Turkmen"
+        ]
+    },
+    {
+        "name": "Angola",
+        "iso_code": "AO",
+        "capital": "Luanda",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ao.png",
+        "currency": "AOA",
+        "languages": [
+            "Portuguese"
+        ]
+    },
+    {
+        "name": "Anguilla",
+        "iso_code": "AI",
+        "capital": "The Valley",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ai.png",
+        "currency": "XCD",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "\u00c5land Islands",
+        "iso_code": "AX",
+        "capital": "Mariehamn",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ax.png",
+        "currency": "EUR",
+        "languages": [
+            "Swedish"
+        ]
+    },
+    {
+        "name": "Albania",
+        "iso_code": "AL",
+        "capital": "Tirana",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/al.png",
+        "currency": "ALL",
+        "languages": [
+            "Albanian"
+        ]
+    },
+    {
+        "name": "Andorra",
+        "iso_code": "AD",
+        "capital": "Andorra la Vella",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ad.png",
+        "currency": "EUR",
+        "languages": [
+            "Catalan"
+        ]
+    },
+    {
+        "name": "United Arab Emirates",
+        "iso_code": "AE",
+        "capital": "Abu Dhabi",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ae.png",
+        "currency": "AED",
+        "languages": [
+            "Arabic"
+        ]
+    },
+    {
+        "name": "Argentina",
+        "iso_code": "AR",
+        "capital": "Buenos Aires",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ar.png",
+        "currency": "ARS",
+        "languages": [
+            "Guaran\u00ed",
+            "Spanish"
+        ]
+    },
+    {
+        "name": "Armenia",
+        "iso_code": "AM",
+        "capital": "Yerevan",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/am.png",
+        "currency": "AMD",
+        "languages": [
+            "Armenian"
+        ]
+    },
+    {
+        "name": "American Samoa",
+        "iso_code": "AS",
+        "capital": "Pago Pago",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/as.png",
+        "currency": "USD",
+        "languages": [
+            "English",
+            "Samoan"
+        ]
+    },
+    {
+        "name": "Antarctica",
+        "iso_code": "AQ",
+        "capital": null,
+        "flag_url": "https:\/\/flagcdn.com\/w320\/aq.png",
+        "currency": null,
+        "languages": []
+    },
+    {
+        "name": "French Southern and Antarctic Lands",
+        "iso_code": "TF",
+        "capital": "Port-aux-Fran\u00e7ais",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/tf.png",
+        "currency": "EUR",
+        "languages": [
+            "French"
+        ]
+    },
+    {
+        "name": "Antigua and Barbuda",
+        "iso_code": "AG",
+        "capital": "Saint John's",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ag.png",
+        "currency": "XCD",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Australia",
+        "iso_code": "AU",
+        "capital": "Canberra",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/au.png",
+        "currency": "AUD",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Austria",
+        "iso_code": "AT",
+        "capital": "Vienna",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/at.png",
+        "currency": "EUR",
+        "languages": [
+            "Austro-Bavarian German"
+        ]
+    },
+    {
+        "name": "Azerbaijan",
+        "iso_code": "AZ",
+        "capital": "Baku",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/az.png",
+        "currency": "AZN",
+        "languages": [
+            "Azerbaijani",
+            "Russian"
+        ]
+    },
+    {
+        "name": "Burundi",
+        "iso_code": "BI",
+        "capital": "Gitega",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/bi.png",
+        "currency": "BIF",
+        "languages": [
+            "French",
+            "Kirundi"
+        ]
+    },
+    {
+        "name": "Belgium",
+        "iso_code": "BE",
+        "capital": "Brussels",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/be.png",
+        "currency": "EUR",
+        "languages": [
+            "German",
+            "French",
+            "Dutch"
+        ]
+    },
+    {
+        "name": "Benin",
+        "iso_code": "BJ",
+        "capital": "Porto-Novo",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/bj.png",
+        "currency": "XOF",
+        "languages": [
+            "French"
+        ]
+    },
+    {
+        "name": "Burkina Faso",
+        "iso_code": "BF",
+        "capital": "Ouagadougou",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/bf.png",
+        "currency": "XOF",
+        "languages": [
+            "French"
+        ]
+    },
+    {
+        "name": "Bangladesh",
+        "iso_code": "BD",
+        "capital": "Dhaka",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/bd.png",
+        "currency": "BDT",
+        "languages": [
+            "Bengali"
+        ]
+    },
+    {
+        "name": "Bulgaria",
+        "iso_code": "BG",
+        "capital": "Sofia",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/bg.png",
+        "currency": "EUR",
+        "languages": [
+            "Bulgarian"
+        ]
+    },
+    {
+        "name": "Bahrain",
+        "iso_code": "BH",
+        "capital": "Manama",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/bh.png",
+        "currency": "BHD",
+        "languages": [
+            "Arabic"
+        ]
+    },
+    {
+        "name": "Bahamas",
+        "iso_code": "BS",
+        "capital": "Nassau",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/bs.png",
+        "currency": "BSD",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Bosnia and Herzegovina",
+        "iso_code": "BA",
+        "capital": "Sarajevo",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ba.png",
+        "currency": "BAM",
+        "languages": [
+            "Bosnian",
+            "Croatian",
+            "Serbian"
+        ]
+    },
+    {
+        "name": "Saint Barth\u00e9lemy",
+        "iso_code": "BL",
+        "capital": "Gustavia",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/bl.png",
+        "currency": "EUR",
+        "languages": [
+            "French"
+        ]
+    },
+    {
+        "name": "Saint Helena, Ascension and Tristan da Cunha",
+        "iso_code": "SH",
+        "capital": "Jamestown",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/sh.png",
+        "currency": "GBP",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Belarus",
+        "iso_code": "BY",
+        "capital": "Minsk",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/by.png",
+        "currency": "BYN",
+        "languages": [
+            "Belarusian",
+            "Russian"
+        ]
+    },
+    {
+        "name": "Belize",
+        "iso_code": "BZ",
+        "capital": "Belmopan",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/bz.png",
+        "currency": "BZD",
+        "languages": [
+            "Belizean Creole",
+            "English",
+            "Spanish"
+        ]
+    },
+    {
+        "name": "Bermuda",
+        "iso_code": "BM",
+        "capital": "Hamilton",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/bm.png",
+        "currency": "BMD",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Bolivia",
+        "iso_code": "BO",
+        "capital": "Sucre",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/bo.png",
+        "currency": "BOB",
+        "languages": [
+            "Aymara",
+            "Guaran\u00ed",
+            "Quechua",
+            "Spanish"
+        ]
+    },
+    {
+        "name": "Caribbean Netherlands",
+        "iso_code": "BQ",
+        "capital": "Kralendijk",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/bq.png",
+        "currency": "USD",
+        "languages": [
+            "English",
+            "Dutch",
+            "Papiamento"
+        ]
+    },
+    {
+        "name": "Brazil",
+        "iso_code": "BR",
+        "capital": "Bras\u00edlia",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/br.png",
+        "currency": "BRL",
+        "languages": [
+            "Portuguese"
+        ]
+    },
+    {
+        "name": "Barbados",
+        "iso_code": "BB",
+        "capital": "Bridgetown",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/bb.png",
+        "currency": "BBD",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Brunei",
+        "iso_code": "BN",
+        "capital": "Bandar Seri Begawan",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/bn.png",
+        "currency": "BND",
+        "languages": [
+            "Malay"
+        ]
+    },
+    {
+        "name": "Bhutan",
+        "iso_code": "BT",
+        "capital": "Thimphu",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/bt.png",
+        "currency": "BTN",
+        "languages": [
+            "Dzongkha"
+        ]
+    },
+    {
+        "name": "Bouvet Island",
+        "iso_code": "BV",
+        "capital": null,
+        "flag_url": "https:\/\/flagcdn.com\/w320\/bv.png",
+        "currency": null,
+        "languages": [
+            "Norwegian"
+        ]
+    },
+    {
+        "name": "Botswana",
+        "iso_code": "BW",
+        "capital": "Gaborone",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/bw.png",
+        "currency": "BWP",
+        "languages": [
+            "English",
+            "Tswana"
+        ]
+    },
+    {
+        "name": "Central African Republic",
+        "iso_code": "CF",
+        "capital": "Bangui",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/cf.png",
+        "currency": "XAF",
+        "languages": [
+            "French",
+            "Sango"
+        ]
+    },
+    {
+        "name": "Canada",
+        "iso_code": "CA",
+        "capital": "Ottawa",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ca.png",
+        "currency": "CAD",
+        "languages": [
+            "English",
+            "French"
+        ]
+    },
+    {
+        "name": "Cocos (Keeling) Islands",
+        "iso_code": "CC",
+        "capital": "West Island",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/cc.png",
+        "currency": "AUD",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Switzerland",
+        "iso_code": "CH",
+        "capital": "Bern",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ch.png",
+        "currency": "CHF",
+        "languages": [
+            "French",
+            "Swiss German",
+            "Italian",
+            "Romansh"
+        ]
+    },
+    {
+        "name": "Chile",
+        "iso_code": "CL",
+        "capital": "Santiago",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/cl.png",
+        "currency": "CLP",
+        "languages": [
+            "Spanish"
+        ]
+    },
+    {
+        "name": "China",
+        "iso_code": "CN",
+        "capital": "Beijing",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/cn.png",
+        "currency": "CNY",
+        "languages": [
+            "Chinese"
+        ]
+    },
+    {
+        "name": "Ivory Coast",
+        "iso_code": "CI",
+        "capital": "Yamoussoukro",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ci.png",
+        "currency": "XOF",
+        "languages": [
+            "French"
+        ]
+    },
+    {
+        "name": "Cameroon",
+        "iso_code": "CM",
+        "capital": "Yaound\u00e9",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/cm.png",
+        "currency": "XAF",
+        "languages": [
+            "English",
+            "French"
+        ]
+    },
+    {
+        "name": "DR Congo",
+        "iso_code": "CD",
+        "capital": "Kinshasa",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/cd.png",
+        "currency": "CDF",
+        "languages": [
+            "French",
+            "Kikongo",
+            "Lingala",
+            "Tshiluba",
+            "Swahili"
+        ]
+    },
+    {
+        "name": "Congo",
+        "iso_code": "CG",
+        "capital": "Brazzaville",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/cg.png",
+        "currency": "XAF",
+        "languages": [
+            "French",
+            "Kikongo",
+            "Lingala"
+        ]
+    },
+    {
+        "name": "Cook Islands",
+        "iso_code": "CK",
+        "capital": "Avarua",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ck.png",
+        "currency": "CKD",
+        "languages": [
+            "English",
+            "Cook Islands M\u0101ori"
+        ]
+    },
+    {
+        "name": "Colombia",
+        "iso_code": "CO",
+        "capital": "Bogot\u00e1",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/co.png",
+        "currency": "COP",
+        "languages": [
+            "Spanish"
+        ]
+    },
+    {
+        "name": "Comoros",
+        "iso_code": "KM",
+        "capital": "Moroni",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/km.png",
+        "currency": "KMF",
+        "languages": [
+            "Arabic",
+            "French",
+            "Comorian"
+        ]
+    },
+    {
+        "name": "Cape Verde",
+        "iso_code": "CV",
+        "capital": "Praia",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/cv.png",
+        "currency": "CVE",
+        "languages": [
+            "Portuguese"
+        ]
+    },
+    {
+        "name": "Costa Rica",
+        "iso_code": "CR",
+        "capital": "San Jos\u00e9",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/cr.png",
+        "currency": "CRC",
+        "languages": [
+            "Spanish"
+        ]
+    },
+    {
+        "name": "Cuba",
+        "iso_code": "CU",
+        "capital": "Havana",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/cu.png",
+        "currency": "CUC",
+        "languages": [
+            "Spanish"
+        ]
+    },
+    {
+        "name": "Cura\u00e7ao",
+        "iso_code": "CW",
+        "capital": "Willemstad",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/cw.png",
+        "currency": "ANG",
+        "languages": [
+            "English",
+            "Dutch",
+            "Papiamento"
+        ]
+    },
+    {
+        "name": "Christmas Island",
+        "iso_code": "CX",
+        "capital": "Flying Fish Cove",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/cx.png",
+        "currency": "AUD",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Cayman Islands",
+        "iso_code": "KY",
+        "capital": "George Town",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ky.png",
+        "currency": "KYD",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Cyprus",
+        "iso_code": "CY",
+        "capital": "Nicosia",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/cy.png",
+        "currency": "EUR",
+        "languages": [
+            "Greek",
+            "Turkish"
+        ]
+    },
+    {
+        "name": "Czechia",
+        "iso_code": "CZ",
+        "capital": "Prague",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/cz.png",
+        "currency": "CZK",
+        "languages": [
+            "Czech",
+            "Slovak"
+        ]
+    },
+    {
+        "name": "Germany",
+        "iso_code": "DE",
+        "capital": "Berlin",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/de.png",
+        "currency": "EUR",
+        "languages": [
+            "German"
+        ]
+    },
+    {
+        "name": "Djibouti",
+        "iso_code": "DJ",
+        "capital": "Djibouti",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/dj.png",
+        "currency": "DJF",
+        "languages": [
+            "Arabic",
+            "French"
+        ]
+    },
+    {
+        "name": "Dominica",
+        "iso_code": "DM",
+        "capital": "Roseau",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/dm.png",
+        "currency": "XCD",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Denmark",
+        "iso_code": "DK",
+        "capital": "Copenhagen",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/dk.png",
+        "currency": "DKK",
+        "languages": [
+            "Danish"
+        ]
+    },
+    {
+        "name": "Dominican Republic",
+        "iso_code": "DO",
+        "capital": "Santo Domingo",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/do.png",
+        "currency": "DOP",
+        "languages": [
+            "Spanish"
+        ]
+    },
+    {
+        "name": "Algeria",
+        "iso_code": "DZ",
+        "capital": "Algiers",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/dz.png",
+        "currency": "DZD",
+        "languages": [
+            "Arabic"
+        ]
+    },
+    {
+        "name": "Ecuador",
+        "iso_code": "EC",
+        "capital": "Quito",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ec.png",
+        "currency": "USD",
+        "languages": [
+            "Spanish"
+        ]
+    },
+    {
+        "name": "Egypt",
+        "iso_code": "EG",
+        "capital": "Cairo",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/eg.png",
+        "currency": "EGP",
+        "languages": [
+            "Arabic"
+        ]
+    },
+    {
+        "name": "Eritrea",
+        "iso_code": "ER",
+        "capital": "Asmara",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/er.png",
+        "currency": "ERN",
+        "languages": [
+            "Arabic",
+            "English",
+            "Tigrinya"
+        ]
+    },
+    {
+        "name": "Western Sahara",
+        "iso_code": "EH",
+        "capital": "El Aai\u00fan",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/eh.png",
+        "currency": "DZD",
+        "languages": [
+            "Berber",
+            "Hassaniya",
+            "Spanish"
+        ]
+    },
+    {
+        "name": "Spain",
+        "iso_code": "ES",
+        "capital": "Madrid",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/es.png",
+        "currency": "EUR",
+        "languages": [
+            "Spanish"
+        ]
+    },
+    {
+        "name": "Estonia",
+        "iso_code": "EE",
+        "capital": "Tallinn",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ee.png",
+        "currency": "EUR",
+        "languages": [
+            "Estonian"
+        ]
+    },
+    {
+        "name": "Ethiopia",
+        "iso_code": "ET",
+        "capital": "Addis Ababa",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/et.png",
+        "currency": "ETB",
+        "languages": [
+            "Amharic"
+        ]
+    },
+    {
+        "name": "Finland",
+        "iso_code": "FI",
+        "capital": "Helsinki",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/fi.png",
+        "currency": "EUR",
+        "languages": [
+            "Finnish",
+            "Swedish"
+        ]
+    },
+    {
+        "name": "Fiji",
+        "iso_code": "FJ",
+        "capital": "Suva",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/fj.png",
+        "currency": "FJD",
+        "languages": [
+            "English",
+            "Fijian",
+            "Fiji Hindi"
+        ]
+    },
+    {
+        "name": "Falkland Islands",
+        "iso_code": "FK",
+        "capital": "Stanley",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/fk.png",
+        "currency": "FKP",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "France",
+        "iso_code": "FR",
+        "capital": "Paris",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/fr.png",
+        "currency": "EUR",
+        "languages": [
+            "French"
+        ]
+    },
+    {
+        "name": "Faroe Islands",
+        "iso_code": "FO",
+        "capital": "T\u00f3rshavn",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/fo.png",
+        "currency": "DKK",
+        "languages": [
+            "Danish",
+            "Faroese"
+        ]
+    },
+    {
+        "name": "Micronesia",
+        "iso_code": "FM",
+        "capital": "Palikir",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/fm.png",
+        "currency": null,
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Gabon",
+        "iso_code": "GA",
+        "capital": "Libreville",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ga.png",
+        "currency": "XAF",
+        "languages": [
+            "French"
+        ]
+    },
+    {
+        "name": "United Kingdom",
+        "iso_code": "GB",
+        "capital": "London",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/gb.png",
+        "currency": "GBP",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Georgia",
+        "iso_code": "GE",
+        "capital": "Tbilisi",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ge.png",
+        "currency": "GEL",
+        "languages": [
+            "Georgian"
+        ]
+    },
+    {
+        "name": "Guernsey",
+        "iso_code": "GG",
+        "capital": "St. Peter Port",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/gg.png",
+        "currency": "GBP",
+        "languages": [
+            "English",
+            "French",
+            "Guern\u00e9siais"
+        ]
+    },
+    {
+        "name": "Ghana",
+        "iso_code": "GH",
+        "capital": "Accra",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/gh.png",
+        "currency": "GHS",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Gibraltar",
+        "iso_code": "GI",
+        "capital": "Gibraltar",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/gi.png",
+        "currency": "GIP",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Guinea",
+        "iso_code": "GN",
+        "capital": "Conakry",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/gn.png",
+        "currency": "GNF",
+        "languages": [
+            "French"
+        ]
+    },
+    {
+        "name": "Guadeloupe",
+        "iso_code": "GP",
+        "capital": "Basse-Terre",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/gp.png",
+        "currency": "EUR",
+        "languages": [
+            "French"
+        ]
+    },
+    {
+        "name": "Gambia",
+        "iso_code": "GM",
+        "capital": "Banjul",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/gm.png",
+        "currency": "GMD",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Guinea-Bissau",
+        "iso_code": "GW",
+        "capital": "Bissau",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/gw.png",
+        "currency": "XOF",
+        "languages": [
+            "Portuguese",
+            "Upper Guinea Creole"
+        ]
+    },
+    {
+        "name": "Equatorial Guinea",
+        "iso_code": "GQ",
+        "capital": "Malabo",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/gq.png",
+        "currency": "XAF",
+        "languages": [
+            "French",
+            "Portuguese",
+            "Spanish"
+        ]
+    },
+    {
+        "name": "Greece",
+        "iso_code": "GR",
+        "capital": "Athens",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/gr.png",
+        "currency": "EUR",
+        "languages": [
+            "Greek"
+        ]
+    },
+    {
+        "name": "Grenada",
+        "iso_code": "GD",
+        "capital": "St. George's",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/gd.png",
+        "currency": "XCD",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Greenland",
+        "iso_code": "GL",
+        "capital": "Nuuk",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/gl.png",
+        "currency": "DKK",
+        "languages": [
+            "Greenlandic"
+        ]
+    },
+    {
+        "name": "Guatemala",
+        "iso_code": "GT",
+        "capital": "Guatemala City",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/gt.png",
+        "currency": "GTQ",
+        "languages": [
+            "Spanish"
+        ]
+    },
+    {
+        "name": "French Guiana",
+        "iso_code": "GF",
+        "capital": "Cayenne",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/gf.png",
+        "currency": "EUR",
+        "languages": [
+            "French"
+        ]
+    },
+    {
+        "name": "Guam",
+        "iso_code": "GU",
+        "capital": "Hag\u00e5t\u00f1a",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/gu.png",
+        "currency": "USD",
+        "languages": [
+            "Chamorro",
+            "English",
+            "Spanish"
+        ]
+    },
+    {
+        "name": "Guyana",
+        "iso_code": "GY",
+        "capital": "Georgetown",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/gy.png",
+        "currency": "GYD",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Hong Kong",
+        "iso_code": "HK",
+        "capital": "City of Victoria",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/hk.png",
+        "currency": "HKD",
+        "languages": [
+            "English",
+            "Chinese"
+        ]
+    },
+    {
+        "name": "Heard Island and McDonald Islands",
+        "iso_code": "HM",
+        "capital": null,
+        "flag_url": "https:\/\/flagcdn.com\/w320\/hm.png",
+        "currency": null,
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Honduras",
+        "iso_code": "HN",
+        "capital": "Tegucigalpa",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/hn.png",
+        "currency": "HNL",
+        "languages": [
+            "Spanish"
+        ]
+    },
+    {
+        "name": "Croatia",
+        "iso_code": "HR",
+        "capital": "Zagreb",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/hr.png",
+        "currency": "EUR",
+        "languages": [
+            "Croatian"
+        ]
+    },
+    {
+        "name": "Haiti",
+        "iso_code": "HT",
+        "capital": "Port-au-Prince",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ht.png",
+        "currency": "HTG",
+        "languages": [
+            "French",
+            "Haitian Creole"
+        ]
+    },
+    {
+        "name": "Hungary",
+        "iso_code": "HU",
+        "capital": "Budapest",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/hu.png",
+        "currency": "HUF",
+        "languages": [
+            "Hungarian"
+        ]
+    },
+    {
+        "name": "Indonesia",
+        "iso_code": "ID",
+        "capital": "Jakarta",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/id.png",
+        "currency": "IDR",
+        "languages": [
+            "Indonesian"
+        ]
+    },
+    {
+        "name": "Isle of Man",
+        "iso_code": "IM",
+        "capital": "Douglas",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/im.png",
+        "currency": "GBP",
+        "languages": [
+            "English",
+            "Manx"
+        ]
+    },
+    {
+        "name": "India",
+        "iso_code": "IN",
+        "capital": "New Delhi",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/in.png",
+        "currency": "INR",
+        "languages": [
+            "English",
+            "Hindi",
+            "Tamil"
+        ]
+    },
+    {
+        "name": "British Indian Ocean Territory",
+        "iso_code": "IO",
+        "capital": "Diego Garcia",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/io.png",
+        "currency": "USD",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Ireland",
+        "iso_code": "IE",
+        "capital": "Dublin",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ie.png",
+        "currency": "EUR",
+        "languages": [
+            "English",
+            "Irish"
+        ]
+    },
+    {
+        "name": "Iran",
+        "iso_code": "IR",
+        "capital": "Tehran",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ir.png",
+        "currency": "IRR",
+        "languages": [
+            "Persian (Farsi)"
+        ]
+    },
+    {
+        "name": "Iraq",
+        "iso_code": "IQ",
+        "capital": "Baghdad",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/iq.png",
+        "currency": "IQD",
+        "languages": [
+            "Arabic",
+            "Aramaic",
+            "Sorani"
+        ]
+    },
+    {
+        "name": "Iceland",
+        "iso_code": "IS",
+        "capital": "Reykjavik",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/is.png",
+        "currency": "ISK",
+        "languages": [
+            "Icelandic"
+        ]
+    },
+    {
+        "name": "Israel",
+        "iso_code": "IL",
+        "capital": "Jerusalem",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/il.png",
+        "currency": "ILS",
+        "languages": [
+            "Arabic",
+            "Hebrew"
+        ]
+    },
+    {
+        "name": "Italy",
+        "iso_code": "IT",
+        "capital": "Rome",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/it.png",
+        "currency": "EUR",
+        "languages": [
+            "Italian"
+        ]
+    },
+    {
+        "name": "Jamaica",
+        "iso_code": "JM",
+        "capital": "Kingston",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/jm.png",
+        "currency": "JMD",
+        "languages": [
+            "English",
+            "Jamaican Patois"
+        ]
+    },
+    {
+        "name": "Jersey",
+        "iso_code": "JE",
+        "capital": "Saint Helier",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/je.png",
+        "currency": "GBP",
+        "languages": [
+            "English",
+            "French",
+            "J\u00e8rriais"
+        ]
+    },
+    {
+        "name": "Jordan",
+        "iso_code": "JO",
+        "capital": "Amman",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/jo.png",
+        "currency": "JOD",
+        "languages": [
+            "Arabic"
+        ]
+    },
+    {
+        "name": "Japan",
+        "iso_code": "JP",
+        "capital": "Tokyo",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/jp.png",
+        "currency": "JPY",
+        "languages": [
+            "Japanese"
+        ]
+    },
+    {
+        "name": "Kazakhstan",
+        "iso_code": "KZ",
+        "capital": "Astana",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/kz.png",
+        "currency": "KZT",
+        "languages": [
+            "Kazakh",
+            "Russian"
+        ]
+    },
+    {
+        "name": "Kenya",
+        "iso_code": "KE",
+        "capital": "Nairobi",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ke.png",
+        "currency": "KES",
+        "languages": [
+            "English",
+            "Swahili"
+        ]
+    },
+    {
+        "name": "Kyrgyzstan",
+        "iso_code": "KG",
+        "capital": "Bishkek",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/kg.png",
+        "currency": "KGS",
+        "languages": [
+            "Kyrgyz",
+            "Russian"
+        ]
+    },
+    {
+        "name": "Cambodia",
+        "iso_code": "KH",
+        "capital": "Phnom Penh",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/kh.png",
+        "currency": "KHR",
+        "languages": [
+            "Khmer"
+        ]
+    },
+    {
+        "name": "Kiribati",
+        "iso_code": "KI",
+        "capital": "South Tarawa",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ki.png",
+        "currency": "AUD",
+        "languages": [
+            "English",
+            "Gilbertese"
+        ]
+    },
+    {
+        "name": "Saint Kitts and Nevis",
+        "iso_code": "KN",
+        "capital": "Basseterre",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/kn.png",
+        "currency": "XCD",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "South Korea",
+        "iso_code": "KR",
+        "capital": "Seoul",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/kr.png",
+        "currency": "KRW",
+        "languages": [
+            "Korean"
+        ]
+    },
+    {
+        "name": "Kosovo",
+        "iso_code": "XK",
+        "capital": "Pristina",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/xk.png",
+        "currency": "EUR",
+        "languages": [
+            "Albanian",
+            "Serbian"
+        ]
+    },
+    {
+        "name": "Kuwait",
+        "iso_code": "KW",
+        "capital": "Kuwait City",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/kw.png",
+        "currency": "KWD",
+        "languages": [
+            "Arabic"
+        ]
+    },
+    {
+        "name": "Laos",
+        "iso_code": "LA",
+        "capital": "Vientiane",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/la.png",
+        "currency": "LAK",
+        "languages": [
+            "Lao"
+        ]
+    },
+    {
+        "name": "Lebanon",
+        "iso_code": "LB",
+        "capital": "Beirut",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/lb.png",
+        "currency": "LBP",
+        "languages": [
+            "Arabic",
+            "French"
+        ]
+    },
+    {
+        "name": "Liberia",
+        "iso_code": "LR",
+        "capital": "Monrovia",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/lr.png",
+        "currency": "LRD",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Libya",
+        "iso_code": "LY",
+        "capital": "Tripoli",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ly.png",
+        "currency": "LYD",
+        "languages": [
+            "Arabic"
+        ]
+    },
+    {
+        "name": "Saint Lucia",
+        "iso_code": "LC",
+        "capital": "Castries",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/lc.png",
+        "currency": "XCD",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Liechtenstein",
+        "iso_code": "LI",
+        "capital": "Vaduz",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/li.png",
+        "currency": "CHF",
+        "languages": [
+            "German"
+        ]
+    },
+    {
+        "name": "Sri Lanka",
+        "iso_code": "LK",
+        "capital": "Colombo",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/lk.png",
+        "currency": "LKR",
+        "languages": [
+            "Sinhala",
+            "Tamil"
+        ]
+    },
+    {
+        "name": "Lesotho",
+        "iso_code": "LS",
+        "capital": "Maseru",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ls.png",
+        "currency": "LSL",
+        "languages": [
+            "English",
+            "Sotho"
+        ]
+    },
+    {
+        "name": "Lithuania",
+        "iso_code": "LT",
+        "capital": "Vilnius",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/lt.png",
+        "currency": "EUR",
+        "languages": [
+            "Lithuanian"
+        ]
+    },
+    {
+        "name": "Luxembourg",
+        "iso_code": "LU",
+        "capital": "Luxembourg",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/lu.png",
+        "currency": "EUR",
+        "languages": [
+            "German",
+            "French",
+            "Luxembourgish"
+        ]
+    },
+    {
+        "name": "Latvia",
+        "iso_code": "LV",
+        "capital": "Riga",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/lv.png",
+        "currency": "EUR",
+        "languages": [
+            "Latvian"
+        ]
+    },
+    {
+        "name": "Macau",
+        "iso_code": "MO",
+        "capital": null,
+        "flag_url": "https:\/\/flagcdn.com\/w320\/mo.png",
+        "currency": "MOP",
+        "languages": [
+            "Portuguese",
+            "Chinese"
+        ]
+    },
+    {
+        "name": "Saint Martin",
+        "iso_code": "MF",
+        "capital": "Marigot",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/mf.png",
+        "currency": "EUR",
+        "languages": [
+            "French"
+        ]
+    },
+    {
+        "name": "Morocco",
+        "iso_code": "MA",
+        "capital": "Rabat",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ma.png",
+        "currency": "MAD",
+        "languages": [
+            "Arabic",
+            "Berber"
+        ]
+    },
+    {
+        "name": "Monaco",
+        "iso_code": "MC",
+        "capital": "Monaco",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/mc.png",
+        "currency": "EUR",
+        "languages": [
+            "French"
+        ]
+    },
+    {
+        "name": "Moldova",
+        "iso_code": "MD",
+        "capital": "Chi\u0219in\u0103u",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/md.png",
+        "currency": "MDL",
+        "languages": [
+            "Moldavian"
+        ]
+    },
+    {
+        "name": "Madagascar",
+        "iso_code": "MG",
+        "capital": "Antananarivo",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/mg.png",
+        "currency": "MGA",
+        "languages": [
+            "French",
+            "Malagasy"
+        ]
+    },
+    {
+        "name": "Maldives",
+        "iso_code": "MV",
+        "capital": "Mal\u00e9",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/mv.png",
+        "currency": "MVR",
+        "languages": [
+            "Maldivian"
+        ]
+    },
+    {
+        "name": "Mexico",
+        "iso_code": "MX",
+        "capital": "Mexico City",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/mx.png",
+        "currency": "MXN",
+        "languages": [
+            "Spanish"
+        ]
+    },
+    {
+        "name": "Marshall Islands",
+        "iso_code": "MH",
+        "capital": "Majuro",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/mh.png",
+        "currency": "USD",
+        "languages": [
+            "English",
+            "Marshallese"
+        ]
+    },
+    {
+        "name": "North Macedonia",
+        "iso_code": "MK",
+        "capital": "Skopje",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/mk.png",
+        "currency": "MKD",
+        "languages": [
+            "Macedonian"
+        ]
+    },
+    {
+        "name": "Mali",
+        "iso_code": "ML",
+        "capital": "Bamako",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ml.png",
+        "currency": "XOF",
+        "languages": [
+            "French"
+        ]
+    },
+    {
+        "name": "Malta",
+        "iso_code": "MT",
+        "capital": "Valletta",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/mt.png",
+        "currency": "EUR",
+        "languages": [
+            "English",
+            "Maltese"
+        ]
+    },
+    {
+        "name": "Myanmar",
+        "iso_code": "MM",
+        "capital": "Naypyidaw",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/mm.png",
+        "currency": "MMK",
+        "languages": [
+            "Burmese"
+        ]
+    },
+    {
+        "name": "Montenegro",
+        "iso_code": "ME",
+        "capital": "Podgorica",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/me.png",
+        "currency": "EUR",
+        "languages": [
+            "Montenegrin"
+        ]
+    },
+    {
+        "name": "Mongolia",
+        "iso_code": "MN",
+        "capital": "Ulan Bator",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/mn.png",
+        "currency": "MNT",
+        "languages": [
+            "Mongolian"
+        ]
+    },
+    {
+        "name": "Northern Mariana Islands",
+        "iso_code": "MP",
+        "capital": "Saipan",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/mp.png",
+        "currency": "USD",
+        "languages": [
+            "Carolinian",
+            "Chamorro",
+            "English"
+        ]
+    },
+    {
+        "name": "Mozambique",
+        "iso_code": "MZ",
+        "capital": "Maputo",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/mz.png",
+        "currency": "MZN",
+        "languages": [
+            "Portuguese"
+        ]
+    },
+    {
+        "name": "Mauritania",
+        "iso_code": "MR",
+        "capital": "Nouakchott",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/mr.png",
+        "currency": "MRU",
+        "languages": [
+            "Arabic"
+        ]
+    },
+    {
+        "name": "Montserrat",
+        "iso_code": "MS",
+        "capital": "Plymouth",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ms.png",
+        "currency": "XCD",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Martinique",
+        "iso_code": "MQ",
+        "capital": "Fort-de-France",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/mq.png",
+        "currency": "EUR",
+        "languages": [
+            "French"
+        ]
+    },
+    {
+        "name": "Mauritius",
+        "iso_code": "MU",
+        "capital": "Port Louis",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/mu.png",
+        "currency": "MUR",
+        "languages": [
+            "English",
+            "French",
+            "Mauritian Creole"
+        ]
+    },
+    {
+        "name": "Malawi",
+        "iso_code": "MW",
+        "capital": "Lilongwe",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/mw.png",
+        "currency": "MWK",
+        "languages": [
+            "English",
+            "Chewa"
+        ]
+    },
+    {
+        "name": "Malaysia",
+        "iso_code": "MY",
+        "capital": "Kuala Lumpur",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/my.png",
+        "currency": "MYR",
+        "languages": [
+            "English",
+            "Malay"
+        ]
+    },
+    {
+        "name": "Mayotte",
+        "iso_code": "YT",
+        "capital": "Mamoudzou",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/yt.png",
+        "currency": "EUR",
+        "languages": [
+            "French"
+        ]
+    },
+    {
+        "name": "Namibia",
+        "iso_code": "NA",
+        "capital": "Windhoek",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/na.png",
+        "currency": "NAD",
+        "languages": [
+            "Afrikaans",
+            "German",
+            "English",
+            "Herero",
+            "Khoekhoe",
+            "Kwangali",
+            "Lozi",
+            "Ndonga",
+            "Tswana"
+        ]
+    },
+    {
+        "name": "New Caledonia",
+        "iso_code": "NC",
+        "capital": "Noum\u00e9a",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/nc.png",
+        "currency": "XPF",
+        "languages": [
+            "French"
+        ]
+    },
+    {
+        "name": "Niger",
+        "iso_code": "NE",
+        "capital": "Niamey",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ne.png",
+        "currency": "XOF",
+        "languages": [
+            "French"
+        ]
+    },
+    {
+        "name": "Norfolk Island",
+        "iso_code": "NF",
+        "capital": "Kingston",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/nf.png",
+        "currency": "AUD",
+        "languages": [
+            "English",
+            "Norfuk"
+        ]
+    },
+    {
+        "name": "Nigeria",
+        "iso_code": "NG",
+        "capital": "Abuja",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ng.png",
+        "currency": "NGN",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Nicaragua",
+        "iso_code": "NI",
+        "capital": "Managua",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ni.png",
+        "currency": "NIO",
+        "languages": [
+            "Spanish"
+        ]
+    },
+    {
+        "name": "Niue",
+        "iso_code": "NU",
+        "capital": "Alofi",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/nu.png",
+        "currency": "NZD",
+        "languages": [
+            "English",
+            "Niuean"
+        ]
+    },
+    {
+        "name": "Netherlands",
+        "iso_code": "NL",
+        "capital": "Amsterdam",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/nl.png",
+        "currency": "EUR",
+        "languages": [
+            "Dutch"
+        ]
+    },
+    {
+        "name": "Norway",
+        "iso_code": "NO",
+        "capital": "Oslo",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/no.png",
+        "currency": "NOK",
+        "languages": [
+            "Norwegian Nynorsk",
+            "Norwegian Bokm\u00e5l",
+            "Sami"
+        ]
+    },
+    {
+        "name": "Nepal",
+        "iso_code": "NP",
+        "capital": "Kathmandu",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/np.png",
+        "currency": "NPR",
+        "languages": [
+            "Nepali"
+        ]
+    },
+    {
+        "name": "Nauru",
+        "iso_code": "NR",
+        "capital": "Yaren",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/nr.png",
+        "currency": "AUD",
+        "languages": [
+            "English",
+            "Nauru"
+        ]
+    },
+    {
+        "name": "New Zealand",
+        "iso_code": "NZ",
+        "capital": "Wellington",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/nz.png",
+        "currency": "NZD",
+        "languages": [
+            "English",
+            "M\u0101ori",
+            "New Zealand Sign Language"
+        ]
+    },
+    {
+        "name": "Oman",
+        "iso_code": "OM",
+        "capital": "Muscat",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/om.png",
+        "currency": "OMR",
+        "languages": [
+            "Arabic"
+        ]
+    },
+    {
+        "name": "Pakistan",
+        "iso_code": "PK",
+        "capital": "Islamabad",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/pk.png",
+        "currency": "PKR",
+        "languages": [
+            "English",
+            "Urdu"
+        ]
+    },
+    {
+        "name": "Panama",
+        "iso_code": "PA",
+        "capital": "Panama City",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/pa.png",
+        "currency": "PAB",
+        "languages": [
+            "Spanish"
+        ]
+    },
+    {
+        "name": "Pitcairn Islands",
+        "iso_code": "PN",
+        "capital": "Adamstown",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/pn.png",
+        "currency": "NZD",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Peru",
+        "iso_code": "PE",
+        "capital": "Lima",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/pe.png",
+        "currency": "PEN",
+        "languages": [
+            "Aymara",
+            "Quechua",
+            "Spanish"
+        ]
+    },
+    {
+        "name": "Philippines",
+        "iso_code": "PH",
+        "capital": "Manila",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ph.png",
+        "currency": "PHP",
+        "languages": [
+            "English",
+            "Filipino"
+        ]
+    },
+    {
+        "name": "Palau",
+        "iso_code": "PW",
+        "capital": "Ngerulmud",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/pw.png",
+        "currency": "USD",
+        "languages": [
+            "English",
+            "Palauan"
+        ]
+    },
+    {
+        "name": "Papua New Guinea",
+        "iso_code": "PG",
+        "capital": "Port Moresby",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/pg.png",
+        "currency": "PGK",
+        "languages": [
+            "English",
+            "Hiri Motu",
+            "Tok Pisin"
+        ]
+    },
+    {
+        "name": "Poland",
+        "iso_code": "PL",
+        "capital": "Warsaw",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/pl.png",
+        "currency": "PLN",
+        "languages": [
+            "Polish"
+        ]
+    },
+    {
+        "name": "Puerto Rico",
+        "iso_code": "PR",
+        "capital": "San Juan",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/pr.png",
+        "currency": "USD",
+        "languages": [
+            "English",
+            "Spanish"
+        ]
+    },
+    {
+        "name": "North Korea",
+        "iso_code": "KP",
+        "capital": "Pyongyang",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/kp.png",
+        "currency": "KPW",
+        "languages": [
+            "Korean"
+        ]
+    },
+    {
+        "name": "Portugal",
+        "iso_code": "PT",
+        "capital": "Lisbon",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/pt.png",
+        "currency": "EUR",
+        "languages": [
+            "Portuguese"
+        ]
+    },
+    {
+        "name": "Paraguay",
+        "iso_code": "PY",
+        "capital": "Asunci\u00f3n",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/py.png",
+        "currency": "PYG",
+        "languages": [
+            "Guaran\u00ed",
+            "Spanish"
+        ]
+    },
+    {
+        "name": "Palestine",
+        "iso_code": "PS",
+        "capital": "Ramallah",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ps.png",
+        "currency": "EGP",
+        "languages": [
+            "Arabic"
+        ]
+    },
+    {
+        "name": "French Polynesia",
+        "iso_code": "PF",
+        "capital": "Papeet\u0113",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/pf.png",
+        "currency": "XPF",
+        "languages": [
+            "French"
+        ]
+    },
+    {
+        "name": "Qatar",
+        "iso_code": "QA",
+        "capital": "Doha",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/qa.png",
+        "currency": "QAR",
+        "languages": [
+            "Arabic"
+        ]
+    },
+    {
+        "name": "R\u00e9union",
+        "iso_code": "RE",
+        "capital": "Saint-Denis",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/re.png",
+        "currency": "EUR",
+        "languages": [
+            "French"
+        ]
+    },
+    {
+        "name": "Romania",
+        "iso_code": "RO",
+        "capital": "Bucharest",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ro.png",
+        "currency": "RON",
+        "languages": [
+            "Romanian"
+        ]
+    },
+    {
+        "name": "Russia",
+        "iso_code": "RU",
+        "capital": "Moscow",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ru.png",
+        "currency": "RUB",
+        "languages": [
+            "Russian"
+        ]
+    },
+    {
+        "name": "Rwanda",
+        "iso_code": "RW",
+        "capital": "Kigali",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/rw.png",
+        "currency": "RWF",
+        "languages": [
+            "English",
+            "French",
+            "Kinyarwanda"
+        ]
+    },
+    {
+        "name": "Saudi Arabia",
+        "iso_code": "SA",
+        "capital": "Riyadh",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/sa.png",
+        "currency": "SAR",
+        "languages": [
+            "Arabic"
+        ]
+    },
+    {
+        "name": "Sudan",
+        "iso_code": "SD",
+        "capital": "Khartoum",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/sd.png",
+        "currency": "SDG",
+        "languages": [
+            "Arabic",
+            "English"
+        ]
+    },
+    {
+        "name": "Senegal",
+        "iso_code": "SN",
+        "capital": "Dakar",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/sn.png",
+        "currency": "XOF",
+        "languages": [
+            "French"
+        ]
+    },
+    {
+        "name": "Singapore",
+        "iso_code": "SG",
+        "capital": "Singapore",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/sg.png",
+        "currency": "SGD",
+        "languages": [
+            "English",
+            "Malay",
+            "Tamil",
+            "Chinese"
+        ]
+    },
+    {
+        "name": "South Georgia",
+        "iso_code": "GS",
+        "capital": "King Edward Point",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/gs.png",
+        "currency": "SHP",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Svalbard and Jan Mayen",
+        "iso_code": "SJ",
+        "capital": "Longyearbyen",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/sj.png",
+        "currency": "NOK",
+        "languages": [
+            "Norwegian"
+        ]
+    },
+    {
+        "name": "Solomon Islands",
+        "iso_code": "SB",
+        "capital": "Honiara",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/sb.png",
+        "currency": "SBD",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Sierra Leone",
+        "iso_code": "SL",
+        "capital": "Freetown",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/sl.png",
+        "currency": "SLE",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "El Salvador",
+        "iso_code": "SV",
+        "capital": "San Salvador",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/sv.png",
+        "currency": "USD",
+        "languages": [
+            "Spanish"
+        ]
+    },
+    {
+        "name": "San Marino",
+        "iso_code": "SM",
+        "capital": "City of San Marino",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/sm.png",
+        "currency": "EUR",
+        "languages": [
+            "Italian"
+        ]
+    },
+    {
+        "name": "Somalia",
+        "iso_code": "SO",
+        "capital": "Mogadishu",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/so.png",
+        "currency": "SOS",
+        "languages": [
+            "Arabic",
+            "Somali"
+        ]
+    },
+    {
+        "name": "Saint Pierre and Miquelon",
+        "iso_code": "PM",
+        "capital": "Saint-Pierre",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/pm.png",
+        "currency": "EUR",
+        "languages": [
+            "French"
+        ]
+    },
+    {
+        "name": "Serbia",
+        "iso_code": "RS",
+        "capital": "Belgrade",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/rs.png",
+        "currency": "RSD",
+        "languages": [
+            "Serbian"
+        ]
+    },
+    {
+        "name": "South Sudan",
+        "iso_code": "SS",
+        "capital": "Juba",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ss.png",
+        "currency": "SSP",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "S\u00e3o Tom\u00e9 and Pr\u00edncipe",
+        "iso_code": "ST",
+        "capital": "S\u00e3o Tom\u00e9",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/st.png",
+        "currency": "STN",
+        "languages": [
+            "Portuguese"
+        ]
+    },
+    {
+        "name": "Suriname",
+        "iso_code": "SR",
+        "capital": "Paramaribo",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/sr.png",
+        "currency": "SRD",
+        "languages": [
+            "Dutch"
+        ]
+    },
+    {
+        "name": "Slovakia",
+        "iso_code": "SK",
+        "capital": "Bratislava",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/sk.png",
+        "currency": "EUR",
+        "languages": [
+            "Slovak"
+        ]
+    },
+    {
+        "name": "Slovenia",
+        "iso_code": "SI",
+        "capital": "Ljubljana",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/si.png",
+        "currency": "EUR",
+        "languages": [
+            "Slovene"
+        ]
+    },
+    {
+        "name": "Sweden",
+        "iso_code": "SE",
+        "capital": "Stockholm",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/se.png",
+        "currency": "SEK",
+        "languages": [
+            "Swedish"
+        ]
+    },
+    {
+        "name": "Eswatini",
+        "iso_code": "SZ",
+        "capital": "Lobamba",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/sz.png",
+        "currency": "SZL",
+        "languages": [
+            "English",
+            "Swazi"
+        ]
+    },
+    {
+        "name": "Sint Maarten",
+        "iso_code": "SX",
+        "capital": "Philipsburg",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/sx.png",
+        "currency": "ANG",
+        "languages": [
+            "English",
+            "French",
+            "Dutch"
+        ]
+    },
+    {
+        "name": "Seychelles",
+        "iso_code": "SC",
+        "capital": "Victoria",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/sc.png",
+        "currency": "SCR",
+        "languages": [
+            "Seychellois Creole",
+            "English",
+            "French"
+        ]
+    },
+    {
+        "name": "Syria",
+        "iso_code": "SY",
+        "capital": "Damascus",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/sy.png",
+        "currency": "SYP",
+        "languages": [
+            "Arabic"
+        ]
+    },
+    {
+        "name": "Turks and Caicos Islands",
+        "iso_code": "TC",
+        "capital": "Cockburn Town",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/tc.png",
+        "currency": "USD",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Chad",
+        "iso_code": "TD",
+        "capital": "N'Djamena",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/td.png",
+        "currency": "XAF",
+        "languages": [
+            "Arabic",
+            "French"
+        ]
+    },
+    {
+        "name": "Togo",
+        "iso_code": "TG",
+        "capital": "Lom\u00e9",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/tg.png",
+        "currency": "XOF",
+        "languages": [
+            "French"
+        ]
+    },
+    {
+        "name": "Thailand",
+        "iso_code": "TH",
+        "capital": "Bangkok",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/th.png",
+        "currency": "THB",
+        "languages": [
+            "Thai"
+        ]
+    },
+    {
+        "name": "Tajikistan",
+        "iso_code": "TJ",
+        "capital": "Dushanbe",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/tj.png",
+        "currency": "TJS",
+        "languages": [
+            "Russian",
+            "Tajik"
+        ]
+    },
+    {
+        "name": "Tokelau",
+        "iso_code": "TK",
+        "capital": "Fakaofo",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/tk.png",
+        "currency": "NZD",
+        "languages": [
+            "English",
+            "Samoan",
+            "Tokelauan"
+        ]
+    },
+    {
+        "name": "Turkmenistan",
+        "iso_code": "TM",
+        "capital": "Ashgabat",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/tm.png",
+        "currency": "TMT",
+        "languages": [
+            "Russian",
+            "Turkmen"
+        ]
+    },
+    {
+        "name": "Timor-Leste",
+        "iso_code": "TL",
+        "capital": "Dili",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/tl.png",
+        "currency": "USD",
+        "languages": [
+            "Portuguese",
+            "Tetum"
+        ]
+    },
+    {
+        "name": "Tonga",
+        "iso_code": "TO",
+        "capital": "Nuku'alofa",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/to.png",
+        "currency": "TOP",
+        "languages": [
+            "English",
+            "Tongan"
+        ]
+    },
+    {
+        "name": "Trinidad and Tobago",
+        "iso_code": "TT",
+        "capital": "Port of Spain",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/tt.png",
+        "currency": "TTD",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Tunisia",
+        "iso_code": "TN",
+        "capital": "Tunis",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/tn.png",
+        "currency": "TND",
+        "languages": [
+            "Arabic"
+        ]
+    },
+    {
+        "name": "T\u00fcrkiye",
+        "iso_code": "TR",
+        "capital": "Ankara",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/tr.png",
+        "currency": "TRY",
+        "languages": [
+            "Turkish"
+        ]
+    },
+    {
+        "name": "Tuvalu",
+        "iso_code": "TV",
+        "capital": "Funafuti",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/tv.png",
+        "currency": "AUD",
+        "languages": [
+            "English",
+            "Tuvaluan"
+        ]
+    },
+    {
+        "name": "Taiwan",
+        "iso_code": "TW",
+        "capital": "Taipei",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/tw.png",
+        "currency": "TWD",
+        "languages": [
+            "Chinese"
+        ]
+    },
+    {
+        "name": "Tanzania",
+        "iso_code": "TZ",
+        "capital": "Dodoma",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/tz.png",
+        "currency": "TZS",
+        "languages": [
+            "English",
+            "Swahili"
+        ]
+    },
+    {
+        "name": "Uganda",
+        "iso_code": "UG",
+        "capital": "Kampala",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ug.png",
+        "currency": "UGX",
+        "languages": [
+            "English",
+            "Swahili"
+        ]
+    },
+    {
+        "name": "Ukraine",
+        "iso_code": "UA",
+        "capital": "Kyiv",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ua.png",
+        "currency": "UAH",
+        "languages": [
+            "Ukrainian"
+        ]
+    },
+    {
+        "name": "United States Minor Outlying Islands",
+        "iso_code": "UM",
+        "capital": null,
+        "flag_url": "https:\/\/flagcdn.com\/w320\/um.png",
+        "currency": "USD",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Uruguay",
+        "iso_code": "UY",
+        "capital": "Montevideo",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/uy.png",
+        "currency": "UYU",
+        "languages": [
+            "Spanish"
+        ]
+    },
+    {
+        "name": "United States",
+        "iso_code": "US",
+        "capital": "Washington D.C.",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/us.png",
+        "currency": "USD",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Uzbekistan",
+        "iso_code": "UZ",
+        "capital": "Tashkent",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/uz.png",
+        "currency": "UZS",
+        "languages": [
+            "Russian",
+            "Uzbek"
+        ]
+    },
+    {
+        "name": "Vatican City",
+        "iso_code": "VA",
+        "capital": "Vatican City",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/va.png",
+        "currency": "EUR",
+        "languages": [
+            "Italian",
+            "Latin"
+        ]
+    },
+    {
+        "name": "Saint Vincent and the Grenadines",
+        "iso_code": "VC",
+        "capital": "Kingstown",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/vc.png",
+        "currency": "XCD",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Venezuela",
+        "iso_code": "VE",
+        "capital": "Caracas",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ve.png",
+        "currency": "VES",
+        "languages": [
+            "Spanish"
+        ]
+    },
+    {
+        "name": "British Virgin Islands",
+        "iso_code": "VG",
+        "capital": "Road Town",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/vg.png",
+        "currency": "USD",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "United States Virgin Islands",
+        "iso_code": "VI",
+        "capital": "Charlotte Amalie",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/vi.png",
+        "currency": "USD",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Vietnam",
+        "iso_code": "VN",
+        "capital": "Hanoi",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/vn.png",
+        "currency": "VND",
+        "languages": [
+            "Vietnamese"
+        ]
+    },
+    {
+        "name": "Vanuatu",
+        "iso_code": "VU",
+        "capital": "Port Vila",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/vu.png",
+        "currency": "VUV",
+        "languages": [
+            "Bislama",
+            "English",
+            "French"
+        ]
+    },
+    {
+        "name": "Wallis and Futuna",
+        "iso_code": "WF",
+        "capital": "Mata-Utu",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/wf.png",
+        "currency": "XPF",
+        "languages": [
+            "French"
+        ]
+    },
+    {
+        "name": "Samoa",
+        "iso_code": "WS",
+        "capital": "Apia",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ws.png",
+        "currency": "WST",
+        "languages": [
+            "English",
+            "Samoan"
+        ]
+    },
+    {
+        "name": "Yemen",
+        "iso_code": "YE",
+        "capital": "Sana'a",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/ye.png",
+        "currency": "YER",
+        "languages": [
+            "Arabic"
+        ]
+    },
+    {
+        "name": "South Africa",
+        "iso_code": "ZA",
+        "capital": "Pretoria",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/za.png",
+        "currency": "ZAR",
+        "languages": [
+            "Afrikaans",
+            "English",
+            "Southern Ndebele",
+            "Northern Sotho",
+            "Southern Sotho",
+            "Swazi",
+            "Tswana",
+            "Tsonga",
+            "Venda",
+            "Xhosa",
+            "Zulu"
+        ]
+    },
+    {
+        "name": "Zambia",
+        "iso_code": "ZM",
+        "capital": "Lusaka",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/zm.png",
+        "currency": "ZMW",
+        "languages": [
+            "English"
+        ]
+    },
+    {
+        "name": "Zimbabwe",
+        "iso_code": "ZW",
+        "capital": "Harare",
+        "flag_url": "https:\/\/flagcdn.com\/w320\/zw.png",
+        "currency": "BWP",
+        "languages": [
+            "Chibarwe",
+            "English",
+            "Kalanga",
+            "Khoisan",
+            "Ndau",
+            "Northern Ndebele",
+            "Chewa",
+            "Shona",
+            "Sotho",
+            "Tonga",
+            "Tswana",
+            "Tsonga",
+            "Venda",
+            "Xhosa",
+            "Zimbabwean Sign Language"
+        ]
+    }
+]
