@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,17 +16,41 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([
-            RoleAndPermissionSeeder::class,
-        ]);
+        // 1. Roles & Permissions (Zero Dependencies)
+        $this->call(RoleAndPermissionSeeder::class);
 
-        // User::factory(10)->create();
-
-        User::factory()->create([
+        // 2. Base Admin User
+        $admin = User::factory()->create([
             'name' => 'Super Admin',
             'email' => 'admin@threedos.com',
             'password' => bcrypt('password'),
-        ])->assignRole('super_admin');
+        ]);
+        $admin->assignRole('super_admin');
+
+        // Create 10 fake users for interactions
+        if (app()->environment('local')) {
+            User::factory(10)->create()->each(function ($user) {
+                $user->assignRole('user');
+            });
+        }
+
+        // 3. Temporarily disable FK constraints because colleagues' seeders
+        // (Destinations, Categories, Attractions) are missing from this branch.
+        // Without this, the Hotel/Restaurant/Review seeders will crash MySQL.
+        Schema::disableForeignKeyConstraints();
+
+        // 4. Run ONLY the assigned seeders
+        $this->call([
+            CountrySeeder::class,
+            HotelSeeder::class,
+            RestaurantSeeder::class,
+            FlightSeeder::class,
+            NotificationSeeder::class,
+            ReviewSeeder::class,
+            FavouriteSeeder::class,
+        ]);
+
+        // 5. Re-enable FK constraints
+        Schema::enableForeignKeyConstraints();
     }
 }
-
