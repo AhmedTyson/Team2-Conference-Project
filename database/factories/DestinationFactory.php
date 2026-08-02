@@ -24,7 +24,6 @@ class DestinationFactory extends Factory
             'city_name' => fake()->city(),
             'description' => fake()->paragraph(),
             'image' => 'img/' . fake()->randomElement(['destination.jpg', 'Paris.jpg', 'Safari.jpg']),
-            //'rating' => fake()->randomFloat(1, 1, 5),
             'latitude' => fake()->latitude(),
             'longitude' => fake()->longitude(),
         ];

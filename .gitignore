@@ -26,3 +26,12 @@ Thumbs.db
 # Automation Scripts
 /docs/scripts/
 
+.claude/
+.opencode/
+.windsurf/
+.aider/
+.continue/
+CLAUDE.md
+AGENTS.md
+*.aiignore
+
