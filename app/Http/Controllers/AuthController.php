@@ -34,6 +34,12 @@ class AuthController extends Controller
         return response()->json([
             'message' => 'user created',
             'token' => $token,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'roles' => $user->getRoleNames(),
+            ],
         ], 201);
     }
     
@@ -50,9 +56,17 @@ class AuthController extends Controller
             ], 401);
         }
 
+        $user = auth('api')->user();
+
         return response()->json([
             'message' => 'user logged in successfully',
             'token' => $token,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'roles' => $user->getRoleNames(),
+            ],
         ]);
     }
     
@@ -63,7 +77,12 @@ class AuthController extends Controller
 
         return response()->json([
             'success' => true,
-            'user' => $user,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'roles' => $user->getRoleNames(),
+            ],
         ]);
     }
     

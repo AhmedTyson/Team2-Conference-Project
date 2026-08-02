@@ -4,7 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\TripController;
+use App\Http\Controllers\RestaurantController;
+use App\Http\Controllers\AttractionController;
 
 
 // Category Routes
@@ -28,12 +29,11 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/email/resend', [AuthController::class, 'resendVerificationEmail'])
         ->middleware(['throttle:6,1'])
         ->name('verification.resend');
-
-    //Trip 
-    Route::get('/v1/trips/create', [TripController::class, 'create']);
-    Route::post('/v1/trips', [TripController::class, 'store']);
 });
 
-//Owner trip
-Route::get('/v1/trips/{trip}', [TripController::class, 'show'])
-    ->middleware(['auth:api']);
+// Public Explorer Routes
+Route::get('restaurants', [RestaurantController::class, 'index']);
+Route::get('restaurants/{id}', [RestaurantController::class, 'show']);
+
+Route::get('attractions', [AttractionController::class, 'index']);
+Route::get('attractions/{id}', [AttractionController::class, 'show']);
