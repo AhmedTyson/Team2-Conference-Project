@@ -1,16 +1,1 @@
-[
-    {
-        "departure_airport": "JFK",
-        "arrival_airport": "CDG",
-        "departure_date": "2026-09-01 18:30:00",
-        "arrival_date": "2026-09-02 07:45:00",
-        "price": 650
-    },
-    {
-        "departure_airport": "LHR",
-        "arrival_airport": "HND",
-        "departure_date": "2026-09-16 12:00:00",
-        "arrival_date": "2026-09-17 09:30:00",
-        "price": 1120
-    }
-]
+[]

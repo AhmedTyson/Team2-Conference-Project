@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class SyncFixtures extends Command
 {
-    protected $signature = 'fixtures:sync {--only= : Comma-separated list of entities to sync (countries,hotels,restaurants,flights)} {--limit=20 : Maximum number of records to fetch per entity}';
+    protected $signature = 'fixtures:sync {--only= : Comma-separated list of entities to sync (countries,hotels,restaurants,flights)} {--limit= : Maximum number of records to fetch per entity (default: no limit)}';
     protected $description = 'Fetch fresh data from external APIs and update local JSON fixtures.';
 
     public function handle(
@@ -22,13 +22,13 @@ class SyncFixtures extends Command
     ) {
         $startTime = microtime(true);
         $only = $this->option('only') ? explode(',', $this->option('only')) : ['countries', 'hotels', 'restaurants', 'flights'];
-        $limit = (int) $this->option('limit');
+        $limit = $this->option('limit') ? (int) $this->option('limit') : null;
 
         $summary = [];
         $metaPath = database_path('seeders/fixtures/_meta.json');
         $meta = file_exists($metaPath) ? json_decode(file_get_contents($metaPath), true) : [];
 
-        $this->info("Initializing fixture sync (limit: $limit)...");
+        $this->info("Initializing fixture sync (limit: " . ($limit ?? 'None') . ")...");
 
         // 1. Sync Countries
         if (in_array('countries', $only)) {
@@ -36,6 +36,10 @@ class SyncFixtures extends Command
             $cStart = microtime(true);
             try {
                 $data = $countryService->sync();
+                // Apply limit on the array if specifically requested
+                if ($limit !== null) {
+                    $data = array_slice($data, 0, $limit);
+                }
                 $this->backupAndWrite('countries.json', $data);
                 
                 $duration = round(microtime(true) - $cStart, 2);
@@ -51,7 +55,17 @@ class SyncFixtures extends Command
             $this->info("Syncing hotels...");
             $hStart = microtime(true);
             try {
-                $data = $hotelService->sync($limit);
+                // Initialize progress bar
+                $destinationsCount = \App\Models\Destination::count();
+                $progressBar = $this->output->createProgressBar($destinationsCount);
+                $progressBar->start();
+
+                $data = $hotelService->sync($limit, function () use ($progressBar) {
+                    $progressBar->advance();
+                });
+                $progressBar->finish();
+                $this->newLine();
+
                 $this->backupAndWrite('hotels.json', $data);
 
                 $duration = round(microtime(true) - $hStart, 2);
@@ -67,7 +81,17 @@ class SyncFixtures extends Command
             $this->info("Syncing restaurants...");
             $rStart = microtime(true);
             try {
-                $data = $restaurantService->sync($limit);
+                // Initialize progress bar
+                $destinationsCount = \App\Models\Destination::count();
+                $progressBar = $this->output->createProgressBar($destinationsCount);
+                $progressBar->start();
+
+                $data = $restaurantService->sync($limit, function () use ($progressBar) {
+                    $progressBar->advance();
+                });
+                $progressBar->finish();
+                $this->newLine();
+
                 $this->backupAndWrite('restaurants.json', $data);
 
                 $duration = round(microtime(true) - $rStart, 2);
