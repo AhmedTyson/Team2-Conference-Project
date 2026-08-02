@@ -32,7 +32,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         // 401 UnAuthorized
         $exception->render(function (ValidationException $e) {
-            return response()->json()([
+            return response()->json([
                 "success" => false,
                 "message" => "Authentication token is invalid or missing.",
             ], (Response::HTTP_UNAUTHORIZED));
