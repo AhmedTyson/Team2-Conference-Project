@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(DIR))
 
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
+<<<<<<< HEAD
             'isAdmin' => IsAdmin::class,
             'cache.json' => CacheJsonResponse::class,
         ]);
@@ -29,9 +30,16 @@ return Application::configure(basePath: dirname(DIR))
 
             return route('login');
         });
+=======
+            'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+            'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+            'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+        ]);
+>>>>>>> adham
     })
 
     ->withExceptions(function (Exceptions $exceptions): void {
+<<<<<<< HEAD
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*'),
         );
@@ -56,3 +64,8 @@ return Application::configure(basePath: dirname(DIR))
     })
 
     ->create();
+=======
+        //
+    })->create();
+
+>>>>>>> adham

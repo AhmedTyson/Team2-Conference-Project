@@ -10,15 +10,12 @@ class Favourite extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'destination_id', 'note'];
+    protected $fillable = ['user_id', 'favorable_id', 'favorable_type', 'note'];
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function destination(): BelongsTo
-    {
-        return $this->belongsTo(Destination::class);
-    }
+    public function favorable() { return $this->morphTo(); }
 }

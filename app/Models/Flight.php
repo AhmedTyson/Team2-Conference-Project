@@ -11,7 +11,7 @@ class Flight extends Model
     use HasFactory;
 
     protected $fillable = [
-        'trip_id', 'airline', 'flight_number', 'departure_airport', 'arrival_airport',
+        'airline', 'flight_number', 'departure_airport', 'arrival_airport',
         'departure_date', 'arrival_date', 'price', 'booking_status',
     ];
 
@@ -23,8 +23,5 @@ class Flight extends Model
         ];
     }
 
-    public function trip(): BelongsTo
-    {
-        return $this->belongsTo(Trip::class);
-    }
+    public function trips() { return $this->belongsToMany(Trip::class); }
 }
