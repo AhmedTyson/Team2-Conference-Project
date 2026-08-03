@@ -9,10 +9,10 @@ class Sprint1IntegrationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_fady_adham_trips()
+    public function test_fady_trips()
     {
         $response1 = $this->getJson('/api/trips');
-        $response2 = $this->getJson('/api/v1/trips');
+        $response2 = $this->getJson('/api/v1/trips/create');
         
         $this->assertTrue($response1->status() !== 404 || $response2->status() !== 404, 'Trips endpoint missing entirely');
     }

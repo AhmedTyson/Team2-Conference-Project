@@ -17,6 +17,7 @@ use App\Http\Controllers\DestinationController;
 use App\Http\Controllers\HotelController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\AttractionController;
+use App\Http\Controllers\TripController;
 use App\Http\Controllers\Api\V1\ContactController;
 use App\Http\Controllers\Api\V1\InteractionController;
 use App\Http\Controllers\Api\V1\Admin\ContactMessageController;
@@ -64,6 +65,10 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::apiResource('surveys', SurveyController::class);
 
+    //Trip 
+    Route::get('/v1/trips/create', [TripController::class, 'create']);
+    Route::post('/v1/trips', [TripController::class, 'store']);
+
     // Admin Routes
     Route::middleware(['role:admin'])->prefix('v1/admin')->group(function () {
         // Contact Inbox
@@ -78,6 +83,10 @@ Route::middleware(['auth:api'])->group(function () {
 });
 
 
+
+//Owner trip
+Route::get('/v1/trips/{trip}', [TripController::class, 'show'])
+    ->middleware(['auth:api']);
 
 // Public Explorer Routes
 Route::prefix('v1')->group(function () {
