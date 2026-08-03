@@ -21,7 +21,7 @@ class Trip extends Model
     protected function casts(): array
     {
         return [
-            => TripStatus::class,
+            'status' => TripStatus::class,
             'interests' => 'array',
             'start_date' => 'date',
             'end_date' => 'date',
@@ -75,6 +75,7 @@ class Trip extends Model
         return $this->morphedByMany(Restaurant::class, 'item', 'trip_items')->withTimestamps();
     }
 }
+
 
 
 
