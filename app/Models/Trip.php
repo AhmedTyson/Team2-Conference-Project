@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Enums\TripStatus;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -15,12 +16,12 @@ class Trip extends Model
 
     protected $fillable = [
         'user_id', 'title', 'travel_style', 'interests', 'no_of_travelers',
-        'budget', 'no_of_days', 'start_date', 'end_date', 'status', 'estimate_cost',
-    ];
+        'budget', 'no_of_days', 'start_date', 'end_date', ];
 
     protected function casts(): array
     {
         return [
+            'status' => TripStatus::class,
             'interests' => 'array',
             'start_date' => 'date',
             'end_date' => 'date',
@@ -44,9 +45,9 @@ class Trip extends Model
             ->withTimestamps();
     }
 
-    public function flights(): HasMany
+    public function flights(): MorphToMany
     {
-        return $this->hasMany(Flight::class);
+        return $this->morphedByMany(Flight::class, 'item', 'trip_items')->withTimestamps();
     }
 
     public function itineraryItems(): HasMany
@@ -61,16 +62,20 @@ class Trip extends Model
 
     public function hotels(): MorphToMany
     {
-        return $this->morphedByMany(Hotel::class, 'tripable', 'tripables')->withTimestamps();
+        return $this->morphedByMany(Hotel::class, 'item', 'trip_items')->withTimestamps();
     }
 
     public function attractions(): MorphToMany
     {
-        return $this->morphedByMany(Attraction::class, 'tripable', 'tripables')->withTimestamps();
+        return $this->morphedByMany(Attraction::class, 'item', 'trip_items')->withTimestamps();
     }
 
     public function restaurants(): MorphToMany
     {
-        return $this->morphedByMany(Restaurant::class, 'tripable', 'tripables')->withTimestamps();
+        return $this->morphedByMany(Restaurant::class, 'item', 'trip_items')->withTimestamps();
     }
 }
+
+
+
+

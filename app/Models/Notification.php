@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Enums\NotificationStatus;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Notification extends Model
@@ -15,6 +16,7 @@ class Notification extends Model
     protected function casts(): array
     {
         return [
+            'status' => NotificationStatus::class,
             'data' => 'array',
         ];
     }
@@ -24,3 +26,5 @@ class Notification extends Model
         return $this->belongsTo(User::class);
     }
 }
+
+

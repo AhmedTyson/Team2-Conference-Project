@@ -13,6 +13,8 @@ Route::get('/user', function (Request $request) {
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\RestaurantController;
+use App\Http\Controllers\AttractionController;
 
 
 // Category Routes
@@ -36,5 +38,16 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/email/resend', [AuthController::class, 'resendVerificationEmail'])
         ->middleware(['throttle:6,1'])
         ->name('verification.resend');
+
     Route::apiResource('surveys', SurveyController::class);
 });
+
+
+
+// Public Explorer Routes
+Route::get('restaurants', [RestaurantController::class, 'index']);
+Route::get('restaurants/{id}', [RestaurantController::class, 'show']);
+
+Route::get('attractions', [AttractionController::class, 'index']);
+Route::get('attractions/{id}', [AttractionController::class, 'show']);
+

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Enums\BudgetLevel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Survey extends Model
@@ -15,6 +16,7 @@ class Survey extends Model
     protected function casts(): array
     {
         return [
+            'budget_level' => BudgetLevel::class,
             'interests' => 'array',
         ];
     }
@@ -24,3 +26,5 @@ class Survey extends Model
         return $this->belongsTo(User::class);
     }
 }
+
+

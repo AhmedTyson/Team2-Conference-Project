@@ -16,11 +16,7 @@ return new class extends Migration
 
             $table->string('travel_style');
 
-            $table->enum('budget_level',[
-                'low',
-                'medium',
-                'high'
-            ]);
+            $table->string('budget_level');
 
             $table->json('interests');
 
@@ -38,3 +34,5 @@ return new class extends Migration
         Schema::dropIfExists('surveys');
     }
 };
+
+

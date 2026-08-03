@@ -4,7 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Enums\FlightStatus;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Flight extends Model
 {
@@ -12,16 +14,25 @@ class Flight extends Model
 
     protected $fillable = [
         'airline', 'flight_number', 'departure_airport', 'arrival_airport',
-        'departure_date', 'arrival_date', 'price', 'booking_status',
-    ];
+        'departure_date', 'arrival_date', ];
 
     protected function casts(): array
     {
         return [
+            'booking_status' => FlightStatus::class,
             'departure_date' => 'datetime',
             'arrival_date' => 'datetime',
         ];
     }
 
-    public function trips() { return $this->belongsToMany(Trip::class); }
+    public function trips(): MorphToMany { return $this->morphToMany(Trip::class, 'item', 'trip_items')->withTimestamps(); }
+    public function favourites(): MorphMany
+    {
+        return $this->morphMany(Favourite::class, 'favorable');
+    }
+    public function itineraryItems(): MorphMany
+    {
+        return $this->morphMany(ItineraryItem::class, 'itemable');
+    }
 }
+
