@@ -3,6 +3,7 @@ namespace App\Enums;
 
 enum ContactMessageStatus: string
 {
-    case PENDING = 'pending';
+    case UNREAD = 'unread';
+    case READ = 'read';
     case RESOLVED = 'resolved';
 }
