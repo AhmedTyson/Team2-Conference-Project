@@ -8,9 +8,12 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        return new CategoryResource(Category::all());
+return CategoryResource::collection(Category::all());
     }
 
     public function store(Request $request)
@@ -21,14 +24,20 @@ class CategoryController extends Controller
 
         $category = Category::create($request->all());
 
-        return response()->json($category, 201);
+        return new CategoryResource($category);
     }
 
+    /**
+     * Display the specified resource.
+     */
     public function show(Category $category)
     {
-        return $category;
+        return new CategoryResource($category);
     }
 
+    /**
+     * Update the specified resource in storage.
+     */
     public function update(Request $request, Category $category)
     {
         $request->validate([
@@ -37,9 +46,12 @@ class CategoryController extends Controller
 
         $category->update($request->all());
 
-        return response()->json($category);
+        return new CategoryResource($category);
     }
 
+    /**
+     * Remove the specified resource from storage.
+     */
     public function destroy(Category $category)
     {
         $category->delete();

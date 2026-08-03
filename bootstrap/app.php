@@ -54,4 +54,3 @@ return Application::configure(basePath: dirname(__DIR__))
             ], Response::HTTP_NOT_FOUND);
         });
     })->create();
-

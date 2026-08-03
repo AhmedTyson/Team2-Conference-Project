@@ -22,7 +22,15 @@ use App\Http\Controllers\Api\V1\Admin\SettingController;
 
 
 // Category Routes
-Route::apiResource('categories', CategoryController::class);
+Route::prefix('v1')->group(function () {
+    Route::get('/categories', [CategoryController::class, 'index']);
+    Route::get('/categories/{category}', [CategoryController::class, 'show']);
+});
+
+Route::middleware(['auth:api', 'role:admin'])->prefix('v1/admin')->group(function () {
+    Route::post('/categories', [CategoryController::class, 'store']);
+    Route::put('/categories/{category}', [CategoryController::class, 'update']);
+});
 
 // Public routes 
 Route::post('/register', [AuthController::class, 'register']);
