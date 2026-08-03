@@ -19,3 +19,5 @@ class ContactMessage extends Model
         ];
     }
 }
+
+
