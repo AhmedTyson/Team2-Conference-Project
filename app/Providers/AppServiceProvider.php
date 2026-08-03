@@ -10,6 +10,8 @@ use App\Models\Restaurant;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
+use App\Interfaces\SurveyRepositoryInterface;
+use App\Repositories\SurveyRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -18,7 +20,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(
+    SurveyRepositoryInterface::class,
+    SurveyRepository::class
+    );
     }
 
     /**
