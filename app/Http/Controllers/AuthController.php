@@ -6,6 +6,7 @@ use App\Models\Role;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Auth\Events\Verified;
 
 class AuthController extends Controller
 {
@@ -25,6 +26,7 @@ class AuthController extends Controller
             ]);
 
             $user->assignRole($role);
+            $user->sendEmailVerificationNotification();
 
             $token = auth('api')->login($user);
         } catch (Exception $ex) {
