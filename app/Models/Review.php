@@ -28,7 +28,8 @@ class Review extends Model
     protected function casts(): array
     {
         return [
-            => ReviewStatus::class,
+            'status' => ReviewStatus::class,
         ];
     }
 }
+
