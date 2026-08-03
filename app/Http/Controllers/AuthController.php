@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Verified;
 
 class AuthController extends Controller
 {
@@ -27,6 +28,7 @@ class AuthController extends Controller
             ]);
 
             $user->assignRole($role);
+            $user->sendEmailVerificationNotification();
 
             $token = auth('api')->login($user);
         } catch (Exception $ex) {
