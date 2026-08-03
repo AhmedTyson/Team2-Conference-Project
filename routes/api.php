@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\AttractionController;
+use App\Http\Controllers\Api\V1\ContactController;
 use App\Http\Controllers\Api\V1\InteractionController;
 
 
@@ -15,6 +16,7 @@ Route::apiResource('categories', CategoryController::class);
 // Public routes 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/v1/contacts', [ContactController::class, 'store']);
 
 // verification email 
 Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
