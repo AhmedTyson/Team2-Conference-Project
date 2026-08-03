@@ -26,6 +26,8 @@ Route::middleware(['auth:api', 'role:admin'])->prefix('v1/admin')->group(functio
 // Public routes 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/forgot-password', [AuthController::class, 'forgetPassword']);
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.reset');
 Route::post('/v1/contacts', [ContactController::class, 'store']);
 
 // verification email 
@@ -37,6 +39,7 @@ Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
 Route::middleware(['auth:api'])->group(function () {
     Route::get('/user', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::get('/email/verify-notice', [AuthController::class, 'verificationNotice'])
         ->name('verification.notice');
     Route::post('/email/resend', [AuthController::class, 'resendVerificationEmail'])
