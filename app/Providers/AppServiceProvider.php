@@ -2,6 +2,12 @@
 
 namespace App\Providers;
 
+use App\Models\Attraction;
+use App\Models\Destination;
+use App\Models\Flight;
+use App\Models\Hotel;
+use App\Models\Restaurant;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 
@@ -21,11 +27,12 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Relation::enforceMorphMap([
-            'hotel'       => \App\Models\Hotel::class,
-            'restaurant'  => \App\Models\Restaurant::class,
-            'attraction'  => \App\Models\Attraction::class,
-            'destination' => \App\Models\Destination::class,
-            'flight'      => \App\Models\Flight::class,
+            'user'        => User::class,
+            'hotel'       => Hotel::class,
+            'restaurant'  => Restaurant::class,
+            'attraction'  => Attraction::class,
+            'destination' => Destination::class,
+            'flight'      => Flight::class,
         ]);
     }
 }

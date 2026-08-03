@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Api\V1;
 use App\Enums\ReviewStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreReviewRequest;
+use App\Http\Resources\FavouriteResource;
+use App\Http\Resources\ReviewResource;
 use App\Models\Review;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class InteractionController extends Controller
@@ -28,7 +31,7 @@ class InteractionController extends Controller
     /**
      * Toggle a favorite for a given entity.
      */
-    public function toggleFavourite(Request $request, string $type, $id)
+    public function toggleFavourite(Request $request, string $type, int $id): JsonResponse
     {
         if ($type === 'flight') {
             abort(400, "Flights cannot be favourited.");
@@ -54,14 +57,14 @@ class InteractionController extends Controller
         return response()->json([
             'message' => 'Added to favourites',
             'status'  => 'added',
-            'data'    => new \App\Http\Resources\FavouriteResource($favourite)
+            'data'    => new FavouriteResource($favourite)
         ], 201);
     }
 
     /**
      * Store a new review for a given entity.
      */
-    public function storeReview(StoreReviewRequest $request, string $type, $id)
+    public function storeReview(StoreReviewRequest $request, string $type, int $id): JsonResponse
     {
         $class = $this->resolveModelClass($type);
         $entity = $class::findOrFail($id);
@@ -75,14 +78,14 @@ class InteractionController extends Controller
 
         return response()->json([
             'message' => 'Review submitted successfully',
-            'data'    => new \App\Http\Resources\ReviewResource($review)
+            'data'    => new ReviewResource($review)
         ], 201);
     }
 
     /**
      * Delete an existing review.
      */
-    public function destroyReview(Request $request, $id)
+    public function destroyReview(Request $request, int $id): JsonResponse
     {
         $review = Review::findOrFail($id);
 
