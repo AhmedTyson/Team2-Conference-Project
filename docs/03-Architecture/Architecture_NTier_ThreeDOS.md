@@ -45,7 +45,7 @@ The client contract. JSON in/out only. No Blade for data routes.
 | 2 Onboarding | 8–9 | `Api\V1\SurveyController` | `SurveyResource` |
 | 3 Trip Planner | 10–14 | `Api\V1\TripController`, `BookingController` | `TripResource`, `ItineraryResource` |
 | 4 Explore | 15–22 | `Api\V1\DestinationController`, `HotelController`, `RestaurantController`, `AttractionController` | `DestinationResource`, `HotelResource`, `RestaurantResource`, `AttractionResource` |
-| 5 Community | 23–25 | `Api\V1\FavouriteController`, `ReviewController` | `FavouriteResource`, `ReviewResource` |
+| 5 Community | 23–25 | `Api\V1\InteractionController` | `FavouriteResource`, `ReviewResource` |
 | 6 AI/External | 28–29 | `Api\V1\WeatherController`, `TripController@generateItinerary` | `WeatherResource` |
 | 7 Maps | 30–31 | `Api\V1\MapController` | `MapResource` |
 | 8 User Dashboard | 32–34 | `Api\V1\DashboardController` | — |
