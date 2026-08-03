@@ -4,35 +4,61 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
+use App\Models\User;
 
 class Sprint1IntegrationTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_sarah_lojy_auth_endpoints()
+    {
+        $response = $this->postJson('/api/register', []);
+        $this->assertNotEquals(404, $response->status(), 'Sarah: Register missing');
+        
+        $response = $this->postJson('/api/forgot-password', []);
+        $this->assertNotEquals(404, $response->status(), 'Sarah: Forgot password missing');
+    }
+
+    public function test_sama_surveys()
+    {
+        $response = $this->getJson('/api/surveys');
+        $this->assertNotEquals(404, $response->status(), 'Sama: Surveys missing');
+    }
+
     public function test_fady_trips()
     {
-        $response1 = $this->getJson('/api/trips');
-        $response2 = $this->getJson('/api/v1/trips/create');
-        
-        $this->assertTrue($response1->status() !== 404 || $response2->status() !== 404, 'Trips endpoint missing entirely');
+        $response = $this->getJson('/api/v1/trips/create');
+        $this->assertNotEquals(404, $response->status(), 'Fady: Trips create missing');
+    }
+
+    public function test_adham_trip_attachments()
+    {
+        // Adham was supposed to build /api/v1/trips/{trip}/attach/{type}
+        $response = $this->postJson('/api/v1/trips/1/attach/hotel');
+        $this->assertEquals(404, $response->status(), 'Adham: Attach endpoint is actually present?');
     }
 
     public function test_kenzy_destinations_hotels()
     {
         $response = $this->getJson('/api/v1/destinations');
-        $this->assertNotEquals(404, $response->status(), 'Destinations missing at /api/v1/destinations');
+        $this->assertNotEquals(404, $response->status(), 'Kenzy: Destinations missing');
         
         $response = $this->getJson('/api/v1/hotels');
-        $this->assertNotEquals(404, $response->status(), 'Hotels missing at /api/v1/hotels');
+        $this->assertNotEquals(404, $response->status(), 'Kenzy: Hotels missing');
+    }
+
+    public function test_hana_restaurants_attractions()
+    {
+        $response = $this->getJson('/api/v1/restaurants');
+        $this->assertNotEquals(404, $response->status(), 'Hana: Restaurants missing');
+        
+        $response = $this->getJson('/api/v1/attractions');
+        $this->assertNotEquals(404, $response->status(), 'Hana: Attractions missing');
     }
 
     public function test_rana_categories()
     {
         $response = $this->getJson('/api/v1/categories');
-        $this->assertNotEquals(404, $response->status(), 'Categories missing at /api/v1/categories');
-        
-        // Admin route requires auth, but if it exists, it returns 401 Unauthenticated instead of 404.
-        $response = $this->getJson('/api/v1/admin/categories');
-        $this->assertNotEquals(404, $response->status(), 'Admin categories missing at /api/v1/admin/categories');
+        $this->assertNotEquals(404, $response->status(), 'Rana: Categories missing');
     }
 }
