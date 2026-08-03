@@ -16,7 +16,7 @@ Route::apiResource('categories', CategoryController::class);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/forgot-password', [AuthController::class, 'forgetPassword']);
-Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.reset');
 
 // verification email 
 Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])

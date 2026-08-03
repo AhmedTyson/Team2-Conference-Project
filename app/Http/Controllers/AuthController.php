@@ -73,7 +73,7 @@ class AuthController extends Controller
     }
     
     // Profile
-    public function profile()
+    public function me()
     {
         $user = auth('api')->user();
 
@@ -177,9 +177,9 @@ class AuthController extends Controller
         $stat = Password::sendResetLink($request->only('email'));
 
         if($stat == Password::RESET_LINK_SENT){
-            return response()->json(["message"->$stat]);
+            return response()->json(["message" => __($stat)]);
         }
-        return response()->json(["message" => $stat], 422);
+        return response()->json(["message" => __($stat)], 422);
     }
 
     // ResetPass
@@ -194,7 +194,7 @@ class AuthController extends Controller
             $request->only(
                 'email',
                 'password',
-                'passwrod_confirmation',
+                'password_confirmation',
                 'token'
             ),
             function (User $user, string $password) {
