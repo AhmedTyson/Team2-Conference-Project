@@ -47,10 +47,10 @@ These are deferred to Sprint 2.
 ### Task 3: Validation & API Resources
 **Description:** Ensure incoming data is valid and outgoing data is properly formatted.
 **Acceptance criteria:**
-- [ ] Create `StoreReviewRequest` to validate `rating` (1-5) and `comment` (string, max 1000).
-- [ ] **Register explicit morph map** via `Relation::enforceMorphMap()` in `AppServiceProvider::boot()` with keys: `'hotel'`, `'restaurant'`, `'attraction'`, `'destination'`, and `'flight'` (reviews only).
-- [ ] Ensure `{type}` route parameter is validated strictly against the registered morph map keys.
-- [ ] Create `ReviewResource` and `FavouriteResource` for JSON responses.
+- [x] Create `StoreReviewRequest` to validate `rating` (1-5) and `comment` (string, max 1000).
+- [x] **Register explicit morph map** via `Relation::enforceMorphMap()` in `AppServiceProvider::boot()` with keys: `'hotel'`, `'restaurant'`, `'attraction'`, `'destination'`, and `'flight'` (reviews only).
+- [x] Ensure `{type}` route parameter is validated strictly against the registered morph map keys.
+- [x] Create `ReviewResource` and `FavouriteResource` for JSON responses.
 **Files likely touched:**
 - `app/Http/Requests/StoreReviewRequest.php`
 - `app/Providers/AppServiceProvider.php`

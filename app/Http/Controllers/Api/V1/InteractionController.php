@@ -30,6 +30,10 @@ class InteractionController extends Controller
      */
     public function toggleFavourite(Request $request, string $type, $id)
     {
+        if ($type === 'flight') {
+            abort(400, "Flights cannot be favourited.");
+        }
+
         $class = $this->resolveModelClass($type);
         $entity = $class::findOrFail($id);
 
@@ -43,13 +47,14 @@ class InteractionController extends Controller
             ]);
         }
 
-        $entity->favourites()->create([
+        $favourite = $entity->favourites()->create([
             'user_id' => $request->user()->id,
         ]);
 
         return response()->json([
             'message' => 'Added to favourites',
-            'status'  => 'added'
+            'status'  => 'added',
+            'data'    => new \App\Http\Resources\FavouriteResource($favourite)
         ], 201);
     }
 
@@ -70,7 +75,7 @@ class InteractionController extends Controller
 
         return response()->json([
             'message' => 'Review submitted successfully',
-            'data'    => $review
+            'data'    => new \App\Http\Resources\ReviewResource($review)
         ], 201);
     }
 
