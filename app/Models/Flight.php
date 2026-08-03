@@ -26,9 +26,9 @@ class Flight extends Model
     }
 
     public function trips(): MorphToMany { return $this->morphToMany(Trip::class, 'item', 'trip_items')->withTimestamps(); }
-    public function favourites(): MorphMany
+    public function reviews(): MorphMany
     {
-        return $this->morphMany(Favourite::class, 'favorable');
+        return $this->morphMany(Review::class, 'reviewable');
     }
     public function itineraryItems(): MorphMany
     {
