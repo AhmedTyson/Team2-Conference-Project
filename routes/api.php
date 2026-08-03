@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\AttractionController;
+use App\Http\Controllers\Api\V1\InteractionController;
 
 
 // Category Routes
@@ -29,6 +30,11 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/email/resend', [AuthController::class, 'resendVerificationEmail'])
         ->middleware(['throttle:6,1'])
         ->name('verification.resend');
+
+    // User Interactions (Community)
+    Route::post('/v1/favourites/{type}/{id}', [InteractionController::class, 'toggleFavourite']);
+    Route::post('/v1/reviews/{type}/{id}', [InteractionController::class, 'storeReview']);
+    Route::delete('/v1/reviews/{id}', [InteractionController::class, 'destroyReview']);
 });
 
 // Public Explorer Routes
