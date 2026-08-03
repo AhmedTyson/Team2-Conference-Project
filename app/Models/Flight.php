@@ -19,7 +19,7 @@ class Flight extends Model
     protected function casts(): array
     {
         return [
-            => FlightStatus::class,
+            'booking_status' => FlightStatus::class,
             'departure_date' => 'datetime',
             'arrival_date' => 'datetime',
         ];
@@ -35,3 +35,4 @@ class Flight extends Model
         return $this->morphMany(ItineraryItem::class, 'itemable');
     }
 }
+
