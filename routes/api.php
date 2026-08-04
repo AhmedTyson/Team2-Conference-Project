@@ -102,3 +102,11 @@ Route::prefix('v1')->group(function () {
     Route::get('attractions', [AttractionController::class, 'index']);
     Route::get('attractions/{id}', [AttractionController::class, 'show']);
 });
+Route::prefix('v1/admin')
+    ->middleware(['auth:api', 'role:Admin'])
+    ->group(function () {
+        Route::get('hotels', [HotelController::class, 'index']);
+        Route::post('hotels', [HotelController::class, 'store']);
+        Route::put('hotels/{id}', [HotelController::class, 'update']);
+        Route::delete('hotels/{id}', [HotelController::class, 'destroy']);
+    });
