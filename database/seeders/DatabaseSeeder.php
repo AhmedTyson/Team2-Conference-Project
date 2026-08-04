@@ -43,6 +43,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             CountrySeeder::class,
             HotelSeeder::class,
+            DestinationSeeder::class,
             RestaurantSeeder::class,
             FlightSeeder::class,
             NotificationSeeder::class,
