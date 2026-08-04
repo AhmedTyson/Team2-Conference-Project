@@ -8,14 +8,13 @@ use Illuminate\Http\Request;
 
 class HotelController extends Controller
 {
-    // List all hotels
-    public function index()
-    {
-        $hotels = Hotel::with('destination')->get();
+    // List all hotels with pagination
+public function index()
+{
+    $hotels = Hotel::with('destination')->paginate(10);
 
-        return HotelResource::collection($hotels);
-    }
-
+    return HotelResource::collection($hotels);
+}
     // Show a single hotel
     public function show($id)
     {
@@ -51,6 +50,7 @@ class HotelController extends Controller
     // Delete a hotel
     public function destroy($id)
     {
+
         $hotel = Hotel::findOrFail($id);
 
         $hotel->delete();
