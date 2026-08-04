@@ -22,7 +22,7 @@ use App\Http\Controllers\Api\V1\ContactController;
 use App\Http\Controllers\Api\V1\InteractionController;
 use App\Http\Controllers\Api\V1\Admin\ContactMessageController;
 use App\Http\Controllers\Api\V1\Admin\SettingController;
-
+use App\Http\Controllers\Api\V1\AdminReviewController;
 
 // Category Routes
 Route::prefix('v1')->group(function () {
@@ -79,9 +79,14 @@ Route::middleware(['auth:api'])->group(function () {
         // Settings
         Route::get('/settings', [SettingController::class, 'index']);
         Route::put('/settings', [SettingController::class, 'update']);
+  
+        Route::get('/reviews', [AdminReviewController::class, 'index']);
+        Route::patch('/reviews/{id}/approve', [AdminReviewController::class, 'approve']);
+       Route::patch('/reviews/{id}/reject', [AdminReviewController::class, 'reject']);
+       Route::delete('/reviews/{id}', [AdminReviewController::class, 'destroy']);
     });
 });
-
+    
 
 
 //Owner trip
@@ -102,3 +107,4 @@ Route::prefix('v1')->group(function () {
     Route::get('attractions', [AttractionController::class, 'index']);
     Route::get('attractions/{id}', [AttractionController::class, 'show']);
 });
+
