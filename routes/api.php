@@ -24,6 +24,7 @@ use App\Http\Controllers\Admin\AdminTripController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\AdminHotelController;
+use App\Http\Controllers\Admin\DestinationController as AdminDestinationController;
 
 // Category Routes
 Route::prefix('v1')->group(function () {
@@ -93,6 +94,16 @@ Route::middleware(['auth:api'])->group(function () {
         Route::get('/trips', [AdminTripController::class, 'index'])->middleware('permission:manage trips');
         Route::put('/trips/{id}', [AdminTripController::class, 'update'])->middleware('permission:manage trips');
         Route::delete('/trips/{id}', [AdminTripController::class, 'destroy'])->middleware('permission:manage trips');
+
+        // Destinations Management (Tyson)
+        Route::get('/destinations', [AdminDestinationController::class, 'index'])
+            ->middleware('permission:manage destinations')->name('destinations.index');
+        Route::post('/destinations', [AdminDestinationController::class, 'store'])
+            ->middleware('permission:manage destinations')->name('destinations.store');
+        Route::put('/destinations/{id}', [AdminDestinationController::class, 'update'])
+            ->middleware('permission:manage destinations')->name('destinations.update');
+        Route::delete('/destinations/{id}', [AdminDestinationController::class, 'destroy'])
+            ->middleware('permission:manage destinations')->name('destinations.destroy');
 
         // Contact Inbox (Tyson)
         Route::get('/contacts', [ContactMessageController::class, 'index'])
