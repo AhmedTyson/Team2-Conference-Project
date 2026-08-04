@@ -25,7 +25,7 @@ use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\AdminHotelController;
 use App\Http\Controllers\Admin\DestinationController as AdminDestinationController;
-
+use App\Http\Controllers\Admin\AdminCountryController;
 // Category Routes
 Route::prefix('v1')->group(function () {
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
@@ -124,6 +124,20 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('hotels', [AdminHotelController::class, 'store'])->middleware('permission:manage hotels');
         Route::put('hotels/{id}', [AdminHotelController::class, 'update'])->middleware('permission:manage hotels');
         Route::delete('hotels/{id}', [AdminHotelController::class, 'destroy'])->middleware('permission:manage hotels');
+
+
+        // Countries Management (Sama)
+     Route::get('/countries', [AdminCountryController::class, 'index'])
+    ->middleware('permission:manage countries');
+
+      Route::post('/countries', [AdminCountryController::class, 'store'])
+    ->middleware('permission:manage countries');
+
+     Route::put('/countries/{id}', [AdminCountryController::class, 'update'])
+    ->middleware('permission:manage countries');
+
+     Route::delete('/countries/{id}', [AdminCountryController::class, 'destroy'])
+    ->middleware('permission:manage countries'); 
     });
 });
 
