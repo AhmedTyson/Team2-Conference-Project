@@ -11,8 +11,8 @@ use App\Http\Controllers\Api\V1\ContactController;
 use App\Http\Controllers\Api\V1\InteractionController;
 use App\Http\Controllers\Api\V1\Admin\ContactMessageController;
 use App\Http\Controllers\Api\V1\Admin\SettingController;
-
-
+use App\Http\Controllers\MapController;
+use App\Http\Controllers\AdminAttractionController;
 // Category Routes
 Route::apiResource('categories', CategoryController::class);
 
@@ -53,15 +53,22 @@ Route::get('/v1/trips/{trip}', [TripController::class, 'show'])
     Route::delete('/v1/reviews/{id}', [InteractionController::class, 'destroyReview']);
 
     // Admin Routes
-    Route::middleware(['role:admin'])->prefix('v1/admin')->group(function () {
+    Route::prefix('v1/admin')->group(function () {
         // Contact Inbox
         Route::get('/contacts', [ContactMessageController::class, 'index']);
-        Route::patch('/contacts/{id}/read', [ContactMessageController::class, 'markAsRead']);
+        Route::patch('/contacts/{id}/read', [ContactMessageController::class, 'markAsRead'])
+        ->middleware('permission:manage contacts');
         Route::patch('/contacts/{id}/resolve', [ContactMessageController::class, 'markAsResolved']);
 
         // Settings
         Route::get('/settings', [SettingController::class, 'index']);
         Route::put('/settings', [SettingController::class, 'update']);
+
+        // Attractions
+        Route::get('/attractions', [AdminAttractionController::class, 'index']);
+        Route::post('/attractions', [AdminAttractionController::class, 'store']);
+        Route::put('/attractions/{id}', [AdminAttractionController::class, 'update']);
+        Route::delete('/attractions/{id}', [AdminAttractionController::class, 'destroy']);
     });
 
 
@@ -71,3 +78,8 @@ Route::get('restaurants/{id}', [RestaurantController::class, 'show']);
 
 Route::get('attractions', [AttractionController::class, 'index']);
 Route::get('attractions/{id}', [AttractionController::class, 'show']);
+
+// Maps
+
+Route::get('v1/maps/destination/{destination}', [MapController::class, 'destination']);
+Route::get('v1/maps/trip/{trip}', [MapController::class, 'trip'])->middleware(['auth:api']);

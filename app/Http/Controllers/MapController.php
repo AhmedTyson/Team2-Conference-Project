@@ -5,9 +5,12 @@ namespace App\Http\Controllers;
 use App\Services\Fixtures\OpenStreetService;
 use App\Models\Destination;
 use App\Models\Trip;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class MapController extends Controller
 {
+    use AuthorizesRequests;
+
     public function destination(Destination $destination, OpenStreetService $maps)
     {
         // لو مفيش lat/lng متخزنة، هات واحفظها
@@ -34,15 +37,23 @@ class MapController extends Controller
 
         $this->authorize('view',$trip);
 
-        $points = $trip->itineraryPoints()->orderBy()->get(['latitude,longitude']);
+        $points = $trip->itineraryPoints()->orderBy('order')->get(['latitude','longitude']);
 
         if($points->count()<2){
             return response()->json([
                 "success"=>false,
                 "message"=>"you must enter 2 points"
-            ]);
+            ],422);
         }
 
-        
+        $origin = ['lat' => $points->first()->latitude, 'lng' => $points->first()->longitude];
+        $destination = ['lat' => $points->last()->latitude, 'lng' => $points->last()->longitude];
+        $waypoints = $points->slice(1, -1)->map(fn ($p) => ['lat' => $p->latitude, 'lng' => $p->longitude])->values()->toArray();
+
+        $directions = $osm->getDirections($origin, $destination, $waypoints);
+
+        return response()->json(['directions' => $directions]);
+
+
     }
 }
