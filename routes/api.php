@@ -3,14 +3,6 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\SurveyController;
-
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
-
-
-
-
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DestinationController;
@@ -22,6 +14,7 @@ use App\Http\Controllers\Api\V1\ContactController;
 use App\Http\Controllers\Api\V1\InteractionController;
 use App\Http\Controllers\Api\V1\Admin\ContactMessageController;
 use App\Http\Controllers\Api\V1\Admin\SettingController;
+use App\Http\Controllers\WeatherController;
 
 
 // Category Routes
@@ -102,3 +95,6 @@ Route::prefix('v1')->group(function () {
     Route::get('attractions', [AttractionController::class, 'index']);
     Route::get('attractions/{id}', [AttractionController::class, 'show']);
 });
+
+// weather
+Route::get('/weather', [WeatherController::class, 'show']);
