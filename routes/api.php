@@ -19,13 +19,15 @@ use App\Http\Controllers\WeatherController;
 
 // Category Routes
 Route::prefix('v1')->group(function () {
-    Route::get('/categories', [CategoryController::class, 'index']);
-    Route::get('/categories/{category}', [CategoryController::class, 'show']);
+    Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
+    Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
 });
 
-Route::middleware(['auth:api', 'role:admin'])->prefix('v1/admin')->group(function () {
-    Route::post('/categories', [CategoryController::class, 'store']);
-    Route::put('/categories/{category}', [CategoryController::class, 'update']);
+Route::middleware(['auth:api'])->prefix('v1/admin')->name('admin.')->group(function () {
+    Route::post('/categories', [CategoryController::class, 'store'])
+        ->middleware('permission:manage categories')->name('categories.store');
+    Route::put('/categories/{category}', [CategoryController::class, 'update'])
+        ->middleware('permission:manage categories')->name('categories.update');
 });
 
 // Public routes 
@@ -63,15 +65,20 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/v1/trips', [TripController::class, 'store']);
 
     // Admin Routes
-    Route::middleware(['role:admin'])->prefix('v1/admin')->group(function () {
+    Route::prefix('v1/admin')->name('admin.')->group(function () {
         // Contact Inbox
-        Route::get('/contacts', [ContactMessageController::class, 'index']);
-        Route::patch('/contacts/{id}/read', [ContactMessageController::class, 'markAsRead']);
-        Route::patch('/contacts/{id}/resolve', [ContactMessageController::class, 'markAsResolved']);
+        Route::get('/contacts', [ContactMessageController::class, 'index'])
+            ->middleware('permission:manage contacts')->name('contacts.index');
+        Route::patch('/contacts/{id}/read', [ContactMessageController::class, 'markAsRead'])
+            ->middleware('permission:manage contacts')->name('contacts.read');
+        Route::patch('/contacts/{id}/resolve', [ContactMessageController::class, 'markAsResolved'])
+            ->middleware('permission:manage contacts')->name('contacts.resolve');
 
         // Settings
-        Route::get('/settings', [SettingController::class, 'index']);
-        Route::put('/settings', [SettingController::class, 'update']);
+        Route::get('/settings', [SettingController::class, 'index'])
+            ->middleware('permission:manage settings')->name('settings.index');
+        Route::put('/settings', [SettingController::class, 'update'])
+            ->middleware('permission:manage settings')->name('settings.update');
     });
 });
 

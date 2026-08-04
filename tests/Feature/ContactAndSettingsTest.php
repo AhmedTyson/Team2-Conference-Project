@@ -20,7 +20,12 @@ class ContactAndSettingsTest extends TestCase
 
         // Create standard and admin roles
         Role::create(['name' => 'traveler', 'guard_name' => 'api']);
-        Role::create(['name' => 'admin', 'guard_name' => 'api']);
+        $adminRole = Role::create(['name' => 'admin', 'guard_name' => 'api']);
+        
+        \Spatie\Permission\Models\Permission::create(['name' => 'manage contacts', 'guard_name' => 'api']);
+        \Spatie\Permission\Models\Permission::create(['name' => 'manage settings', 'guard_name' => 'api']);
+        
+        $adminRole->syncPermissions(['manage contacts', 'manage settings']);
     }
 
     public function test_public_user_can_submit_contact_message()
