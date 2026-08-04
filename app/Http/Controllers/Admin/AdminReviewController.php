@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\V1;
+namespace App\Http\Controllers\Admin;
 
 use App\Enums\ReviewStatus;
 use App\Http\Controllers\Controller;
