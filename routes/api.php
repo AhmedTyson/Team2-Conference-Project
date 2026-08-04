@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\V1\InteractionController;
 use App\Http\Controllers\Api\V1\Admin\ContactMessageController;
 use App\Http\Controllers\Api\V1\Admin\SettingController;
 use App\Http\Controllers\WeatherController;
+use App\Http\Controllers\AdminTripController;
 
 
 // Category Routes
@@ -32,7 +33,7 @@ Route::middleware(['auth:api'])->prefix('v1/admin')->name('admin.')->group(funct
 
 // Public routes 
 Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/forgot-password', [AuthController::class, 'forgetPassword']);
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.reset');
 Route::post('/v1/contacts', [ContactController::class, 'store']);
@@ -79,8 +80,17 @@ Route::middleware(['auth:api'])->group(function () {
             ->middleware('permission:manage settings')->name('settings.index');
         Route::put('/settings', [SettingController::class, 'update'])
             ->middleware('permission:manage settings')->name('settings.update');
-    });
+            
+        // Trips Management
+        Route::get('/trips', [AdminTripController::class, 'index'])
+            ->middleware('permission:manage trips')->name('trips.index');
+        Route::put('/trips/{id}', [AdminTripController::class, 'update'])
+            ->middleware('permission:manage trips')->name('trips.update');
+        Route::delete('/trips/{id}', [AdminTripController::class, 'destroy'])
+            ->middleware('permission:manage trips')->name('trips.destroy');
+        });
 });
+
 
 
 
