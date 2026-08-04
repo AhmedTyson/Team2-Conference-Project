@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\V1\ContactController;
 use App\Http\Controllers\Api\V1\InteractionController;
 use App\Http\Controllers\Api\V1\Admin\ContactMessageController;
 use App\Http\Controllers\Api\V1\Admin\SettingController;
+use App\Http\Controllers\Api\V1\Admin\DestinationController as AdminDestinationController;
 use App\Http\Controllers\WeatherController;
 
 
@@ -66,6 +67,16 @@ Route::middleware(['auth:api'])->group(function () {
 
     // Admin Routes
     Route::prefix('v1/admin')->name('admin.')->group(function () {
+        // Destinations
+        Route::get('/destinations', [AdminDestinationController::class, 'index'])
+            ->middleware('permission:manage destinations')->name('destinations.index');
+        Route::post('/destinations', [AdminDestinationController::class, 'store'])
+            ->middleware('permission:manage destinations')->name('destinations.store');
+        Route::put('/destinations/{id}', [AdminDestinationController::class, 'update'])
+            ->middleware('permission:manage destinations')->name('destinations.update');
+        Route::delete('/destinations/{id}', [AdminDestinationController::class, 'destroy'])
+            ->middleware('permission:manage destinations')->name('destinations.destroy');
+
         // Contact Inbox
         Route::get('/contacts', [ContactMessageController::class, 'index'])
             ->middleware('permission:manage contacts')->name('contacts.index');
