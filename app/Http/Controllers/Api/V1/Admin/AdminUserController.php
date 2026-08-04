@@ -20,6 +20,6 @@ class AdminUserController extends Controller
             'email' => $request->email,
             'password' => $request->password,
             'is_active' => $request->is_active ?? 1,
-        ])
+        ]);
     } 
 }

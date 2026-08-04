@@ -1,15 +1,575 @@
 {
     "info": {
-        "name": "ThreeDOS API (Sprint 1)",
-        "description": "Automatically generated collection of the ThreeDOS Laravel API.",
+        "name": "ThreeDOS API (Sprint 1) - Complete",
+        "description": "Comprehensive Postman collection with request bodies, auth, and placeholders.",
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
     "item": [
         {
+            "name": "Categories",
+            "item": [
+                {
+                    "name": "api/v1/categories",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/v1/categories",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "categories"
+                            ],
+                            "variable": []
+                        }
+                    }
+                },
+                {
+                    "name": "api/v1/categories/{category}",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/v1/categories/:category",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "categories",
+                                ":category"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "category",
+                                    "value": "1",
+                                    "description": "Path variable"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Admin",
+            "item": [
+                {
+                    "name": "api/v1/admin/categories",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/v1/admin/categories",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "admin",
+                                "categories"
+                            ],
+                            "variable": []
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Beaches\",\n    \"description\": \"Beautiful sandy beaches.\",\n    \"icon\": \"fa-umbrella-beach\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "api/v1/admin/categories/{category}",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/v1/admin/categories/:category",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "admin",
+                                "categories",
+                                ":category"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "category",
+                                    "value": "1",
+                                    "description": "Path variable"
+                                }
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Updated Beaches\",\n    \"description\": \"Beautiful sandy beaches updated.\",\n    \"icon\": \"fa-umbrella-beach\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "api/v1/admin/contacts",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/v1/admin/contacts",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "admin",
+                                "contacts"
+                            ],
+                            "variable": []
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "api/v1/admin/contacts/{id}/read",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/v1/admin/contacts/:id/read",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "admin",
+                                "contacts",
+                                ":id",
+                                "read"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "Path variable"
+                                }
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "api/v1/admin/contacts/{id}/resolve",
+                    "request": {
+                        "method": "PATCH",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/v1/admin/contacts/:id/resolve",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "admin",
+                                "contacts",
+                                ":id",
+                                "resolve"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "Path variable"
+                                }
+                            ]
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "api/v1/admin/settings",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/v1/admin/settings",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "admin",
+                                "settings"
+                            ],
+                            "variable": []
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "api/v1/admin/settings",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/v1/admin/settings",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "v1",
+                                "admin",
+                                "settings"
+                            ],
+                            "variable": []
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"settings\": [\n        {\n            \"key\": \"site_name\",\n            \"value\": \"ThreeDOS Planner\"\n        },\n        {\n            \"key\": \"support_email\",\n            \"value\": \"support@threedos.com\"\n        }\n    ]\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{token}}",
+                                    "type": "string"
+                                }
+                            ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
             "name": "Auth",
             "item": [
                 {
-                    "name": "[GET] api/user",
+                    "name": "api/register",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/register",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "register"
+                            ],
+                            "variable": []
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"John Doe\",\n    \"email\": \"johndoe@example.com\",\n    \"phone\": \"+1234567890\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "api/login",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/login",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "login"
+                            ],
+                            "variable": []
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"johndoe@example.com\",\n    \"password\": \"password123\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "api/forgot-password",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/forgot-password",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "forgot-password"
+                            ],
+                            "variable": []
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"johndoe@example.com\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "api/reset-password",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/reset-password",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "reset-password"
+                            ],
+                            "variable": []
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"email\": \"johndoe@example.com\",\n    \"password\": \"newpassword123\",\n    \"password_confirmation\": \"newpassword123\",\n    \"token\": \"reset_token_from_email\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        }
+                    }
+                },
+                {
+                    "name": "api/email/verify/{id}/{hash}",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/email/verify/:id/:hash",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "email",
+                                "verify",
+                                ":id",
+                                ":hash"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "Path variable"
+                                },
+                                {
+                                    "key": "hash",
+                                    "value": "1",
+                                    "description": "Path variable"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "api/user",
                     "request": {
                         "method": "GET",
                         "header": [
@@ -42,136 +602,7 @@
                     }
                 },
                 {
-                    "name": "[POST] api/register",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/register",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "register"
-                            ],
-                            "variable": []
-                        }
-                    }
-                },
-                {
-                    "name": "[POST] api/login",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/login",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "login"
-                            ],
-                            "variable": []
-                        }
-                    }
-                },
-                {
-                    "name": "[POST] api/forgot-password",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/forgot-password",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "forgot-password"
-                            ],
-                            "variable": []
-                        }
-                    }
-                },
-                {
-                    "name": "[POST] api/reset-password",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/reset-password",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "reset-password"
-                            ],
-                            "variable": []
-                        }
-                    }
-                },
-                {
-                    "name": "[GET] api/email/verify/{id}/{hash}",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/email/verify/:id/:hash",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "email",
-                                "verify",
-                                ":id",
-                                ":hash"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "1",
-                                    "description": "Automatically generated path variable"
-                                },
-                                {
-                                    "key": "hash",
-                                    "value": "1",
-                                    "description": "Automatically generated path variable"
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "name": "[POST] api/logout",
+                    "name": "api/logout",
                     "request": {
                         "method": "POST",
                         "header": [
@@ -204,7 +635,7 @@
                     }
                 },
                 {
-                    "name": "[POST] api/refresh",
+                    "name": "api/refresh",
                     "request": {
                         "method": "POST",
                         "header": [
@@ -237,7 +668,7 @@
                     }
                 },
                 {
-                    "name": "[GET] api/email/verify-notice",
+                    "name": "api/email/verify-notice",
                     "request": {
                         "method": "GET",
                         "header": [
@@ -271,7 +702,7 @@
                     }
                 },
                 {
-                    "name": "[POST] api/email/resend",
+                    "name": "api/email/resend",
                     "request": {
                         "method": "POST",
                         "header": [
@@ -307,348 +738,20 @@
             ]
         },
         {
-            "name": "Categories",
-            "item": [
-                {
-                    "name": "[GET] api/v1/categories",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/v1/categories",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "v1",
-                                "categories"
-                            ],
-                            "variable": []
-                        }
-                    }
-                },
-                {
-                    "name": "[GET] api/v1/categories/{category}",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/v1/categories/:category",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "v1",
-                                "categories",
-                                ":category"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "category",
-                                    "value": "1",
-                                    "description": "Automatically generated path variable"
-                                }
-                            ]
-                        }
-                    }
-                }
-            ]
-        },
-        {
-            "name": "Admin",
-            "item": [
-                {
-                    "name": "[POST] api/v1/admin/categories",
-                    "request": {
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/v1/admin/categories",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "v1",
-                                "admin",
-                                "categories"
-                            ],
-                            "variable": []
-                        },
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "name": "[PUT] api/v1/admin/categories/{category}",
-                    "request": {
-                        "method": "PUT",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/v1/admin/categories/:category",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "v1",
-                                "admin",
-                                "categories",
-                                ":category"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "category",
-                                    "value": "1",
-                                    "description": "Automatically generated path variable"
-                                }
-                            ]
-                        },
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "name": "[GET] api/v1/admin/contacts",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/v1/admin/contacts",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "v1",
-                                "admin",
-                                "contacts"
-                            ],
-                            "variable": []
-                        },
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "name": "[PATCH] api/v1/admin/contacts/{id}/read",
-                    "request": {
-                        "method": "PATCH",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/v1/admin/contacts/:id/read",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "v1",
-                                "admin",
-                                "contacts",
-                                ":id",
-                                "read"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "1",
-                                    "description": "Automatically generated path variable"
-                                }
-                            ]
-                        },
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "name": "[PATCH] api/v1/admin/contacts/{id}/resolve",
-                    "request": {
-                        "method": "PATCH",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/v1/admin/contacts/:id/resolve",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "v1",
-                                "admin",
-                                "contacts",
-                                ":id",
-                                "resolve"
-                            ],
-                            "variable": [
-                                {
-                                    "key": "id",
-                                    "value": "1",
-                                    "description": "Automatically generated path variable"
-                                }
-                            ]
-                        },
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "name": "[GET] api/v1/admin/settings",
-                    "request": {
-                        "method": "GET",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/v1/admin/settings",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "v1",
-                                "admin",
-                                "settings"
-                            ],
-                            "variable": []
-                        },
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        }
-                    }
-                },
-                {
-                    "name": "[PUT] api/v1/admin/settings",
-                    "request": {
-                        "method": "PUT",
-                        "header": [
-                            {
-                                "key": "Accept",
-                                "value": "application/json",
-                                "type": "text"
-                            }
-                        ],
-                        "url": {
-                            "raw": "{{base_url}}/v1/admin/settings",
-                            "host": [
-                                "{{base_url}}"
-                            ],
-                            "path": [
-                                "v1",
-                                "admin",
-                                "settings"
-                            ],
-                            "variable": []
-                        },
-                        "auth": {
-                            "type": "bearer",
-                            "bearer": [
-                                {
-                                    "key": "token",
-                                    "value": "{{token}}",
-                                    "type": "string"
-                                }
-                            ]
-                        }
-                    }
-                }
-            ]
-        },
-        {
             "name": "Contacts",
             "item": [
                 {
-                    "name": "[POST] api/v1/contacts",
+                    "name": "api/v1/contacts",
                     "request": {
                         "method": "POST",
                         "header": [
                             {
                                 "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
                                 "value": "application/json",
                                 "type": "text"
                             }
@@ -663,6 +766,15 @@
                                 "contacts"
                             ],
                             "variable": []
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"name\": \"Jane Smith\",\n    \"email\": \"jane@example.com\",\n    \"subject\": \"Inquiry about trips\",\n    \"message\": \"I would like to know more about the available trips to Paris.\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
                         }
                     }
                 }
@@ -672,7 +784,7 @@
             "name": "Favourites",
             "item": [
                 {
-                    "name": "[POST] api/v1/favourites/{type}/{id}",
+                    "name": "api/v1/favourites/{type}/{id}",
                     "request": {
                         "method": "POST",
                         "header": [
@@ -696,13 +808,13 @@
                             "variable": [
                                 {
                                     "key": "type",
-                                    "value": "1",
-                                    "description": "Automatically generated path variable"
+                                    "value": "hotel",
+                                    "description": "Path variable"
                                 },
                                 {
                                     "key": "id",
                                     "value": "1",
-                                    "description": "Automatically generated path variable"
+                                    "description": "Path variable"
                                 }
                             ]
                         },
@@ -724,12 +836,17 @@
             "name": "Reviews",
             "item": [
                 {
-                    "name": "[POST] api/v1/reviews/{type}/{id}",
+                    "name": "api/v1/reviews/{type}/{id}",
                     "request": {
                         "method": "POST",
                         "header": [
                             {
                                 "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
                                 "value": "application/json",
                                 "type": "text"
                             }
@@ -748,15 +865,24 @@
                             "variable": [
                                 {
                                     "key": "type",
-                                    "value": "1",
-                                    "description": "Automatically generated path variable"
+                                    "value": "hotel",
+                                    "description": "Path variable"
                                 },
                                 {
                                     "key": "id",
                                     "value": "1",
-                                    "description": "Automatically generated path variable"
+                                    "description": "Path variable"
                                 }
                             ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"rating\": 5,\n    \"comment\": \"Absolutely wonderful experience!\"\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
                         },
                         "auth": {
                             "type": "bearer",
@@ -771,7 +897,7 @@
                     }
                 },
                 {
-                    "name": "[DELETE] api/v1/reviews/{id}",
+                    "name": "api/v1/reviews/{id}",
                     "request": {
                         "method": "DELETE",
                         "header": [
@@ -795,7 +921,7 @@
                                 {
                                     "key": "id",
                                     "value": "1",
-                                    "description": "Automatically generated path variable"
+                                    "description": "Path variable"
                                 }
                             ]
                         },
@@ -817,7 +943,7 @@
             "name": "Surveys",
             "item": [
                 {
-                    "name": "[GET] api/surveys",
+                    "name": "api/surveys",
                     "request": {
                         "method": "GET",
                         "header": [
@@ -850,12 +976,17 @@
                     }
                 },
                 {
-                    "name": "[POST] api/surveys",
+                    "name": "api/surveys",
                     "request": {
                         "method": "POST",
                         "header": [
                             {
                                 "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
                                 "value": "application/json",
                                 "type": "text"
                             }
@@ -870,6 +1001,15 @@
                             ],
                             "variable": []
                         },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"preferred_destinations\": [\n        \"Paris\",\n        \"Tokyo\"\n    ],\n    \"budget_range\": \"luxury\",\n    \"travel_styles\": [\n        \"cultural\",\n        \"relaxation\"\n    ],\n    \"interests\": [\n        \"food\",\n        \"history\"\n    ],\n    \"accommodation_preferences\": [\n        \"5-star hotels\",\n        \"resorts\"\n    ]\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
                         "auth": {
                             "type": "bearer",
                             "bearer": [
@@ -883,7 +1023,7 @@
                     }
                 },
                 {
-                    "name": "[GET] api/surveys/{survey}",
+                    "name": "api/surveys/{survey}",
                     "request": {
                         "method": "GET",
                         "header": [
@@ -906,7 +1046,7 @@
                                 {
                                     "key": "survey",
                                     "value": "1",
-                                    "description": "Automatically generated path variable"
+                                    "description": "Path variable"
                                 }
                             ]
                         },
@@ -923,7 +1063,7 @@
                     }
                 },
                 {
-                    "name": "[PUT] api/surveys/{survey}",
+                    "name": "api/surveys/{survey}",
                     "request": {
                         "method": "PUT",
                         "header": [
@@ -946,7 +1086,7 @@
                                 {
                                     "key": "survey",
                                     "value": "1",
-                                    "description": "Automatically generated path variable"
+                                    "description": "Path variable"
                                 }
                             ]
                         },
@@ -963,7 +1103,7 @@
                     }
                 },
                 {
-                    "name": "[DELETE] api/surveys/{survey}",
+                    "name": "api/surveys/{survey}",
                     "request": {
                         "method": "DELETE",
                         "header": [
@@ -986,7 +1126,7 @@
                                 {
                                     "key": "survey",
                                     "value": "1",
-                                    "description": "Automatically generated path variable"
+                                    "description": "Path variable"
                                 }
                             ]
                         },
@@ -1008,7 +1148,7 @@
             "name": "Trips",
             "item": [
                 {
-                    "name": "[GET] api/v1/trips/create",
+                    "name": "api/v1/trips/create",
                     "request": {
                         "method": "GET",
                         "header": [
@@ -1043,12 +1183,17 @@
                     }
                 },
                 {
-                    "name": "[POST] api/v1/trips",
+                    "name": "api/v1/trips",
                     "request": {
                         "method": "POST",
                         "header": [
                             {
                                 "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            },
+                            {
+                                "key": "Content-Type",
                                 "value": "application/json",
                                 "type": "text"
                             }
@@ -1064,6 +1209,15 @@
                             ],
                             "variable": []
                         },
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n    \"destination_id\": 1,\n    \"number_of_days\": 5,\n    \"budget\": \"moderate\",\n    \"travel_style\": \"adventure\",\n    \"interests\": [\n        \"hiking\",\n        \"museums\"\n    ],\n    \"number_of_travelers\": 2\n}",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            }
+                        },
                         "auth": {
                             "type": "bearer",
                             "bearer": [
@@ -1077,7 +1231,7 @@
                     }
                 },
                 {
-                    "name": "[GET] api/v1/trips/{trip}",
+                    "name": "api/v1/trips/{trip}",
                     "request": {
                         "method": "GET",
                         "header": [
@@ -1101,7 +1255,7 @@
                                 {
                                     "key": "trip",
                                     "value": "1",
-                                    "description": "Automatically generated path variable"
+                                    "description": "Path variable"
                                 }
                             ]
                         },
@@ -1123,7 +1277,7 @@
             "name": "Destinations",
             "item": [
                 {
-                    "name": "[GET] api/v1/destinations",
+                    "name": "api/v1/destinations",
                     "request": {
                         "method": "GET",
                         "header": [
@@ -1147,7 +1301,7 @@
                     }
                 },
                 {
-                    "name": "[GET] api/v1/destinations/{id}",
+                    "name": "api/v1/destinations/{id}",
                     "request": {
                         "method": "GET",
                         "header": [
@@ -1171,7 +1325,7 @@
                                 {
                                     "key": "id",
                                     "value": "1",
-                                    "description": "Automatically generated path variable"
+                                    "description": "Path variable"
                                 }
                             ]
                         }
@@ -1183,7 +1337,7 @@
             "name": "Hotels",
             "item": [
                 {
-                    "name": "[GET] api/v1/hotels",
+                    "name": "api/v1/hotels",
                     "request": {
                         "method": "GET",
                         "header": [
@@ -1207,7 +1361,7 @@
                     }
                 },
                 {
-                    "name": "[GET] api/v1/hotels/{id}",
+                    "name": "api/v1/hotels/{id}",
                     "request": {
                         "method": "GET",
                         "header": [
@@ -1231,7 +1385,7 @@
                                 {
                                     "key": "id",
                                     "value": "1",
-                                    "description": "Automatically generated path variable"
+                                    "description": "Path variable"
                                 }
                             ]
                         }
@@ -1243,7 +1397,7 @@
             "name": "Restaurants",
             "item": [
                 {
-                    "name": "[GET] api/v1/restaurants",
+                    "name": "api/v1/restaurants",
                     "request": {
                         "method": "GET",
                         "header": [
@@ -1267,7 +1421,7 @@
                     }
                 },
                 {
-                    "name": "[GET] api/v1/restaurants/{id}",
+                    "name": "api/v1/restaurants/{id}",
                     "request": {
                         "method": "GET",
                         "header": [
@@ -1291,7 +1445,7 @@
                                 {
                                     "key": "id",
                                     "value": "1",
-                                    "description": "Automatically generated path variable"
+                                    "description": "Path variable"
                                 }
                             ]
                         }
@@ -1303,7 +1457,7 @@
             "name": "Attractions",
             "item": [
                 {
-                    "name": "[GET] api/v1/attractions",
+                    "name": "api/v1/attractions",
                     "request": {
                         "method": "GET",
                         "header": [
@@ -1327,7 +1481,7 @@
                     }
                 },
                 {
-                    "name": "[GET] api/v1/attractions/{id}",
+                    "name": "api/v1/attractions/{id}",
                     "request": {
                         "method": "GET",
                         "header": [
@@ -1351,9 +1505,37 @@
                                 {
                                     "key": "id",
                                     "value": "1",
-                                    "description": "Automatically generated path variable"
+                                    "description": "Path variable"
                                 }
                             ]
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Weather",
+            "item": [
+                {
+                    "name": "api/weather",
+                    "request": {
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "application/json",
+                                "type": "text"
+                            }
+                        ],
+                        "url": {
+                            "raw": "{{base_url}}/weather",
+                            "host": [
+                                "{{base_url}}"
+                            ],
+                            "path": [
+                                "weather"
+                            ],
+                            "variable": []
                         }
                     }
                 }
@@ -1368,7 +1550,7 @@
         },
         {
             "key": "token",
-            "value": "your_bearer_token_here",
+            "value": "your_jwt_token_here",
             "type": "string"
         }
     ]
