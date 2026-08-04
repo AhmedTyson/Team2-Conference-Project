@@ -20,15 +20,19 @@ class DatabaseSeeder extends Seeder
         $this->call(RoleAndPermissionSeeder::class);
 
         // 2. Base Admin User
-        $admin = User::factory()->create([
-            'name' => 'Super Admin',
-            'email' => 'admin@threedos.com',
-            'password' => bcrypt('password'),
-        ]);
-        $admin->assignRole('super_admin');
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@threedos.com'],
+            [
+                'name' => 'Super Admin',
+                'password' => bcrypt('password'),
+            ]
+        );
+        if (!$admin->hasRole('super_admin')) {
+            $admin->assignRole('super_admin');
+        }
 
         // Create 10 fake users for interactions
-        if (app()->environment('local')) {
+        if (app()->environment('local') && User::where('email', 'like', '%@example.com')->count() === 0) {
             User::factory(10)->create()->each(function ($user) {
                 $user->assignRole('user');
             });
@@ -42,13 +46,16 @@ class DatabaseSeeder extends Seeder
         // 4. Run ONLY the assigned seeders
         $this->call([
             CountrySeeder::class,
-            HotelSeeder::class,
             DestinationSeeder::class,
+            CategorySeeder::class,
+            HotelSeeder::class,
             RestaurantSeeder::class,
+            AttractionSeeder::class,
             FlightSeeder::class,
             NotificationSeeder::class,
             ReviewSeeder::class,
             FavouriteSeeder::class,
+            TripSeeder::class,
         ]);
 
         // 5. Re-enable FK constraints
