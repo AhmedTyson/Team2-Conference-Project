@@ -4,13 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Services\OpenMeteoService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 
 class WeatherController extends Controller
 {
     protected $weatherService;
 
-    public function __class(OpenMeteoService $weatherService)
+    public function __construct(OpenMeteoService $weatherService)
     {
         $this->weatherService = $weatherService;
     }
@@ -22,15 +21,10 @@ class WeatherController extends Controller
             'lon' => 'required|numeric',
         ]);
 
-        $lat = $request->query('lat');
-        $lon = $request->query('lon');
+        $lat = (float) $request->input('lat');
+        $lon = (float) $request->input('lon');
         
-        // Cache the weather data for 15 minutes to stay well within free tier limits
-        $cacheKey = "weather_{$lat}_{$lon}";
-        
-        $weatherData = Cache::remember($cacheKey, now()->addMinutes(15), function () use ($lat, $lon) {
-            return $this->weatherService->getWeather($lat, $lon);
-        });
+        $weatherData = $this->weatherService->getWeather($lat, $lon);
 
         if (!$weatherData) {
             return response()->json(['error' => 'Unable to fetch weather data'], 500);
