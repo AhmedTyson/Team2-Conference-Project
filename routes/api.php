@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\V1\ContactController;
 use App\Http\Controllers\Api\V1\InteractionController;
 use App\Http\Controllers\Api\V1\Admin\ContactMessageController;
 use App\Http\Controllers\Api\V1\Admin\SettingController;
+use App\Http\Controllers\WeatherController;
 
 
 // Category Routes
@@ -62,3 +63,6 @@ Route::get('restaurants/{id}', [RestaurantController::class, 'show']);
 
 Route::get('attractions', [AttractionController::class, 'index']);
 Route::get('attractions/{id}', [AttractionController::class, 'show']);
+
+// weather
+Route::get('/weather', [WeatherController::class, 'show']);
