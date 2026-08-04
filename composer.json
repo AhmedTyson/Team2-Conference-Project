@@ -45,7 +45,7 @@
             "@php artisan key:generate",
             "@php artisan jwt:secret --force",
             "@php artisan storage:link",
-            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
+            "@php -r \"$env = @file_get_contents('.env'); if ($env !== false && preg_match('/^DB_CONNECTION=sqlite/m', $env) && !file_exists('database/database.sqlite')) { touch('database/database.sqlite'); echo 'sqlite file created'.PHP_EOL; }\"",
             "@php artisan migrate:fresh --seed --force",
             "npm install",
             "npm run build"
