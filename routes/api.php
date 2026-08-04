@@ -14,9 +14,12 @@ use App\Http\Controllers\Api\V1\ContactController;
 use App\Http\Controllers\Api\V1\InteractionController;
 use App\Http\Controllers\Api\V1\Admin\ContactMessageController;
 use App\Http\Controllers\Api\V1\Admin\SettingController;
+use App\Http\Controllers\Api\V1\Admin\DestinationController as AdminDestinationController;
 use App\Http\Controllers\WeatherController;
+use App\Http\Controllers\MapController;
+use App\Http\Controllers\Api\V1\AdminReviewController;
+use App\Http\Controllers\Api\V1\Admin\AdminUserController;
 use App\Http\Controllers\AdminTripController;
-
 
 // Category Routes
 Route::prefix('v1')->group(function () {
@@ -67,6 +70,31 @@ Route::middleware(['auth:api'])->group(function () {
 
     // Admin Routes
     Route::prefix('v1/admin')->name('admin.')->group(function () {
+        // Users Management (Sarah)
+        Route::get('/users', [AdminUserController::class, 'index'])->middleware('permission:manage users');
+        Route::post('/users', [AdminUserController::class, 'store'])->middleware('permission:manage users');
+
+        // Reviews Moderation (Lojy)
+        Route::get('/reviews', [AdminReviewController::class, 'index'])->middleware('permission:manage reviews');
+        Route::patch('/reviews/{id}/approve', [AdminReviewController::class, 'approve'])->middleware('permission:manage reviews');
+        Route::patch('/reviews/{id}/reject', [AdminReviewController::class, 'reject'])->middleware('permission:manage reviews');
+        Route::delete('/reviews/{id}', [AdminReviewController::class, 'destroy'])->middleware('permission:manage reviews');
+
+        // Trips Management (Hana)
+        Route::get('/trips', [AdminTripController::class, 'index'])->middleware('permission:manage trips');
+        Route::put('/trips/{id}', [AdminTripController::class, 'update'])->middleware('permission:manage trips');
+        Route::delete('/trips/{id}', [AdminTripController::class, 'destroy'])->middleware('permission:manage trips');
+
+        // Destinations
+        Route::get('/destinations', [AdminDestinationController::class, 'index'])
+            ->middleware('permission:manage destinations')->name('destinations.index');
+        Route::post('/destinations', [AdminDestinationController::class, 'store'])
+            ->middleware('permission:manage destinations')->name('destinations.store');
+        Route::put('/destinations/{id}', [AdminDestinationController::class, 'update'])
+            ->middleware('permission:manage destinations')->name('destinations.update');
+        Route::delete('/destinations/{id}', [AdminDestinationController::class, 'destroy'])
+            ->middleware('permission:manage destinations')->name('destinations.destroy');
+
         // Contact Inbox
         Route::get('/contacts', [ContactMessageController::class, 'index'])
             ->middleware('permission:manage contacts')->name('contacts.index');
@@ -81,18 +109,13 @@ Route::middleware(['auth:api'])->group(function () {
         Route::put('/settings', [SettingController::class, 'update'])
             ->middleware('permission:manage settings')->name('settings.update');
             
-        // Trips Management
-        Route::get('/trips', [AdminTripController::class, 'index'])
-            ->middleware('permission:manage trips')->name('trips.index');
-        Route::put('/trips/{id}', [AdminTripController::class, 'update'])
-            ->middleware('permission:manage trips')->name('trips.update');
-        Route::delete('/trips/{id}', [AdminTripController::class, 'destroy'])
-            ->middleware('permission:manage trips')->name('trips.destroy');
-        });
+        // Hotels
+        Route::get('hotels', [HotelController::class, 'index'])->middleware('permission:manage hotels');
+        Route::post('hotels', [HotelController::class, 'store'])->middleware('permission:manage hotels');
+        Route::put('hotels/{id}', [HotelController::class, 'update'])->middleware('permission:manage hotels');
+        Route::delete('hotels/{id}', [HotelController::class, 'destroy'])->middleware('permission:manage hotels');
+    });
 });
-
-
-
 
 //Owner trip
 Route::get('/v1/trips/{trip}', [TripController::class, 'show'])
@@ -100,6 +123,10 @@ Route::get('/v1/trips/{trip}', [TripController::class, 'show'])
 
 // Public Explorer Routes
 Route::prefix('v1')->group(function () {
+    // Maps
+    Route::get('/maps/destination/{destination}', [MapController::class, 'destination']);
+    Route::get('/maps/trip/{trip}', [MapController::class, 'trip'])->middleware('auth:api');
+
     Route::get('destinations', [DestinationController::class, 'index']);
     Route::get('destinations/{id}', [DestinationController::class, 'show']);
 
@@ -112,14 +139,6 @@ Route::prefix('v1')->group(function () {
     Route::get('attractions', [AttractionController::class, 'index']);
     Route::get('attractions/{id}', [AttractionController::class, 'show']);
 });
+
 // weather
 Route::get('/weather', [WeatherController::class, 'show']);
-
-Route::prefix('v1/admin')
-    ->middleware(['auth:api', 'role:admin'])
-    ->group(function () {
-        Route::get('hotels', [HotelController::class, 'index']);
-        Route::post('hotels', [HotelController::class, 'store']);
-        Route::put('hotels/{id}', [HotelController::class, 'update']);
-        Route::delete('hotels/{id}', [HotelController::class, 'destroy']);
-    });
