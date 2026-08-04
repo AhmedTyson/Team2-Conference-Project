@@ -1,0 +1,62 @@
+name: Sprint Task Card
+description: Create a task card for an API endpoint or development phase.
+title: "[Module] Task Name - Route"
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: "### 🚀 ThreeDOS Task Card\nPlease ensure this task aligns with the Master Plan."
+  - type: dropdown
+    id: epic
+    attributes:
+      label: Epic
+      description: Which architectural epic does this belong to?
+      options:
+        - Architecture
+        - Authentication
+        - Data Sourcing
+        - External APIs
+        - AI Engine
+        - User Community
+        - Admin
+        - DevOps
+    validations:
+      required: true
+  - type: input
+    id: route
+    attributes:
+      label: API Route
+      description: What is the exact API route? (e.g., POST /api/v1/trips)
+      placeholder: "GET /api/v1/..."
+    validations:
+      required: false
+  - type: dropdown
+    id: auth
+    attributes:
+      label: Authorization Level
+      options:
+        - 🌐 Public
+        - 🔒 Auth
+        - 👤 Owner
+        - 🛡️ Admin
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe what this endpoint/task accomplishes.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance_criteria
+    attributes:
+      label: Acceptance Criteria
+      description: List the technical steps required to move this to Done.
+      value: |
+        - [ ] Validate Request
+        - [ ] Service Logic
+        - [ ] API Resource Response
+        - [ ] Tested in Postman
+    validations:
+      required: true
