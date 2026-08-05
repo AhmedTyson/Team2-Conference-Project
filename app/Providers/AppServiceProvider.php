@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use App\Interfaces\SurveyRepositoryInterface;
 use App\Repositories\SurveyRepository;
+use App\Interfaces\CountryRepositoryInterface;
+use App\Repositories\CountryRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,9 +23,14 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(
-    SurveyRepositoryInterface::class,
-    SurveyRepository::class
-    );
+            SurveyRepositoryInterface::class,
+            SurveyRepository::class
+        );
+
+        $this->app->bind(
+            CountryRepositoryInterface::class,
+            CountryRepository::class
+        );
     }
 
     /**

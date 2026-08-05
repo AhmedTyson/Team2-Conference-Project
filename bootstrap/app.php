@@ -3,7 +3,12 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Auth\Access\AuthorizationException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 return Application::configure(basePath: dirname(__DIR__))
@@ -20,9 +25,9 @@ return Application::configure(basePath: dirname(__DIR__))
             'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
         ]);
     })
-    ->withExceptions(function (Exceptions $exception): void {
+    ->withExceptions(function (Exceptions $exceptions): void {
         // 422 Validation
-        $exception->render(function (ValidationException $e) {
+        $exceptions->render(function (ValidationException $e) {
             return response()->json([
                 "success" => false,
                 "message" => "Validation failed.",
@@ -30,16 +35,16 @@ return Application::configure(basePath: dirname(__DIR__))
             ], Response::HTTP_UNPROCESSABLE_ENTITY);
         });
 
-        // 401 UnAuthorized
-        $exception->render(function (ValidationException $e) {
+        // 401 Unauthorized
+        $exceptions->render(function (AuthenticationException $e) {
             return response()->json([
                 "success" => false,
                 "message" => "Authentication token is invalid or missing.",
-            ], (Response::HTTP_UNAUTHORIZED));
+            ], Response::HTTP_UNAUTHORIZED);
         });
 
         // 403 Forbidden Authorization
-        $exception->render(function (ValidationException $e) {
+        $exceptions->render(function (AuthorizationException $e) {
             return response()->json([
                 "success" => false,
                 "message" => "You are not authorized to perform this action.",
@@ -47,10 +52,21 @@ return Application::configure(basePath: dirname(__DIR__))
         });
 
         // 404 Not Found
-        $exception->render(function (ValidationException $e) {
+        $exceptions->render(function (NotFoundHttpException $e) {
             return response()->json([
-                "success"=>false,
-                "message"=> "Resources not found."
+                "success" => false,
+                "message" => "Resource not found."
             ], Response::HTTP_NOT_FOUND);
         });
-    })->create();
+
+        $exceptions->render(function (\Throwable $e, Request $request) {
+            $status = $e instanceof HttpExceptionInterface
+                ? $e->getStatusCode()
+                : 500;
+
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], $status);
+        });
+    })
+    ->create();
