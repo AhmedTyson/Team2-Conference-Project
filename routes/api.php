@@ -28,6 +28,7 @@ use App\Http\Controllers\Admin\AdminRestaurantController;
 use App\Http\Controllers\Admin\AdminCountryController;
 use App\Http\Controllers\Admin\DestinationController as AdminDestinationController;
 use App\Http\Controllers\AdminAttractionController;
+use App\Http\Controllers\SiteSettingsController;
 // Category Routes
 Route::prefix('v1')->group(function () {
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
@@ -129,6 +130,8 @@ Route::middleware(['auth:api'])->group(function () {
             ->middleware('permission:manage settings')->name('settings.index');
         Route::put('/settings', [SettingController::class, 'update'])
             ->middleware('permission:manage settings')->name('settings.update');
+        Route::patch('/settings/{key}', [SettingController::class, 'patchKey'])
+            ->middleware('permission:manage settings')->name('settings.patchKey');
 
         // Hotels (Rana)
         Route::get('hotels', [AdminHotelController::class, 'index'])->middleware('permission:manage hotels');
@@ -180,6 +183,9 @@ Route::prefix('v1')->group(function () {
     // Attractions
     Route::get('attractions', [AttractionController::class, 'index']);
     Route::get('attractions/{id}', [AttractionController::class, 'show']);
+
+    // Public site settings (cached, no auth)
+    Route::get('/site-settings', [SiteSettingsController::class, 'index'])->name('site-settings.index');
 });
 
 // Weather
