@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminUserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\SurveyController;
@@ -72,6 +73,13 @@ Route::middleware(['auth:api'])->group(function () {
         // Settings
         Route::get('/settings', [SettingController::class, 'index']);
         Route::put('/settings', [SettingController::class, 'update']);
+
+        //Admin Users
+        Route::get('/users', [AdminUserController::class, 'index']);
+        Route::post('/users', [AdminUserController::class, 'store']);
+        Route::put('/users/{user}', [AdminUserController::class, 'update']);
+        Route::patch('/users/{user}/active', [AdminUserController::class, 'active']);
+        Route::patch('/users/{user}/block', [AdminUserController::class, 'block']);
     });
 });
 
