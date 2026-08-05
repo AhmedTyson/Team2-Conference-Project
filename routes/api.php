@@ -16,6 +16,7 @@ use App\Http\Controllers\InteractionController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\WeatherController;
 use App\Http\Controllers\MapController;
+use App\Http\Controllers\DashboardController;
 
 // Admin Controllers
 use App\Http\Controllers\Admin\AdminUserController;
@@ -77,6 +78,13 @@ Route::middleware(['auth:api'])->group(function () {
     // Trip Planner
     Route::get('/v1/trips/create', [TripController::class, 'create']);
     Route::post('/v1/trips', [TripController::class, 'store']);
+
+    // Dashboard Routes
+    Route::prefix('v1/dashboard')->name('dashboard.')->group(function () {
+        Route::get('/', [DashboardController::class, 'index'])->name('index');
+        Route::get('/trips', [DashboardController::class, 'trips'])->name('trips');
+        Route::get('/favourites', [DashboardController::class, 'favourites'])->name('favourites');
+    });
 
     // Admin Routes
     Route::prefix('v1/admin')->name('admin.')->group(function () {
