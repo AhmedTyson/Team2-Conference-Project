@@ -59,7 +59,6 @@ return Application::configure(basePath: dirname(__DIR__))
             ], Response::HTTP_NOT_FOUND);
         });
 
-    
         $exceptions->render(function (\Throwable $e, Request $request) {
             $status = $e instanceof HttpExceptionInterface
                 ? $e->getStatusCode()

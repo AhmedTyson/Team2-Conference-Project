@@ -10,6 +10,7 @@ use App\Http\Controllers\DestinationController;
 use App\Http\Controllers\HotelController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\AttractionController;
+<<<<<<< HEAD
 use App\Http\Controllers\TripController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\InteractionController;
@@ -25,7 +26,7 @@ use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\AdminHotelController;
 use App\Http\Controllers\Admin\DestinationController as AdminDestinationController;
-
+use App\Http\Controllers\AdminAttractionController;
 // Category Routes
 Route::prefix('v1')->group(function () {
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
@@ -122,12 +123,18 @@ Route::middleware(['auth:api'])->group(function () {
             ->middleware('permission:manage settings')->name('settings.index');
         Route::put('/settings', [SettingController::class, 'update'])
             ->middleware('permission:manage settings')->name('settings.update');
-            
-        // Hotels
+
+        // Hotels (Rana)
         Route::get('hotels', [AdminHotelController::class, 'index'])->middleware('permission:manage hotels');
         Route::post('hotels', [AdminHotelController::class, 'store'])->middleware('permission:manage hotels');
         Route::put('hotels/{id}', [AdminHotelController::class, 'update'])->middleware('permission:manage hotels');
         Route::delete('hotels/{id}', [AdminHotelController::class, 'destroy'])->middleware('permission:manage hotels');
+
+        // Attractions (Fady)
+        Route::get('/attractions', [AdminAttractionController::class, 'index'])->middleware('permission:manage attractions');
+        Route::post('/attractions', [AdminAttractionController::class, 'store'])->middleware('permission:manage attractions');
+        Route::put('/attractions/{id}', [AdminAttractionController::class, 'update'])->middleware('permission:manage attractions');
+        Route::delete('/attractions/{id}', [AdminAttractionController::class, 'destroy'])->middleware('permission:manage attractions');
     });
 });
 
