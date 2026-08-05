@@ -25,6 +25,8 @@ use App\Http\Controllers\Admin\AdminTripController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\AdminHotelController;
+use App\Http\Controllers\Admin\AdminRestaurantController;
+
 use App\Http\Controllers\Admin\DestinationController as AdminDestinationController;
 use App\Http\Controllers\AdminAttractionController;
 // Category Routes
@@ -135,6 +137,12 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('/attractions', [AdminAttractionController::class, 'store'])->middleware('permission:manage attractions');
         Route::put('/attractions/{id}', [AdminAttractionController::class, 'update'])->middleware('permission:manage attractions');
         Route::delete('/attractions/{id}', [AdminAttractionController::class, 'destroy'])->middleware('permission:manage attractions');
+
+        // Restaurants (Kenzy)
+        Route::get('restaurants', [AdminRestaurantController::class, 'index'])->middleware('permission:manage restaurants');
+        Route::post('restaurants', [AdminRestaurantController::class, 'store'])->middleware('permission:manage restaurants');
+        Route::put('restaurants/{id}', [AdminRestaurantController::class, 'update'])->middleware('permission:manage restaurants');
+        Route::delete('restaurants/{id}', [AdminRestaurantController::class, 'destroy'])->middleware('permission:manage restaurants');
     });
 });
 
