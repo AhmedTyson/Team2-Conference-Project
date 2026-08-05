@@ -58,13 +58,13 @@ class AdminRestaurantController extends Controller
     private function createFromExternalApi(array $data): Restaurant
     {
         $destination = Destination::findOrFail($data['destination_id']);
+        $locationId = $this->resolveLocationId($destination) ?? '293919'; // fallback to known-working id
         // request to RapidAPI, asking for up to 10 restaurants near destination's coordinates
         $response = Http::withHeaders([
             'X-RapidAPI-Key' => config('services.rapidapi.key'),
             'X-RapidAPI-Host' => config('services.rapidapi.restaurants_host'),
         ])->timeout(15)->get('https://' . config('services.rapidapi.restaurants_host') . '/restaurants/list', [
-            'latitude' => $destination->latitude,
-            'longitude' => $destination->longitude,
+            'location_id' => $locationId,
             'limit' => 10,
         ]);
         abort_if(!$response->successful(), 502, 'RapidAPI request failed.');
@@ -84,5 +84,22 @@ class AdminRestaurantController extends Controller
             'destination_id' => $destination->id,
             'category_id' => $data['category_id'] ?? null,
         ]);
+    }
+private function resolveLocationId(Destination $destination): ?string
+    {
+        $query = $destination->city_name ?: $destination->name;
+        $response = Http::withHeaders([
+            'X-RapidAPI-Key' => config('services.rapidapi.key'),
+            'X-RapidAPI-Host' => config('services.rapidapi.restaurants_host'),
+        ])->timeout(15)->get('https://' . config('services.rapidapi.restaurants_host') . '/locations/search', [
+            'query' => $query,
+            'limit' => 1,
+        ]);
+        if (!$response->successful()) {
+            return null;
+        }
+ 
+        return $response->json('data.0.result_object.location_id')
+            ?? $response->json('data.0.location_id');
     }
 }
