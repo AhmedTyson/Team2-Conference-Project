@@ -34,10 +34,14 @@ Route::prefix('v1')->group(function () {
 
 // Admin Categories (using CategoryController)
 Route::middleware(['auth:api'])->prefix('v1/admin')->name('admin.')->group(function () {
+    Route::get('/categories', [CategoryController::class, 'index'])
+        ->middleware('permission:manage categories')->name('categories.index');
     Route::post('/categories', [CategoryController::class, 'store'])
         ->middleware('permission:manage categories')->name('categories.store');
     Route::put('/categories/{category}', [CategoryController::class, 'update'])
         ->middleware('permission:manage categories')->name('categories.update');
+    Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])
+        ->middleware('permission:manage categories')->name('categories.destroy');
 });
 
 // Public Auth Routes 
