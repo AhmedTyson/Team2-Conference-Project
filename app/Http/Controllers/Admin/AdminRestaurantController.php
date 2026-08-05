@@ -63,8 +63,7 @@ class AdminRestaurantController extends Controller
             'X-RapidAPI-Key' => config('services.rapidapi.key'),
             'X-RapidAPI-Host' => config('services.rapidapi.restaurants_host'),
         ])->timeout(15)->get('https://' . config('services.rapidapi.restaurants_host') . '/restaurants/list', [
-            'latitude' => $destination->latitude,
-            'longitude' => $destination->longitude,
+            'location_id' => '293919',
             'limit' => 10,
         ]);
         abort_if(!$response->successful(), 502, 'RapidAPI request failed.');
