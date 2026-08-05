@@ -26,7 +26,7 @@ use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\AdminHotelController;
 use App\Http\Controllers\Admin\AdminRestaurantController;
-
+use App\Http\Controllers\Admin\AdminCountryController;
 use App\Http\Controllers\Admin\DestinationController as AdminDestinationController;
 use App\Http\Controllers\AdminAttractionController;
 // Category Routes
@@ -143,6 +143,12 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('restaurants', [AdminRestaurantController::class, 'store'])->middleware('permission:manage restaurants');
         Route::put('restaurants/{id}', [AdminRestaurantController::class, 'update'])->middleware('permission:manage restaurants');
         Route::delete('restaurants/{id}', [AdminRestaurantController::class, 'destroy'])->middleware('permission:manage restaurants');
+
+        // Countries (Sama)
+        Route::get('/countries', [AdminCountryController::class, 'index'])->middleware('permission:manage countries');
+        Route::post('/countries', [AdminCountryController::class, 'store'])->middleware('permission:manage countries');
+        Route::put('/countries/{id}', [AdminCountryController::class, 'update'])->middleware('permission:manage countries');
+        Route::delete('/countries/{id}', [AdminCountryController::class, 'destroy'])->middleware('permission:manage countries');
     });
 });
 
