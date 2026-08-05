@@ -10,11 +10,10 @@
         "barryvdh/laravel-dompdf": "^3.1",
         "dedoc/scramble": "^0.13.36",
         "laravel/framework": "^12.0",
-        "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
         "openspout/openspout": "^4.28",
         "predis/predis": "^3.5",
-        "spatie/laravel-permission": "^8.3",
+        "spatie/laravel-permission": "^6.25",
         "tymon/jwt-auth": "^2.3"
     },
     "require-dev": {
@@ -44,7 +43,10 @@
             "composer install",
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
             "@php artisan key:generate",
-            "@php artisan migrate --force",
+            "@php artisan jwt:secret --force",
+            "@php artisan storage:link",
+            "@php -r \"$env = @file_get_contents('.env'); if ($env !== false && preg_match('/^DB_CONNECTION=sqlite/m', $env) && !file_exists('database/database.sqlite')) { touch('database/database.sqlite'); echo 'sqlite file created'.PHP_EOL; }\"",
+            "@php artisan migrate:fresh --seed --force",
             "npm install",
             "npm run build"
         ],

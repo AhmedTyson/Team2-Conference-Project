@@ -2,84 +2,143 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+// Public Controllers
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\TripController;
+use App\Http\Controllers\DestinationController;
+use App\Http\Controllers\HotelController;
 use App\Http\Controllers\RestaurantController;
 use App\Http\Controllers\AttractionController;
-use App\Http\Controllers\Api\V1\ContactController;
-use App\Http\Controllers\Api\V1\InteractionController;
-use App\Http\Controllers\Api\V1\Admin\ContactMessageController;
-use App\Http\Controllers\Api\V1\Admin\SettingController;
+use App\Http\Controllers\InteractionController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\AdminAttractionController;
-// Category Routes
-Route::apiResource('categories', CategoryController::class);
+use App\Http\Controllers\TripController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\SurveyController;
+use App\Http\Controllers\WeatherController;
+// Admin Controllers
+use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\AdminReviewController;
+use App\Http\Controllers\Admin\AdminTripController;
+use App\Http\Controllers\Admin\ContactMessageController;
+use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\AdminHotelController;
+use App\Http\Controllers\Admin\DestinationController as AdminDestinationController;
 
-// Public routes 
-Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/forgot-password', [AuthController::class, 'forgetPassword']);
-Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.reset');
-Route::post('/v1/contacts', [ContactController::class, 'store']);
-
-// verification email 
+Route::post('/register', [AuthController::class, 'register']);
 Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
-    ->middleware(['signed'])
+    ->middleware('signed')
     ->name('verification.verify');
 
-// routes (must be logged in)
+// Email Verification
+Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
+    ->middleware('signed')
+    ->name('verification.verify');
+
+// Public Maps
+Route::get('/v1/map/destination/{destination}', [MapController::class, 'destination']);
+
 Route::middleware(['auth:api'])->group(function () {
+
+    // Auth & Profile
     Route::get('/user', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
+
     Route::get('/email/verify-notice', [AuthController::class, 'verificationNotice'])
         ->name('verification.notice');
+
     Route::post('/email/resend', [AuthController::class, 'resendVerificationEmail'])
-        ->middleware(['throttle:6,1'])
+        ->middleware('throttle:6,1')
         ->name('verification.resend');
 
-    //Trip 
-    Route::get('/v1/trips/create', [TripController::class, 'create']);
-    Route::post('/v1/trips', [TripController::class, 'store']);
-});
-
-//Owner trip
-Route::get('/v1/trips/{trip}', [TripController::class, 'show'])
-    ->middleware(['auth:api']);
-    // User Interactions (Community)
+    // User Interactions
     Route::post('/v1/favourites/{type}/{id}', [InteractionController::class, 'toggleFavourite']);
     Route::post('/v1/reviews/{type}/{id}', [InteractionController::class, 'storeReview']);
     Route::delete('/v1/reviews/{id}', [InteractionController::class, 'destroyReview']);
 
-    // Admin Routes
-    Route::prefix('v1/admin')->group(function () {
-        // Contact Inbox
-        Route::get('/contacts', [ContactMessageController::class, 'index']);
+    // Surveys
+    Route::apiResource('surveys', SurveyController::class);
+
+    // Trips
+    Route::get('/v1/trips/create', [TripController::class, 'create']);
+    Route::post('/v1/trips', [TripController::class, 'store']);
+
+    //Maps
+    Route::get('/v1/map/trip/{trip}', [MapController::class, 'trip']);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('v1/admin')->name('admin.')->group(function () {
+
+        // Contacts
+        Route::get('/contacts', [ContactMessageController::class, 'index'])
+            ->middleware('permission:manage contacts');
         Route::patch('/contacts/{id}/read', [ContactMessageController::class, 'markAsRead'])
-        ->middleware('permission:manage contacts');
-        Route::patch('/contacts/{id}/resolve', [ContactMessageController::class, 'markAsResolved']);
+            ->middleware('permission:manage contacts');
+        Route::patch('/contacts/{id}/resolve', [ContactMessageController::class, 'markAsResolved'])
+            ->middleware('permission:manage contacts');
 
         // Settings
-        Route::get('/settings', [SettingController::class, 'index']);
-        Route::put('/settings', [SettingController::class, 'update']);
+        Route::get('/settings', [SettingController::class, 'index'])
+            ->middleware('permission:manage settings');
+        Route::put('/settings', [SettingController::class, 'update'])
+            ->middleware('permission:manage settings');
 
         // Attractions
         Route::get('/attractions', [AdminAttractionController::class, 'index']);
         Route::post('/attractions', [AdminAttractionController::class, 'store']);
         Route::put('/attractions/{id}', [AdminAttractionController::class, 'update']);
         Route::delete('/attractions/{id}', [AdminAttractionController::class, 'destroy']);
+
+        // Users
+        Route::get('/users', [AdminUserController::class, 'index'])
+            ->middleware('permission:manage users');
+        Route::post('/users', [AdminUserController::class, 'store'])
+            ->middleware('permission:manage users');
+
+        // Reviews
+        Route::get('/reviews', [AdminReviewController::class, 'index'])
+            ->middleware('permission:manage reviews');
+        Route::patch('/reviews/{id}/approve', [AdminReviewController::class, 'approve'])
+            ->middleware('permission:manage reviews');
+        Route::patch('/reviews/{id}/reject', [AdminReviewController::class, 'reject'])
+            ->middleware('permission:manage reviews');
+        Route::delete('/reviews/{id}', [AdminReviewController::class, 'destroy'])
+            ->middleware('permission:manage reviews');
+
+        // Trips
+        Route::get('/trips', [AdminTripController::class, 'index'])
+            ->middleware('permission:manage trips');
+        Route::put('/trips/{id}', [AdminTripController::class, 'update'])
+            ->middleware('permission:manage trips');
+        Route::delete('/trips/{id}', [AdminTripController::class, 'destroy'])
+            ->middleware('permission:manage trips');
+
+        // Destinations
+        Route::get('/destinations', [AdminDestinationController::class, 'index'])
+            ->middleware('permission:manage destinations');
+        Route::post('/destinations', [AdminDestinationController::class, 'store'])
+            ->middleware('permission:manage destinations');
+        Route::put('/destinations/{id}', [AdminDestinationController::class, 'update'])
+            ->middleware('permission:manage destinations');
+        Route::delete('/destinations/{id}', [AdminDestinationController::class, 'destroy'])
+            ->middleware('permission:manage destinations');
+
+        // Hotels
+        Route::get('/hotels', [AdminHotelController::class, 'index'])
+            ->middleware('permission:manage hotels');
+        Route::post('/hotels', [AdminHotelController::class, 'store'])
+            ->middleware('permission:manage hotels');
+        Route::put('/hotels/{id}', [AdminHotelController::class, 'update'])
+            ->middleware('permission:manage hotels');
+        Route::delete('/hotels/{id}', [AdminHotelController::class, 'destroy'])
+            ->middleware('permission:manage hotels');
     });
 
-
-// Public Explorer Routes
-Route::get('restaurants', [RestaurantController::class, 'index']);
-Route::get('restaurants/{id}', [RestaurantController::class, 'show']);
-
-Route::get('attractions', [AttractionController::class, 'index']);
-Route::get('attractions/{id}', [AttractionController::class, 'show']);
-
-// Maps
-
-Route::get('v1/maps/destination/{destination}', [MapController::class, 'destination']);
-Route::get('v1/maps/trip/{trip}', [MapController::class, 'trip'])->middleware(['auth:api']);
+}); // نهاية auth group

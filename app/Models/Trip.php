@@ -16,8 +16,7 @@ class Trip extends Model
 
     protected $fillable = [
         'user_id', 'title', 'travel_style', 'interests', 'no_of_travelers',
-        'budget', 'no_of_days', 'start_date', 'end_date', 'status', 'estimated_cost',
-    ];
+        'budget', 'no_of_days', 'start_date', 'end_date', ];
 
     protected function casts(): array
     {

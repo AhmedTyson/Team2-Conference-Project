@@ -5,55 +5,126 @@ namespace App\Http\Controllers;
 use App\Services\Fixtures\OpenStreetService;
 use App\Models\Destination;
 use App\Models\Trip;
+use App\Models\Attraction;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Log;
 
 class MapController extends Controller
 {
     use AuthorizesRequests;
 
-    public function destination(Destination $destination, OpenStreetService $maps)
-    {
-        // لو مفيش lat/lng متخزنة، هات واحفظها
-        if (!$destination->latitude || !$destination->longitude) {
-            $coords = $maps->getCoordinates($destination->address);
+   public function destination(Destination $destination, OpenStreetService $maps)
+{
+    set_time_limit(90);
 
-            if ($coords) {
-                $destination->update([
-                    'latitude' => $coords['lat'],
-                    'longitude' => $coords['lng'],
-                ]);
-            }
+    if (!$destination->latitude || !$destination->longitude) {
+
+        $query = "{$destination->name}, {$destination->city_name}";
+        $coords = $maps->getCoordinates($query);
+
+        if ($coords) {
+            $destination->update([
+                'latitude' => $coords['lat'],
+                'longitude' => $coords['lng'],
+            ]);
+
+            $destination->refresh();
+        }
+    }
+
+
+    $attractions = $maps->getAttractionsWithAI(
+        $destination->city_name
+    );
+
+    $restaurants = $maps->getNearbyPlaces(
+        $destination->latitude,
+        $destination->longitude,
+        'restaurant',
+        1000
+    );
+
+    $hotels = $maps->getNearbyPlaces(
+        $destination->latitude,
+        $destination->longitude,
+        'lodging',
+        1000
+    );
+
+
+    return response()->json([
+        "success" => true,
+        "message" => "Destination map data retrieved successfully",
+        "destination" => $destination,
+        "attractions" => $attractions,
+        "hotels" => $hotels,
+        "restaurants" => $restaurants,
+    ]);
+}
+    public function trip(Trip $trip, OpenStreetService $osm)
+{
+    $items = $trip->itineraryItems()
+        ->with('itemable')
+        ->orderBy('day_number')
+        ->orderBy('item_order')
+        ->get();
+
+$points = $items
+    ->map(function ($item) {
+
+        if (!$item->itemable) {
+            return null;
         }
 
+        // Attraction أو Restaurant أو أي موديل عنده الإحداثيات
+        if (
+            isset($item->itemable->latitude) &&
+            isset($item->itemable->longitude)
+        ) {
+            return [
+                'lat' => $item->itemable->latitude,
+                'lng' => $item->itemable->longitude,
+            ];
+        }
+
+        // Hotel => خد الإحداثيات من الـ Destination
+        if (
+            $item->itemable instanceof \App\Models\Hotel &&
+            $item->itemable->destination
+        ) {
+            return [
+                'lat' => $item->itemable->destination->latitude,
+                'lng' => $item->itemable->destination->longitude,
+            ];
+        }
+
+        return null;
+    })
+    ->filter()
+    ->values();
+
+    Log::info($points->toArray());
+
+    if ($points->count() < 2) {
         return response()->json([
-            'destination' => $destination,
-            'attractions' => $maps->getNearbyPlaces($destination->latitude, $destination->longitude, 'tourist_attraction'),
-            'hotels' => $maps->getNearbyPlaces($destination->latitude, $destination->longitude, 'lodging'),
-            'restaurants' => $maps->getNearbyPlaces($destination->latitude, $destination->longitude, 'restaurant'),
-        ]);
+            "success" => false,
+            "message" => "Trip must contain at least two locations."
+        ], 422);
     }
 
-    public function trip(Trip $trip,OpenStreetService $osm){
+    $origin = $points->first();
+    $destination = $points->last();
+    $waypoints = $points->slice(1, -1)->values()->toArray();
 
-        $this->authorize('view',$trip);
+    $directions = $osm->getDirections(
+        $origin,
+        $destination,
+        $waypoints
+    );
 
-        $points = $trip->itineraryPoints()->orderBy('order')->get(['latitude','longitude']);
-
-        if($points->count()<2){
-            return response()->json([
-                "success"=>false,
-                "message"=>"you must enter 2 points"
-            ],422);
-        }
-
-        $origin = ['lat' => $points->first()->latitude, 'lng' => $points->first()->longitude];
-        $destination = ['lat' => $points->last()->latitude, 'lng' => $points->last()->longitude];
-        $waypoints = $points->slice(1, -1)->map(fn ($p) => ['lat' => $p->latitude, 'lng' => $p->longitude])->values()->toArray();
-
-        $directions = $osm->getDirections($origin, $destination, $waypoints);
-
-        return response()->json(['directions' => $directions]);
-
-
-    }
+    return response()->json([
+        "success" => true,
+        "directions" => $directions,
+    ]);
+}
 }
