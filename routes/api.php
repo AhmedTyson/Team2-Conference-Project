@@ -83,6 +83,8 @@ Route::middleware(['auth:api'])->group(function () {
     // Trip Planner
     Route::get('/v1/trips/create', [TripController::class, 'create']);
     Route::post('/v1/trips', [TripController::class, 'store']);
+    Route::post('/v1/trips/{trip}/attach/{type}', [TripController::class, 'attach'])->middleware('auth:api');
+    Route::delete('/v1/trips/{trip}/detach/{id}', [TripController::class, 'detach'])->middleware('auth:api');
 
     // Admin Routes
     Route::prefix('v1/admin')->name('admin.')->group(function () {
