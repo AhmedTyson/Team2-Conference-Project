@@ -39,13 +39,13 @@ class AdminUserController extends Controller
     {
         $user->update(['is_active' => 1]);
 
-        return new UserResource($user);
+        return new UserResource($user->fresh());
     }
 
     public function block(User $user)
     {
         $user->update(['is_active' => 0]);
 
-        return new UserResource($user);
+        return new UserResource($user->fresh());
     }
 }
