@@ -31,6 +31,7 @@ class RoleAndPermissionSeeder extends Seeder
             "manage settings",
             "view analytics",
             "manage countries",
+            "manage flights",
         ];
 
         $userPermissions = [
