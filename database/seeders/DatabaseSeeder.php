@@ -56,6 +56,20 @@ class DatabaseSeeder extends Seeder
             ReviewSeeder::class,
             FavouriteSeeder::class,
             TripSeeder::class,
+            ExperienceProviderSeeder::class,
+            ExperienceSeeder::class,
+            AddressSeeder::class,
+            CompanySeeder::class,
+            BookingSeeder::class,
+            BookingItemSeeder::class,
+            PaymentSeeder::class,
+            TransactionSeeder::class,
+            CommissionSeeder::class,
+            BudgetSnapshotSeeder::class,
+            NotificationSeeder::class,
+            EntityViewSeeder::class,
+            UserPointSeeder::class,
+            TripContributionSeeder::class,
         ]);
 
         // 5. Re-enable FK constraints

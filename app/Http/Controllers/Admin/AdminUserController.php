@@ -2,25 +2,50 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 
 class AdminUserController extends Controller
 {
     public function index()
     {
-        return new UserResource(User::all());
+        $users = User::all();
+        return UserResource::collection($users);
     }
 
     public function store(Request $request)
     {
-        $users= User::create([
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => $request->password,
+            'password' => Hash::make($request->password),
             'is_active' => $request->is_active ?? 1,
         ]);
-    } 
+
+        return new UserResource($user);
+    }
+
+    public function update(Request $request, User $user)
+    {
+        $user->update($request->only(['name', 'email', 'is_active']));
+
+        return new UserResource($user);
+    }
+
+    public function active(User $user)
+    {
+        $user->update(['is_active' => 1]);
+
+        return new UserResource($user->fresh());
+    }
+
+    public function block(User $user)
+    {
+        $user->update(['is_active' => 0]);
+
+        return new UserResource($user->fresh());
+    }
 }
