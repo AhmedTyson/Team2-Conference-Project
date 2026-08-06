@@ -25,8 +25,10 @@ use App\Http\Controllers\Admin\AdminTripController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\AdminHotelController;
+use App\Http\Controllers\Admin\AdminRestaurantController;
+use App\Http\Controllers\Admin\AdminCountryController;
 use App\Http\Controllers\Admin\DestinationController as AdminDestinationController;
-
+use App\Http\Controllers\AdminAttractionController;
 // Category Routes
 Route::prefix('v1')->group(function () {
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
@@ -35,10 +37,14 @@ Route::prefix('v1')->group(function () {
 
 // Admin Categories (using CategoryController)
 Route::middleware(['auth:api'])->prefix('v1/admin')->name('admin.')->group(function () {
+    Route::get('/categories', [CategoryController::class, 'index'])
+        ->middleware('permission:manage categories')->name('categories.index');
     Route::post('/categories', [CategoryController::class, 'store'])
         ->middleware('permission:manage categories')->name('categories.store');
     Route::put('/categories/{category}', [CategoryController::class, 'update'])
         ->middleware('permission:manage categories')->name('categories.update');
+    Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])
+        ->middleware('permission:manage categories')->name('categories.destroy');
 });
 
 // Public Auth Routes 
@@ -78,6 +84,8 @@ Route::middleware(['auth:api'])->group(function () {
     // Trip Planner
     Route::get('/v1/trips/create', [TripController::class, 'create']);
     Route::post('/v1/trips', [TripController::class, 'store']);
+    Route::post('/v1/trips/{trip}/attach/{type}', [TripController::class, 'attach'])->middleware('auth:api');
+    Route::delete('/v1/trips/{trip}/detach/{id}', [TripController::class, 'detach'])->middleware('auth:api');
 
     // Dashboard Routes
     Route::prefix('v1/dashboard')->name('dashboard.')->group(function () {
@@ -126,12 +134,30 @@ Route::middleware(['auth:api'])->group(function () {
             ->middleware('permission:manage settings')->name('settings.index');
         Route::put('/settings', [SettingController::class, 'update'])
             ->middleware('permission:manage settings')->name('settings.update');
-            
-        // Hotels
+
+        // Hotels (Rana)
         Route::get('hotels', [AdminHotelController::class, 'index'])->middleware('permission:manage hotels');
         Route::post('hotels', [AdminHotelController::class, 'store'])->middleware('permission:manage hotels');
         Route::put('hotels/{id}', [AdminHotelController::class, 'update'])->middleware('permission:manage hotels');
         Route::delete('hotels/{id}', [AdminHotelController::class, 'destroy'])->middleware('permission:manage hotels');
+
+        // Attractions (Fady)
+        Route::get('/attractions', [AdminAttractionController::class, 'index'])->middleware('permission:manage attractions');
+        Route::post('/attractions', [AdminAttractionController::class, 'store'])->middleware('permission:manage attractions');
+        Route::put('/attractions/{id}', [AdminAttractionController::class, 'update'])->middleware('permission:manage attractions');
+        Route::delete('/attractions/{id}', [AdminAttractionController::class, 'destroy'])->middleware('permission:manage attractions');
+
+        // Restaurants (Kenzy)
+        Route::get('restaurants', [AdminRestaurantController::class, 'index'])->middleware('permission:manage restaurants');
+        Route::post('restaurants', [AdminRestaurantController::class, 'store'])->middleware('permission:manage restaurants');
+        Route::put('restaurants/{id}', [AdminRestaurantController::class, 'update'])->middleware('permission:manage restaurants');
+        Route::delete('restaurants/{id}', [AdminRestaurantController::class, 'destroy'])->middleware('permission:manage restaurants');
+
+        // Countries (Sama)
+        Route::get('/countries', [AdminCountryController::class, 'index'])->middleware('permission:manage countries');
+        Route::post('/countries', [AdminCountryController::class, 'store'])->middleware('permission:manage countries');
+        Route::put('/countries/{id}', [AdminCountryController::class, 'update'])->middleware('permission:manage countries');
+        Route::delete('/countries/{id}', [AdminCountryController::class, 'destroy'])->middleware('permission:manage countries');
     });
 });
 

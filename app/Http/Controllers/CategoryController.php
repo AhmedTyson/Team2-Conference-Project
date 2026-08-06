@@ -20,6 +20,7 @@ return CategoryResource::collection(Category::all());
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'type' => 'required|string|max:100',
         ]);
 
         $category = Category::create($request->all());
@@ -42,6 +43,7 @@ return CategoryResource::collection(Category::all());
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'type' => 'required|string|max:100',
         ]);
 
         $category->update($request->all());

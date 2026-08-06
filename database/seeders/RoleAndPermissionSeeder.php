@@ -30,6 +30,7 @@ class RoleAndPermissionSeeder extends Seeder
             "manage contacts",
             "manage settings",
             "view analytics",
+            "manage countries",
         ];
 
         $userPermissions = [

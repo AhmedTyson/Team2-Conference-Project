@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\TripStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Enums\TripStatus;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -16,7 +16,7 @@ class Trip extends Model
 
     protected $fillable = [
         'user_id', 'title', 'travel_style', 'interests', 'no_of_travelers',
-        'budget', 'no_of_days', 'start_date', 'end_date', ];
+        'budget', 'no_of_days', 'start_date', 'end_date', 'status', ];
 
     protected function casts(): array
     {
@@ -75,7 +75,3 @@ class Trip extends Model
         return $this->morphedByMany(Restaurant::class, 'item', 'trip_items')->withTimestamps();
     }
 }
-
-
-
-
