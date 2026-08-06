@@ -75,7 +75,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/email/resend', [AuthController::class, 'resendVerificationEmail'])
         ->middleware(['throttle:6,1'])
         ->name('verification.resend');
-
+    Route::patch('/v1/profile', [AuthController::class, 'updateProfile']);
     // User Interactions (Community)
     Route::post('/v1/favourites/{type}/{id}', [InteractionController::class, 'toggleFavourite']);
     Route::post('/v1/reviews/{type}/{id}', [InteractionController::class, 'storeReview']);
@@ -130,6 +130,10 @@ Route::middleware(['auth:api'])->group(function () {
         // Revenue Analytics (Hana)
         Route::get('/analytics/revenue', [AdminAnalyticsController::class, 'revenue'])
             ->middleware('permission:view analytics')->name('analytics.revenue');
+
+        // Analytics dashboard (Lojy)
+        Route::get('/analytics', [AdminAnalyticsController::class, 'index'])
+            ->middleware('permission:view analytics')->name('analytics.index');
 
         // Contact Inbox (Tyson)
         Route::get('/contacts', [ContactMessageController::class, 'index'])
