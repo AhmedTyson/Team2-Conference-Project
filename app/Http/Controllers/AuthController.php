@@ -19,7 +19,7 @@ class AuthController extends Controller
     {
          
            
-            $role = Role::where('name', 'user')->firstOrFail();
+            $role = Role::firstOrCreate(['name' => 'user']);
 
             $request->validate([
                 'name' => 'required|string|max:255',
