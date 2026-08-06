@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Verified;
-
+use App\Http\Requests\Auth\UpdateProfileRequest;
 class AuthController extends Controller
 {
  
@@ -17,7 +17,7 @@ class AuthController extends Controller
     //Register a new user 
     public function register(Request $request)
     {
-        try {
+         
            
             $role = Role::where('name', 'user')->firstOrFail();
 
@@ -31,9 +31,7 @@ class AuthController extends Controller
             $user->sendEmailVerificationNotification();
 
             $token = auth('api')->login($user);
-        } catch (Exception $ex) {
-            return response()->json(['exception' => $ex->getMessage()]);
-        }
+        
 
         return response()->json([
             'message' => 'user created',
@@ -217,4 +215,43 @@ class AuthController extends Controller
         ], 422);
 
     }
+
+// Update the authenticated user's own profile 
+    public function updateProfile(UpdateProfileRequest $request)
+    {
+        $user = auth('api')->user();
+        $data = $request->validated();
+
+        if ($request->hasFile('profile_image')) {
+            if ($user->profile_image) {
+                Storage::disk('public')->delete($user->profile_image);
+            }
+
+            $data['profile_image'] = $request->file('profile_image')
+                ->store('profile-images', 'public');
+        }
+
+        if (isset($data['password'])) {
+            $data['password'] = Hash::make($data['password']);
+        } else {
+            unset($data['password']);
+        }
+
+        $user->update($data);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Profile updated successfully.',
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'profile_image' => $user->profile_image
+                    ? Storage::disk('public')->url($user->profile_image)
+                    : null,
+                'roles' => $user->getRoleNames(),
+            ],
+        ], 200);
+    }
+
 }
