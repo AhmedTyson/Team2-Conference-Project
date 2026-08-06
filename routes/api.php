@@ -29,6 +29,8 @@ use App\Http\Controllers\Admin\AdminRestaurantController;
 use App\Http\Controllers\Admin\AdminCountryController;
 use App\Http\Controllers\Admin\DestinationController as AdminDestinationController;
 use App\Http\Controllers\AdminAttractionController;
+use App\Http\Controllers\Admin\AdminAnalyticsController;
+
 // Category Routes
 Route::prefix('v1')->group(function () {
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
@@ -121,6 +123,10 @@ Route::middleware(['auth:api'])->group(function () {
         Route::delete('/destinations/{id}', [AdminDestinationController::class, 'destroy'])
             ->middleware('permission:manage destinations')->name('destinations.destroy');
 
+        // Revenue Analytics (Hana)
+        Route::get('/analytics/revenue', [AdminAnalyticsController::class, 'revenue'])
+            ->middleware('permission:view analytics')->name('analytics.revenue');
+
         // Contact Inbox (Tyson)
         Route::get('/contacts', [ContactMessageController::class, 'index'])
             ->middleware('permission:manage contacts')->name('contacts.index');
@@ -164,7 +170,7 @@ Route::middleware(['auth:api'])->group(function () {
 // Owner Trip View
 Route::get('/v1/trips/{trip}', [TripController::class, 'show'])->middleware(['auth:api']);
 
-// Public Explorer Routes & Maps
+// Public Explorer Routes & Maps (Kenzy & Hana)
 Route::prefix('v1')->group(function () {
     // Maps
     Route::get('/maps/destination/{destination}', [MapController::class, 'destination']);
