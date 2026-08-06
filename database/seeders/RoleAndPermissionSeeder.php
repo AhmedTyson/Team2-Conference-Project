@@ -31,6 +31,7 @@ class RoleAndPermissionSeeder extends Seeder
             "manage settings",
             "view analytics",
             "manage countries",
+            "manage plans",
         ];
 
         $userPermissions = [
@@ -40,6 +41,11 @@ class RoleAndPermissionSeeder extends Seeder
             "generate ai itineraries",
             "write reviews",
             "manage own favourites",
+            "get plans",
+            "subscribe to plans",
+            "upgrade plans",
+            "cancel subscription",
+            "view my subscription",
         ];
 
         $allPermissions = array_merge($superAdminPermissions, $adminPermissions, $userPermissions);

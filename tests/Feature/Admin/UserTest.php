@@ -24,13 +24,10 @@ class UserTest extends TestCase
     }
 
     /**
-     * KNOWN BUG (documented, not fixed): AdminUserController::index returns
-     * `new UserResource(User::all())` — a single resource wrapping a Collection.
-     * UserResource accesses `$this->id` on the collection, throwing
-     * "Property [id] does not exist on this collection instance" → 500.
-     * The endpoint is unusable; it should return a resource collection.
+     * FIXED by CoLeader merge: AdminUserController::index returns
+     * `UserResource::collection($users)` — proper collection response.
      */
-    public function test_admin_list_users_throws_500(): void
+    public function test_admin_list_users_returns_200_with_collection(): void
     {
         $admin = User::factory()->create();
         $admin->assignRole('admin');
@@ -39,16 +36,15 @@ class UserTest extends TestCase
 
         $response = $this->actingAs($admin, 'api')->getJson('/api/v1/admin/users');
 
-        // Assert the ACTUAL implemented behavior: 500 instead of a user list.
-        $response->assertStatus(500);
+        $response->assertStatus(200);
+        $response->assertJsonCount(4, 'data');
     }
 
     /**
-     * KNOWN BUG (documented, not fixed): AdminUserController::store creates the user
-     * but returns nothing, so the client receives an empty 200 response body
-     * instead of the created user resource.
+     * FIXED by CoLeader merge: AdminUserController::store returns the
+     * created user resource with a 201 status.
      */
-    public function test_admin_can_store_user_but_response_is_empty_body(): void
+    public function test_admin_can_store_user_with_created_resource(): void
     {
         $admin = User::factory()->create();
         $admin->assignRole('admin');
@@ -60,9 +56,8 @@ class UserTest extends TestCase
                 'password' => 'secret123',
             ]);
 
-        // Assert the ACTUAL implemented behavior: user persisted, 200, empty body.
-        $response->assertStatus(200);
-        $this->assertSame('', $response->getContent());
+        $response->assertStatus(201);
+        $response->assertJsonPath('data.email', 'newuser@example.com');
 
         $this->assertDatabaseHas('users', [
             'email' => 'newuser@example.com',

@@ -29,6 +29,7 @@ use App\Http\Controllers\Admin\AdminCountryController;
 use App\Http\Controllers\Admin\DestinationController as AdminDestinationController;
 use App\Http\Controllers\AdminAttractionController;
 use App\Http\Controllers\SiteSettingsController;
+use App\Http\Controllers\PlanController;
 // Category Routes
 Route::prefix('v1')->group(function () {
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
@@ -190,3 +191,29 @@ Route::prefix('v1')->group(function () {
 
 // Weather
 Route::get('/weather', [WeatherController::class, 'show']);
+
+// Plans & Subscriptions (money layer — S5)
+// Post /api/v1/admin/set-plans
+// GET  /api/v1/plans                      # shared with F2
+// POST /api/v1/me/subscribe                # plan_id, payment method
+// POST /api/v1/me/upgrade                  # plan_id -> prorated charge
+// POST /api/v1/me/subscription/cancel
+// GET  /api/v1/me/subscription
+Route::middleware(['auth:api'])->prefix('v1')->name('plans.')->group(function () {
+    Route::post('admin/set-plans', [PlanController::class, 'setPlans'])
+        ->middleware('permission:manage plans');
+
+    Route::get('/plans', [PlanController::class, 'index'])
+        ->middleware('permission:get plans');
+    Route::post('/me/subscribe', [PlanController::class, 'subscribe'])
+        ->middleware('permission:subscribe to plans');
+    Route::post('/me/upgrade', [PlanController::class, 'upgrade'])
+        ->middleware('permission:upgrade plans');
+    Route::post('/me/subscription/cancel', [PlanController::class, 'cancel'])
+        ->middleware('permission:cancel subscription');
+    Route::get('/me/subscription', [PlanController::class, 'subscription'])
+        ->middleware('permission:view my subscription');
+});
+
+
+

@@ -70,6 +70,7 @@ class DatabaseSeeder extends Seeder
             EntityViewSeeder::class,
             UserPointSeeder::class,
             TripContributionSeeder::class,
+            PlanSeeder::class,
         ]);
 
         // 5. Re-enable FK constraints

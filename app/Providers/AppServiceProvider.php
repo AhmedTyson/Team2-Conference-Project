@@ -14,6 +14,8 @@ use App\Interfaces\SurveyRepositoryInterface;
 use App\Repositories\SurveyRepository;
 use App\Interfaces\CountryRepositoryInterface;
 use App\Repositories\CountryRepository;
+use App\Interfaces\PlanRepositoryInterface;
+use App\Repositories\PlanRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,6 +32,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             CountryRepositoryInterface::class,
             CountryRepository::class
+        );
+
+        $this->app->bind(
+            PlanRepositoryInterface::class,
+            PlanRepository::class
         );
     }
 

@@ -67,7 +67,9 @@ class PaymobController extends Controller
                 "payment_methods" => $integration_ids,
                 "billing_data" => $billing,
                 "extras" => ["merchant_intention_id" => $orderId . '_' . time()],
-                "special_reference" => $orderId . '_' . time()
+                "special_reference" => $orderId . '_' . time(),
+                "notify_url" => url("paymob/callback"),
+                "return_url" => url("paymob/callback")
             ];
 
             // Create Paymob intention
