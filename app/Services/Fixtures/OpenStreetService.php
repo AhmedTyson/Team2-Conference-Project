@@ -3,6 +3,7 @@
 namespace App\Services\Fixtures;
 
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class OpenStreetService
 {
@@ -25,30 +26,93 @@ class OpenStreetService
         ] : null;
     }
 
-    public function getNearbyPlaces(float $lat, float $lng, string $type, int $radius = 5000): array
-    {
-        $osmTag = match ($type) {
-            'lodging' => 'tourism=hotel',
-            'restaurant' => 'amenity=restaurant',
-            'tourist_attraction' => 'tourism=attraction',
-            default => 'tourism=attraction',
-        };
+    public function getNearbyPlaces(float $lat, float $lng, string $type, int $radius = 2000): array
+{
+    $query = match ($type) {
 
-        $query = "[out:json];node[$osmTag](around:$radius,$lat,$lng);out body 20;";
+        'restaurant' => "
+        [out:json][timeout:5];
+        (
+          node[amenity=restaurant](around:$radius,$lat,$lng);
+          node[amenity=fast_food](around:$radius,$lat,$lng);
+          node[amenity=cafe](around:$radius,$lat,$lng);
+        );
+        out;
+        ",
 
-        $response = Http::withHeaders(['User-Agent' => $this->userAgent])
-            ->asForm()
-            ->post('https://overpass-api.de/api/interpreter', ['data' => $query]);
+        'lodging' => "
+        [out:json][timeout:5];
+        (
+          node[tourism=hotel](around:$radius,$lat,$lng);
+          node[tourism=hostel](around:$radius,$lat,$lng);
+          node[tourism=guest_house](around:$radius,$lat,$lng);
+        );
+        out;
+        ",
 
-        return collect($response->json('elements', []))
-            ->map(fn ($place) => [
-                'name' => $place['tags']['name'] ?? 'Unnamed',
-                'lat' => $place['lat'],
-                'lng' => $place['lon']
-            ])
-            ->values()
-            ->toArray();
+        'tourist_attraction' => "
+        [out:json][timeout:5];
+        (
+          node[tourism=attraction](around:$radius,$lat,$lng);
+          node[tourism=museum](around:$radius,$lat,$lng);
+          node[tourism=monument](around:$radius,$lat,$lng);
+          node[historic=monument](around:$radius,$lat,$lng);
+          node[historic=archaeological_site](around:$radius,$lat,$lng);
+        );
+        out;
+        ",
+    };
+
+
+    Log::info("START: ".$type);
+
+    $response = Http::connectTimeout(3)
+        ->timeout(5)
+        ->withHeaders([
+            'User-Agent' => $this->userAgent,
+        ])
+        ->asForm()
+        ->post(
+            'https://overpass-api.de/api/interpreter',
+            ['data' => $query]
+        );
+
+    Log::info("END: ".$type." ".$response->status());
+
+
+    if (!$response->successful()) {
+        Log::error("Overpass failed", [
+            "type"=>$type,
+            "status"=>$response->status()
+        ]);
+
+        return [];
     }
+
+
+    return collect($response->json('elements', []))
+        ->map(function ($place) {
+
+            return [
+                'name' => $place['tags']['name'] ?? null,
+                'lat' => $place['lat'] ?? ($place['center']['lat'] ?? null),
+                'lng' => $place['lon'] ?? ($place['center']['lon'] ?? null),
+            ];
+
+        })
+        ->filter(function($place){
+
+            return 
+                !empty($place['name']) &&
+                !is_null($place['lat']) &&
+                !is_null($place['lng']);
+
+        })
+        ->unique('name')
+        ->values()
+        ->take(20)
+        ->toArray();
+}
     public function getDirections(array $origin, array $destination, array $waypoints = []): array
 {
     // OSRM بياخد الإحداثيات بترتيب lng,lat (مش lat,lng زي المعتاد!)
@@ -56,11 +120,17 @@ class OpenStreetService
         ->map(fn ($point) => "{$point['lng']},{$point['lat']}")
         ->implode(';');
 
+        Log::info('Coordinates: '.$coordinates);
+
+
     $response = Http::withHeaders(['User-Agent' => $this->userAgent])
         ->get("https://router.project-osrm.org/route/v1/driving/{$coordinates}", [
             'overview' => 'full',
             'geometries' => 'geojson',
         ]);
+
+        Log::info('Status: '.$response->status());
+        Log::info('Body: '.$response->body());
 
     if ($response->failed() || $response->json('code') !== 'Ok') {
         return [];
@@ -74,5 +144,60 @@ class OpenStreetService
         'geometry' => $route['geometry'], // خط المسار على الخريطة (GeoJSON)
     ];
 }
-    
+
+    public function getAttractionsWithAI(string $city): array
+        {
+        Log::info("AI attractions called: ".$city);
+        $response = Http::retry(2,1000)->connectTimeout(5)
+            ->timeout(15)
+            ->withToken(config('services.openai.key'))
+            ->post(
+                'https://api.openai.com/v1/chat/completions',
+                [
+                    'model' => 'gpt-4.1-mini',
+                    'messages' => [
+    [
+        'role' => 'system',
+        'content' => 'Return only valid JSON.'
+    ],
+    [
+        'role' => 'user',
+        'content' => "Give me exactly 10 tourist attractions in {$city}.
+
+            Return ONLY a JSON array.
+            No markdown.
+            No explanation.
+
+            Format:
+            [
+            {
+            \"name\": \"Pyramids of Giza\",
+            \"lat\": 29.9792,
+            \"lng\": 31.1342
+            }
+            ]"
+                ]
+            ]
+                ]
+            );
+
+            if ($response->failed()) {
+                return [];
+            }
+
+            $content = $response->json('choices.0.message.content');
+
+            Log::info("AI RESPONSE: ".$content);
+
+            $content = preg_replace('/^```json\s*|\s*```$/', '', trim($content));
+
+            $data = json_decode($content, true);
+
+            if (!is_array($data)) {
+                Log::error("AI JSON ERROR: ".$content);
+                return [];
+            }
+
+            return $data;
+        }
 }
