@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ReportController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -190,3 +191,12 @@ Route::prefix('v1')->group(function () {
 
 // Weather
 Route::get('/weather', [WeatherController::class, 'show']);
+
+//Report
+Route::middleware(['auth:api', 'role:admin|super_admin'])
+    ->prefix('v1/admin')
+    ->group(function () {
+        Route::get('reports', [ReportController::class, 'index']);
+        Route::post('reports/generate', [ReportController::class, 'generate']);
+        Route::get('reports/{id}/download', [ReportController::class, 'download']);
+    });
