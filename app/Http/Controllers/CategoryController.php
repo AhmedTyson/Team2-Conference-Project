@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Http\Resources\CategoryResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
+
 
 class CategoryController extends Controller
 {
@@ -13,7 +15,18 @@ class CategoryController extends Controller
      */
     public function index()
     {
-return CategoryResource::collection(Category::all());
+        $categories = Cache::remember('categories',now()->addHour(),function()
+        {
+            return Category::all();
+        });
+
+        return response()->json([
+            "success"=>true,
+            "message"=>"Categories fetched successfully",
+            "data"=>CategoryResource::collection($categories)
+        ]);
+
+
     }
 
     public function store(Request $request)

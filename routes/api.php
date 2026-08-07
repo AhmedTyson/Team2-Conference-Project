@@ -17,6 +17,7 @@ use App\Http\Controllers\TripController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\WeatherController;
+use App\Http\Controllers\AIController;
 // Admin Controllers
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminReviewController;
@@ -25,6 +26,7 @@ use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\AdminHotelController;
 use App\Http\Controllers\Admin\DestinationController as AdminDestinationController;
+use App\Services\GroqService;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -69,6 +71,8 @@ Route::middleware(['auth:api'])->group(function () {
     //Maps
     Route::get('/v1/map/trip/{trip}', [MapController::class, 'trip']);
 
+    // Categories
+    Route::get('/v1/categories', [CategoryController::class, 'index']);
     /*
     |--------------------------------------------------------------------------
     | Admin Routes
@@ -121,7 +125,7 @@ Route::middleware(['auth:api'])->group(function () {
             ->middleware('permission:manage trips');
 
         // Destinations
-        Route::get('/destinations', [AdminDestinationController::class, 'index'])
+        Route::get('/destinations', [DestinationController::class, 'index'])
             ->middleware('permission:manage destinations');
         Route::post('/destinations', [AdminDestinationController::class, 'store'])
             ->middleware('permission:manage destinations');
@@ -140,5 +144,14 @@ Route::middleware(['auth:api'])->group(function () {
         Route::delete('/hotels/{id}', [AdminHotelController::class, 'destroy'])
             ->middleware('permission:manage hotels');
     });
+
+    // AI
+
+    Route::post('/review',[GroqService::class,'generateAi'])
+    ->middleware('permission:generate ai itineraries');
+
+    Route::get('/review/{id}',[AIController::class,'review'])
+    ->middleware('auth:api');
+
 
 }); // نهاية auth group

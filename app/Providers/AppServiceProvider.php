@@ -22,7 +22,8 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(
     SurveyRepositoryInterface::class,
-    SurveyRepository::class
+    SurveyRepository::class,
+    
     );
     }
 
