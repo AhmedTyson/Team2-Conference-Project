@@ -35,7 +35,7 @@ class SettingController extends Controller
         foreach ($settingsPayload as $setting) {
             Setting::updateOrCreate(
                 ['key'   => $setting['key']],
-                ['value' => $setting['value']]
+                ['value' => $setting['value'] ?? '']
             );
         }
 

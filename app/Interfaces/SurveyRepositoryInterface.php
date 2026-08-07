@@ -7,7 +7,7 @@ interface SurveyRepositoryInterface
     public function getAllSurveys();
 
     public function getSurveyById($surveyId);
-     public function getSurveyByUserId($userId);
+    public function getSurveyByUserId($userId);
 
     public function createSurvey(array $surveyDetails);
 
