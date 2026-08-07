@@ -234,3 +234,9 @@ Route::middleware(['auth:api'])->prefix('v1')->name('plans.')->group(function ()
 
 
 
+
+// AI (Fady)
+Route::post('/review', [\App\Services\GroqService::class, 'generateAi'])
+    ->middleware(['auth:api', 'permission:generate ai itineraries']);
+Route::get('/review/{id}', [\App\Http\Controllers\AIController::class, 'review'])
+    ->middleware('auth:api');
