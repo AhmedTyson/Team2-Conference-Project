@@ -3,21 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\DestinationResource;
-use App\Models\Destination;
+use App\Services\DestinationService;
 use Illuminate\Http\Request;
 
 class DestinationController extends Controller
 {
+    protected $destinationService;
+
+    public function __construct(DestinationService $destinationService)
+    {
+        $this->destinationService = $destinationService;
+    }
+
     public function index()
     {
-    $destinations = Destination::with('country')->get();
-    return DestinationResource::collection($destinations);
+        return DestinationResource::collection(
+            $this->destinationService->index()
+        );
     }
 
     public function show($id)
     {
-        $destination = Destination::with('country')->findOrFail($id);
-
-        return new DestinationResource($destination);
+        return new DestinationResource(
+            $this->destinationService->show($id)
+        );
     }
 }

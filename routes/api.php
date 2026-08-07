@@ -150,6 +150,11 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('/countries', [AdminCountryController::class, 'store'])->middleware('permission:manage countries');
         Route::put('/countries/{id}', [AdminCountryController::class, 'update'])->middleware('permission:manage countries');
         Route::delete('/countries/{id}', [AdminCountryController::class, 'destroy'])->middleware('permission:manage countries');
+        // Categories (Rana)
+        Route::get('/categories', [AdminCategoryController::class, 'index'])->middleware('permission:manage categories');
+        Route::post('/categories', [AdminCategoryController::class, 'store'])->middleware('permission:manage categories');
+        Route::put('/categories/{category}', [AdminCategoryController::class, 'update'])->middleware('permission:manage categories');
+        Route::delete('/categories/{category}', [AdminCategoryController::class, 'destroy'])->middleware('permission:manage categories');
     });
 });
 
@@ -177,7 +182,10 @@ Route::prefix('v1')->group(function () {
     // Attractions
     Route::get('attractions', [AttractionController::class, 'index']);
     Route::get('attractions/{id}', [AttractionController::class, 'show']);
-});
+    // Weather
+    Route::get('/weather', [WeatherController::class, 'show']);
+    // Categories
+    Route::get('categories', [CategoryController::class, 'index']);
+    Route::get('categories/{category}', [CategoryController::class, 'show']);
 
-// Weather
-Route::get('/weather', [WeatherController::class, 'show']);
+});
