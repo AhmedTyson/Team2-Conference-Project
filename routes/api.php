@@ -70,6 +70,11 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('/v1/trips/create', [TripController::class, 'create']);
     Route::post('/v1/trips', [TripController::class, 'store']);
 
+    //trip forking route
+    Route::middleware('auth:api')->group(function () {
+    Route::post('/trips/{trip}/fork', [TripController::class, 'fork']);
+});
+
     // Admin Routes
     Route::middleware(['role:admin'])->prefix('v1/admin')->group(function () {
         // Contact Inbox
