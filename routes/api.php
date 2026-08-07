@@ -97,6 +97,11 @@ Route::middleware(['auth:api'])->group(function () {
         Route::get('/favourites', [DashboardController::class, 'favourites'])->name('favourites');
     });
 
+    //trip forking route
+    Route::middleware('auth:api')->group(function () {
+    Route::post('/trips/{trip}/fork', [TripController::class, 'fork']);
+});
+
     // Admin Routes
     Route::prefix('v1/admin')->name('admin.')->group(function () {
         // Users Management (Sarah)

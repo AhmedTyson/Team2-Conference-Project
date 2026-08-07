@@ -27,6 +27,7 @@ class UpdateProfileRequest extends FormRequest
         return [
             'name'          => ['sometimes', 'string', 'max:255'],
             'email'         => ['sometimes', 'string', 'email', 'max:255', 'unique:users,email,' . $userId],
+            'phone'         => ['sometimes', 'nullable', 'string', 'max:20', 'unique:users,phone,' . $userId],
             'profile_image' => ['sometimes', 'image', 'max:2048'],
             'password'      => ['sometimes', 'string', 'min:8', 'confirmed'],
         ];
@@ -42,6 +43,7 @@ class UpdateProfileRequest extends FormRequest
         return [
             'email.unique' => 'This email is already taken.',
             'password.confirmed' => 'Password confirmation does not match.',
+            'phone.unique' => 'This phone number is already taken.',
             'profile_image.image' => 'The profile image must be a valid image file.',
         ];
     }
