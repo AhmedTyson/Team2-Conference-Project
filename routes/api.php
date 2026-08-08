@@ -17,6 +17,7 @@ use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\WeatherController;
 use App\Http\Controllers\MapController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FlightController;
 
 // Admin Controllers
 use App\Http\Controllers\Admin\AdminUserController;
@@ -32,6 +33,8 @@ use App\Http\Controllers\Admin\AdminAttractionController;
 use App\Http\Controllers\SiteSettingsController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\Admin\AdminAnalyticsController;
+use App\Http\Controllers\Admin\AdminFlightController;
+
 // Category Routes
 Route::prefix('v1')->group(function () {
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
@@ -134,6 +137,17 @@ Route::middleware(['auth:api'])->group(function () {
         Route::delete('/destinations/{id}', [AdminDestinationController::class, 'destroy'])
             ->middleware('permission:manage destinations')->name('destinations.destroy');
 
+            
+        // Admin Flights (Hana)
+        Route::get('flights', [AdminFlightController::class, 'index'])
+        ->middleware('permission:manage flights');
+        Route::post('flights', [AdminFlightController::class, 'store'])
+        ->middleware('permission:manage flights');
+        Route::put('flights/{id}', [AdminFlightController::class, 'update'])
+        ->middleware('permission:manage flights');
+        Route::delete('flights/{id}', [AdminFlightController::class, 'destroy'])
+        ->middleware('permission:manage flights');
+
         // Revenue Analytics (Hana)
         Route::get('/analytics/revenue', [AdminAnalyticsController::class, 'revenue'])
             ->middleware('permission:view analytics')->name('analytics.revenue');
@@ -201,6 +215,10 @@ Route::prefix('v1')->group(function () {
     Route::get('hotels', [HotelController::class, 'index']);
     Route::get('hotels/{id}', [HotelController::class, 'show']);
 
+    // Flights
+    Route::get('flights', [FlightController::class, 'index']);
+    Route::get('flights/{id}', [FlightController::class, 'show']);
+
     // Restaurants
     Route::get('restaurants', [RestaurantController::class, 'index']);
     Route::get('restaurants/{id}', [RestaurantController::class, 'show']);
@@ -216,6 +234,7 @@ Route::prefix('v1')->group(function () {
 // Weather
 Route::get('/weather', [WeatherController::class, 'show']);
 
+<<<<<<< HEAD
 // Plans & Subscriptions (money layer — S5)
 // Post /api/v1/admin/set-plans
 // GET  /api/v1/plans                      # shared with F2

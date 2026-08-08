@@ -12,9 +12,10 @@ class Flight extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
+        protected $fillable = [
         'airline', 'flight_number', 'departure_airport', 'arrival_airport',
-        'departure_date', 'arrival_date', ];
+        'departure_date', 'arrival_date', 'price', 'booking_status', 
+    ];
 
     protected function casts(): array
     {
