@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Destination;
 use App\Models\Experience;
-use App\Models\Experienceprovider;
+use App\Models\ExperienceProvider;
 use Illuminate\Database\Seeder;
 
 class ExperienceSeeder extends Seeder
@@ -14,7 +14,7 @@ class ExperienceSeeder extends Seeder
      */
     public function run(): void
     {
-        $providers = Experienceprovider::all();
+        $providers = ExperienceProvider::all();
         $destinationIds = Destination::pluck('id');
 
         if ($providers->isEmpty() || $destinationIds->isEmpty()) {
