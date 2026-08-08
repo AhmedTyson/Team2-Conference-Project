@@ -1,8 +1,8 @@
-# Phase 10 — Release Ready Sign-Off
+# Phases 10–13 — Release Ready Sign-Off
 
 Date: 2026-08-08 · Branch: `feature/paymob-payments`
 
-## Gates (Phase 10 spec)
+## Gates (Phases 10–13 spec)
 
 | # | Check | Result |
 |---|---|---|
@@ -10,9 +10,9 @@ Date: 2026-08-08 · Branch: `feature/paymob-payments`
 | 2 | `config:cache` | `php artisan config:cache` OK (exit 0), then cleared. ✔ |
 | 3 | Route cache (release hygiene) | `php artisan route:cache` was BROKEN: name collision `paymob.callback` (legacy `paymob/laravel-package` registers `paymob/callback` + `paymob/process`). Fixed: our group renamed to `paymob-v1.` + `PaymobGateway` rewired + published `PaymobController.php` restored (was corrupted). Reroute:cache exit 0. ✔ |
 | 4 | env params full list export | `docs/ENVIRONMENT.md` — 41 keys, grouped with defaults. ✔ |
-| 5 | CI pipeline | `.github/workflows/ci.yml`: `pint --test` job, `phpunit` job (`migrate:fresh --seed` + `php artisan test`), gitleaks job (`gitleaks-action@v2`, avoid workflow_run patterns). Buttons: push main/develop + PRs. ✔ |
-| 6 | `migrate:fresh --seed` | Green on sqlite `:memory:` after fixes: (a) `NotificationSeeder` missing uuid `id` → NOT NULL crash (would crash MySQL too); (b) table name mismatches model `$table`: `experienceproviders` → `experience_providers`, model `Experience::$table='experience'` vs migration `experiences`, `Address::$table='address'` vs `addresses`. ✔ |
-| 7 | Secrets scan | Local: **NO trust-region patterns** (`sk-`, `AKIA`, `AIza…`, `ghp_…`, `xox…`, PK keys) in git HEAD; only `.env.example` tracked. gitleaks binary not installed on dev machine (Docker daemon off) — gate enforced in CI job `secrets`. ⚠ see caveats |
+| 5 | CI pipeline | `.github/workflows/ci.yml`: `pint --test` job, `phpunit` (sqlite) job (`migrate:fresh --seed` + `php artisan test`), **`test-mysql` job (MySQL 8 service, real DB parity — Phase 13)**, gitleaks job (`gitleaks-action@v3`; Node20 runner deprecation — v2 would fail after 2026-09-16; config via `GITLEAKS_CONFIG` env). Buttons: push main/develop + PRs. ✔ |
+| 6 | `migrate:fresh --seed` | Green on sqlite `:memory:` after fixes: (a) `NotificationSeeder` missing uuid `id` → NOT NULL crash (would crash MySQL too); (b) table name mismatches between migrations and model `$table`: `experienceproviders` → `experience_providers`, `experience` → `experiences`, `address` → `addresses`. ✔ |
+| 7 | Secrets scan (gitleaks binary v8.30.1) | Full `git log` scan of 162 commits. **1 REAL leak found**: `RAPIDAPI_KEY=0b1a47…` in `.env.example` @ `ce485c9` (teammate commit; already removed from working tree). Baselined via `gitleaks.toml` (`[extend] useDefault` + `[allowlist].commits`), scan now clean exit 0. ✔/⚠ rotate key (below). `composer audit`: **0 advisories**. ✔ |
 | 8 | Route count vs audit | Audit claimed 113 API routes. `route:list` = 115 (`114 api/*` + `GET /docs/api` scramble UI); delta = `/api/me/reports` added in Phase 9. ✔ |
 
 ## Route → coverage map (test files)
@@ -33,13 +33,13 @@ Test tally: **105 tests / 340 assertions**, all passing (sqlite :memory:, fake s
 
 ## Caveats (non-blocking, tracked)
 
-- **Coverage %** — no xdebug/pcov driver in this PHP build; metric deferred. Add `pcov` to future CI (`shivammathur/setup-php` supports `coverage: pcov`) — target ≥60%.
-- **gitleaks local** — ran static scan fallback; full scan happens in CI on the repo (needs Docker daemon or gitleaks binary).
-- **CI mysql** — `migrate:fresh --seed` in pipeline uses sqlite `:memory:` (same env as phpunit.xml); parity with production MySQL is verified only via local MySQL runs.
+- **Coverage % (Phase 11)** — no xdebug/pcov driver in this PHP build; metric deferred. Add `pcov` (target ≥60%).
+- **RapidAPI key rotation** — secret `0x7a…` is live in git history `ce485c`; allowlisted in gitleaks. Must be rotated in RapidAPI dashboard by key owner; allowlist entry + this doc remove only after rotation.
+- **MySQL job unverified locally** — `test-mysql` runs on GitHub-hosted MySQL 8 service; no local MySQL server present (Docker daemon off) to dry-run the job. Expect one CI iteration to confirm.
 
 ## Sign-off
 
-API: ✅ docs · ✅ cache · ✅ env list · ✅ CI pipeline · ✅ seed · ⚠ secrets (CI-gated)
+API: ✅ docs · ✅ cache · ✅ env list · ✅ CI (3 jobs incl. MySQL parity) · ✅ seed · ✅ secrets+audit
 Test suite: ✅ 105/105 · Style: ✅ Pint
 
 — ready for merge review + client approval.

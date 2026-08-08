@@ -1,0 +1,7 @@
+[extend]
+useDefault = true
+
+[allowlist]
+# ce485c9: RAPIDAPI_KEY for travel-advisor (previously committed by teammate,
+# removed from all tracked files since; key flagged for rotation)
+commits = ["ce485c9cba2203b05f1c745ea13cbd1cf7082ab7"]
