@@ -27,13 +27,13 @@ class EmailIntegrationTest extends TestCase
     public function test_welcome_notification_builds_correct_mailable()
     {
         $user = User::factory()->create(['name' => 'Jane Doe']);
-        $notification = new WelcomeNotification();
-        
+        $notification = new WelcomeNotification;
+
         $mailable = $notification->toMail($user);
-        
+
         $this->assertInstanceOf(WelcomeMail::class, $mailable);
         $this->assertEquals($user->email, $mailable->to[0]['address']);
-        
+
         // Render to verify content binding
         $html = $mailable->render();
         $this->assertStringContainsString('Welcome aboard, Jane Doe!', $html);
@@ -43,11 +43,11 @@ class EmailIntegrationTest extends TestCase
     {
         $user = User::factory()->create(['name' => 'John Smith', 'email' => 'john@test.com']);
         $order = Order::create(['user_id' => $user->id, 'total_cents' => 25050, 'currency' => 'EGP']);
-        
+
         $notification = new PaymentSucceededNotification($order);
-        
+
         $mailable = $notification->toMail($user);
-        
+
         $this->assertInstanceOf(PaymentSuccessMail::class, $mailable);
         $this->assertEquals($user->email, $mailable->to[0]['address']);
 
@@ -60,10 +60,10 @@ class EmailIntegrationTest extends TestCase
     {
         $user = User::factory()->create(['name' => 'John Smith']);
         $order = Order::create(['user_id' => $user->id, 'total_cents' => 9999, 'currency' => 'USD']);
-        
+
         $notification = new PaymentFailedNotification($order);
         $mailable = $notification->toMail($user);
-        
+
         $this->assertInstanceOf(PaymentFailedMail::class, $mailable);
 
         $html = $mailable->render();
@@ -104,9 +104,9 @@ class EmailIntegrationTest extends TestCase
 
         $notification = new TripForkedNotification($forkedTrip, $originalTrip);
         $mailable = $notification->toMail($originalUser);
-        
+
         $this->assertInstanceOf(TripForkedMail::class, $mailable);
-        
+
         $html = $mailable->render();
         $this->assertStringContainsString('Japan Explorer', $html);
         $this->assertStringContainsString('Hi Original Creator', $html);
@@ -116,7 +116,7 @@ class EmailIntegrationTest extends TestCase
     {
         $user = User::factory()->create(['name' => 'Sub User']);
         $plan = Plan::create(['name' => 'Elite Plus', 'ai_quota_monthly' => 500, 'is_active' => true]);
-        
+
         $subscription = Subscription::create([
             'user_id' => $user->id,
             'plan_id' => $plan->id,
@@ -127,7 +127,7 @@ class EmailIntegrationTest extends TestCase
 
         $notification = new SubscriptionActivatedNotification($subscription);
         $mailable = $notification->toMail($user);
-        
+
         $this->assertInstanceOf(SubscriptionActivatedMail::class, $mailable);
 
         $html = $mailable->render();

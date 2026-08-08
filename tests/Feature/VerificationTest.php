@@ -2,15 +2,15 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Notifications\AnonymousNotifiable;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification as NotificationFacade;
 use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
-use App\Models\User;
-use Illuminate\Auth\Events\Verified;
-use Illuminate\Support\Facades\Event;
 
 class VerificationTest extends TestCase
 {
@@ -34,19 +34,20 @@ class VerificationTest extends TestCase
 
         NotificationFacade::assertSentTo(
             $user,
-            \Illuminate\Auth\Notifications\VerifyEmail::class,
+            VerifyEmail::class,
             function (Notification $notification, array $channels, User $notifiable) use ($user) {
                 $url = $notification->toMail($user)->actionUrl;
-                $this->assertStringContainsString('/email/verify/' . $user->id, $url);
+                $this->assertStringContainsString('/email/verify/'.$user->id, $url);
 
                 $path = parse_url($url, PHP_URL_PATH);
                 $query = parse_url($url, PHP_URL_QUERY);
-                $response = $this->get($path . '?' . $query);
+                $response = $this->get($path.'?'.$query);
                 $response->assertStatus(200);
                 $response->assertJson(['message' => 'Email verified successfully']);
 
                 $this->assertNotNull($user->fresh()->email_verified_at);
                 Event::assertDispatched(Verified::class);
+
                 return true;
             }
         );

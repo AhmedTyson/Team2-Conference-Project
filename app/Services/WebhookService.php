@@ -6,11 +6,11 @@ use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Events\PaymentFailed;
 use App\Events\PaymentSucceeded;
-use App\Notifications\PaymentFailedNotification;
+use App\Interfaces\OrderRepositoryInterface;
 use App\Interfaces\PaymentGatewayInterface;
 use App\Interfaces\PaymentRepositoryInterface;
-use App\Interfaces\OrderRepositoryInterface;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class WebhookService
@@ -23,32 +23,33 @@ class WebhookService
 
     public function processWebhook(array $payload, ?string $hmacSignature): array
     {
-        if (!$this->paymentGateway->verifyWebhook($payload, $hmacSignature)) {
+        if (! $this->paymentGateway->verifyWebhook($payload, $hmacSignature)) {
             Log::warning('Paymob webhook HMAC validation failed');
+
             return ['success' => false, 'message' => 'Invalid HMAC', 'status' => 403];
         }
 
         $obj = $payload['obj'] ?? null;
-        if (!$obj) {
+        if (! $obj) {
             return ['success' => false, 'message' => 'Invalid payload', 'status' => 400];
         }
 
         $merchantOrderId = $obj['order']['merchant_order_id'] ?? null;
 
-        if (!$merchantOrderId) {
+        if (! $merchantOrderId) {
             return ['success' => false, 'message' => 'Missing merchant_order_id', 'status' => 400];
         }
 
         $lock = Cache::lock("paymob_webhook_processing_{$merchantOrderId}", 15);
 
-        if (!$lock->get()) {
+        if (! $lock->get()) {
             return ['success' => true, 'message' => 'Already processing', 'status' => 200];
         }
 
         try {
             $payment = $this->paymentRepository->findByTransactionId($merchantOrderId);
 
-            if (!$payment) {
+            if (! $payment) {
                 return ['success' => false, 'message' => 'Payment not found', 'status' => 404];
             }
 
@@ -57,31 +58,31 @@ class WebhookService
             }
 
             $success = filter_var($obj['success'] ?? false, FILTER_VALIDATE_BOOLEAN);
-            
+
             $cardType = $obj['source_data']['type'] ?? null;
             $cardSubType = $obj['source_data']['sub_type'] ?? null;
             $cardPan = $obj['source_data']['pan'] ?? null;
 
             if ($success) {
-                $this->paymentRepository->updatePaymentStatus($payment, PaymentStatus::PAID->value, $payload, $cardType, $cardSubType, $cardPan);
+                DB::transaction(function () use ($payment, $payload, $cardType, $cardSubType, $cardPan) {
+                    $this->paymentRepository->updatePaymentStatus($payment, PaymentStatus::PAID->value, $payload, $cardType, $cardSubType, $cardPan);
 
-                if ($payment->order) {
-                    $this->orderRepository->updateStatus($payment->order, OrderStatus::PAID->value);
-                }
+                    if ($payment->order) {
+                        $this->orderRepository->updateStatus($payment->order, OrderStatus::PAID->value);
+                    }
+                });
 
                 event(new PaymentSucceeded($payment));
             } else {
-                $this->paymentRepository->updatePaymentStatus($payment, PaymentStatus::FAILED->value, $payload, $cardType, $cardSubType, $cardPan);
+                DB::transaction(function () use ($payment, $payload, $cardType, $cardSubType, $cardPan) {
+                    $this->paymentRepository->updatePaymentStatus($payment, PaymentStatus::FAILED->value, $payload, $cardType, $cardSubType, $cardPan);
 
-                if ($payment->order) {
-                    $this->orderRepository->updateStatus($payment->order, OrderStatus::FAILED->value);
-                }
+                    if ($payment->order) {
+                        $this->orderRepository->updateStatus($payment->order, OrderStatus::FAILED->value);
+                    }
+                });
 
                 event(new PaymentFailed($payment));
-
-                if ($payment->order && $payment->order->user) {
-                    $payment->order->user->notify(new PaymentFailedNotification($payment->order));
-                }
             }
 
             return ['success' => true, 'message' => 'Processed', 'status' => 200];

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Services\WebhookService;
 use App\Interfaces\PaymentGatewayInterface;
+use App\Services\WebhookService;
+use App\Support\ApiResponse;
+use Illuminate\Http\Request;
 
 class PaymobWebhookController extends Controller
 {
@@ -22,7 +23,7 @@ class PaymobWebhookController extends Controller
 
         return response()->json([
             'success' => $result['success'],
-            'message' => $result['message'] ?? ''
+            'message' => $result['message'] ?? '',
         ], $result['status'] ?? 200);
     }
 
@@ -31,8 +32,12 @@ class PaymobWebhookController extends Controller
         $success = $request->boolean('success');
         $merchantOrderId = $request->query('merchant_order_id');
 
-        if (!$this->paymentGateway->verifyWebhook($request->all(), null)) {
-            return response()->json(['success' => false, 'message' => 'Invalid HMAC signature'], 403);
+        if (! $this->paymentGateway->verifyWebhook($request->all(), null)) {
+            return ApiResponse::fail(
+                'Invalid HMAC signature',
+                'invalid_hmac',
+                403
+            );
         }
 
         return response()->json([

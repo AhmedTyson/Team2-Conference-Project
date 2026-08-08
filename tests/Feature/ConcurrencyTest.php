@@ -4,11 +4,12 @@ namespace Tests\Feature;
 
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
+use App\Events\PaymentSucceeded;
+use App\Interfaces\PaymentGatewayInterface;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Interfaces\PaymentGatewayInterface;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use Tests\TestCase;
@@ -20,7 +21,7 @@ class ConcurrencyTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->mock(PaymentGatewayInterface::class, function ($mock) {
             $mock->shouldReceive('verifyWebhook')->andReturn(true);
         });
@@ -38,7 +39,7 @@ class ConcurrencyTest extends TestCase
             'currency' => 'EGP',
         ]);
 
-        $merchantOrderId = 'ORDER_RACE_' . $order->id;
+        $merchantOrderId = 'ORDER_RACE_'.$order->id;
 
         $payment = Payment::create([
             'order_id' => $order->id,
@@ -54,7 +55,7 @@ class ConcurrencyTest extends TestCase
             'obj' => [
                 'success' => true,
                 'order' => ['merchant_order_id' => $merchantOrderId],
-            ]
+            ],
         ];
 
         // Simulate a race condition by acquiring the lock manually before the request hits,
@@ -63,7 +64,7 @@ class ConcurrencyTest extends TestCase
         $lock->get();
 
         $response = $this->postJson('/api/v1/paymob/webhook?hmac=valid', $payload);
-        
+
         // The webhook should gracefully return 200 (Already processing) to prevent Paymob from retrying,
         // but it MUST NOT dispatch the PaymentSucceeded event or update the DB.
         $response->assertStatus(200);
@@ -71,10 +72,10 @@ class ConcurrencyTest extends TestCase
 
         // Assert DB is untouched
         $this->assertEquals(PaymentStatus::PENDING, $payment->fresh()->status);
-        
+
         // Assert Event was NEVER fired
-        Event::assertNotDispatched(\App\Events\PaymentSucceeded::class);
-        
+        Event::assertNotDispatched(PaymentSucceeded::class);
+
         $lock->release();
 
         // Now hit it again without the lock
@@ -83,15 +84,15 @@ class ConcurrencyTest extends TestCase
         $response2->assertJson(['message' => 'Processed']);
 
         // Assert Event IS fired this time
-        Event::assertDispatched(\App\Events\PaymentSucceeded::class, 1);
+        Event::assertDispatched(PaymentSucceeded::class, 1);
         $this->assertEquals(PaymentStatus::PAID, $payment->fresh()->status);
 
         // Hit it a THIRD time (after it's fully paid)
         $response3 = $this->postJson('/api/v1/paymob/webhook?hmac=valid', $payload);
         $response3->assertStatus(200);
         $response3->assertJson(['message' => 'Already processed']);
-        
+
         // Assert Event is STILL only fired exactly once total
-        Event::assertDispatched(\App\Events\PaymentSucceeded::class, 1);
+        Event::assertDispatched(PaymentSucceeded::class, 1);
     }
 }
