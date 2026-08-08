@@ -1,106 +1,64 @@
-## Task 1: Update Notifications Table & Model
+## Part 1: Core Architecture & In-App Alerts
 
-**Description:** Refactor the existing `notifications` table to strictly match the `Team3-backend` schema (which relies on `read_at` timestamps instead of a `status` enum, and supports polymorphic `notifiable` relationships).
+### Phase 1: Database Foundation
+- [ ] Create/Update `notifications` migration replacing `uuid` with `id` (ulid/bigint) and adding `user_id` foreign key.
+- [ ] Migrate database successfully.
 
-**Acceptance criteria:**
-- [ ] Migration alters `notifications` table: drops `status`, `title`, `body` (Team 3 uses implicit titles based on type or `data` JSON). Adds `notifiable_type`, `notifiable_id`, and `read_at` (timestamp).
-- [ ] `Notification` model updated to remove `NotificationStatus` enum, add the `notifiable()` polymorphic relationship.
-- [ ] `User` model confirmed to have `notifications()` HasMany relationship.
+### Phase 2: Domain Models
+- [ ] Create `Notification` model overriding Laravel's `DatabaseNotification`.
+- [ ] Add `notifications()` relationship to `User`.
 
-**Verification:**
-- [ ] Run `php artisan migrate` successfully.
-- [ ] Manual check: Model correctly typed and relationships are valid.
+### Phase 3: Notification Orchestration
+- [ ] Create a base `AppNotification` class implementing `via($notifiable)` returning `['database']` for now.
 
-**Dependencies:** None
+### Phase 4: Queuing & Idempotency
+- [ ] Add `ShouldQueue` to the base notification class.
+- [ ] Add `middleware()` method returning `new WithoutOverlapping(...)` based on the notification type and user ID.
 
-**Files likely touched:**
-- `database/migrations/*_alter_notifications_table.php`
-- `app/Models/Notification.php`
+### Phase 5: User API
+- [ ] Build `NotificationController` with `index`, `read`, and `readAll` endpoints.
+- [ ] Add routes to `api.php`.
 
-**Estimated scope:** Small: 2 files
+### Phase 6: Performance Layer
+- [ ] Refactor `index` query to use `cursorPaginate()`.
+- [ ] Implement Redis/Cache increment/decrement for `unread_count` on the User model.
 
----
+### Phase 7: Admin API
+- [ ] Build `AdminNotificationController@index` with type/user filters.
+- [ ] Protect with `role:admin` middleware.
 
-## Task 2: Implement Background Job and NotificationService
+### Phase 8: Payment Triggers
+- [ ] Create `PaymentStatusNotification`.
+- [ ] Dispatch it from `FulfillOrderListener` or `WebhookService`.
 
-**Description:** Build the `SendNotificationJob` which handles inserting the record into the database and sending an email if requested. Build the `NotificationService` as the single entry point.
+### Phase 9: Subscription & Trip Triggers
+- [ ] Create `SubscriptionActivatedNotification` and `TripForkedNotification`.
+- [ ] Dispatch from respective service methods.
 
-**Acceptance criteria:**
-- [ ] `SendNotificationJob` implements `ShouldQueue`.
-- [ ] Job checks for duplicate notifications (idempotency over a 5-minute window for identical `user_id` and `type`).
-- [ ] `NotificationService::notify(User $user, string $type, array $data, bool $sendEmail)` successfully dispatches the job.
-
-**Verification:**
-- [ ] Tests pass or manual test via `php artisan tinker`.
-- [ ] Job successfully creates a DB row when processed.
-
-**Dependencies:** Task 1
-
-**Files likely touched:**
-- `app/Jobs/SendNotificationJob.php`
-- `app/Services/NotificationService.php`
-
-**Estimated scope:** Small: 2 files
+### Phase 10: Auth Triggers & Testing
+- [ ] Create `WelcomeNotification` and dispatch on user registration.
+- [ ] Write integration test triggering the full flow and assert jobs are pushed to logs.
 
 ---
 
-## Checkpoint: Foundation Complete
-- [ ] Migrations run cleanly.
-- [ ] `NotificationService` successfully queues jobs and writes to the DB.
+## Part 2: Email Integration & Templates
 
----
+### Phase 11: Global Email Layout
+- [ ] Scaffold `resources/views/emails/layouts/main.blade.php`.
 
-## Task 3: Build User Notification API
+### Phase 12: Financial Mailables
+- [ ] Create `resources/views/emails/payment-success.blade.php` and `payment-failed.blade.php`.
+- [ ] Create corresponding Mailable classes mapping data to views.
 
-**Description:** Implement `NotificationController` and `NotificationResource` to allow end-users to view and manage their in-app notifications.
+### Phase 13: Social/Trip Mailables
+- [ ] Create `resources/views/emails/trip-forked.blade.php`.
+- [ ] Create `TripForkedMail` Mailable.
 
-**Acceptance criteria:**
-- [ ] `GET /api/v1/notifications` returns paginated notifications with an `unread_count` meta field.
-- [ ] `PATCH /api/v1/notifications/{id}/read` marks a specific notification as read.
-- [ ] `PATCH /api/v1/notifications/read-all` marks all unread notifications as read.
-- [ ] Authorization ensures users can only access their own notifications.
+### Phase 14: Auth/Account Mailables
+- [ ] Create `resources/views/emails/welcome.blade.php` and `subscription-activated.blade.php`.
+- [ ] Create corresponding Mailables.
 
-**Verification:**
-- [ ] Endpoints exist and return HTTP 200.
-- [ ] Feature tests written and pass.
-
-**Dependencies:** Task 2
-
-**Files likely touched:**
-- `app/Http/Controllers/NotificationController.php`
-- `app/Http/Resources/NotificationResource.php`
-- `routes/api.php`
-- `tests/Feature/NotificationTest.php`
-
-**Estimated scope:** Medium: 4 files
-
----
-
-## Task 4: Build Admin Notification API
-
-**Description:** Implement `AdminNotificationController` for platform administrators to audit system notifications.
-
-**Acceptance criteria:**
-- [ ] `GET /api/v1/admin/notifications` returns latest platform notifications.
-- [ ] Response includes the related `user` (id, name, email).
-- [ ] Supports filtering by `type`.
-- [ ] Protected by `role:admin|super_admin` or specific permissions.
-
-**Verification:**
-- [ ] Endpoint is protected and accessible only by admins.
-- [ ] Feature test confirms filtering works.
-
-**Dependencies:** Task 1
-
-**Files likely touched:**
-- `app/Http/Controllers/Admin/AdminNotificationController.php`
-- `routes/api.php`
-- `tests/Feature/Admin/AdminNotificationTest.php`
-
-**Estimated scope:** Medium: 3 files
-
----
-
-## Checkpoint: API Complete
-- [ ] All feature tests for User and Admin endpoints pass.
-- [ ] API routes are cleanly organized in `routes/api.php`.
+### Phase 15: Channel Routing & Final Testing
+- [ ] Update all Notification classes' `via()` method to return `['database', 'mail']`.
+- [ ] Implement `toMail()` on all notifications returning their respective Mailables.
+- [ ] Test the full email dispatch pipeline locally (verifying via logs or Mailables test).

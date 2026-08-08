@@ -1,7 +1,7 @@
 # Notifications Feature Plan
 
 ## 1. Overview
-Implement a robust, generic Notifications system matching the architectural pattern established in `Team3-backend`. This will replace or standardize any existing notification mechanisms with a custom `notifications` table, a centralized `NotificationService`, a background Queue Job (`SendNotificationJob`), and standard User/Admin API controllers.
+Implement a high-performance Hybrid Notifications system combining the analytical benefits of `Team3-backend` (strict User relationships) with the scalability of Laravel 11 native mechanics (Channels, Reverb, Overlap Middlewares). The project is divided into 10 Core Architectural Phases, followed by 5 dedicated Email Template Phases to replicate the exact business logic and aesthetic layout from Team 3.
 
 ## 2. Dependency Graph
 ```
@@ -9,24 +9,32 @@ Custom Notifications Table (Migration)
     │
     ├── Notification Model & User Relation
     │       │
-    │       ├── SendNotificationJob (Queue Job)
+    │       ├── Laravel Notification Classes (ShouldQueue, WithoutOverlapping)
     │       │       │
-    │       │       └── NotificationService (Orchestrator)
-    │       │               │
-    │       │               ├── NotificationController (User API)
-    │       │               │
-    │       │               └── AdminNotificationController (Admin API)
+    │       │       ├── API Controllers (Cursor Pagination, Redis Badge)
+    │       │       │       │
+    │       │       │       └── Business Triggers (Payment, Trips, Auth)
+    │       │       │
+    │       │       └── Email Phase (Blade Layouts & Mailables)
 ```
 
-## 3. Risks and Unknowns
-*   **Queue Worker Required**: The background job requires a queue worker to be active. Tests must use `Queue::fake()`.
-*   **Idempotency**: Preventing duplicate notifications (e.g., if a system double-fires an event) needs a time-window check inside the job.
-*   **Mailable Mapping**: We will leave the specific email mappings (Mailable classes) generic or as a stub, since email templates depend on the exact notification type (e.g., `payment_success`, `trip_forked`).
+## 3. The 15-Phase Execution Plan
 
-## 4. Vertical Slices
-*   **Slice 1: Foundation (DB & Domain)**
-    Update the existing `notifications` table to match Team 3's schema (adding `notifiable_type`, `notifiable_id`, replacing `status` with `read_at`). Update the `Notification` model, and setup the Background Job and Service.
-*   **Slice 2: User API Endpoints**
-    Build `NotificationController` to list, mark as read, and clear unread badges.
-*   **Slice 3: Admin API Endpoints**
-    Build `AdminNotificationController` for platform-wide auditing of notifications.
+### Part 1: Core Architecture & In-App Alerts (Phases 1 - 10)
+1.  **Phase 1: High-Performance Database Foundation.** Override default notifications migration to use `id` (ULID/BigInt) and strict `user_id` foreign keys for fast querying.
+2.  **Phase 2: Domain Models.** Setup `Notification` model with explicit polymorphism. Update `User` relationships.
+3.  **Phase 3: Notification Orchestration.** Create base `AppNotification` abstract class extending Laravel's `Notification` with `via()` method pre-configured.
+4.  **Phase 4: Queuing & Idempotency.** Apply `ShouldQueue` and `WithoutOverlapping` middleware to naturally prevent duplicate webhooks from generating duplicate alerts.
+5.  **Phase 5: User API.** Build `NotificationController` (`index`, `markAsRead`, `markAllAsRead`).
+6.  **Phase 6: Performance Layer.** Implement Cursor Pagination for the `index` endpoint and Cache-based unread counters (O(1) complexity).
+7.  **Phase 7: Admin API.** Build `AdminNotificationController` for system-wide auditing and filtering.
+8.  **Phase 8: Payment Triggers.** Hook notifications into `PaymentSucceeded` and `PaymentFailed` events.
+9.  **Phase 9: Subscription & Trip Triggers.** Hook notifications into new subscriptions and Trip Fork events.
+10. **Phase 10: Auth Triggers.** Hook notifications into new user registration. Log results.
+
+### Part 2: Email Integration & Templates (Phases 11 - 15)
+11. **Phase 11: Global Email Layout.** Create `resources/views/emails/layouts/main.blade.php` to match Team 3's high-quality aesthetic.
+12. **Phase 12: Financial Mailables.** Create Blade views and Mailables for `PaymentSuccessMail` and `PaymentFailedMail`.
+13. **Phase 13: Social/Trip Mailables.** Create Blade views and Mailables for `TripForkedMail`.
+14. **Phase 14: Auth/Account Mailables.** Create Blade views and Mailables for `WelcomeMail` and `SubscriptionActivatedMail`.
+15. **Phase 15: Channel Routing & Testing.** Inject these Mailables into the `toMail()` methods of our Phase 8-10 Notifications and test log output.
