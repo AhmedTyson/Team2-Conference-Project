@@ -132,7 +132,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \n}",
+                            "raw": "{\n    \"name\": \"Example Name\",\n    \"description\": \"string_value\",\n    \"destination_id\": \"string_value\",\n    \"category_id\": \"string_value\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -265,7 +265,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \n}",
+                            "raw": "{\n    \"name\": \"Example Name\",\n    \"type\": \"string_value\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -305,7 +305,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \n}",
+                            "raw": "{\n    \"name\": \"Example Name\",\n    \"type\": \"string_value\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -509,7 +509,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \n}",
+                            "raw": "{\n    \"name\": \"Example Name\",\n    \"iso_code\": \"string_value\",\n    \"capital\": \"string_value\",\n    \"currency\": \"string_value\",\n    \"languages\": []\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -642,7 +642,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \n}",
+                            "raw": "{\n    \"name\": \"Example Name\",\n    \"city_name\": \"Example Name\",\n    \"country_id\": \"string_value\",\n    \"description\": \"string_value\",\n    \"image\": \"string_value\",\n    \"latitude\": 1,\n    \"longitude\": 1\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -775,7 +775,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \n}",
+                            "raw": "{\n    \"source\": \"string_value\",\n    \"departure_airport\": \"string_value\",\n    \"arrival_airport\": \"string_value\",\n    \"departure_date\": \"2026-10-01\",\n    \"arrival_date\": \"2026-10-01\",\n    \"airline\": \"string_value\",\n    \"flight_number\": \"string_value\",\n    \"price\": 1,\n    \"booking_status\": \"string_value\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -908,7 +908,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \n}",
+                            "raw": "{\n    \"name\": \"Example Name\",\n    \"stars\": 1,\n    \"price_per_night\": 1,\n    \"availability\": \"string_value\",\n    \"destination_id\": \"string_value\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1071,7 +1071,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \n}",
+                            "raw": "{\n    \"from\": \"2026-10-01\",\n    \"to\": \"2026-10-01\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1165,7 +1165,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \n}",
+                            "raw": "{\n    \"name\": \"Example Name\",\n    \"cuisine\": \"string_value\",\n    \"rating\": 1,\n    \"destination_id\": \"string_value\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1416,7 +1416,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \n}",
+                            "raw": "{\n    \"plans\": {\n        \"*\": true\n    }\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1478,7 +1478,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \n}",
+                            "raw": "{\n    \"settings\": {\n        \"*\": \"string_value\"\n    }\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1518,7 +1518,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \n}",
+                            "raw": "{\n    \"value\": \"string_value\",\n    \"file\": \"string_value\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1580,7 +1580,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \n}",
+                            "raw": "{\n    \"title\": \"string_value\",\n    \"status\": \"string_value\",\n    \"budget\": 1,\n    \"start_date\": \"2026-10-01\",\n    \"end_date\": \"2026-10-01\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -1744,7 +1744,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \n}",
+                            "raw": "{\n    \"name\": \"Example Name\",\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\",\n    \"is_active\": true\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -2020,7 +2020,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \n}",
+                            "raw": "{\n    \"type\": \"string_value\",\n    \"trip_id\": 1,\n    \"plan_id\": 1,\n    \"billing\": {\n        \"first_name\": \"Example Name\",\n        \"last_name\": \"Example Name\",\n        \"email\": \"test@example.com\",\n        \"phone_number\": \"string_value\"\n    }\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -2057,7 +2057,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \n}",
+                            "raw": "{\n    \"name\": \"Example Name\",\n    \"email\": \"test@example.com\",\n    \"subject\": \"string_value\",\n    \"message\": \"string_value\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -2758,7 +2758,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \n}",
+                            "raw": "{\n    \"rating\": 1,\n    \"comment\": \"string_value\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -2877,7 +2877,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \n}",
+                            "raw": "{\n    \"title\": \"string_value\",\n    \"status\": \"string_value\",\n    \"budget\": 1,\n    \"start_date\": \"2026-10-01\",\n    \"end_date\": \"2026-10-01\"\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -3026,7 +3026,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \n}",
+                            "raw": "{\n    \"plan_id\": 1\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"
@@ -3059,7 +3059,7 @@
                         },
                         "body": {
                             "mode": "raw",
-                            "raw": "{\n    \n}",
+                            "raw": "{\n    \"plan_id\": 1\n}",
                             "options": {
                                 "raw": {
                                     "language": "json"

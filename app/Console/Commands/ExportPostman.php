@@ -65,8 +65,8 @@ class ExportPostman extends Command
                             $type = $param->getType();
                             if ($type && !$type->isBuiltin() && is_subclass_of($type->getName(), FormRequest::class)) {
                                 $class = $type->getName();
-                                // Resolve via container to handle dependencies
-                                $requestObj = app()->make($class);
+                                // Resolve via simple new to avoid container auto-validation throws
+                                $requestObj = new $class();
                                 if (method_exists($requestObj, 'rules')) {
                                     $rules = $requestObj->rules();
                                 }
