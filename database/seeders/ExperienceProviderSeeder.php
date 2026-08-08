@@ -6,7 +6,7 @@ use App\Models\ExperienceProvider;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
-class ExperienceproviderSeeder extends Seeder
+class ExperienceProviderSeeder extends Seeder
 {
     /**
      * Run the database seeds.
