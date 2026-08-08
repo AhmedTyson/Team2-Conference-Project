@@ -7,12 +7,14 @@ use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 
 class AdminUserController extends Controller
 {
     public function index()
     {
-        $users = User::all();
+        $users = User::with(['roles'])->latest()->paginate(15);
         return UserResource::collection($users);
     }
 
@@ -22,7 +24,7 @@ class AdminUserController extends Controller
         return new UserResource($user);
     }
 
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
         $user = User::create([
             'name' => $request->name,
@@ -34,9 +36,9 @@ class AdminUserController extends Controller
         return new UserResource($user);
     }
 
-    public function update(Request $request, User $user)
+    public function update(UpdateUserRequest $request, User $user)
     {
-        $user->update($request->only(['name', 'email', 'is_active']));
+        $user->update($request->validated());
 
         return new UserResource($user);
     }

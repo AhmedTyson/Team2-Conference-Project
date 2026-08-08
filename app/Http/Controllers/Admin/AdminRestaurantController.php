@@ -3,57 +3,54 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Hotel;
+use App\Models\Restaurant;
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class AdminHotelController extends Controller
+class AdminRestaurantController extends Controller
 {
     public function index()
     {
-        return JsonResource::collection(Hotel::paginate(15));
+        return JsonResource::collection(Restaurant::paginate(15));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'stars' => 'required|integer|min:1|max:5',
-            'price_per_night' => 'required|integer|min:0',
-            'availability' => 'required|string',
+            'cuisine' => 'required|string|max:255',
+            'rating' => 'required|integer|min:1|max:5',
             'destination_id' => 'required|exists:destinations,id',
         ]);
 
-        $hotel = Hotel::create($validated);
-        return new JsonResource($hotel);
+        $restaurant = Restaurant::create($validated);
+        return new JsonResource($restaurant);
     }
 
     public function show($id)
     {
-        return new JsonResource(Hotel::findOrFail($id));
+        return new JsonResource(Restaurant::findOrFail($id));
     }
 
     public function update(Request $request, $id)
     {
-        $hotel = Hotel::findOrFail($id);
+        $restaurant = Restaurant::findOrFail($id);
         
         $validated = $request->validate([
             'name' => 'sometimes|string|max:255',
-            'stars' => 'sometimes|integer|min:1|max:5',
-            'price_per_night' => 'sometimes|integer|min:0',
-            'availability' => 'sometimes|string',
+            'cuisine' => 'sometimes|string|max:255',
+            'rating' => 'sometimes|integer|min:1|max:5',
             'destination_id' => 'sometimes|exists:destinations,id',
         ]);
 
-        $hotel->update($validated);
-        return new JsonResource($hotel);
+        $restaurant->update($validated);
+        return new JsonResource($restaurant);
     }
 
     public function destroy($id)
     {
-        $hotel = Hotel::findOrFail($id);
-        $hotel->delete();
+        $restaurant = Restaurant::findOrFail($id);
+        $restaurant->delete();
         return response()->json(['success' => true]);
     }
 }

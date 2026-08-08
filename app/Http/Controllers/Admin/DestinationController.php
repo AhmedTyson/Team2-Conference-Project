@@ -19,13 +19,10 @@ class DestinationController extends Controller
         $this->mapService = $mapService;
     }
 
-    public function index(): JsonResponse
+    public function index()
     {
         $destinations = Destination::with('country')->paginate(15);
-        return response()->json([
-            'success' => true,
-            'data' => $destinations
-        ]);
+        return \App\Http\Resources\DestinationResource::collection($destinations);
     }
 
     public function store(StoreDestinationRequest $request): JsonResponse

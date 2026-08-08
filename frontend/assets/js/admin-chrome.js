@@ -674,15 +674,32 @@
   }
 
   function initGlobalUser() {
-    if (!global.Itinari || !global.Itinari.session || !global.Itinari.session.hasToken()) return;
-    global.Itinari.session.currentUser().then(function (user) {
-      if (!user) return;
+    const It = global.Itinari;
+    if (!It || !It.session) return;
+    
+    if (!It.session.hasToken()) { 
+        It.session.redirectToLogin(); 
+        return; 
+    }
+
+    It.session.currentUser().then(function (user) {
+      if (!user) { 
+          It.session.clearSession(); 
+          It.session.redirectToLogin(); 
+          return; 
+      }
+      if (!It.session.isAdminRole(It.session.roleOf(user))) {
+          It.session.clearSession();
+          It.session.redirectToLogin();
+          return;
+      }
+
       const chip = document.getElementById("user-chip");
       if (chip) {
         const nameEl = document.getElementById("chip-name");
         const roleEl = document.getElementById("chip-role");
         if (nameEl) nameEl.textContent = user.name || "";
-        if (roleEl) roleEl.textContent = global.Itinari.session.roleOf(user) || "admin";
+        if (roleEl) roleEl.textContent = It.session.roleOf(user) || "admin";
         chip.hidden = false;
         
         // Trigger manual update of the user menu avatar since the observer might have fired early
@@ -692,7 +709,22 @@
           const initials = parts.length > 1 ? parts[0].charAt(0) + parts[parts.length - 1].charAt(0) : parts[0].substring(0, 2);
           avatar.textContent = initials.toUpperCase();
         }
+
+        // Link profile if it's the dashboard
+        if (!chip.closest("a")) {
+            chip.style.cursor = "pointer";
+            chip.addEventListener("click", function() {
+                window.location.href = "user-details.html?id=current";
+            });
+        }
       }
+
+      const logoutBtn = el("logout-btn");
+      if (logoutBtn) {
+          logoutBtn.addEventListener("click", function () { It.session.logout(); });
+      }
+
+      document.dispatchEvent(new CustomEvent("itinari:ready", { detail: user }));
     });
   }
 

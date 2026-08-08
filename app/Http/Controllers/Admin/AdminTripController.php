@@ -7,34 +7,35 @@ use App\Http\Resources\TripResource;
 use App\Models\Trip;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreTripRequest;
+use App\Http\Requests\UpdateTripRequest;
 
 class AdminTripController extends Controller
 {
     // View all trips
     public function index()
     {
-        $trips = Trip::latest()->get();
+        $trips = Trip::with(['user', 'destinations'])->latest()->paginate(15);
 
         return TripResource::collection($trips);
     }
 
+    public function store(StoreTripRequest $request): JsonResponse
+    {
+        $trip = Trip::create($request->validated());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Trip created successfully',
+            'data' => new TripResource($trip)
+        ]);
+    }
+
     // Edit a trip
-    public function update(Request $request, int $id): JsonResponse
+    public function update(UpdateTripRequest $request, int $id): JsonResponse
     {
         $trip = Trip::findOrFail($id);
-
-        $trip->update([
-            'title' => $request->title ?? $trip->title,
-            'travel_style' => $request->travel_style ?? $trip->travel_style,
-            'interests' => $request->interests ?? $trip->interests,
-            'no_of_travelers' => $request->no_of_travelers ?? $trip->no_of_travelers,
-            'budget' => $request->budget ?? $trip->budget,
-            'no_of_days' => $request->no_of_days ?? $trip->no_of_days,
-            'start_date' => $request->start_date ?? $trip->start_date,
-            'end_date' => $request->end_date ?? $trip->end_date,
-            'status' => $request->status ?? $trip->status,
-            'estimated_cost' => $request->estimated_cost ?? $trip->estimated_cost,
-        ]);
+        $trip->update($request->validated());
 
         return response()->json([
             'success' => true,

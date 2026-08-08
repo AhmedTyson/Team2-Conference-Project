@@ -28,7 +28,7 @@ use App\Http\Controllers\Admin\AdminHotelController;
 use App\Http\Controllers\Admin\AdminRestaurantController;
 use App\Http\Controllers\Admin\AdminCountryController;
 use App\Http\Controllers\Admin\DestinationController as AdminDestinationController;
-use App\Http\Controllers\AdminAttractionController;
+use App\Http\Controllers\Admin\AdminAttractionController;
 use App\Http\Controllers\SiteSettingsController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\Admin\AdminAnalyticsController;
@@ -120,6 +120,7 @@ Route::middleware(['auth:api'])->group(function () {
 
         // Trips Management (Hana)
         Route::get('/trips', [AdminTripController::class, 'index'])->middleware('permission:manage trips');
+        Route::post('/trips', [AdminTripController::class, 'store'])->middleware('permission:manage trips');
         Route::put('/trips/{id}', [AdminTripController::class, 'update'])->middleware('permission:manage trips');
         Route::delete('/trips/{id}', [AdminTripController::class, 'destroy'])->middleware('permission:manage trips');
 

@@ -14,14 +14,11 @@ class AdminReviewController extends Controller
      * 1) GET /api/v1/admin/reviews
      * View all reviews (any status).
      */
-    public function index(): JsonResponse
+    public function index()
     {
         $reviews = Review::with('user', 'reviewable')->latest()->paginate(15);
 
-        return response()->json([
-            'success' => true,
-            'data'    => ReviewResource::collection($reviews),
-        ]);
+        return ReviewResource::collection($reviews);
     }
 
     /**

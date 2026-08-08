@@ -117,27 +117,80 @@
         return { languages: Array.isArray(row.languages) ? row.languages.join(", ") : row.languages || "" };
       },
     },
-    attractions: {
-      url: "/v1/admin/attractions",
-      listLabel: "attractions",
-      singular: "attraction",
-      sortable: { ID: "id", Name: "name", Destination: "destination_id", Category: "category_id" },
-      cols: ["ID", "Name", "Destination", "Category", "Actions"],
-      cells: [
-        function (row) { return (row.destination && row.destination.name) || row.destination_id || "–"; },
-        function (row) { return row.category_id || "–"; },
-      ],
-      fields: [
-        { key: "name", label: "Name", type: "text", required: true },
-        { key: "destination_id", label: "Destination", type: "select", optionsUrl: "/v1/admin/destinations", optionLabel: "name", required: true },
-        { key: "category_id", label: "Category ID", type: "number" },
-        { key: "description", label: "Description", type: "textarea" },
-        { key: "latitude", label: "Latitude", type: "number", step: "0.000001" },
-        { key: "longitude", label: "Longitude", type: "number", step: "0.000001" },
-        { key: "image", label: "Image URL", type: "text" },
-      ],
-    },
-  };
+      attractions: {
+        url: "/v1/admin/attractions",
+        listLabel: "attractions",
+        singular: "attraction",
+        sortable: { ID: "id", Name: "name", Destination: "destination_id", Category: "category_id" },
+        cols: ["ID", "Name", "Destination", "Category", "Actions"],
+        cells: [
+          function (row) { return (row.destination && row.destination.name) || row.destination_id || "–"; },
+          function (row) { return row.category_id || "–"; },
+        ],
+        fields: [
+          { key: "name", label: "Name", type: "text", required: true },
+          { key: "destination_id", label: "Destination", type: "select", optionsUrl: "/v1/admin/destinations", optionLabel: "name", required: true },
+          { key: "category_id", label: "Category ID", type: "number" },
+          { key: "description", label: "Description", type: "textarea" },
+          { key: "latitude", label: "Latitude", type: "number", step: "0.000001" },
+          { key: "longitude", label: "Longitude", type: "number", step: "0.000001" },
+          { key: "image", label: "Image URL", type: "text" },
+        ],
+      },
+      users: {
+        url: "/v1/admin/users",
+        listLabel: "users",
+        singular: "user",
+        sortable: { ID: "id", Name: "name", Email: "email", Status: "is_active", Created: "created_at" },
+        cols: ["ID", "Name", "Email", "Status", "Created", "Actions"],
+        cells: [
+          function (row) { return row.email || "–"; },
+          function (row) { return row.is_active ? "Active" : "Blocked"; },
+          function (row) { return fmtDate(row.created_at); },
+        ],
+        fields: [
+          { key: "name", label: "Name", type: "text", required: true },
+          { key: "email", label: "Email", type: "email", required: true },
+          { key: "password", label: "Password (leave blank to keep current)", type: "password" },
+          { key: "is_active", label: "Status", type: "select", options: [{id: 1, name: "Active"}, {id: 0, name: "Blocked"}], optionLabel: "name" },
+        ],
+      },
+      trips: {
+        url: "/v1/admin/trips",
+        listLabel: "trips",
+        singular: "trip",
+        sortable: { ID: "id", Title: "title", Budget: "budget", Status: "status", Start: "start_date" },
+        cols: ["ID", "Title", "Budget", "Status", "Start", "Actions"],
+        cells: [
+          function (row) { return row.budget == null ? "–" : "$" + Number(row.budget).toLocaleString(); },
+          function (row) { return row.status || "–"; },
+          function (row) { return fmtDate(row.start_date); },
+        ],
+        fields: [
+          { key: "title", label: "Title", type: "text", required: true },
+          { key: "budget", label: "Budget", type: "number", step: "0.01", required: true },
+          { key: "status", label: "Status", type: "select", options: [{id: "planned", name: "Planned"}, {id: "active", name: "Active"}, {id: "completed", name: "Completed"}, {id: "cancelled", name: "Cancelled"}], optionLabel: "name" },
+          { key: "start_date", label: "Start Date", type: "text" },
+          { key: "end_date", label: "End Date", type: "text" },
+        ],
+      },
+      reviews: {
+        url: "/v1/admin/reviews",
+        listLabel: "reviews",
+        singular: "review",
+        sortable: { ID: "id", Rating: "rating", Status: "status", Created: "created_at" },
+        cols: ["ID", "Name", "Rating", "Comment", "Status", "Created", "Actions"],
+        cells: [
+          function (row) { return row.rating || "–"; },
+          function (row) { return row.comment || "–"; },
+          function (row) { return row.status || "–"; },
+          function (row) { return fmtDate(row.created_at); },
+        ],
+        fields: [
+          { key: "status", label: "Status", type: "select", options: [{id: "pending", name: "Pending"}, {id: "approved", name: "Approved"}, {id: "rejected", name: "Rejected"}], optionLabel: "name" },
+        ],
+      },
+    };
 
   const PER_PAGE_DEFAULT = 6;
   const PAGE_SIZE_OPTIONS = [6, 10, 25, 50];
@@ -148,15 +201,7 @@
 
   function module() { return MODULES[document.body.dataset.module]; }
 
-  function renderProfile(user) {
-    const chip = el("user-chip");
-    if (!chip) return;
-    el("chip-name").textContent = user.name || "";
-    el("chip-role").textContent = It.session.roleOf(user) || "admin";
-    chip.hidden = false;
-  }
-
-  function fmtDate(v) {
+    function fmtDate(v) {
     if (!v) return "–";
     const d = new Date(v);
     return isNaN(d.getTime()) ? String(v) : d.toLocaleDateString();
@@ -809,18 +854,36 @@
       const reqv = mode === "edit"
         ? It.apiPut(mod.url + "/" + row.id, payload, { auth: true })
         : It.apiPost(mod.url, payload, { auth: true });
-      reqv.then(function (res) {
-        if (res.ok) {
-          closeModal();
-          It.feedback.banner(mode === "edit" ? "Updated." : "Created.", "is-ok");
-          toast(mode === "edit" ? mod.singular + " updated." : mod.singular + " created.", "ok");
-          load();
-        } else {
-          const msg = (res.body && (res.body.message || (res.body.error && res.body.error.message))) || "Save failed.";
-          It.feedback.banner(String(msg).slice(0, 180), "is-error");
-          toast(String(msg).slice(0, 120), "error");
-        }
-      });
+        reqv.then(function (res) {
+          if (res.ok) {
+            closeModal();
+            It.feedback.banner(mode === "edit" ? "Updated." : "Created.", "is-ok");
+            toast(mode === "edit" ? mod.singular + " updated." : mod.singular + " created.", "ok");
+            load();
+          } else if (res.status === 422 && res.body && res.body.error) {
+            const errs = res.body.error;
+            Object.keys(errs).forEach(function (k) {
+              const node = el("f-" + k);
+              if (node) {
+                const box = node.closest(".kit-field");
+                if (box) box.classList.add("has-error");
+                node.classList.add("is-error");
+                node.setAttribute("aria-invalid", "true");
+                const hint = el("fe-" + k);
+                if (hint) {
+                  hint.textContent = Array.isArray(errs[k]) ? errs[k][0] : errs[k];
+                  hint.hidden = false;
+                }
+              }
+            });
+            It.feedback.banner("Please correct the errors in the form.", "is-error");
+            toast("Validation failed.", "error");
+          } else {
+            const msg = (res.body && (res.body.message || (res.body.error && res.body.error.message))) || "Save failed.";
+            It.feedback.banner(String(msg).slice(0, 180), "is-error");
+            toast(String(msg).slice(0, 120), "error");
+          }
+        });
     });
 
     wrap.querySelectorAll("#crud-form input, #crud-form select, #crud-form textarea").forEach(function (node) {
@@ -935,29 +998,14 @@
       });
   }
 
-  function boot(user) {
-    renderProfile(user);
-    const btnNew = el("btn-new");
-    if (btnNew) btnNew.addEventListener("click", openNew);
-    document.addEventListener("admin:search", function (e) { setSearch(e.detail); });
-    load();
-  }
+    function boot(user) {
+      const btnNew = el("btn-new");
+      if (btnNew) btnNew.addEventListener("click", openNew);
+      document.addEventListener("admin:search", function (e) { setSearch(e.detail); });
+      load();
+    }
 
-  function init() {
-    const logoutBtn = el("logout-btn");
-    if (logoutBtn) logoutBtn.addEventListener("click", function () { It.session.logout(); });
-
-    if (!It.session.hasToken()) { It.session.redirectToLogin(); return; }
-    It.session.currentUser().then(function (user) {
-      if (!user) { It.session.clearSession(); It.session.redirectToLogin(); return; }
-      if (!It.session.isAdminRole(It.session.roleOf(user))) {
-        It.session.clearSession();
-        It.session.redirectToLogin();
-        return;
-      }
-      boot(user);
+    document.addEventListener("itinari:ready", function(e) {
+      boot(e.detail);
     });
-  }
-
-  document.addEventListener("DOMContentLoaded", init);
-})(window);
+  })(window);

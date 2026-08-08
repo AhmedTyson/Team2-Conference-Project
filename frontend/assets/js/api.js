@@ -21,9 +21,11 @@
       (opts.headers || {})
     );
     if (data !== undefined) headers["Content-Type"] = "application/json";
-    if (opts.auth) {
-      const token = It.readToken();
-      if (token) headers["Authorization"] = "Bearer " + token;
+    
+    // Auto-attach token for any apiBase request
+    const token = It.readToken();
+    if (token) {
+      headers["Authorization"] = "Bearer " + token;
     }
 
     let res;
@@ -42,6 +44,14 @@
     let body = {};
     try { body = await res.json(); }
     catch (e) { body = {}; }
+
+    // Centralized 401 Unauthorized interceptor
+    if (res.status === 401 && It.session && typeof It.session.logout === "function") {
+      if (path !== It.CONFIG.routes.logout) {
+        It.session.clearSession();
+        It.session.redirectToLogin();
+      }
+    }
 
     return { ok: res.ok, status: res.status, body };
   }

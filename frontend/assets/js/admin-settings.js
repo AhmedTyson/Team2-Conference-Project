@@ -16,15 +16,6 @@
 
   function el(id) { return document.getElementById(id); }
 
-  // ── session chip ──────────────────────────────────────────────────────────
-  function renderProfile(user) {
-    var chip = el("user-chip");
-    if (!chip) return;
-    el("chip-name").textContent = user.name || "";
-    el("chip-role").textContent = It.session.roleOf(user) || "admin";
-    chip.hidden = false;
-  }
-
   // ── section nav active state ──────────────────────────────────────────────
   function initSectionNav() {
     var links = document.querySelectorAll(".settings-nav-item");
@@ -216,7 +207,6 @@
 
   // ── boot ──────────────────────────────────────────────────────────────────
   function boot(user) {
-    renderProfile(user);
     initSectionNav();
 
     var pricingForm = el("form-pricing");
@@ -228,21 +218,7 @@
     load();
   }
 
-  function init() {
-    var logoutBtn = el("logout-btn");
-    if (logoutBtn) logoutBtn.addEventListener("click", function () { It.session.logout(); });
-
-    if (!It.session.hasToken()) { It.session.redirectToLogin(); return; }
-    It.session.currentUser().then(function (user) {
-      if (!user) { It.session.clearSession(); It.session.redirectToLogin(); return; }
-      if (!It.session.isAdminRole(It.session.roleOf(user))) {
-        It.session.clearSession();
-        It.session.redirectToLogin();
-        return;
-      }
-      boot(user);
-    });
-  }
-
-  document.addEventListener("DOMContentLoaded", init);
+  document.addEventListener("itinari:ready", function(e) {
+    boot(e.detail);
+  });
 })(window);
