@@ -66,10 +66,10 @@ class UserTest extends TestCase
     }
 
     /**
-     * KNOWN BUG (documented, not fixed): AdminUserController::store has no FormRequest
-     * validation, so an invalid payload hits the DB and yields a 500 instead of a 422.
+     * FIXED by Phase 1: AdminUserController::store now uses StoreUserRequest,
+     * so an invalid payload yields a 422 instead of the previous 500.
      */
-    public function test_admin_store_user_without_validation_returns_500(): void
+    public function test_admin_store_user_without_validation_returns_422(): void
     {
         $admin = User::factory()->create();
         $admin->assignRole('admin');
@@ -77,7 +77,8 @@ class UserTest extends TestCase
         $response = $this->actingAs($admin, 'api')
             ->postJson('/api/v1/admin/users', ['email' => 'missing-fields@example.com']);
 
-        $response->assertStatus(500);
+        $response->assertStatus(422);
+        $response->assertJsonStructure(['error', 'message']);
     }
 
     public function test_traveler_cannot_list_or_create_users(): void

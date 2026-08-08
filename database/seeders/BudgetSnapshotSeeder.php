@@ -7,7 +7,7 @@ use App\Models\Trip;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class BudgetSnapShotSeeder extends Seeder
+class BudgetSnapshotSeeder extends Seeder
 {
     /**
      * Run the database seeds.

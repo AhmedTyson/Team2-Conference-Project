@@ -366,14 +366,13 @@
     const overlay = document.createElement("div");
     overlay.className = "palette-backdrop";
     overlay.hidden = true;
-        panel.hidden = true;
 
     const panel = document.createElement("div");
     panel.className = "palette";
     panel.id = "palette-panel";
     panel.setAttribute("role", "dialog");
     panel.setAttribute("aria-modal", "true");
-      panel.hidden = true;
+    panel.hidden = true;
     panel.setAttribute("aria-labelledby", "palette-title");
 
     const title = document.createElement("h2");

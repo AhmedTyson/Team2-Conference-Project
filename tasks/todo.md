@@ -1,32 +1,48 @@
-# Full-Stack Integration Refinement (5-Phase Plan)
+# P0 — Frontend Shows No Data — Investigation & Fix
 
-## Phase 1: Backend Scaffolding & Security
-- [ ] Create `AdminHotelController`, `AdminRestaurantController`, and `AdminCountryController` in `App\Http\Controllers\Admin`.
-- [ ] Move `AdminAttractionController` into `App\Http\Controllers\Admin` and update `routes/api.php` namespace.
-- [ ] Generate `StoreUserRequest` and `UpdateUserRequest` to secure `AdminUserController` against mass-assignment.
-- [ ] Generate `StoreTripRequest` and `UpdateTripRequest` for trips.
-- [ ] Audit `AuthController@register` to ensure `$request->phone` is explicitly validated.
+**Spec:** `frontend-data-fetching` — 8 admin pages empty. **Status: RESOLVED (verified 8/8).** Report: `docs/frontend-data-fetching-investigation.md`. Fix plan: `docs/frontend-data-fetching-fix-plan.md`.
 
-## Phase 2: API Contract Standardization & Performance
-- [ ] Replace `all()` and `get()` with `paginate(15)` in `AdminUserController` and `AdminTripController`.
-- [ ] Remove manual array wrapping (`response()->json(['data' => ...])`) from controllers; return `ResourceCollection` directly.
-- [ ] Add eager loading (`with(['user', 'destinations'])`) to `Trip::paginate(15)` to fix N+1 query issues.
-- [ ] Add eager loading (`with(['roles'])`) to `User::paginate(15)`.
+**Rules honored:** prove before fix; no masking (no fake data / empty-array hacks / auth removal); find common root cause first. ✔
 
-## Phase 3: Frontend Architecture Core
-- [ ] Refactor `api.js` to implement an interceptor pattern (auto-attach `Authorization: Bearer` to all `/api/v1/admin/*` requests).
-- [ ] Centralize 401 Unauthorized handling in `api.js` to automatically trigger `session.js` logout.
-- [ ] Expand `initGlobalUser()` in `admin-chrome.js` to serve as the single source of truth for Topbar initialization.
-- [ ] Delete redundant `renderProfile()` and `init()` calls from all individual page scripts (e.g., `admin-settings.js`, `admin-analytics.js`).
+---
 
-## Phase 4: Frontend UI Consolidation
-- [ ] Add configuration blocks for `users`, `trips`, and `reviews` into the `MODULES` constant of `admin-crud.js`.
-- [ ] Delete `admin-users.js`, `admin-trips.js`, and `admin-reviews.js`.
-- [ ] Update `users.html`, `trips.html`, and `reviews.html` to point exclusively to the unified `admin-crud.js` driver.
-- [ ] Verify `validation.js` properly mounts 422 error handlers onto the dynamically generated modals in `admin-crud.js`.
+## Phase 0 — Recon ✔
+- [x] Ports: :8080 python http.server (PID 33472, root `<repo>/frontend`), :8001 `php artisan serve` (PID 9284)
+- [x] `config.js` apiBase `http://127.0.0.1:8001/api`; token key `itinari_token`
+- [x] All 8 pages = `config.js?v=…`, `api.js`, `admin-chrome.js?v=12`, `admin-crud.js?v=8`
+- [x] DB counts: users 11, trips 8, destinations 40, hotels 53, restaurants 54, countries 250, attractions 20, reviews 50
 
-## Phase 5: UX Polish & E2E Verification
-- [ ] Implement skeleton loaders globally across all charts in `admin-analytics.js`.
-- [ ] Ensure backend APIs safely return empty arrays `[]` instead of 500 errors when relationships or tables are empty.
-- [ ] Manually verify end-to-end CRUD (Create, Read, Update, Delete) flows via the browser for all modules.
-- [ ] Run Laravel PHPUnit feature tests to cement the final API contracts.
+## Phase 1 — Prove the Failure ✔
+- [x] All 8 endpoints: 200 with Bearer (admin@threedos.com), 401 without; shape `{data, links, meta}`
+- [x] Browser path (headless Chrome): real exceptions captured — TDZ panic (admin-chrome), parse corruption (admin-crud), selector mismatch, `moduleName` ReferenceError
+- [x] Root-cause matrix: 4 shared defects, not per-resource
+
+## Phase 2 — Report Gate ✔
+- [x] 2.1 `docs/frontend-data-fetching-investigation.md` written
+- [x] 2.2 User approved at "proceed" (fixes landed only after evidence)
+- [x] 2.3 `docs/frontend-data-fetching-fix-plan.md` written
+
+## Phase 3 — Implement Fixes ✔
+| Fix | File | Detail | Version |
+|---|---|---|---|
+| 1 | (runtime) | static server re-rooted to `frontend/` | – |
+| 2 | `admin-chrome.js` | stray `panel.hidden` before `const panel` → TDZ; removed | v11→v12 |
+| 3 | `admin-crud.js` | mangled template literal → parse failure; repaired | v5→v6 |
+| 4 | `admin-crud.js` | hardcoded `el("crud-table")` → `tableHost()` per-module fallback | v6→v7 |
+| 5 | `admin-crud.js` | `moduleName` undefined in `renderTr` → dataset.module | v7→v8 |
+- [x] 3.1–3.9 All 8 pages render backend rows, 6/page, zero console errors
+
+## Phase 4 — Verification & Regression ✔
+- [x] 4.1 All 8 endpoints 200 w/ auth post-fix
+- [x] 4.2 8/8 browser: request 200, rows rendered, no console/page errors; users page spot-check (real names+emails)
+- [x] 4.3 Auth regression: 401 without token; super_admin intact; no middleware removed
+- [x] 4.4 Cleanup: `dbcounts.php` deleted, smoke-test user force-deleted (user 12), temp scripts live only in Temp/opencode
+- [x] 4.5 Spec §28 criteria met
+
+---
+
+## Deferred / still open
+- Phase 5 UX polish (skeleton loaders, empty states, PHPUnit contract tests) — previous 5-phase plan item
+- `admin-user-details.js` legacy `init()` migration
+- Missing `app/Http/Controllers/PaymobController.php` (blocks `route:list`); `BudgetSnapShot` PSR-4 naming; surveys `/api/surveys` 500
+- Stale `C:\Programming\conference\frontend` copy (outside repo) — unverified

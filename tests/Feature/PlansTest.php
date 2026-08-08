@@ -121,7 +121,7 @@ class PlansTest extends TestCase
         $this->getJson('/api/v1/plans')->assertStatus(401);
     }
 
-    public function test_user_can_subscribe_to_plan(): void
+    public function test_direct_subscribe_redirects_to_checkout(): void
     {
         $user = $this->regularUser();
         $plan = Plan::factory()->create(['price_cents' => 19900, 'ai_quota_monthly' => 50]);
@@ -130,18 +130,12 @@ class PlansTest extends TestCase
             'plan_id' => $plan->id,
         ]);
 
-        $response->assertStatus(201)->assertJson(['success' => true]);
-        $this->assertDatabaseHas('subscriptions', [
-            'user_id' => $user->id,
-            'plan_id' => $plan->id,
-            'status' => 'active',
-            'price_cents' => 19900,
-        ]);
-        $this->assertSame(0, $user->fresh()->ai_generations_count);
-        $this->assertNotNull($user->fresh()->ai_reset_at);
+        $response->assertStatus(400)
+                 ->assertJsonPath('message', 'Direct subscriptions are disabled. Please use the /api/v1/checkout/initiate endpoint to purchase a subscription.');
+        $this->assertDatabaseCount('subscriptions', 0);
     }
 
-    public function test_duplicate_active_subscription_rejected(): void
+    public function test_direct_subscribe_gated_even_with_active_subscription(): void
     {
         $user = $this->regularUser();
         $plan = Plan::factory()->create();
@@ -149,7 +143,7 @@ class PlansTest extends TestCase
 
         $this->actingAs($user, 'api')->postJson('/api/v1/me/subscribe', [
             'plan_id' => $plan->id,
-        ])->assertStatus(422);
+        ])->assertStatus(400);
     }
 
     public function test_subscribe_to_inactive_plan_rejected(): void
@@ -162,7 +156,7 @@ class PlansTest extends TestCase
         ])->assertStatus(422);
     }
 
-    public function test_user_can_upgrade_active_subscription(): void
+    public function test_direct_upgrade_disabled_with_active_subscription(): void
     {
         $user = $this->regularUser();
         $current = Plan::factory()->create(['price_cents' => 19900]);
@@ -180,21 +174,18 @@ class PlansTest extends TestCase
             'plan_id' => $target->id,
         ]);
 
-        $response->assertStatus(200)->assertJson(['success' => true]);
-        $data = $response->json('data');
-        $this->assertSame($target->id, $data['subscription']['plan_id']);
-        $this->assertSame(49900, $data['subscription']['price_cents']);
-        $this->assertArrayHasKey('prorated_charge_cents', $data);
+        $response->assertStatus(400)
+            ->assertJsonPath('message', 'Direct upgrades are disabled. Please use the /api/v1/checkout/initiate endpoint to upgrade.');
     }
 
-    public function test_upgrade_without_active_subscription_rejected(): void
+    public function test_direct_upgrade_disabled_without_subscription(): void
     {
         $user = $this->regularUser();
         $plan = Plan::factory()->create();
 
         $this->actingAs($user, 'api')->postJson('/api/v1/me/upgrade', [
             'plan_id' => $plan->id,
-        ])->assertStatus(422);
+        ])->assertStatus(400);
     }
 
     public function test_user_can_cancel_active_subscription(): void

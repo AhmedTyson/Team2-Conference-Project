@@ -273,9 +273,14 @@
     return state.dir === "desc" ? -cmp : cmp;
   }
 
+  function tableHost() {
+    const key = (document.body.dataset.module || "") + "-table";
+    return el(key) || el("crud-table");
+  }
+
   function load() {
     const mod = module();
-    const host = el("crud-table");
+    const host = tableHost();
     if (host) {
       host.textContent = "";
       host.innerHTML = '<div class="kit-grid-skeleton"><div class="box skeleton"></div><div class="box skeleton"></div><div class="box skeleton"></div></div>';
@@ -422,7 +427,7 @@
   }
 
   function renderTable(rowsOverride) {
-    const host = el("crud-table");
+    const host = tableHost();
     if (!host) return;
     host.textContent = "";
 
@@ -488,10 +493,12 @@
 
   function renderTr(row) {
     const mod = module();
+    const moduleName = mod.id || document.body.dataset.module || "";
     const tr = document.createElement("tr");
     tr.dataset.rowId = String(row.id);
     const td = function (content) {
-      const c = document.createElement("td");`n        if (typeof content === "number") c.classList.add("text-right");
+      const c = document.createElement("td");
+        if (typeof content === "number") c.classList.add("text-right");
       const node = typeof content === "string" ? document.createTextNode(content)
         : (content instanceof Node ? content : document.createTextNode(String(content)));
       c.appendChild(node);
@@ -577,7 +584,7 @@
   }
 
   function renderBulk(host) {
-    const hostEl = host || el("crud-table");
+    const hostEl = host || tableHost();
     const existing = document.querySelector(".bulk-bar");
     if (existing) existing.remove();
     if (selectedCount() === 0) return;

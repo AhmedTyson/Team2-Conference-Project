@@ -66,7 +66,7 @@ class AdminAnalyticsController extends Controller
                     'title'      => $trip->title,
                     'budget'     => (float) $trip->budget,
                     'start_date' => $trip->start_date?->format('Y-m-d'),
-                    'status'     => $trip->status->value,
+                    'status'     => $trip->status?->value,
                     'created_at' => $trip->created_at?->format('Y-m-d H:i:s'),
                 ];
             });

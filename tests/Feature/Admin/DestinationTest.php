@@ -38,7 +38,7 @@ class DestinationTest extends TestCase
         $response = $this->actingAs($admin, 'api')->getJson('/api/v1/admin/destinations');
 
         $response->assertStatus(200)
-                 ->assertJsonPath('data.total', 3);
+                 ->assertJsonCount(3, 'data');
     }
 
     public function test_normal_user_cannot_access_destinations()

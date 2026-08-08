@@ -17,7 +17,7 @@ class SurveyController extends Controller
 
     public function index()
     {
-        $surveys = $this->surveyService->getSurveysByUserId(auth()->id());
+        $surveys = $this->surveyService->getSurveyByUserId(auth()->id());
 
     return response()->json([
         'message' => 'Surveys retrieved successfully',
