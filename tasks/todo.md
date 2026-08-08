@@ -1,62 +1,106 @@
-# P0 — Frontend Shows No Data — Investigation & Fix
+## Task 1: Update Notifications Table & Model
 
-**Spec:** `frontend-data-fetching` — 8 admin pages empty. **Status: RESOLVED (verified 8/8).** Report: `docs/frontend-data-fetching-investigation.md`. Fix plan: `docs/frontend-data-fetching-fix-plan.md`.
+**Description:** Refactor the existing `notifications` table to strictly match the `Team3-backend` schema (which relies on `read_at` timestamps instead of a `status` enum, and supports polymorphic `notifiable` relationships).
 
-**Rules honored:** prove before fix; no masking (no fake data / empty-array hacks / auth removal); find common root cause first. ✔
+**Acceptance criteria:**
+- [ ] Migration alters `notifications` table: drops `status`, `title`, `body` (Team 3 uses implicit titles based on type or `data` JSON). Adds `notifiable_type`, `notifiable_id`, and `read_at` (timestamp).
+- [ ] `Notification` model updated to remove `NotificationStatus` enum, add the `notifiable()` polymorphic relationship.
+- [ ] `User` model confirmed to have `notifications()` HasMany relationship.
 
----
+**Verification:**
+- [ ] Run `php artisan migrate` successfully.
+- [ ] Manual check: Model correctly typed and relationships are valid.
 
-## Phase 0 — Recon ✔
-- [x] Ports: :8080 python http.server (PID 33472, root `<repo>/frontend`), :8001 `php artisan serve` (PID 9284)
-- [x] `config.js` apiBase `http://127.0.0.1:8001/api`; token key `itinari_token`
-- [x] All 8 pages = `config.js?v=…`, `api.js`, `admin-chrome.js?v=12`, `admin-crud.js?v=8`
-- [x] DB counts: users 11, trips 8, destinations 40, hotels 53, restaurants 54, countries 250, attractions 20, reviews 50
+**Dependencies:** None
 
-## Phase 1 — Prove the Failure ✔
-- [x] All 8 endpoints: 200 with Bearer (admin@threedos.com), 401 without; shape `{data, links, meta}`
-- [x] Browser path (headless Chrome): real exceptions captured — TDZ panic (admin-chrome), parse corruption (admin-crud), selector mismatch, `moduleName` ReferenceError
-- [x] Root-cause matrix: 4 shared defects, not per-resource
+**Files likely touched:**
+- `database/migrations/*_alter_notifications_table.php`
+- `app/Models/Notification.php`
 
-## Phase 2 — Report Gate ✔
-- [x] 2.1 `docs/frontend-data-fetching-investigation.md` written
-- [x] 2.2 User approved at "proceed" (fixes landed only after evidence)
-- [x] 2.3 `docs/frontend-data-fetching-fix-plan.md` written
-
-## Phase 3 — Implement Fixes ✔
-| Fix | File | Detail | Version |
-|---|---|---|---|
-| 1 | (runtime) | static server re-rooted to `frontend/` | – |
-| 2 | `admin-chrome.js` | stray `panel.hidden` before `const panel` → TDZ; removed | v11→v12 |
-| 3 | `admin-crud.js` | mangled template literal → parse failure; repaired | v5→v6 |
-| 4 | `admin-crud.js` | hardcoded `el("crud-table")` → `tableHost()` per-module fallback | v6→v7 |
-| 5 | `admin-crud.js` | `moduleName` undefined in `renderTr` → dataset.module | v7→v8 |
-- [x] 3.1–3.9 All 8 pages render backend rows, 6/page, zero console errors
-
-## Phase 4 — Verification & Regression ✔
-- [x] 4.1 All 8 endpoints 200 w/ auth post-fix
-- [x] 4.2 8/8 browser: request 200, rows rendered, no console/page errors; users page spot-check (real names+emails)
-- [x] 4.3 Auth regression: 401 without token; super_admin intact; no middleware removed
-- [x] 4.4 Cleanup: `dbcounts.php` deleted, smoke-test user force-deleted (user 12), temp scripts live only in Temp/opencode
-- [x] 4.5 Spec §28 criteria met
+**Estimated scope:** Small: 2 files
 
 ---
 
-## Deferred / still open
-- none
+## Task 2: Implement Background Job and NotificationService
 
-## Phase 5 — Real Data Depth + User Details (RESOLVED)
-- [x] `per_page` clamp in 8 admin controllers (`paginate(min((int) request("per_page", 15) ?: 15, 100))`) — users/trips/hotels/countries/restaurants/reviews/attractions/destinations
-- [x] `AdminUserController::show` removed nonexistent `bookings` relation → `loadMissing(['trips','reviews','subscriptions'])` (was 500)
-- [x] `UserResource` now exposes `trips` (whenLoaded): id/title/budget/status/no_of_days/start/end
-- [x] `admin-crud.js` `PER_PAGE_DEFAULT` 6→25, options `[15,25,50,100]`; `normalize()` detects Laravel paginated shape `{data,links,meta}` → serverPaged (footer was never rendered before)
-- [x] E2E: all 8 pages real totals w/ pager: destinations 40, hotels 53, restaurants 54, countries 250, reviews 50; page 2 → "Showing 26–50 of 250"
-- [x] user-details: id=2 → profile + 3 real trips; id=1 → profile + "No trips" empty state; zero errors
-- [x] PHPUnit regression: 46 passed (118 assertions)
+**Description:** Build the `SendNotificationJob` which handles inserting the record into the database and sending an email if requested. Build the `NotificationService` as the single entry point.
 
-## Phase 5 — UX Polish (RESOLVED)
-- [x] Skeleton loaders (kit-grid-skeleton) + empty states (kit-empty w/ icon, "No matches" vs "No records" + CTA)
-- [x] Page-size switcher: toolbar + pager footer selects, persisted via localStorage (`admin-crud:page-size`), `per_page` honored
-- [x] Sticky table header (`thead th` sticky + translucent card bg)
-- [x] CSV export in server-paged mode: collects all pages via `per_page=100` loop (250-country export verified)
-- [x] E2E: switcher 25→50 → "Showing 1–50 of 250", persists across reload; export toast "250 countries"; zero errors
-- [x] PHPUnit contract tests (46 passed)
+**Acceptance criteria:**
+- [ ] `SendNotificationJob` implements `ShouldQueue`.
+- [ ] Job checks for duplicate notifications (idempotency over a 5-minute window for identical `user_id` and `type`).
+- [ ] `NotificationService::notify(User $user, string $type, array $data, bool $sendEmail)` successfully dispatches the job.
+
+**Verification:**
+- [ ] Tests pass or manual test via `php artisan tinker`.
+- [ ] Job successfully creates a DB row when processed.
+
+**Dependencies:** Task 1
+
+**Files likely touched:**
+- `app/Jobs/SendNotificationJob.php`
+- `app/Services/NotificationService.php`
+
+**Estimated scope:** Small: 2 files
+
+---
+
+## Checkpoint: Foundation Complete
+- [ ] Migrations run cleanly.
+- [ ] `NotificationService` successfully queues jobs and writes to the DB.
+
+---
+
+## Task 3: Build User Notification API
+
+**Description:** Implement `NotificationController` and `NotificationResource` to allow end-users to view and manage their in-app notifications.
+
+**Acceptance criteria:**
+- [ ] `GET /api/v1/notifications` returns paginated notifications with an `unread_count` meta field.
+- [ ] `PATCH /api/v1/notifications/{id}/read` marks a specific notification as read.
+- [ ] `PATCH /api/v1/notifications/read-all` marks all unread notifications as read.
+- [ ] Authorization ensures users can only access their own notifications.
+
+**Verification:**
+- [ ] Endpoints exist and return HTTP 200.
+- [ ] Feature tests written and pass.
+
+**Dependencies:** Task 2
+
+**Files likely touched:**
+- `app/Http/Controllers/NotificationController.php`
+- `app/Http/Resources/NotificationResource.php`
+- `routes/api.php`
+- `tests/Feature/NotificationTest.php`
+
+**Estimated scope:** Medium: 4 files
+
+---
+
+## Task 4: Build Admin Notification API
+
+**Description:** Implement `AdminNotificationController` for platform administrators to audit system notifications.
+
+**Acceptance criteria:**
+- [ ] `GET /api/v1/admin/notifications` returns latest platform notifications.
+- [ ] Response includes the related `user` (id, name, email).
+- [ ] Supports filtering by `type`.
+- [ ] Protected by `role:admin|super_admin` or specific permissions.
+
+**Verification:**
+- [ ] Endpoint is protected and accessible only by admins.
+- [ ] Feature test confirms filtering works.
+
+**Dependencies:** Task 1
+
+**Files likely touched:**
+- `app/Http/Controllers/Admin/AdminNotificationController.php`
+- `routes/api.php`
+- `tests/Feature/Admin/AdminNotificationTest.php`
+
+**Estimated scope:** Medium: 3 files
+
+---
+
+## Checkpoint: API Complete
+- [ ] All feature tests for User and Admin endpoints pass.
+- [ ] API routes are cleanly organized in `routes/api.php`.
