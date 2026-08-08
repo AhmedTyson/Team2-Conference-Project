@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\Models\User;
 
 class Sprint1IntegrationTest extends TestCase
 {
@@ -14,7 +13,7 @@ class Sprint1IntegrationTest extends TestCase
     {
         $response = $this->postJson('/api/register', []);
         $this->assertNotEquals(404, $response->status(), 'Sarah: Register missing');
-        
+
         $response = $this->postJson('/api/forgot-password', []);
         $this->assertNotEquals(404, $response->status(), 'Sarah: Forgot password missing');
     }
@@ -42,7 +41,7 @@ class Sprint1IntegrationTest extends TestCase
     {
         $response = $this->getJson('/api/v1/destinations');
         $this->assertNotEquals(404, $response->status(), 'Kenzy: Destinations missing');
-        
+
         $response = $this->getJson('/api/v1/hotels');
         $this->assertNotEquals(404, $response->status(), 'Kenzy: Hotels missing');
     }
@@ -51,7 +50,7 @@ class Sprint1IntegrationTest extends TestCase
     {
         $response = $this->getJson('/api/v1/restaurants');
         $this->assertNotEquals(404, $response->status(), 'Hana: Restaurants missing');
-        
+
         $response = $this->getJson('/api/v1/attractions');
         $this->assertNotEquals(404, $response->status(), 'Hana: Attractions missing');
     }
