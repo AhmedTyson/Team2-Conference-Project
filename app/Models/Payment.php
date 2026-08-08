@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
+use App\Enums\PaymentStatus;
+
 class Payment extends Model
 {
     use HasFactory;
@@ -15,6 +17,7 @@ class Payment extends Model
 
     protected $fillable = [
         'booking_id',
+        'order_id',
         'paymob_transaction_id',
         'status',
         'amount_cents',
@@ -28,6 +31,7 @@ class Payment extends Model
 
     protected $casts = [
         'amount_cents' => 'integer',
+        'status' => PaymentStatus::class,
         'hmac_valid' => 'boolean',
         'raw_payload' => 'array',
     ];
@@ -35,5 +39,10 @@ class Payment extends Model
     public function booking(): BelongsTo
     {
         return $this->belongsTo(Booking::class);
+    }
+
+    public function order(): BelongsTo
+    {
+        return $this->belongsTo(Order::class);
     }
 }

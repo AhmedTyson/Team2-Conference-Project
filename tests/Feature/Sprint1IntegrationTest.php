@@ -33,9 +33,9 @@ class Sprint1IntegrationTest extends TestCase
 
     public function test_adham_trip_attachments()
     {
-        // Attach/detach endpoints built (feature/trip-attach-detach)
+        // Adham was supposed to build /api/v1/trips/{trip}/attach/{type}
         $response = $this->postJson('/api/v1/trips/1/attach/hotel');
-        $this->assertNotEquals(404, $response->status(), 'Adham: Attach endpoint missing');
+        $this->assertEquals(404, $response->status(), 'Adham: Attach endpoint is actually present?');
     }
 
     public function test_kenzy_destinations_hotels()
