@@ -3,11 +3,11 @@
 namespace App\Queries;
 
 use App\Models\Booking;
-use App\Models\BookingItem;
 use App\Models\Hotel;
 use App\Models\Restaurant;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -317,34 +317,34 @@ class ReportQuery
     /**
      * Portable "group by month" expression (SQLite has no DATE_FORMAT()).
      */
-    protected function monthExpr(string $column = 'created_at'): \Illuminate\Database\Query\Expression
+    protected function monthExpr(string $column = 'created_at'): Expression
     {
         return DB::raw(match (DB::getDriverName()) {
             'sqlite' => "strftime('%Y-%m', {$column})",
             default => "DATE_FORMAT({$column}, '%Y-%m')",
-        } . ' as period');
+        }.' as period');
     }
 
     /**
      * Portable "group by ISO-ish week" expression.
      */
-    protected function weekExpr(string $column = 'created_at'): \Illuminate\Database\Query\Expression
+    protected function weekExpr(string $column = 'created_at'): Expression
     {
         return DB::raw(match (DB::getDriverName()) {
             'sqlite' => "strftime('%Y-%W', {$column})",
             default => "YEARWEEK({$column}, 1)",
-        } . ' as period');
+        }.' as period');
     }
 
     /**
      * Portable "day of week as 0 (Sun) - 6 (Sat)" expression.
      */
-    protected function dayOfWeekExpr(string $column = 'created_at'): \Illuminate\Database\Query\Expression
+    protected function dayOfWeekExpr(string $column = 'created_at'): Expression
     {
         return DB::raw(match (DB::getDriverName()) {
             'sqlite' => "CAST(strftime('%w', {$column}) AS INTEGER)",
             default => "DAYOFWEEK({$column}) - 1",
-        } . ' as day_index');
+        }.' as day_index');
     }
 
     protected function dayName(int $dayIndex): string

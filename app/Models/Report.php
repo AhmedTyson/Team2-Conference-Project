@@ -16,6 +16,7 @@ class Report extends Model
         'from_date',
         'to_date',
         'file_path',
+        'status',
     ];
 
     protected $casts = [

@@ -12,7 +12,7 @@ class GenerateReportRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return $this->user() && $this->user()->hasAnyRole(["admin", "super_admin"]);
+        return $this->user() && $this->user()->hasAnyRole(['admin', 'super_admin']);
     }
 
     /**
@@ -23,8 +23,8 @@ class GenerateReportRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "from" => "required|date",
-            "to"   => "required|date|after_or_equal:from",
+            'from' => 'required|date',
+            'to' => 'required|date|after_or_equal:from',
         ];
     }
 }

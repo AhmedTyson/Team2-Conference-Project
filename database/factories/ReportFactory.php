@@ -19,7 +19,8 @@ class ReportFactory extends Factory
             'user_id' => User::factory(),
             'from_date' => $from,
             'to_date' => $to,
-            'file_path' => 'reports/report_' . $this->faker->uuid() . '.pdf',
+            'file_path' => $this->faker->optional()->passthrough('reports/report_'.$this->faker->uuid().'.pdf'),
+            'status' => 'completed',
         ];
     }
 }

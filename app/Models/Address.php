@@ -10,8 +10,6 @@ class Address extends Model
 {
     use HasFactory;
 
-    protected $table = 'address';
- 
     protected $fillable = [
         'addressable_type',
         'addressable_id',
@@ -24,12 +22,12 @@ class Address extends Model
         'lat',
         'lng',
     ];
- 
+
     protected $casts = [
         'lat' => 'decimal:7',
         'lng' => 'decimal:7',
     ];
- 
+
     public function addressable(): MorphTo
     {
         return $this->morphTo();
