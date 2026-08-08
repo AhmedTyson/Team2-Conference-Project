@@ -1,64 +1,34 @@
-## Part 1: Core Architecture & In-App Alerts
+## Email UI/UX & Testing (5 Phases)
 
-### Phase 1: Database Foundation
-- [ ] Create/Update `notifications` migration replacing `uuid` with `id` (ulid/bigint) and adding `user_id` foreign key.
-- [ ] Migrate database successfully.
+### Phase 1: Marketing-Grade UI/UX Design
+**Description:** Transform the basic HTML emails into beautiful, premium marketing assets.
+- [ ] Overhaul `resources/views/emails/layouts/main.blade.php` with a modern, responsive layout (max-width 600px, centered, rounded corners, soft shadows).
+- [ ] Add a premium header (Logo placement, brand colors) and a marketing footer (social icons, copyright, support links).
+- [ ] Redesign `payment-success.blade.php` and `payment-failed.blade.php` with distinct trust signals (green/red accents, receipt-like tables).
+- [ ] Redesign `welcome.blade.php` with a hero image placeholder and onboarding steps.
+- [ ] Redesign `trip-forked.blade.php` with social proof elements.
+- [ ] Redesign `subscription-activated.blade.php` highlighting premium features.
 
-### Phase 2: Domain Models
-- [ ] Create `Notification` model overriding Laravel's `DatabaseNotification`.
-- [ ] Add `notifications()` relationship to `User`.
+### Phase 2: Mailable Visual Previews
+**Description:** Enable local browser previewing of the new email templates.
+- [ ] Create a `routes/web.php` endpoint `/mail-preview` (restricted to local environment).
+- [ ] Instantiate dummy data (Mock `User`, `Order`, `Trip`) and return the Mailables (e.g., `return new WelcomeMail($user);`).
+- [ ] Visually verify responsiveness and typography across mobile/desktop views.
 
-### Phase 3: Notification Orchestration
-- [ ] Create a base `AppNotification` class implementing `via($notifiable)` returning `['database']` for now.
+### Phase 3: Routing & Integration Tests
+**Description:** Ensure business logic correctly triggers the Mailables with exact data.
+- [ ] Write `test_welcome_email_dispatched_on_register` in `Tests\Feature\AuthTest.php` (or similar).
+- [ ] Write `test_payment_success_email_contains_order_details` verifying the Mailable content includes the correct currency and amount.
+- [ ] Assert `Mail::assertSent()` passes for all 5 email types.
 
-### Phase 4: Queuing & Idempotency
-- [ ] Add `ShouldQueue` to the base notification class.
-- [ ] Add `middleware()` method returning `new WithoutOverlapping(...)` based on the notification type and user ID.
+### Phase 4: Concurrency & Idempotency Tests
+**Description:** Prove that the system prevents duplicate email spam during race conditions.
+- [ ] Write a test that fires `PaymentSucceeded` twice instantly.
+- [ ] Assert that the `PaymentSucceededNotification` is queued, but the overlapping lock prevents the second email from being dispatched.
+- [ ] Verify `WithoutOverlapping` middleware behaves correctly.
 
-### Phase 5: User API
-- [ ] Build `NotificationController` with `index`, `read`, and `readAll` endpoints.
-- [ ] Add routes to `api.php`.
-
-### Phase 6: Performance Layer
-- [ ] Refactor `index` query to use `cursorPaginate()`.
-- [ ] Implement Redis/Cache increment/decrement for `unread_count` on the User model.
-
-### Phase 7: Admin API
-- [ ] Build `AdminNotificationController@index` with type/user filters.
-- [ ] Protect with `role:admin` middleware.
-
-### Phase 8: Payment Triggers
-- [ ] Create `PaymentStatusNotification`.
-- [ ] Dispatch it from `FulfillOrderListener` or `WebhookService`.
-
-### Phase 9: Subscription & Trip Triggers
-- [ ] Create `SubscriptionActivatedNotification` and `TripForkedNotification`.
-- [ ] Dispatch from respective service methods.
-
-### Phase 10: Auth Triggers & Testing
-- [ ] Create `WelcomeNotification` and dispatch on user registration.
-- [ ] Write integration test triggering the full flow and assert jobs are pushed to logs.
-
----
-
-## Part 2: Email Integration & Templates
-
-### Phase 11: Global Email Layout
-- [ ] Scaffold `resources/views/emails/layouts/main.blade.php`.
-
-### Phase 12: Financial Mailables
-- [ ] Create `resources/views/emails/payment-success.blade.php` and `payment-failed.blade.php`.
-- [ ] Create corresponding Mailable classes mapping data to views.
-
-### Phase 13: Social/Trip Mailables
-- [ ] Create `resources/views/emails/trip-forked.blade.php`.
-- [ ] Create `TripForkedMail` Mailable.
-
-### Phase 14: Auth/Account Mailables
-- [ ] Create `resources/views/emails/welcome.blade.php` and `subscription-activated.blade.php`.
-- [ ] Create corresponding Mailables.
-
-### Phase 15: Channel Routing & Final Testing
-- [ ] Update all Notification classes' `via()` method to return `['database', 'mail']`.
-- [ ] Implement `toMail()` on all notifications returning their respective Mailables.
-- [ ] Test the full email dispatch pipeline locally (verifying via logs or Mailables test).
+### Phase 5: E2E Mail Delivery & Log Verification
+**Description:** Run the full pipeline and verify the final compiled output in the logs.
+- [ ] Set `MAIL_MAILER=log` in `.env` (or override in PHPUnit).
+- [ ] Run the E2E checkout feature test.
+- [ ] Assert or manually verify that `storage/logs/laravel.log` contains the fully rendered, minified HTML structure of the marketing emails.
