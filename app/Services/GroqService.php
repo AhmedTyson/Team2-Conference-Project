@@ -11,10 +11,18 @@ use App\Models\Trip;
 use App\Models\Restaurant;
 use App\Models\Hotel;
 use App\Models\Attraction;
+use App\Services\AiUsageService;
 use Illuminate\Support\Facades\Cache;
 
 class GroqService
 {
+    protected $aiUsageService;
+
+    public function __construct(AiUsageService $aiUsageService = null)
+    {
+        $this->aiUsageService = $aiUsageService ?? app(AiUsageService::class);
+    }
+
     /**
      * Create a new class instance.
      */
@@ -50,6 +58,9 @@ class GroqService
     public function generateAi(AiTripRequest $request){
 
         try{
+            // Atomically consume quota before making the external API call
+            $this->aiUsageService->consumeQuota($request->user());
+
             //filter where country
             //filter budget
 
@@ -115,9 +126,12 @@ class GroqService
             });
     
             }catch(\Throwable $e){
-                
+                // Restore quota if generation fails
+                if ($request->user()) {
+                    $this->aiUsageService->restoreQuota($request->user());
+                }
                 Log::error("Error generating content: ".$e->getMessage());
-                throw new \RuntimeException("Service unavailable. Please try again later.");
+                throw new \RuntimeException($e->getMessage() ?: "Service unavailable. Please try again later.");
             }
             return $response['choices'][0]['message']['content']??$request->content;
     }

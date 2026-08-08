@@ -8,10 +8,11 @@
 - Create Enums for `OrderStatus`, `PaymentStatus`, and `SubscriptionStatus`.
 
 ## Phase 2 — Pricing & Commercial Rules
-**Goal**: Enforce backend-controlled pricing.
-- Add `fork_price_cents` to a global settings/config or on the `trips` table directly.
-- Ensure `Plan` models represent the absolute source of truth for subscription pricing.
-- Implement `PriceCalculator` service to dictate amounts for any checkout request.
+**Goal**: Enforce backend-controlled pricing across all products (Digital SaaS + Physical Travel Packages).
+- Implement a dual-track `PriceCalculatorService` to dictate amounts for any checkout request:
+  - `calculateForkPrice`: Fetches fixed price from `Settings` for copying itinerary data.
+  - `calculatePackagePrice`: Sums real-world costs of attached `BookingItem` elements (Hotels, Flights) and applies a platform commission to book an actual trip.
+  - `calculateSubscriptionPrice`: Uses the `Plan` model as the absolute source of truth.
 
 ## Phase 3 — Payment Gateway Abstraction
 **Goal**: Create a standard contract for payments.
