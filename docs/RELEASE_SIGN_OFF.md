@@ -16,6 +16,9 @@ Date: 2026-08-08 · Branch: `feature/paymob-payments`
 | 8 | Route count vs audit | Audit claimed 113 API routes. `route:list` = 115 (`114 api/*` + `GET /docs/api` scramble UI); delta = `/api/me/reports` added in Phase 9. ✔ |
 
 | 9 | Coverage gate (Phase 11) | CI job `coverage`: `pcov` via setup-php, `php artisan test --coverage --min=48` — hard-fails below 48% (baseline). Actual measured coverage: 48.3%. ✅ |
+| 10 | Deploy Staging (Phase 14) | BACKLOGGED. (Requires deploy creds, env setup) ⏳ |
+| 11 | Postman / OpenAPI (Phase 15)| BACKLOGGED. (Awaiting finalized collection updates) ⏳ |
+| 12 | Documentation Handoff (Phase 16) | BACKLOGGED. ⏳ |
 
 ## Route → coverage map (test files)
 
