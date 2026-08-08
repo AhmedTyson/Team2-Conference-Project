@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreContactMessageRequest extends FormRequest
+class StoreCategoryRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -15,9 +15,7 @@ class StoreContactMessageRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255'],
-            'subject' => ['required', 'string', 'max:255'],
-            'message' => ['required', 'string'],
+            'type' => ['required', 'string', 'max:100'],
         ];
     }
 }
