@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forgot password · Itinari</title>
+  <link rel="stylesheet" href="assets/css/auth.css" />
+</head>
+<body data-page="forgot">
+  <main class="auth-shell">
+    <section class="auth-visual">
+      <div class="brand">Itinari</div>
+      <div>
+        <h1>Lost your password?</h1>
+        <p>No stress. Enter your email and we'll send a reset link.</p>
+      </div>
+    </section>
+
+    <section class="auth-form-side">
+      <div class="auth-card">
+        <h2>Reset password</h2>
+        <p class="sub">We'll email you a link to set a new one.</p>
+
+        <form id="auth-form" novalidate>
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" />
+            <p class="field-hint" id="hint-email" role="alert"></p>
+          </div>
+
+          <button type="submit" class="btn-primary">
+            <span class="spinner"></span>
+            <span class="btn-label">Send reset link</span>
+          </button>
+
+          <div class="success-note" id="fo-success-note"></div>
+        </form>
+
+        <div class="auth-links">
+          Remembered it? <a href="login.html">Log in</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-banner" role="status">
+    <span id="site-banner-msg"></span><span id="site-banner-drain" aria-hidden="true"></span>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="assets/js/config.js?v=1786177601"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/validation.js"></script>
+  <script src="assets/js/animations.js"></script>
+  <script src="assets/js/session.js"></script>
+  <script src="assets/js/auth.js"></script>
+</body>
+</html>

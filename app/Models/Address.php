@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 class Address extends Model
 {
     use HasFactory;
+
+    protected $table = 'address';
  
     protected $fillable = [
         'addressable_type',

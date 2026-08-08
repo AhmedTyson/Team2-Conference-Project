@@ -16,6 +16,12 @@ class AdminUserController extends Controller
         return UserResource::collection($users);
     }
 
+    public function show(User $user)
+    {
+        $user->loadMissing(['trips', 'bookings', 'reviews']);
+        return new UserResource($user);
+    }
+
     public function store(Request $request)
     {
         $user = User::create([

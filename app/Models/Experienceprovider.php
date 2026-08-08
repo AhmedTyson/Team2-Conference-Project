@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Experienceprovider extends Model
 {
     use HasFactory;
+
+    protected $table = 'experience_providers';
  
     protected $fillable = [
         'user_id',

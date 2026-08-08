@@ -106,6 +106,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::prefix('v1/admin')->name('admin.')->group(function () {
         // Users Management (Sarah)
         Route::get('/users', [AdminUserController::class, 'index'])->middleware('permission:manage users');
+        Route::get('/users/{user}', [AdminUserController::class, 'show'])->middleware('permission:manage users');
         Route::post('/users', [AdminUserController::class, 'store'])->middleware('permission:manage users');
         Route::put('/users/{user}', [AdminUserController::class, 'update'])->middleware('permission:manage users');
         Route::patch('/users/{user}/active', [AdminUserController::class, 'active'])->middleware('permission:manage users');

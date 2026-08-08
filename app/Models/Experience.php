@@ -12,7 +12,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Experience extends Model
 {
     use HasFactory, SoftDeletes;
- 
+
+    protected $table = 'experience';
+
     protected $fillable = [
         'provider_id',
         'destination_id',
