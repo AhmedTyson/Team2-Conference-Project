@@ -245,3 +245,14 @@ Route::post('/review', [\App\Services\GroqService::class, 'generateAi'])
     ->middleware(['auth:api', 'permission:generate ai itineraries']);
 Route::get('/review/{id}', [\App\Http\Controllers\AIController::class, 'review'])
     ->middleware('auth:api');
+
+// Checkout & Payments (S5/Phase 4)
+Route::middleware(['auth:api'])->prefix('v1/checkout')->name('checkout.')->group(function () {
+    Route::post('/initiate', [\App\Http\Controllers\CheckoutController::class, 'initiate'])->name('initiate');
+});
+
+// Paymob Webhooks (Phase 5)
+Route::prefix('v1/paymob')->name('paymob.')->group(function () {
+    Route::post('/webhook', [\App\Http\Controllers\PaymobWebhookController::class, 'handle'])->name('webhook');
+    Route::get('/callback', [\App\Http\Controllers\PaymobWebhookController::class, 'callback'])->name('callback');
+});
