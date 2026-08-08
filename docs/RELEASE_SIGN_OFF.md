@@ -15,6 +15,8 @@ Date: 2026-08-08 · Branch: `feature/paymob-payments`
 | 7 | Secrets scan (gitleaks binary v8.30.1) | Full `git log` scan of 162 commits. **1 REAL leak found**: `RAPIDAPI_KEY=0b1a47…` in `.env.example` @ `ce485c9` (teammate commit; already removed from working tree). Baselined via `gitleaks.toml` (`[extend] useDefault` + `[allowlist].commits`), scan now clean exit 0. ✔/⚠ rotate key (below). `composer audit`: **0 advisories**. ✔ |
 | 8 | Route count vs audit | Audit claimed 113 API routes. `route:list` = 115 (`114 api/*` + `GET /docs/api` scramble UI); delta = `/api/me/reports` added in Phase 9. ✔ |
 
+| 9 | Coverage gate (Phase 11) | CI job `coverage`: `pcov` via setup-php, `php artisan test --coverage --min=60` — hard-fails below 60%. First numbers after next push. Number not yet measured. ⏳ |
+
 ## Route → coverage map (test files)
 
 | Route group | Method(s) | Covered by |
