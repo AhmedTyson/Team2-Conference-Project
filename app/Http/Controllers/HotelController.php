@@ -35,7 +35,7 @@ class HotelController extends Controller
 
         return response()->json([
             'message' => 'Hotel created successfully',
-            'data' => new HotelResource($hotel)
+            'data' => new HotelResource($hotel),
         ], 201);
     }
 
@@ -46,7 +46,7 @@ class HotelController extends Controller
 
         return response()->json([
             'message' => 'Hotel updated successfully',
-            'data' => new HotelResource($hotel)
+            'data' => new HotelResource($hotel),
         ]);
     }
 
@@ -56,7 +56,7 @@ class HotelController extends Controller
         $this->hotelService->destroy($id);
 
         return response()->json([
-            'message' => 'Hotel deleted successfully'
+            'message' => 'Hotel deleted successfully',
         ]);
     }
 }

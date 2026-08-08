@@ -25,11 +25,11 @@ class UpdateProfileRequest extends FormRequest
         $userId = $this->user()->id;
 
         return [
-            'name'          => ['sometimes', 'string', 'max:255'],
-            'email'         => ['sometimes', 'string', 'email', 'max:255', 'unique:users,email,' . $userId],
-            'phone'         => ['sometimes', 'nullable', 'string', 'max:20', 'unique:users,phone,' . $userId],
+            'name' => ['sometimes', 'string', 'max:255'],
+            'email' => ['sometimes', 'string', 'email', 'max:255', 'unique:users,email,'.$userId],
+            'phone' => ['sometimes', 'nullable', 'string', 'max:20', 'unique:users,phone,'.$userId],
             'profile_image' => ['sometimes', 'image', 'max:2048'],
-            'password'      => ['sometimes', 'string', 'min:8', 'confirmed'],
+            'password' => ['sometimes', 'string', 'min:8', 'confirmed'],
         ];
     }
 

@@ -2,36 +2,36 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Restaurant;
 use App\Http\Resources\RestaurantResource;
-use Illuminate\Http\Request;
+use App\Models\Restaurant;
 
 class RestaurantController extends Controller
 {
-    
-   public function index()
-{
-    $restaurants = Restaurant::with(['destination', 'category'])
-        ->paginate(10);
+    public function index()
+    {
+        $restaurants = Restaurant::with(['destination', 'category'])
+            ->paginate(10);
 
-    return RestaurantResource::collection($restaurants);
-}
+        return RestaurantResource::collection($restaurants);
+    }
+
     public function show($id)
     {
         $restaurant = Restaurant::with(['destination', 'category'])->findOrFail($id);
 
         return new RestaurantResource($restaurant);
     }
+
     public function destroy($id)
     {
-        //restaurant policy
+        // restaurant policy
         authorize('delete', Restaurant::class);
         $restaurant = Restaurant::findOrFail($id);
 
         $restaurant->delete();
 
         return response()->json([
-            'message' => 'Restaurant deleted successfully'
+            'message' => 'Restaurant deleted successfully',
         ]);
     }
 }

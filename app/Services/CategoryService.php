@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Repositories\CategoryRepository;
 use App\Models\Category;
+use App\Repositories\CategoryRepository;
 
 class CategoryService
 {

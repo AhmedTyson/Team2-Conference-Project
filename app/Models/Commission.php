@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\CommissionStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -25,6 +26,7 @@ class Commission extends Model
         'rate' => 'decimal:4',
         'amount_cents' => 'integer',
         'settled_at' => 'datetime',
+        'status' => CommissionStatus::class,
     ];
 
     public function booking(): BelongsTo
@@ -39,6 +41,6 @@ class Commission extends Model
 
     public function markSettled(): void
     {
-        $this->update(['status' => 'settled', 'settled_at' => now()]);
+        $this->update(['status' => CommissionStatus::SETTLED->value, 'settled_at' => now()]);
     }
 }

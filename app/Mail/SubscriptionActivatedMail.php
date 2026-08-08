@@ -14,9 +14,7 @@ class SubscriptionActivatedMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public User $user, public Subscription $subscription)
-    {
-    }
+    public function __construct(public User $user, public Subscription $subscription) {}
 
     public function envelope(): Envelope
     {

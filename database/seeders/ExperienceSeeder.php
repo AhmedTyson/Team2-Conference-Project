@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Destination;
 use App\Models\Experience;
 use App\Models\Experienceprovider;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class ExperienceSeeder extends Seeder
@@ -17,12 +16,13 @@ class ExperienceSeeder extends Seeder
     {
         $providers = Experienceprovider::all();
         $destinationIds = Destination::pluck('id');
- 
+
         if ($providers->isEmpty() || $destinationIds->isEmpty()) {
             $this->command?->warn('Skipping ExperienceSeeder: no experience_providers or destinations found.');
+
             return;
         }
- 
+
         foreach (range(1, 20) as $i) {
             Experience::create([
                 'provider_id' => $providers->random()->user_id,

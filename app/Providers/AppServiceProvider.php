@@ -2,28 +2,31 @@
 
 namespace App\Providers;
 
+use App\Interfaces\CountryRepositoryInterface;
+use App\Interfaces\OrderRepositoryInterface;
+use App\Interfaces\PaymentGatewayInterface;
+use App\Interfaces\PaymentRepositoryInterface;
+use App\Interfaces\PlanRepositoryInterface;
+use App\Interfaces\SurveyRepositoryInterface;
 use App\Models\Attraction;
 use App\Models\Destination;
 use App\Models\Flight;
 use App\Models\Hotel;
-use App\Models\Restaurant;
-use App\Models\User;
 use App\Models\Plan;
+use App\Models\Restaurant;
 use App\Models\Trip;
-use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\ServiceProvider;
-use App\Interfaces\SurveyRepositoryInterface;
-use App\Repositories\SurveyRepository;
-use App\Interfaces\CountryRepositoryInterface;
+use App\Models\User;
 use App\Repositories\CountryRepository;
-use App\Interfaces\PlanRepositoryInterface;
-use App\Repositories\PlanRepository;
-use App\Interfaces\PaymentGatewayInterface;
-use App\Services\PaymobGateway;
-use App\Interfaces\OrderRepositoryInterface;
 use App\Repositories\OrderRepository;
-use App\Interfaces\PaymentRepositoryInterface;
 use App\Repositories\PaymentRepository;
+use App\Repositories\PlanRepository;
+use App\Repositories\SurveyRepository;
+use App\Services\PaymobGateway;
+use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -68,15 +71,25 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        RateLimiter::for('login', function (Request $request) {
+            return Limit::perMinute(5)->by(
+                $request->ip().'|'.strtolower((string) $request->input('email'))
+            );
+        });
+
+        RateLimiter::for('register', function (Request $request) {
+            return Limit::perMinute(5)->by($request->ip());
+        });
+
         Relation::enforceMorphMap([
-            'user'        => User::class,
-            'hotel'       => Hotel::class,
-            'restaurant'  => Restaurant::class,
-            'attraction'  => Attraction::class,
+            'user' => User::class,
+            'hotel' => Hotel::class,
+            'restaurant' => Restaurant::class,
+            'attraction' => Attraction::class,
             'destination' => Destination::class,
-            'flight'      => Flight::class,
-            'trip'        => Trip::class,
-            'plan'        => Plan::class,
+            'flight' => Flight::class,
+            'trip' => Trip::class,
+            'plan' => Plan::class,
         ]);
     }
 }

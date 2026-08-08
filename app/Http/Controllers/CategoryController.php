@@ -18,18 +18,18 @@ class CategoryController extends Controller
     public function index()
     {
         return response()->json([
-            "success" => true,
-            "message" => "Categories fetched successfully",
-            "data" => CategoryResource::collection($this->categoryService->index())
+            'success' => true,
+            'message' => 'Categories fetched successfully',
+            'data' => CategoryResource::collection($this->categoryService->index()),
         ]);
     }
 
     public function show(Category $category)
     {
         return response()->json([
-            "success" => true,
-            "message" => "Category fetched successfully",
-            "data" => new CategoryResource($this->categoryService->show($category))
+            'success' => true,
+            'message' => 'Category fetched successfully',
+            'data' => new CategoryResource($this->categoryService->show($category)),
         ]);
     }
 }

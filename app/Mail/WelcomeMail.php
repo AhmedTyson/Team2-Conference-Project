@@ -13,14 +13,12 @@ class WelcomeMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public User $user)
-    {
-    }
+    public function __construct(public User $user) {}
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Welcome to ' . config('app.name'),
+            subject: 'Welcome to '.config('app.name'),
         );
     }
 

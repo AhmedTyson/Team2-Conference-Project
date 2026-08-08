@@ -16,7 +16,6 @@ return new class extends Migration
 
             $table->foreignId('trip_id')->constrained()->onDelete('cascade');
 
-                
             $table->string('prompt_text');
             $table->string('response_text');
             $table->string('generated_at');
@@ -34,4 +33,3 @@ return new class extends Migration
         Schema::dropIfExists('ai_recommendations');
     }
 };
-

@@ -22,4 +22,3 @@ class UpdateTripRequest extends FormRequest
         ];
     }
 }
-

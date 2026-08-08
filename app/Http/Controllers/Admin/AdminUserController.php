@@ -3,24 +3,25 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
-use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\UserResource;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class AdminUserController extends Controller
 {
     public function index()
     {
-        $users = User::with(['roles'])->latest()->paginate(min((int) request("per_page", 15) ?: 15, 100));
+        $users = User::with(['roles'])->latest()->paginate(min((int) request('per_page', 15) ?: 15, 100));
+
         return UserResource::collection($users);
     }
 
     public function show(User $user)
     {
         $user->loadMissing(['trips', 'reviews', 'subscriptions']);
+
         return new UserResource($user);
     }
 

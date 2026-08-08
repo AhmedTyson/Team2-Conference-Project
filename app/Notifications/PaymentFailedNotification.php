@@ -2,14 +2,12 @@
 
 namespace App\Notifications;
 
-use App\Models\Order;
 use App\Mail\PaymentFailedMail;
+use App\Models\Order;
 
 class PaymentFailedNotification extends AppNotification
 {
-    public function __construct(public Order $order)
-    {
-    }
+    public function __construct(public Order $order) {}
 
     public function toDatabase(object $notifiable): array
     {
@@ -22,7 +20,7 @@ class PaymentFailedNotification extends AppNotification
     public function toMail(object $notifiable)
     {
         return (new PaymentFailedMail($notifiable, $this->order))
-                    ->to($notifiable->email);
+            ->to($notifiable->email);
     }
 
     protected function getNotifiableId(): string

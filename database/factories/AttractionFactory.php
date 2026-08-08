@@ -22,9 +22,9 @@ class AttractionFactory extends Factory
         return [
             'destination_id' => Destination::factory(),
             'category_id' => Category::factory(),
-            'name' =>fake()->words(3, true),
+            'name' => fake()->words(3, true),
             'description' => fake()->paragraph(),
-            'image' => 'img/' . fake()->randomElement(['destination.jpg', 'Paris.jpg', 'Safari.jpg']),
+            'image' => 'img/'.fake()->randomElement(['destination.jpg', 'Paris.jpg', 'Safari.jpg']),
             'latitude' => fake()->latitude(),
             'longitude' => fake()->longitude(),
         ];

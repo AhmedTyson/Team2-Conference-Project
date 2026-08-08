@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Attraction;
 use App\Http\Resources\AttractionResource;
-use Illuminate\Http\Request;
+use App\Models\Attraction;
 
 class AttractionController extends Controller
 {
-   
     public function index()
     {
         $attractions = Attraction::with(['destination', 'category'])->get();

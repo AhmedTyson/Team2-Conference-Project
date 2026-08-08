@@ -2,20 +2,17 @@
 
 namespace App\Notifications;
 
-use App\Models\Order;
-use Illuminate\Notifications\Messages\MailMessage;
 use App\Mail\PaymentSuccessMail;
+use App\Models\Order;
 
 class PaymentSucceededNotification extends AppNotification
 {
-    public function __construct(public Order $order)
-    {
-    }
+    public function __construct(public Order $order) {}
 
     public function toMail(object $notifiable)
     {
         return (new PaymentSuccessMail($notifiable, $this->order))
-                    ->to($notifiable->email);
+            ->to($notifiable->email);
     }
 
     public function toDatabase(object $notifiable): array

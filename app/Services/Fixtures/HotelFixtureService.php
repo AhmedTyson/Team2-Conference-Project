@@ -2,10 +2,9 @@
 
 namespace App\Services\Fixtures;
 
+use App\Models\Destination;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use App\Models\Destination;
-use App\Models\Country;
 
 class HotelFixtureService
 {
@@ -14,14 +13,15 @@ class HotelFixtureService
         $apiKey = config('services.rapidapi.key');
         $host = config('services.rapidapi.hotels_host');
 
-        if (!$apiKey) {
-            throw new \Exception("RapidAPI Key is not configured.");
+        if (! $apiKey) {
+            throw new \Exception('RapidAPI Key is not configured.');
         }
 
         // Get all destinations currently in the database
         $destinations = Destination::all();
         if ($destinations->isEmpty()) {
-            Log::warning("No destinations found in database. Cannot sync hotels.");
+            Log::warning('No destinations found in database. Cannot sync hotels.');
+
             return [];
         }
 
@@ -51,9 +51,12 @@ class HotelFixtureService
                     'X-RapidAPI-Host' => $host,
                 ])->timeout(15)->get("https://{$host}/hotels/list", $queryParams);
 
-                if (!$response->successful()) {
-                    Log::warning("RapidAPI Hotels failed for destination {$destination->name}: " . $response->status());
-                    if ($progressCallback) $progressCallback();
+                if (! $response->successful()) {
+                    Log::warning("RapidAPI Hotels failed for destination {$destination->name}: ".$response->status());
+                    if ($progressCallback) {
+                        $progressCallback();
+                    }
+
                     continue;
                 }
 
@@ -65,12 +68,12 @@ class HotelFixtureService
                             'price' => isset($item['price']) ? (float) preg_replace('/[^0-9.]/', '', $item['price']) : 150.00,
                             'rating' => isset($item['rating']) ? (float) $item['rating'] : 4.0,
                             'stars' => isset($item['hotel_class']) ? (int) $item['hotel_class'] : 4,
-                            'image' => $item['photo']['images']['large']['url'] ?? 'hotels/default.jpg'
+                            'image' => $item['photo']['images']['large']['url'] ?? 'hotels/default.jpg',
                         ];
                     }
                 }
             } catch (\Exception $e) {
-                Log::warning("HotelFixtureService failed for destination {$destination->name}: " . $e->getMessage());
+                Log::warning("HotelFixtureService failed for destination {$destination->name}: ".$e->getMessage());
             }
 
             if ($progressCallback) {

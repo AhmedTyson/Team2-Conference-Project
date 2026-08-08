@@ -29,7 +29,7 @@ abstract class AppNotification extends Notification implements ShouldQueue
         return [
             // Prevent overlapping for identical notifications for 5 minutes.
             // Uses the notification class name and notifiable ID as the unique lock key.
-            (new WithoutOverlapping(get_class($this) . ':' . $this->getNotifiableId()))->expireAfter(300)
+            (new WithoutOverlapping(get_class($this).':'.$this->getNotifiableId()))->expireAfter(300),
         ];
     }
 

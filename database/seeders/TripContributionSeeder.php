@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Trip;
 use App\Models\TripContribution;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class TripContributionSeeder extends Seeder

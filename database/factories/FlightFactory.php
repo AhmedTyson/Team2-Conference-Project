@@ -18,11 +18,11 @@ class FlightFactory extends Factory
 
         return [
             'airline' => fake()->randomElement(['EgyptAir', 'Emirates', 'Qatar Airways', 'Lufthansa', 'Turkish Airlines']),
-            'flight_number' => strtoupper(fake()->lexify('??')) . fake()->numberBetween(100, 999),
+            'flight_number' => strtoupper(fake()->lexify('??')).fake()->numberBetween(100, 999),
             'departure_airport' => fake()->randomElement(['CAI', 'DXB', 'CDG', 'LHR', 'JFK']),
             'arrival_airport' => fake()->randomElement(['DXB', 'CDG', 'LHR', 'CAI', 'IST']),
             'departure_date' => $departure,
-            'arrival_date' => (clone $departure)->modify('+' . fake()->numberBetween(3, 14) . ' hours'),
+            'arrival_date' => (clone $departure)->modify('+'.fake()->numberBetween(3, 14).' hours'),
             'price' => fake()->randomFloat(2, 100, 1500),
             'booking_status' => fake()->randomElement(['pending', 'confirmed', 'cancelled']),
         ];

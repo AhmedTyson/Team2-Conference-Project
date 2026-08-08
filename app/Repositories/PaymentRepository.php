@@ -2,9 +2,9 @@
 
 namespace App\Repositories;
 
+use App\Enums\PaymentStatus;
 use App\Interfaces\PaymentRepositoryInterface;
 use App\Models\Payment;
-use App\Enums\PaymentStatus;
 
 class PaymentRepository implements PaymentRepositoryInterface
 {

@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use App\Services\CategoryService;
-use Illuminate\Http\Request;
 
-class CategoryController extends Controller
+class AdminCategoryController extends Controller
 {
     protected $categoryService;
 
@@ -27,26 +28,16 @@ class CategoryController extends Controller
         return new CategoryResource($this->categoryService->show($category));
     }
 
-    public function store(Request $request)
+    public function store(StoreCategoryRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|string|max:100',
-        ]);
-
-        $category = $this->categoryService->store($request->all());
+        $category = $this->categoryService->store($request->validated());
 
         return new CategoryResource($category);
     }
 
-    public function update(Request $request, Category $category)
+    public function update(UpdateCategoryRequest $request, Category $category)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'type' => 'required|string|max:100',
-        ]);
-
-        $category = $this->categoryService->update($category, $request->all());
+        $category = $this->categoryService->update($category, $request->validated());
 
         return new CategoryResource($category);
     }
@@ -56,7 +47,7 @@ class CategoryController extends Controller
         $this->categoryService->destroy($category);
 
         return response()->json([
-            'message' => 'Category deleted successfully'
+            'message' => 'Category deleted successfully',
         ]);
     }
 }

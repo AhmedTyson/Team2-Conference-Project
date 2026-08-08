@@ -13,9 +13,7 @@ class TripForkedMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public Trip $forkedTrip, public Trip $originalTrip)
-    {
-    }
+    public function __construct(public Trip $forkedTrip, public Trip $originalTrip) {}
 
     public function envelope(): Envelope
     {

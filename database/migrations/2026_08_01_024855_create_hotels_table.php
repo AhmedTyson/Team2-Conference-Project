@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('address')->nullable();
             $table->decimal('price_per_night')->nullable();
-            $table->decimal('rating',3,1)->nullable();
+            $table->decimal('rating', 3, 1)->nullable();
             $table->unsignedTinyInteger('stars')->nullable();
             $table->string('availability')->nullable();
             $table->text('image')->nullable();

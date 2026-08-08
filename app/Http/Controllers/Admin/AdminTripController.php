@@ -3,19 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreTripRequest;
+use App\Http\Requests\UpdateTripRequest;
 use App\Http\Resources\TripResource;
 use App\Models\Trip;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use App\Http\Requests\StoreTripRequest;
-use App\Http\Requests\UpdateTripRequest;
 
 class AdminTripController extends Controller
 {
     // View all trips
     public function index()
     {
-        $trips = Trip::with(['user', 'destinations'])->latest()->paginate(min((int) request("per_page", 15) ?: 15, 100));
+        $trips = Trip::with(['user', 'destinations'])->latest()->paginate(min((int) request('per_page', 15) ?: 15, 100));
 
         return TripResource::collection($trips);
     }
@@ -27,7 +26,7 @@ class AdminTripController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Trip created successfully',
-            'data' => new TripResource($trip)
+            'data' => new TripResource($trip),
         ]);
     }
 
@@ -40,11 +39,11 @@ class AdminTripController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Trip updated successfully.',
-            'data'    => new TripResource($trip)
+            'data' => new TripResource($trip),
         ]);
     }
 
-    //Delete a trip
+    // Delete a trip
     public function destroy(int $id): JsonResponse
     {
         $trip = Trip::findOrFail($id);
@@ -52,7 +51,7 @@ class AdminTripController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Trip deleted successfully.'
+            'message' => 'Trip deleted successfully.',
         ]);
     }
 }

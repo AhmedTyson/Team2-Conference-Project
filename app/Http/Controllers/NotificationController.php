@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Notification;
+use App\Models\User;
+use App\Support\ApiResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class NotificationController extends Controller
 {
@@ -15,7 +18,7 @@ class NotificationController extends Controller
         $notifications = $user->notifications()->latest()->cursorPaginate(15);
 
         // Fetch cached unread count or compute it
-        $unreadCount = \Illuminate\Support\Facades\Cache::remember(
+        $unreadCount = Cache::remember(
             "user:{$user->id}:unread_notifications",
             now()->addHours(1),
             fn () => $user->notifications()->whereNull('read_at')->count()
@@ -26,38 +29,38 @@ class NotificationController extends Controller
             'message' => 'Notifications retrieved',
             'data' => $notifications,
             'meta' => [
-                'unread_count' => $unreadCount
-            ]
+                'unread_count' => $unreadCount,
+            ],
         ]);
     }
 
     public function markAsRead(Request $request, Notification $notification)
     {
-        if ($notification->notifiable_id !== $request->user()->id || $notification->notifiable_type !== \App\Models\User::class) {
-            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        if ($notification->notifiable_id !== $request->user()->id || $notification->notifiable_type !== User::class) {
+            return ApiResponse::fail('Unauthorized', 'unauthorized', 403);
         }
 
         if (is_null($notification->read_at)) {
             $notification->markAsRead();
-            
+
             // Decrement cache safely
-            \Illuminate\Support\Facades\Cache::decrement("user:{$request->user()->id}:unread_notifications");
+            Cache::decrement("user:{$request->user()->id}:unread_notifications");
         }
 
         return response()->json([
             'success' => true,
             'message' => 'Notification marked as read',
-            'data' => $notification
+            'data' => $notification,
         ]);
     }
 
     public function markAllAsRead(Request $request)
     {
         $user = $request->user();
-        
+
         $user->unreadNotifications->markAsRead();
-        
-        \Illuminate\Support\Facades\Cache::put("user:{$user->id}:unread_notifications", 0, now()->addHours(1));
+
+        Cache::put("user:{$user->id}:unread_notifications", 0, now()->addHours(1));
 
         return response()->json([
             'success' => true,

@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Flight;
 use App\Http\Resources\FlightResource;
+use App\Models\Flight;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class FlightController extends Controller
 {
     // Display a listing of flights.
-    
+
     public function index(Request $request): AnonymousResourceCollection
     {
         $query = Flight::query();
@@ -30,7 +30,7 @@ class FlightController extends Controller
     }
 
     // Display the specified flight.
-    
+
     public function show(int $id): FlightResource
     {
         $flight = Flight::findOrFail($id);

@@ -2,19 +2,17 @@
 
 namespace App\Notifications;
 
-use App\Models\Trip;
 use App\Mail\TripForkedMail;
+use App\Models\Trip;
 
 class TripForkedNotification extends AppNotification
 {
-    public function __construct(public Trip $forkedTrip, public Trip $originalTrip)
-    {
-    }
+    public function __construct(public Trip $forkedTrip, public Trip $originalTrip) {}
 
     public function toMail(object $notifiable)
     {
         return (new TripForkedMail($this->forkedTrip, $this->originalTrip))
-                    ->to($notifiable->email);
+            ->to($notifiable->email);
     }
 
     public function toDatabase(object $notifiable): array

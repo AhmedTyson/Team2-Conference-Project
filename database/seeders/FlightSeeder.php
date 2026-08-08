@@ -1,4 +1,5 @@
 <?php
+
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -9,20 +10,21 @@ class FlightSeeder extends Seeder
     public function run()
     {
         $path = database_path('seeders/fixtures/flights.json');
-        
+
         // Mock fallback if running without database path
-        if (!function_exists('database_path')) {
-            $path = __DIR__ . '/../fixtures/flights.json';
+        if (! function_exists('database_path')) {
+            $path = __DIR__.'/../fixtures/flights.json';
         }
 
-        if (!file_exists($path)) {
+        if (! file_exists($path)) {
             echo "Fixture not found: {$path}\n";
+
             return;
         }
 
         $flights = json_decode(file_get_contents($path), true);
         $insertData = [];
-        
+
         foreach ($flights as $flight) {
             $insertData[] = [
                 'departure_airport' => $flight['departure_airport'],
@@ -35,7 +37,7 @@ class FlightSeeder extends Seeder
                 'updated_at' => now(),
             ];
         }
-        
+
         DB::table('flights')->insert($insertData);
     }
 }

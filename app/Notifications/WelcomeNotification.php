@@ -6,14 +6,12 @@ use App\Mail\WelcomeMail;
 
 class WelcomeNotification extends AppNotification
 {
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     public function toMail(object $notifiable)
     {
         return (new WelcomeMail($notifiable))
-                    ->to($notifiable->email);
+            ->to($notifiable->email);
     }
 
     public function toDatabase(object $notifiable): array

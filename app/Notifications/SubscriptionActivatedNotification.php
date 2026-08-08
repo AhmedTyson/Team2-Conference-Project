@@ -2,19 +2,17 @@
 
 namespace App\Notifications;
 
-use App\Models\Subscription;
 use App\Mail\SubscriptionActivatedMail;
+use App\Models\Subscription;
 
 class SubscriptionActivatedNotification extends AppNotification
 {
-    public function __construct(public Subscription $subscription)
-    {
-    }
+    public function __construct(public Subscription $subscription) {}
 
     public function toMail(object $notifiable)
     {
         return (new SubscriptionActivatedMail($notifiable, $this->subscription))
-                    ->to($notifiable->email);
+            ->to($notifiable->email);
     }
 
     public function toDatabase(object $notifiable): array

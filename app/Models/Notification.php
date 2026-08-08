@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Notifications\DatabaseNotification;
 
 class Notification extends DatabaseNotification
 {
@@ -41,5 +41,3 @@ class Notification extends DatabaseNotification
         return $this->belongsTo(User::class);
     }
 }
-
-

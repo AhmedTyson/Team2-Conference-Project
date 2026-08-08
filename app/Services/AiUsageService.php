@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
 use Exception;
+use Illuminate\Support\Facades\DB;
 
 class AiUsageService
 {
@@ -16,7 +16,7 @@ class AiUsageService
     {
         // 1. Check if the user has an active plan that gives quota
         $activeSub = $user->subscriptions()->where('status', 'active')->latest()->first();
-        
+
         $monthlyLimit = 0;
         if ($activeSub && $activeSub->plan) {
             $monthlyLimit = $activeSub->plan->ai_quota_monthly;
@@ -31,7 +31,7 @@ class AiUsageService
         }
 
         if ($monthlyLimit <= 0) {
-            throw new Exception("You need an active subscription with an AI quota to generate itineraries.");
+            throw new Exception('You need an active subscription with an AI quota to generate itineraries.');
         }
 
         // 3. Atomically increment the usage counter to prevent race conditions
@@ -39,11 +39,11 @@ class AiUsageService
             ->where('id', $user->id)
             ->where('ai_generations_count', '<', $monthlyLimit)
             ->update([
-                'ai_generations_count' => DB::raw('ai_generations_count + 1')
+                'ai_generations_count' => DB::raw('ai_generations_count + 1'),
             ]);
 
         if ($updated === 0) {
-            throw new Exception("You have exhausted your monthly AI quota. Please upgrade your plan.");
+            throw new Exception('You have exhausted your monthly AI quota. Please upgrade your plan.');
         }
     }
 
@@ -56,7 +56,7 @@ class AiUsageService
             ->where('id', $user->id)
             ->where('ai_generations_count', '>', 0)
             ->update([
-                'ai_generations_count' => DB::raw('ai_generations_count - 1')
+                'ai_generations_count' => DB::raw('ai_generations_count - 1'),
             ]);
     }
 }

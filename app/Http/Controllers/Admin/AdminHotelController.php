@@ -3,29 +3,24 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreHotelRequest;
+use App\Http\Requests\UpdateHotelRequest;
 use App\Models\Hotel;
-use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AdminHotelController extends Controller
 {
     public function index()
     {
-        return JsonResource::collection(Hotel::paginate(min((int) request("per_page", 15) ?: 15, 100)));
+        return JsonResource::collection(Hotel::paginate(min((int) request('per_page', 15) ?: 15, 100)));
     }
 
-    public function store(Request $request)
+    public function store(StoreHotelRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'stars' => 'required|integer|min:1|max:5',
-            'price_per_night' => 'required|integer|min:0',
-            'availability' => 'required|string',
-            'destination_id' => 'required|exists:destinations,id',
-        ]);
+        $validated = $request->validated();
 
         $hotel = Hotel::create($validated);
+
         return new JsonResource($hotel);
     }
 
@@ -34,19 +29,14 @@ class AdminHotelController extends Controller
         return new JsonResource(Hotel::findOrFail($id));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateHotelRequest $request, $id)
     {
         $hotel = Hotel::findOrFail($id);
-        
-        $validated = $request->validate([
-            'name' => 'sometimes|string|max:255',
-            'stars' => 'sometimes|integer|min:1|max:5',
-            'price_per_night' => 'sometimes|integer|min:0',
-            'availability' => 'sometimes|string',
-            'destination_id' => 'sometimes|exists:destinations,id',
-        ]);
+
+        $validated = $request->validated();
 
         $hotel->update($validated);
+
         return new JsonResource($hotel);
     }
 
@@ -54,6 +44,7 @@ class AdminHotelController extends Controller
     {
         $hotel = Hotel::findOrFail($id);
         $hotel->delete();
+
         return response()->json(['success' => true]);
     }
 }

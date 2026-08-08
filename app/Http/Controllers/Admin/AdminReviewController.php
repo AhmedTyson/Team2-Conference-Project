@@ -16,7 +16,7 @@ class AdminReviewController extends Controller
      */
     public function index()
     {
-        $reviews = Review::with('user', 'reviewable')->latest()->paginate(min((int) request("per_page", 15) ?: 15, 100));
+        $reviews = Review::with('user', 'reviewable')->latest()->paginate(min((int) request('per_page', 15) ?: 15, 100));
 
         return ReviewResource::collection($reviews);
     }
@@ -36,7 +36,7 @@ class AdminReviewController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Review approved successfully.',
-            'data'    => new ReviewResource($review),
+            'data' => new ReviewResource($review),
         ]);
     }
 
@@ -55,7 +55,7 @@ class AdminReviewController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Review rejected successfully.',
-            'data'    => new ReviewResource($review),
+            'data' => new ReviewResource($review),
         ]);
     }
 

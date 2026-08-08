@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
                 'password' => bcrypt('password'),
             ]
         );
-        if (!$admin->hasRole('super_admin')) {
+        if (! $admin->hasRole('super_admin')) {
             $admin->assignRole('super_admin');
         }
 

@@ -10,7 +10,6 @@ use App\Models\Hotel;
 use App\Models\ItineraryItem;
 use App\Models\Restaurant;
 use App\Models\Trip;
-use App\Models\TripItem;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -51,7 +50,7 @@ class TripSeeder extends Seeder
                     'day_number' => $index + 1,
                     'visit_order' => $index + 1,
                     'estimated_date' => $trip->start_date->addDays($index),
-                    'notes' => 'Day ' . ($index + 1) . ' stop',
+                    'notes' => 'Day '.($index + 1).' stop',
                 ]);
             });
 
@@ -130,7 +129,7 @@ class TripSeeder extends Seeder
                 'day_number' => 1,
                 'item_order' => $order++,
                 'type' => 'flight',
-                'title' => $flight->airline . ' ' . $flight->flight_number,
+                'title' => $flight->airline.' '.$flight->flight_number,
                 'estimated_cost' => $flight->price ?? 0,
             ]);
         }

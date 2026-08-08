@@ -23,7 +23,7 @@ class AdminNotificationController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Platform notifications retrieved successfully',
-            'data' => $query->paginate(20)
+            'data' => $query->paginate(20),
         ]);
     }
 }

@@ -1,7 +1,9 @@
 <?php
 
-return [
-    App\Providers\AppServiceProvider::class,
-    App\Providers\TelescopeServiceProvider::class,
-];
+use App\Providers\AppServiceProvider;
+use App\Providers\TelescopeServiceProvider;
 
+return [
+    AppServiceProvider::class,
+    TelescopeServiceProvider::class,
+];
