@@ -9,6 +9,8 @@ use App\Models\Plan;
 use App\Models\Subscription;
 use App\Models\Trip;
 use App\Models\User;
+use App\Notifications\PaymentSucceededNotification;
+use App\Notifications\SubscriptionActivatedNotification;
 use App\Services\TripForkService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Carbon;
@@ -36,6 +38,11 @@ class FulfillOrderListener implements ShouldQueue
         }
 
         $order->update(['status' => OrderStatus::FULFILLED]);
+
+        // Send Notification
+        if ($order->user) {
+            $order->user->notify(new PaymentSucceededNotification($order));
+        }
     }
 
     protected function fulfillTripFork(int $userId, int $sourceTripId): void
@@ -56,7 +63,7 @@ class FulfillOrderListener implements ShouldQueue
             ->where('status', SubscriptionStatus::ACTIVE)
             ->update(['status' => SubscriptionStatus::CANCELLED]);
 
-        Subscription::create([
+        $subscription = Subscription::create([
             'user_id' => $userId,
             'plan_id' => $planId,
             'status' => SubscriptionStatus::ACTIVE,
@@ -73,5 +80,7 @@ class FulfillOrderListener implements ShouldQueue
             'ai_generations_count' => 0,
             'ai_reset_at' => now()->addMonth(),
         ])->save();
+
+        $user->notify(new SubscriptionActivatedNotification($subscription));
     }
 }

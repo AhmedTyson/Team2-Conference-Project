@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Trip;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Notifications\TripForkedNotification;
 
 class TripForkService
 {
@@ -61,6 +62,11 @@ class TripForkService
             }
 
             Log::info("Trip {$sourceTrip->id} was forked by user {$userId} into new trip {$trip->id}");
+
+            // Notify original owner
+            if ($sourceTrip->user) {
+                $sourceTrip->user->notify(new TripForkedNotification($trip, $sourceTrip));
+            }
 
             return $trip;
         });

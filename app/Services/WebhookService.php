@@ -6,6 +6,7 @@ use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Events\PaymentFailed;
 use App\Events\PaymentSucceeded;
+use App\Notifications\PaymentFailedNotification;
 use App\Interfaces\PaymentGatewayInterface;
 use App\Interfaces\PaymentRepositoryInterface;
 use App\Interfaces\OrderRepositoryInterface;
@@ -77,6 +78,10 @@ class WebhookService
                 }
 
                 event(new PaymentFailed($payment));
+
+                if ($payment->order && $payment->order->user) {
+                    $payment->order->user->notify(new PaymentFailedNotification($payment->order));
+                }
             }
 
             return ['success' => true, 'message' => 'Processed', 'status' => 200];

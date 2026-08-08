@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Verified;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Requests\Auth\UpdateProfileRequest;
+use App\Notifications\WelcomeNotification;
+
 class AuthController extends Controller
 {
  
@@ -38,6 +40,7 @@ class AuthController extends Controller
 
             $user->assignRole($role);
             $user->sendEmailVerificationNotification();
+            $user->notify(new WelcomeNotification());
 
             $token = auth('api')->login($user);
         

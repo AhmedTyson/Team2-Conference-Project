@@ -258,3 +258,15 @@ Route::prefix('v1/paymob')->name('paymob.')->group(function () {
     Route::post('/webhook', [\App\Http\Controllers\PaymobWebhookController::class, 'handle'])->name('webhook');
     Route::get('/callback', [\App\Http\Controllers\PaymobWebhookController::class, 'callback'])->name('callback');
 });
+
+// User Notifications (Phase 5)
+Route::middleware(['auth:api'])->prefix('v1/notifications')->name('notifications.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\NotificationController::class, 'index']);
+    Route::patch('/read-all', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead']);
+    Route::patch('/{notification}/read', [\App\Http\Controllers\NotificationController::class, 'markAsRead']);
+});
+
+// Admin Notifications (Phase 7)
+Route::middleware(['auth:api', 'role:admin|super_admin'])->prefix('v1/admin/notifications')->name('admin.notifications.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Admin\AdminNotificationController::class, 'index']);
+});

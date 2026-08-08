@@ -12,8 +12,12 @@ use App\Models\Plan;
 use App\Models\Trip;
 use App\Models\User;
 use App\Models\Subscription;
+use App\Notifications\PaymentSucceededNotification;
+use App\Notifications\TripForkedNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 class PaymentFlowTest extends TestCase
@@ -76,6 +80,9 @@ class PaymentFlowTest extends TestCase
 
     public function test_successful_webhook_fulfills_trip_fork()
     {
+        Mail::fake();
+        Notification::fake();
+
         $user = User::factory()->create();
         $sourceTrip = Trip::create([
             'user_id' => $user->id,
@@ -136,10 +143,15 @@ class PaymentFlowTest extends TestCase
         $this->assertNotNull($forkedTrip);
         $this->assertTrue($forkedTrip->is_fork);
         $this->assertEquals($user->id, $forkedTrip->user_id);
+
+        Notification::assertSentTo($user, PaymentSucceededNotification::class);
+        Notification::assertSentTo($sourceTrip->user, TripForkedNotification::class);
     }
 
     public function test_successful_webhook_fulfills_subscription_and_ai_quota()
     {
+        Mail::fake();
+        Notification::fake();
         $user = User::factory()->create(['ai_generations_count' => 5]);
         $plan = Plan::create([
             'name' => 'Pro Plan',
@@ -194,5 +206,7 @@ class PaymentFlowTest extends TestCase
 
         // Assert AI Quota Reset
         $this->assertEquals(0, $user->fresh()->ai_generations_count);
+
+        Notification::assertSentTo($user, \App\Notifications\SubscriptionActivatedNotification::class);
     }
 }

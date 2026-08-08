@@ -54,6 +54,22 @@
   }
 
   /**
+   * Pull the user object out of a /api/user response body, tolerant of the
+   * shapes actually seen in this codebase's own contract docs (tasks/plan.md:
+   * "GET /me / GET /api/user → profile + roles") and login handler (auth.js
+   * reads body.user directly, no wrapper): a raw user object, {user:{...}},
+   * or {data:{...}} (Laravel API Resource default). Requires an id or email
+   * so we don't mistake an unrelated envelope for the user.
+   */
+  function extractUser(body) {
+    if (!body || typeof body !== "object") return null;
+    if (body.user && typeof body.user === "object") return body.user;
+    if (body.data && typeof body.data === "object" && !Array.isArray(body.data)) return body.data;
+    if (body.id !== undefined || body.email !== undefined) return body;
+    return null;
+  }
+
+  /**
    * Resolve current user: cached profile, else GET /api/user (Bearer).
    * Resolves null on no token / failure. Never throws.
    */
@@ -63,9 +79,12 @@
     if (!payload) return null;
     try {
       const res = await It.apiGet(It.CONFIG.routes.me, { auth: true });
-      if (res.ok && res.body && res.body.success && res.body.user) {
-        _user = res.body.user;
-        return _user;
+      if (res.ok) {
+        const user = extractUser(res.body);
+        if (user) {
+          _user = user;
+          return _user;
+        }
       }
     } catch (e) { /* network — caller decides */ }
     return null;
@@ -122,6 +141,7 @@
     roleOf: roleOf,
     isAdminRole: isAdminRole,
     currentUser: currentUser,
+    extractUser: extractUser,
     bootAuth: resolveSession,
     requireAuth: requireAuth,
     redirectToLogin: redirectToLogin,
