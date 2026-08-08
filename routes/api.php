@@ -1,65 +1,73 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Admin\AdminAnalyticsController;
+use App\Http\Controllers\Admin\AdminAttractionController;
 // Public Controllers
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\DestinationController;
-use App\Http\Controllers\HotelController;
-use App\Http\Controllers\RestaurantController;
-use App\Http\Controllers\AttractionController;
-use App\Http\Controllers\TripController;
-use App\Http\Controllers\ContactController;
-use App\Http\Controllers\InteractionController;
-use App\Http\Controllers\SurveyController;
-use App\Http\Controllers\WeatherController;
-use App\Http\Controllers\MapController;
-use App\Http\Controllers\DashboardController;
-
-// Admin Controllers
-use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\AdminCategoryController;
+use App\Http\Controllers\Admin\AdminCountryController;
+use App\Http\Controllers\Admin\AdminFlightController;
+use App\Http\Controllers\Admin\AdminHotelController;
+use App\Http\Controllers\Admin\AdminNotificationController;
+use App\Http\Controllers\Admin\AdminRestaurantController;
 use App\Http\Controllers\Admin\AdminReviewController;
 use App\Http\Controllers\Admin\AdminTripController;
+use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\ContactMessageController;
-use App\Http\Controllers\Admin\SettingController;
-use App\Http\Controllers\Admin\AdminHotelController;
-use App\Http\Controllers\Admin\AdminRestaurantController;
-use App\Http\Controllers\Admin\AdminCountryController;
 use App\Http\Controllers\Admin\DestinationController as AdminDestinationController;
-use App\Http\Controllers\Admin\AdminAttractionController;
-use App\Http\Controllers\SiteSettingsController;
+use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\AIController;
+use App\Http\Controllers\AttractionController;
+// Admin Controllers
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\ContactController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DestinationController;
+use App\Http\Controllers\FlightController;
+use App\Http\Controllers\HotelController;
+use App\Http\Controllers\InteractionController;
+use App\Http\Controllers\MapController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PaymobWebhookController;
 use App\Http\Controllers\PlanController;
-use App\Http\Controllers\Admin\AdminAnalyticsController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\RestaurantController;
+use App\Http\Controllers\SiteSettingsController;
+use App\Http\Controllers\SurveyController;
+use App\Http\Controllers\TripController;
+use App\Http\Controllers\WeatherController;
+use App\Services\GroqService;
+use Illuminate\Support\Facades\Route;
+
 // Category Routes
 Route::prefix('v1')->group(function () {
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
     Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
 });
 
-// Admin Categories (using CategoryController)
+// Admin Categories (P2 FIX: routes moved from public CategoryController to Admin\CategoryController)
 Route::middleware(['auth:api'])->prefix('v1/admin')->name('admin.')->group(function () {
-    Route::get('/categories', [CategoryController::class, 'index'])
+    Route::get('/categories', [AdminCategoryController::class, 'index'])
         ->middleware('permission:manage categories')->name('categories.index');
-    Route::post('/categories', [CategoryController::class, 'store'])
+    Route::post('/categories', [AdminCategoryController::class, 'store'])
         ->middleware('permission:manage categories')->name('categories.store');
-    Route::put('/categories/{category}', [CategoryController::class, 'update'])
+    Route::put('/categories/{category}', [AdminCategoryController::class, 'update'])
         ->middleware('permission:manage categories')->name('categories.update');
-    Route::delete('/categories/{category}', [CategoryController::class, 'destroy'])
+    Route::delete('/categories/{category}', [AdminCategoryController::class, 'destroy'])
         ->middleware('permission:manage categories')->name('categories.destroy');
 });
 
-// Public Auth Routes 
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login'])->name('login');
-Route::post('/forgot-password', [AuthController::class, 'forgetPassword']);
-Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.reset');
+// Public Auth Routes
+Route::post('/register', [AuthController::class, 'register'])->middleware(['throttle:register']);
+Route::post('/login', [AuthController::class, 'login'])->middleware(['throttle:login'])->name('login');
+Route::post('/forgot-password', [AuthController::class, 'forgetPassword'])->middleware(['throttle:3,10']);
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware(['throttle:5,1'])->name('password.reset');
 
 // Public Contact
 Route::post('/v1/contacts', [ContactController::class, 'store']);
 
-// Verification email 
+// Verification email
 Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
     ->middleware(['signed'])
     ->name('verification.verify');
@@ -68,8 +76,9 @@ Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
 Route::middleware(['auth:api'])->group(function () {
     // Auth & Profile
     Route::get('/user', [AuthController::class, 'me']);
+    Route::get('/me/reports', [ReportController::class, 'myReports']);
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::post('/refresh', [AuthController::class, 'refresh']);
+    Route::post('/refresh', [AuthController::class, 'refresh'])->middleware(['throttle:15,1']);
     Route::get('/email/verify-notice', [AuthController::class, 'verificationNotice'])
         ->name('verification.notice');
     Route::post('/email/resend', [AuthController::class, 'resendVerificationEmail'])
@@ -97,10 +106,10 @@ Route::middleware(['auth:api'])->group(function () {
         Route::get('/favourites', [DashboardController::class, 'favourites'])->name('favourites');
     });
 
-    //trip forking route
+    // trip forking route
     Route::middleware('auth:api')->group(function () {
-    Route::post('/trips/{trip}/fork', [TripController::class, 'fork']);
-});
+        Route::post('/trips/{trip}/fork', [TripController::class, 'fork']);
+    });
 
     // Admin Routes
     Route::prefix('v1/admin')->name('admin.')->group(function () {
@@ -133,6 +142,16 @@ Route::middleware(['auth:api'])->group(function () {
             ->middleware('permission:manage destinations')->name('destinations.update');
         Route::delete('/destinations/{id}', [AdminDestinationController::class, 'destroy'])
             ->middleware('permission:manage destinations')->name('destinations.destroy');
+
+        // Admin Flights (Hana)
+        Route::get('flights', [AdminFlightController::class, 'index'])
+            ->middleware('permission:manage flights');
+        Route::post('flights', [AdminFlightController::class, 'store'])
+            ->middleware('permission:manage flights');
+        Route::put('flights/{id}', [AdminFlightController::class, 'update'])
+            ->middleware('permission:manage flights');
+        Route::delete('flights/{id}', [AdminFlightController::class, 'destroy'])
+            ->middleware('permission:manage flights');
 
         // Revenue Analytics (Hana)
         Route::get('/analytics/revenue', [AdminAnalyticsController::class, 'revenue'])
@@ -201,6 +220,10 @@ Route::prefix('v1')->group(function () {
     Route::get('hotels', [HotelController::class, 'index']);
     Route::get('hotels/{id}', [HotelController::class, 'show']);
 
+    // Flights
+    Route::get('flights', [FlightController::class, 'index']);
+    Route::get('flights/{id}', [FlightController::class, 'show']);
+
     // Restaurants
     Route::get('restaurants', [RestaurantController::class, 'index']);
     Route::get('restaurants/{id}', [RestaurantController::class, 'show']);
@@ -239,22 +262,40 @@ Route::middleware(['auth:api'])->prefix('v1')->name('plans.')->group(function ()
         ->middleware('permission:view my subscription');
 });
 
-
-
-
 // AI (Fady)
-Route::post('/review', [\App\Services\GroqService::class, 'generateAi'])
+Route::post('/review', [GroqService::class, 'generateAi'])
     ->middleware(['auth:api', 'permission:generate ai itineraries']);
-Route::get('/review/{id}', [\App\Http\Controllers\AIController::class, 'review'])
+Route::get('/review/{id}', [AIController::class, 'review'])
     ->middleware('auth:api');
 
 // Checkout & Payments (S5/Phase 4)
 Route::middleware(['auth:api'])->prefix('v1/checkout')->name('checkout.')->group(function () {
-    Route::post('/initiate', [\App\Http\Controllers\CheckoutController::class, 'initiate'])->name('initiate');
+    Route::post('/initiate', [CheckoutController::class, 'initiate'])->name('initiate');
 });
 
 // Paymob Webhooks (Phase 5)
-Route::prefix('v1/paymob')->name('paymob.')->group(function () {
-    Route::post('/webhook', [\App\Http\Controllers\PaymobWebhookController::class, 'handle'])->name('webhook');
-    Route::get('/callback', [\App\Http\Controllers\PaymobWebhookController::class, 'callback'])->name('callback');
+Route::prefix('v1/paymob')->name('paymob-v1.')->group(function () {
+    Route::post('/webhook', [PaymobWebhookController::class, 'handle'])->name('webhook');
+    Route::get('/callback', [PaymobWebhookController::class, 'callback'])->name('callback');
 });
+
+// User Notifications (Phase 5)
+Route::middleware(['auth:api'])->prefix('v1/notifications')->name('notifications.')->group(function () {
+    Route::get('/', [NotificationController::class, 'index']);
+    Route::patch('/read-all', [NotificationController::class, 'markAllAsRead']);
+    Route::patch('/{notification}/read', [NotificationController::class, 'markAsRead']);
+});
+
+// Admin Notifications (Phase 7)
+Route::middleware(['auth:api', 'role:admin|super_admin'])->prefix('v1/admin/notifications')->name('admin.notifications.')->group(function () {
+    Route::get('/', [AdminNotificationController::class, 'index']);
+});
+
+// Report
+Route::middleware(['auth:api', 'role:admin|super_admin'])
+    ->prefix('v1/admin')
+    ->group(function () {
+        Route::get('reports', [ReportController::class, 'index']);
+        Route::post('reports/generate', [ReportController::class, 'generate']);
+        Route::get('reports/{id}/download', [ReportController::class, 'download']);
+    });

@@ -131,7 +131,7 @@ class PlansTest extends TestCase
         ]);
 
         $response->assertStatus(400)
-                 ->assertJsonPath('message', 'Direct subscriptions are disabled. Please use the /api/v1/checkout/initiate endpoint to purchase a subscription.');
+            ->assertJsonPath('error.message', 'Direct subscriptions are disabled. Please use the /api/v1/checkout/initiate endpoint to purchase a subscription.');
         $this->assertDatabaseCount('subscriptions', 0);
     }
 
@@ -175,7 +175,7 @@ class PlansTest extends TestCase
         ]);
 
         $response->assertStatus(400)
-            ->assertJsonPath('message', 'Direct upgrades are disabled. Please use the /api/v1/checkout/initiate endpoint to upgrade.');
+            ->assertJsonPath('error.message', 'Direct upgrades are disabled. Please use the /api/v1/checkout/initiate endpoint to upgrade.');
     }
 
     public function test_direct_upgrade_disabled_without_subscription(): void

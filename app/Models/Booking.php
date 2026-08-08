@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\BookingStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -30,6 +31,7 @@ class Booking extends Model
 
     protected $casts = [
         'amount_cents' => 'integer',
+        'status' => BookingStatus::class,
     ];
 
     public function user(): BelongsTo
@@ -69,6 +71,6 @@ class Booking extends Model
 
     public function scopePaid($query)
     {
-        return $query->where('status', 'paid');
+        return $query->where('status', BookingStatus::PAID->value);
     }
 }

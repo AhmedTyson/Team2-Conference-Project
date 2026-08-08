@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ReviewStatus;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreReviewRequest;
 use App\Http\Resources\FavouriteResource;
 use App\Http\Resources\ReviewResource;
@@ -34,7 +33,7 @@ class InteractionController extends Controller
     public function toggleFavourite(Request $request, string $type, int $id): JsonResponse
     {
         if ($type === 'flight') {
-            abort(400, "Flights cannot be favourited.");
+            abort(400, 'Flights cannot be favourited.');
         }
 
         $class = $this->resolveModelClass($type);
@@ -44,9 +43,10 @@ class InteractionController extends Controller
 
         if ($favourite) {
             $favourite->delete();
+
             return response()->json([
                 'message' => 'Removed from favourites',
-                'status'  => 'removed'
+                'status' => 'removed',
             ]);
         }
 
@@ -56,8 +56,8 @@ class InteractionController extends Controller
 
         return response()->json([
             'message' => 'Added to favourites',
-            'status'  => 'added',
-            'data'    => new FavouriteResource($favourite)
+            'status' => 'added',
+            'data' => new FavouriteResource($favourite),
         ], 201);
     }
 
@@ -71,14 +71,14 @@ class InteractionController extends Controller
 
         $review = $entity->reviews()->create([
             'user_id' => $request->user()->id,
-            'rating'  => $request->validated('rating'),
+            'rating' => $request->validated('rating'),
             'comment' => $request->validated('comment'),
-            'status'  => ReviewStatus::PENDING->value,
+            'status' => ReviewStatus::PENDING->value,
         ]);
 
         return response()->json([
             'message' => 'Review submitted successfully',
-            'data'    => new ReviewResource($review)
+            'data' => new ReviewResource($review),
         ], 201);
     }
 
@@ -96,7 +96,7 @@ class InteractionController extends Controller
         $review->delete();
 
         return response()->json([
-            'message' => 'Review deleted successfully'
+            'message' => 'Review deleted successfully',
         ]);
     }
 }

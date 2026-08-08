@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ShowWeatherRequest;
 use App\Services\OpenMeteoService;
-use Illuminate\Http\Request;
+use App\Support\ApiResponse;
 
 class WeatherController extends Controller
 {
@@ -14,20 +15,19 @@ class WeatherController extends Controller
         $this->weatherService = $weatherService;
     }
 
-    public function show(Request $request)
+    public function show(ShowWeatherRequest $request)
     {
-        $request->validate([
-            'lat' => 'required|numeric',
-            'lon' => 'required|numeric',
-        ]);
-
         $lat = (float) $request->input('lat');
         $lon = (float) $request->input('lon');
-        
+
         $weatherData = $this->weatherService->getWeather($lat, $lon);
 
-        if (!$weatherData) {
-            return response()->json(['error' => 'Unable to fetch weather data'], 500);
+        if (! $weatherData) {
+            return ApiResponse::fail(
+                'Unable to fetch weather data',
+                'weather_unavailable',
+                502
+            );
         }
 
         return response()->json($weatherData);

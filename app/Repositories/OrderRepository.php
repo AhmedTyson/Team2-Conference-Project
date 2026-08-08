@@ -2,10 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Enums\OrderStatus;
 use App\Interfaces\OrderRepositoryInterface;
 use App\Models\Order;
 use App\Models\OrderItem;
-use App\Enums\OrderStatus;
 
 class OrderRepository implements OrderRepositoryInterface
 {

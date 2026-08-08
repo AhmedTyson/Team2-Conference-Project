@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\BudgetLevel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Enums\BudgetLevel;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Survey extends Model
@@ -26,5 +26,3 @@ class Survey extends Model
         return $this->belongsTo(User::class);
     }
 }
-
-

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminSetPlansRequest;
 use App\Http\Requests\SubscribePlanRequest;
 use App\Http\Requests\UpgradePlanRequest;

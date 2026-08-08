@@ -27,4 +27,3 @@ class AiRecommendation extends Model
         return $this->belongsTo(Trip::class);
     }
 }
-

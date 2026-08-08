@@ -14,7 +14,7 @@ class DestinationResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-         return [
+        return [
             'id' => $this->id,
             'name' => $this->name,
             'city_name' => $this->city_name,

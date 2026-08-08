@@ -23,8 +23,8 @@ class PriceCalculatorService
     {
         // 50000 cents = 500 EGP as default fallback
         $price = Setting::where('key', 'trip_fork_price_cents')->value('value');
-        
-        return $price ? (int) $price : 50000; 
+
+        return $price ? (int) $price : 50000;
     }
 
     /**
@@ -48,7 +48,7 @@ class PriceCalculatorService
         // Sum up Hotels (assuming 1 night for simplification if nights aren't specified on pivot)
         foreach ($trip->hotels as $hotel) {
             if (isset($hotel->price_per_night) && is_numeric($hotel->price_per_night)) {
-                // Future improvement: check pivot for 'nights' or 'days' 
+                // Future improvement: check pivot for 'nights' or 'days'
                 $nights = 1; // Defaulting to 1 for MVP
                 $totalCents += (int) round($hotel->price_per_night * $nights * 100);
             }

@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreDestinationRequest;
 use App\Http\Requests\Admin\UpdateDestinationRequest;
-use App\Models\Destination;
+use App\Http\Resources\DestinationResource;
 use App\Models\Country;
+use App\Models\Destination;
 use App\Services\Fixtures\OpenStreetService;
+use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 
 class DestinationController extends Controller
@@ -21,8 +23,9 @@ class DestinationController extends Controller
 
     public function index()
     {
-        $destinations = Destination::with('country')->paginate(min((int) request("per_page", 15) ?: 15, 100));
-        return \App\Http\Resources\DestinationResource::collection($destinations);
+        $destinations = Destination::with('country')->paginate(min((int) request('per_page', 15) ?: 15, 100));
+
+        return DestinationResource::collection($destinations);
     }
 
     public function store(StoreDestinationRequest $request): JsonResponse
@@ -31,7 +34,7 @@ class DestinationController extends Controller
 
         if (empty($validated['latitude']) || empty($validated['longitude'])) {
             $country = Country::find($validated['country_id']);
-            $addressQuery = $validated['city_name'] . ', ' . $country->name;
+            $addressQuery = $validated['city_name'].', '.$country->name;
             $coords = $this->mapService->getCoordinates($addressQuery);
             if ($coords) {
                 $validated['latitude'] = $coords['lat'];
@@ -44,7 +47,7 @@ class DestinationController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Destination created successfully.',
-            'data' => $destination->load('country')
+            'data' => $destination->load('country'),
         ], 201);
     }
 
@@ -52,11 +55,8 @@ class DestinationController extends Controller
     {
         $destination = Destination::find($id);
 
-        if (!$destination) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Destination not found.'
-            ], 404);
+        if (! $destination) {
+            return ApiResponse::fail('Destination not found.', 'not_found', 404);
         }
 
         $validated = $request->validated();
@@ -70,9 +70,9 @@ class DestinationController extends Controller
                 $countryId = $validated['country_id'] ?? $destination->country_id;
                 $cityName = $validated['city_name'] ?? $destination->city_name;
                 $country = Country::find($countryId);
-                
+
                 if ($country) {
-                    $addressQuery = $cityName . ', ' . $country->name;
+                    $addressQuery = $cityName.', '.$country->name;
                     $coords = $this->mapService->getCoordinates($addressQuery);
                     if ($coords) {
                         $validated['latitude'] = $coords['lat'];
@@ -87,7 +87,7 @@ class DestinationController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Destination updated successfully.',
-            'data' => $destination->load('country')
+            'data' => $destination->load('country'),
         ]);
     }
 
@@ -95,18 +95,15 @@ class DestinationController extends Controller
     {
         $destination = Destination::find($id);
 
-        if (!$destination) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Destination not found.'
-            ], 404);
+        if (! $destination) {
+            return ApiResponse::fail('Destination not found.', 'not_found', 404);
         }
 
         $destination->delete();
 
         return response()->json([
             'success' => true,
-            'message' => 'Destination deleted successfully.'
+            'message' => 'Destination deleted successfully.',
         ]);
     }
 }

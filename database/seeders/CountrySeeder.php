@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Services\Fixtures\CountryFixtureService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Services\Fixtures\CountryFixtureService;
 
 class CountrySeeder extends Seeder
 {
@@ -53,7 +53,7 @@ class CountrySeeder extends Seeder
         }
 
         // Insert in chunks to avoid large packet errors
-        if (!empty($insertData)) {
+        if (! empty($insertData)) {
             foreach (array_chunk($insertData, 50) as $chunk) {
                 DB::table('countries')->insertOrIgnore($chunk);
             }

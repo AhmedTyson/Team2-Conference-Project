@@ -2,29 +2,42 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use App\Enums\NotificationStatus;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Notifications\DatabaseNotification;
 
-class Notification extends Model
+class Notification extends DatabaseNotification
 {
-    use HasFactory;
+    /**
+     * The table associated with the model.
+     * We override this to ensure it uses our custom 'notifications' table
+     * which has standard integer increments instead of UUIDs.
+     *
+     * @var string
+     */
+    protected $table = 'notifications';
 
-    protected $fillable = ['user_id', 'title', 'type', 'body', 'data', 'status'];
+    /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array
+     */
+    protected $guarded = [];
 
-    protected function casts(): array
+    protected static function booted()
     {
-        return [
-            'status' => NotificationStatus::class,
-            'data' => 'array',
-        ];
+        static::creating(function ($notification) {
+            // Automatically set user_id if the notifiable is a User
+            if ($notification->notifiable_type === User::class) {
+                $notification->user_id = $notification->notifiable_id;
+            }
+        });
     }
 
+    /**
+     * Get the user that owns the notification.
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 }
-
-

@@ -9,9 +9,13 @@ use App\Models\Plan;
 use App\Models\Subscription;
 use App\Models\Trip;
 use App\Models\User;
+use App\Notifications\PaymentFailedNotification;
+use App\Notifications\PaymentSucceededNotification;
+use App\Notifications\SubscriptionActivatedNotification;
 use App\Services\TripForkService;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class FulfillOrderListener implements ShouldQueue
 {
@@ -20,26 +24,63 @@ class FulfillOrderListener implements ShouldQueue
         $payment = $event->payment;
         $order = $payment->order;
 
-        if (!$order || $order->status !== OrderStatus::PAID) {
+        if (! $order || $order->status !== OrderStatus::PAID) {
             return;
         }
 
-        foreach ($order->items as $item) {
-            $metadata = $item->metadata ?? [];
-            $purchaseType = $metadata['purchase_type'] ?? null;
+        try {
+            DB::transaction(function () use ($order, $payment) {
+                foreach ($order->items as $item) {
+                    $metadata = $item->metadata ?? [];
+                    $purchaseType = $metadata['purchase_type'] ?? null;
 
-            if ($item->product_type === Plan::class || $item->product_type === 'plan' || $purchaseType === 'subscription') {
-                $this->fulfillSubscription($order->user_id, $item->product_id, $payment);
-            } elseif (($item->product_type === Trip::class || $item->product_type === 'trip') && $purchaseType === 'trip_fork') {
-                $this->fulfillTripFork($order->user_id, $item->product_id);
+                    if ($item->product_type === Plan::class || $item->product_type === 'plan' || $purchaseType === 'subscription') {
+                        $this->fulfillSubscription($order->user_id, $item->product_id, $payment);
+                    } elseif (($item->product_type === Trip::class || $item->product_type === 'trip') && $purchaseType === 'trip_fork') {
+                        $this->fulfillTripFork($order->user_id, $item->product_id);
+                    }
+                }
+
+                $order->update(['status' => OrderStatus::FULFILLED]);
+            });
+        } catch (\Throwable $e) {
+            Log::error('Order fulfillment failed', [
+                'order_id' => $order->id,
+                'payment_id' => $payment->id,
+                'exception' => $e->getMessage(),
+            ]);
+
+            // Roll the order back to a visible failure state instead of leaving
+            // a phantom "paid but never delivered" order. Any DB work already
+            // done inside the transaction above was rolled back.
+            $order->update(['status' => OrderStatus::FAILED]);
+
+            if ($order->user) {
+                $order->user->notify(new PaymentFailedNotification($order));
             }
+
+            return;
         }
 
-        $order->update(['status' => OrderStatus::FULFILLED]);
+        // Send Notification
+        if ($order->user) {
+            $order->user->notify(new PaymentSucceededNotification($order));
+        }
     }
 
     protected function fulfillTripFork(int $userId, int $sourceTripId): void
     {
+        // Idempotency guard: a previous (partial) listener run may have already forked this trip.
+        $alreadyForked = Trip::query()
+            ->where('user_id', $userId)
+            ->where('parent_trip_id', $sourceTripId)
+            ->where('is_fork', true)
+            ->exists();
+
+        if ($alreadyForked) {
+            return;
+        }
+
         $tripForkService = app(TripForkService::class);
         $tripForkService->fulfillFork($userId, $sourceTripId);
     }
@@ -47,16 +88,23 @@ class FulfillOrderListener implements ShouldQueue
     protected function fulfillSubscription(int $userId, int $planId, $payment): void
     {
         $plan = Plan::find($planId);
-        if (!$plan) return;
+        if (! $plan) {
+            return;
+        }
 
         $user = User::find($userId);
+
+        // Idempotency guard: this payment already provisioned the subscription.
+        if (Subscription::query()->where('provider_ref', $payment->paymob_transaction_id)->exists()) {
+            return;
+        }
 
         // Terminate any existing active subscriptions to prevent overlaps
         Subscription::where('user_id', $userId)
             ->where('status', SubscriptionStatus::ACTIVE)
             ->update(['status' => SubscriptionStatus::CANCELLED]);
 
-        Subscription::create([
+        $subscription = Subscription::create([
             'user_id' => $userId,
             'plan_id' => $planId,
             'status' => SubscriptionStatus::ACTIVE,
@@ -73,5 +121,7 @@ class FulfillOrderListener implements ShouldQueue
             'ai_generations_count' => 0,
             'ai_reset_at' => now()->addMonth(),
         ])->save();
+
+        $user->notify(new SubscriptionActivatedNotification($subscription));
     }
 }

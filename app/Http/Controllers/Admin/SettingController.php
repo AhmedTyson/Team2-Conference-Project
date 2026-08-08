@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateSettingRequest;
+use App\Http\Requests\UpdateSettingValueRequest;
 use App\Models\Setting;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,7 +21,7 @@ class SettingController extends Controller
 
         return response()->json([
             'success' => true,
-            'data'    => $settings,
+            'data' => $settings,
         ]);
     }
 
@@ -34,7 +35,7 @@ class SettingController extends Controller
 
         foreach ($settingsPayload as $setting) {
             Setting::updateOrCreate(
-                ['key'   => $setting['key']],
+                ['key' => $setting['key']],
                 ['value' => $setting['value'] ?? '']
             );
         }
@@ -47,7 +48,7 @@ class SettingController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Settings updated successfully.',
-            'data'    => $settings,
+            'data' => $settings,
         ]);
     }
 
@@ -63,16 +64,11 @@ class SettingController extends Controller
      *   value  — string  (text value)        [required without file]
      *   file   — file    (image/document)    [required without value]
      */
-    public function patchKey(Request $request, string $key): JsonResponse
+    public function patchKey(UpdateSettingValueRequest $request, string $key): JsonResponse
     {
-        $request->validate([
-            'value' => ['required_without:file', 'nullable', 'string', 'max:1000'],
-            'file'  => ['required_without:value', 'file', 'max:5120',
-                        'mimes:jpg,jpeg,png,webp,gif,svg,pdf'],
-        ]);
 
         if ($request->hasFile('file')) {
-            $path  = $request->file('file')->store("settings/{$key}", 'public');
+            $path = $request->file('file')->store("settings/{$key}", 'public');
             $value = Storage::disk('public')->url($path);
         } else {
             $value = $request->input('value');
@@ -86,7 +82,7 @@ class SettingController extends Controller
         return response()->json([
             'success' => true,
             'message' => "Setting '{$key}' updated.",
-            'data'    => ['key' => $key, 'value' => $value],
+            'data' => ['key' => $key, 'value' => $value],
         ]);
     }
 }

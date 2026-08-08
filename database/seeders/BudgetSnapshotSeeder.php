@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\BudgetSnapshot;
 use App\Models\Trip;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class BudgetSnapshotSeeder extends Seeder
@@ -20,7 +19,7 @@ class BudgetSnapshotSeeder extends Seeder
             $flights = fake()->numberBetween(0, (int) ($total * 0.4));
             $restaurants = fake()->numberBetween(0, (int) ($total * 0.2));
             $spent = $hotels + $flights + $restaurants;
- 
+
             BudgetSnapshot::create([
                 'trip_id' => $trip->id,
                 'total_budget_cents' => $total,

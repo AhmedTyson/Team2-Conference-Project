@@ -2,9 +2,9 @@
 
 namespace App\Services\Fixtures;
 
+use App\Models\Destination;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use App\Models\Destination;
 
 class RestaurantFixtureService
 {
@@ -13,14 +13,15 @@ class RestaurantFixtureService
         $apiKey = config('services.rapidapi.key');
         $host = config('services.rapidapi.restaurants_host');
 
-        if (!$apiKey) {
-            throw new \Exception("RapidAPI Key is not configured.");
+        if (! $apiKey) {
+            throw new \Exception('RapidAPI Key is not configured.');
         }
 
         // Get all destinations currently in the database
         $destinations = Destination::all();
         if ($destinations->isEmpty()) {
-            Log::warning("No destinations found in database. Cannot sync restaurants.");
+            Log::warning('No destinations found in database. Cannot sync restaurants.');
+
             return [];
         }
 
@@ -50,9 +51,12 @@ class RestaurantFixtureService
                     'X-RapidAPI-Host' => $host,
                 ])->timeout(15)->get("https://{$host}/restaurants/list", $queryParams);
 
-                if (!$response->successful()) {
-                    Log::warning("RapidAPI Restaurants failed for destination {$destination->name}: " . $response->status());
-                    if ($progressCallback) $progressCallback();
+                if (! $response->successful()) {
+                    Log::warning("RapidAPI Restaurants failed for destination {$destination->name}: ".$response->status());
+                    if ($progressCallback) {
+                        $progressCallback();
+                    }
+
                     continue;
                 }
 
@@ -64,12 +68,12 @@ class RestaurantFixtureService
                             'cuisine' => $item['cuisine'][0]['name'] ?? 'Local',
                             'price_range' => $item['price_level'] ?? '$$',
                             'rating' => isset($item['rating']) ? (float) $item['rating'] : 4.0,
-                            'image' => $item['photo']['images']['large']['url'] ?? 'restaurants/default.jpg'
+                            'image' => $item['photo']['images']['large']['url'] ?? 'restaurants/default.jpg',
                         ];
                     }
                 }
             } catch (\Exception $e) {
-                Log::warning("RestaurantFixtureService failed for destination {$destination->name}: " . $e->getMessage());
+                Log::warning("RestaurantFixtureService failed for destination {$destination->name}: ".$e->getMessage());
             }
 
             if ($progressCallback) {

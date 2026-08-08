@@ -40,7 +40,7 @@ class PlanService
     {
         $subscription = $this->planRepository->getActiveSubscription($userId);
 
-        if (!$subscription) {
+        if (! $subscription) {
             abort(422, 'No active subscription to cancel.');
         }
 

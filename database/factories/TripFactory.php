@@ -25,7 +25,7 @@ class TripFactory extends Factory
 
         return [
             'user_id' => User::factory(),
-            'title' => fake()->words(3, true) . ' Trip',
+            'title' => fake()->words(3, true).' Trip',
             'travel_style' => fake()->randomElement(['relaxation', 'adventure', 'cultural', 'business', 'family']),
             'no_of_travelers' => fake()->numberBetween(1, 6),
             'interests' => fake()->randomElements(

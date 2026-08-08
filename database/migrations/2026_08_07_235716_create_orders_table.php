@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('total_cents')->default(0);
             $table->string('currency', 3)->default('EGP');
             $table->timestamps();
-            
+
             $table->index(['user_id', 'status']);
         });
     }

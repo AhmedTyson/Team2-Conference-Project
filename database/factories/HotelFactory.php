@@ -17,13 +17,13 @@ class HotelFactory extends Factory
     {
         return [
             'destination_id' => Destination::factory(),
-            'name' => fake()->company() . ' Hotel',
+            'name' => fake()->company().' Hotel',
             'address' => fake()->address(),
             'price_per_night' => fake()->randomFloat(2, 30, 600),
             'rating' => fake()->randomFloat(1, 1, 5),
             'stars' => fake()->numberBetween(1, 5),
             'availability' => fake()->boolean(),
-            'image' => 'img/' . fake()->randomElement(['hotel.jpg', 'Paris.jpg', 'Safari.jpg']),
+            'image' => 'img/'.fake()->randomElement(['hotel.jpg', 'Paris.jpg', 'Safari.jpg']),
         ];
     }
 }

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreAttractionRequest;
+use App\Http\Requests\UpdateAttractionRequest;
 use App\Models\Attraction;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -21,19 +23,15 @@ class AdminAttractionController extends Controller
             $query->where('category_id', $request->input('category_id'));
         }
 
-        return JsonResource::collection($query->paginate(min((int) request("per_page", 15) ?: 15, 100)));
+        return JsonResource::collection($query->paginate(min((int) request('per_page', 15) ?: 15, 100)));
     }
 
-    public function store(Request $request)
+    public function store(StoreAttractionRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'description' => 'required|string',
-            'destination_id' => 'required|exists:destinations,id',
-            'category_id' => 'required|exists:categories,id',
-        ]);
+        $validated = $request->validated();
 
         $attraction = Attraction::create($validated);
+
         return new JsonResource($attraction);
     }
 
@@ -42,18 +40,14 @@ class AdminAttractionController extends Controller
         return new JsonResource(Attraction::findOrFail($id));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateAttractionRequest $request, $id)
     {
         $attraction = Attraction::findOrFail($id);
 
-        $validated = $request->validate([
-            'name' => 'sometimes|string|max:255',
-            'description' => 'sometimes|string',
-            'destination_id' => 'sometimes|exists:destinations,id',
-            'category_id' => 'sometimes|exists:categories,id',
-        ]);
+        $validated = $request->validated();
 
         $attraction->update($validated);
+
         return new JsonResource($attraction);
     }
 
@@ -61,7 +55,7 @@ class AdminAttractionController extends Controller
     {
         $attraction = Attraction::findOrFail($id);
         $attraction->delete();
+
         return response()->json(['success' => true]);
     }
 }
-

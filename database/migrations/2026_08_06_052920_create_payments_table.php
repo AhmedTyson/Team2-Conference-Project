@@ -20,7 +20,7 @@ return new class extends Migration
             $table->char('currency', 3);
             $table->string('card_type', 50)->nullable();
             $table->string('card_subtype', 50)->nullable();
-            $table->string('card_pan', 10)->nullable();
+            $table->string('card_pan', 20)->nullable();
             $table->boolean('hmac_valid');
             $table->json('raw_payload');
             $table->timestamps();

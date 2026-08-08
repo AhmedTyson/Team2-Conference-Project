@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Services\GroqService;
 use App\Http\Requests\AiTripRequest;
 use App\Models\Trip;
 use App\Services\AiUsageService;
+use App\Services\GroqService;
+use App\Support\ApiResponse;
+use Illuminate\Http\Request;
 
 class AIController extends Controller
 {
-    public function enhance(AiTripRequest $request){
+    public function enhance(AiTripRequest $request)
+    {
 
         $groq = new GroqService(app(AiUsageService::class));
 
@@ -19,30 +21,29 @@ class AIController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Content enhanced successfully',
-            'data' => $enhancedContent
+            'data' => $enhancedContent,
         ]);
     }
 
-    //review my trip 
+    // review my trip
 
-    public function review(Request $request, string $id){
+    public function review(Request $request, string $id)
+    {
 
-       $aiUsage = app(AiUsageService::class);
-       $aiUsage->consumeQuota($request->user());
+        $aiUsage = app(AiUsageService::class);
+        $aiUsage->consumeQuota($request->user());
 
-       $groq = new GroqService($aiUsage);
+        $groq = new GroqService($aiUsage);
 
-       $trip = Trip::find($id);
+        $trip = Trip::find($id);
 
-       if(!$trip){
-        $aiUsage->restoreQuota($request->user());
-        return response()->json([
-            'success' => false,
-            'message' => 'Trip not found',
-        ], 404);
-       }
+        if (! $trip) {
+            $aiUsage->restoreQuota($request->user());
 
-       $trip = Trip::where('id', $id)->with(['itineraryItems.itemable', 'destinations'])->first();
+            return ApiResponse::fail('Trip not found', 'not_found', 404);
+        }
+
+        $trip = Trip::where('id', $id)->with(['itineraryItems.itemable', 'destinations'])->first();
 
         $trip_id = Trip::find($trip->id);
 
@@ -51,7 +52,7 @@ class AIController extends Controller
         $trip_title = $trip->title;
 
         try {
-            $reviewedContent = $groq->review($trip_id,$trip_title, $trip_items);
+            $reviewedContent = $groq->review($trip_id, $trip_title, $trip_items);
         } catch (\Throwable $e) {
             $aiUsage->restoreQuota($request->user());
             throw $e;
@@ -60,7 +61,7 @@ class AIController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Trip reviewed successfully',
-            'data' => json_decode($reviewedContent) ?? $reviewedContent
+            'data' => json_decode($reviewedContent) ?? $reviewedContent,
         ]);
     }
 }

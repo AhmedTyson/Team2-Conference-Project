@@ -1,25 +1,26 @@
 <?php
+
 namespace Database\Seeders;
 
+use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Faker\Factory as Faker;
 
 class ReviewSeeder extends Seeder
 {
     public function run()
     {
         $faker = Faker::create();
-        
+
         $morphTargets = [
-            'App\Models\Destination', 
-            'App\Models\Hotel', 
-            'App\Models\Restaurant', 
-            'App\Models\Attraction'
+            'App\Models\Destination',
+            'App\Models\Hotel',
+            'App\Models\Restaurant',
+            'App\Models\Attraction',
         ];
-        
+
         $reviews = [];
-        
+
         for ($i = 0; $i < 50; $i++) {
             $reviews[] = [
                 'user_id' => rand(1, 10),
@@ -32,7 +33,7 @@ class ReviewSeeder extends Seeder
                 'updated_at' => now(),
             ];
         }
-        
+
         DB::table('reviews')->insert($reviews);
     }
 }

@@ -32,9 +32,10 @@ class StripeGateway implements PaymentGatewayInterface
             ];
         } catch (Exception $e) {
             Log::error('Stripe Exception', ['error' => $e->getMessage()]);
+
             return [
                 'success' => false,
-                'message' => 'Payment gateway error: ' . $e->getMessage(),
+                'message' => 'Payment gateway error: '.$e->getMessage(),
             ];
         }
     }
@@ -43,7 +44,7 @@ class StripeGateway implements PaymentGatewayInterface
     {
         // Stripe webhook signature verification uses Stripe\Webhook::constructEvent()
         // Here we just return true for demonstration of the N-tier interface swap
-        
+
         // Example:
         // $endpoint_secret = config('services.stripe.webhook_secret');
         // try {

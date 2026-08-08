@@ -22,4 +22,3 @@ class StoreTripRequest extends FormRequest
         ];
     }
 }
-

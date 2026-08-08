@@ -2,75 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Http\Resources\CategoryResource;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
-
+use App\Models\Category;
+use App\Services\CategoryService;
 
 class CategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $categoryService;
+
+    public function __construct(CategoryService $categoryService)
+    {
+        $this->categoryService = $categoryService;
+    }
+
     public function index()
     {
-        $categories = Cache::remember('categories',now()->addHour(),function()
-        {
-            return Category::all();
-        });
-
         return response()->json([
-            "success"=>true,
-            "message"=>"Categories fetched successfully",
-            "data"=>CategoryResource::collection($categories)
+            'success' => true,
+            'message' => 'Categories fetched successfully',
+            'data' => CategoryResource::collection($this->categoryService->index()),
         ]);
-
-
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
-
-        $category = Category::create($request->all());
-
-        return new CategoryResource($category);
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(Category $category)
     {
-        return new CategoryResource($category);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Category $category)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-        ]);
-
-        $category->update($request->all());
-
-        return new CategoryResource($category);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Category $category)
-    {
-        $category->delete();
-
         return response()->json([
-            'message' => 'Category deleted successfully'
+            'success' => true,
+            'message' => 'Category fetched successfully',
+            'data' => new CategoryResource($this->categoryService->show($category)),
         ]);
     }
 }

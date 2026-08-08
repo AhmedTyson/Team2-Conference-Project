@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\TripStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Trip;
 use App\Models\User;
-use App\Enums\TripStatus;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -14,13 +14,13 @@ use Illuminate\Support\Facades\DB;
 class AdminAnalyticsController extends Controller
 {
     // Get Revenue Statistics (Analytics)
-    
+
     public function revenue(Request $request): JsonResponse
     {
         // We consider trips with status 'booked' or 'completed' as successful bookings
         $bookedStatuses = [
-            TripStatus::BOOKED->value, 
-            TripStatus::COMPLETED->value
+            TripStatus::BOOKED->value,
+            TripStatus::COMPLETED->value,
         ];
 
         // Total Revenue (sum of budgets for booked/completed trips)
@@ -48,7 +48,7 @@ class AdminAnalyticsController extends Controller
             ->select('travel_style', \DB::raw('SUM(budget) as total'))
             ->groupBy('travel_style')
             ->pluck('total', 'travel_style')
-            ->map(fn($val) => (float) $val);
+            ->map(fn ($val) => (float) $val);
 
         // Recent Bookings list (top 5 latest)
         $recentBookings = Trip::with('user')
@@ -58,15 +58,15 @@ class AdminAnalyticsController extends Controller
             ->get()
             ->map(function ($trip) {
                 return [
-                    'id'         => $trip->id,
-                    'user'       => [
-                        'name'  => $trip->user?->name,
+                    'id' => $trip->id,
+                    'user' => [
+                        'name' => $trip->user?->name,
                         'email' => $trip->user?->email,
                     ],
-                    'title'      => $trip->title,
-                    'budget'     => (float) $trip->budget,
+                    'title' => $trip->title,
+                    'budget' => (float) $trip->budget,
                     'start_date' => $trip->start_date?->format('Y-m-d'),
-                    'status'     => $trip->status?->value,
+                    'status' => $trip->status?->value,
                     'created_at' => $trip->created_at?->format('Y-m-d H:i:s'),
                 ];
             });
@@ -74,14 +74,14 @@ class AdminAnalyticsController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Revenue statistics retrieved successfully.',
-            'data'    => [
-                'total_revenue'         => (float) $totalRevenue,
-                'total_bookings'        => $totalBookings,
+            'data' => [
+                'total_revenue' => (float) $totalRevenue,
+                'total_bookings' => $totalBookings,
                 'average_booking_value' => (float) $averageBookingValue,
-                'revenue_by_month'      => $monthlyRevenue,
-                'revenue_by_travel_style'=> $travelStyleRevenue,
-                'recent_bookings'       => $recentBookings,
-            ]
+                'revenue_by_month' => $monthlyRevenue,
+                'revenue_by_travel_style' => $travelStyleRevenue,
+                'recent_bookings' => $recentBookings,
+            ],
         ]);
     }
 
@@ -96,8 +96,8 @@ class AdminAnalyticsController extends Controller
 
         return response()->json([
             'success' => true,
-            'data'    => [
-                'users'   => $this->usersAnalytics($months),
+            'data' => [
+                'users' => $this->usersAnalytics($months),
                 'revenue' => $this->revenueAnalytics($months),
             ],
         ]);

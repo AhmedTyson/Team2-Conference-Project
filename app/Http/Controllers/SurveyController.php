@@ -2,44 +2,43 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Services\SurveyService;
+use Illuminate\Http\Request;
 
 class SurveyController extends Controller
 {
-   protected $surveyService;
+    protected $surveyService;
 
-   public function __construct(SurveyService $surveyService)
-{
-    $this->surveyService = $surveyService;
-}
+    public function __construct(SurveyService $surveyService)
+    {
+        $this->surveyService = $surveyService;
+    }
 
     public function index()
     {
         $surveys = $this->surveyService->getSurveyByUserId(auth()->id());
 
-    return response()->json([
-        'message' => 'Surveys retrieved successfully',
-        'data' => $surveys
-    ]);
+        return response()->json([
+            'message' => 'Surveys retrieved successfully',
+            'data' => $surveys,
+        ]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-   public function store(Request $request)
-{
-    $data = $request->all();
-    $data['user_id'] = auth()->id();
+    public function store(Request $request)
+    {
+        $data = $request->all();
+        $data['user_id'] = auth()->id();
 
-    $survey = $this->surveyService->createSurvey($data);
+        $survey = $this->surveyService->createSurvey($data);
 
-    return response()->json([
-        'message' => 'Survey created successfully',
-        'data' => $survey
-    ], 201);
-}
+        return response()->json([
+            'message' => 'Survey created successfully',
+            'data' => $survey,
+        ], 201);
+    }
 
     /**
      * Display the specified resource.
@@ -48,10 +47,10 @@ class SurveyController extends Controller
     {
         $survey = $this->surveyService->getSurveyById($id);
 
-    return response()->json([
-        'message' => 'Survey retrieved successfully',
-        'data' => $survey
-    ]);
+        return response()->json([
+            'message' => 'Survey retrieved successfully',
+            'data' => $survey,
+        ]);
     }
 
     /**
@@ -61,9 +60,9 @@ class SurveyController extends Controller
     {
         $this->surveyService->updateSurvey($id, $request->all());
 
-    return response()->json([
-        'message' => 'Survey updated successfully'
-    ]);
+        return response()->json([
+            'message' => 'Survey updated successfully',
+        ]);
     }
 
     /**
@@ -71,10 +70,10 @@ class SurveyController extends Controller
      */
     public function destroy(string $id)
     {
-       $this->surveyService->deleteSurvey($id);
+        $this->surveyService->deleteSurvey($id);
 
-    return response()->json([
-        'message' => 'Survey deleted successfully'
-    ]);
+        return response()->json([
+            'message' => 'Survey deleted successfully',
+        ]);
     }
 }

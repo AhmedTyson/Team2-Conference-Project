@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Hotel;
 use App\Models\ItineraryItem;
 use App\Models\Trip;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -17,8 +18,8 @@ class ItineraryItemFactory extends Factory
     {
         return [
             'trip_id' => Trip::factory(),
-            'itemable_id' => \App\Models\Hotel::factory(),
-            'itemable_type' => \App\Models\Hotel::class,
+            'itemable_id' => Hotel::factory(),
+            'itemable_type' => Hotel::class,
             'day_number' => fake()->numberBetween(1, 10),
             'item_order' => fake()->numberBetween(1, 10),
             'type' => fake()->randomElement(['hotel', 'restaurant', 'attraction', 'flight']),

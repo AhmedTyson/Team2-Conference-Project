@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ContactMessageResource;
 use App\Models\ContactMessage;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class ContactMessageController extends Controller
 {
@@ -17,6 +16,7 @@ class ContactMessageController extends Controller
     public function index()
     {
         $messages = ContactMessage::latest()->paginate(20);
+
         return ContactMessageResource::collection($messages);
     }
 
@@ -26,15 +26,15 @@ class ContactMessageController extends Controller
     public function markAsRead(int $id): JsonResponse
     {
         $message = ContactMessage::findOrFail($id);
-        
+
         $message->update([
-            'status' => ContactMessageStatus::READ->value
+            'status' => ContactMessageStatus::READ->value,
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Message marked as read.',
-            'data'    => new ContactMessageResource($message)
+            'data' => new ContactMessageResource($message),
         ]);
     }
 
@@ -44,15 +44,15 @@ class ContactMessageController extends Controller
     public function markAsResolved(int $id): JsonResponse
     {
         $message = ContactMessage::findOrFail($id);
-        
+
         $message->update([
-            'status' => ContactMessageStatus::RESOLVED->value
+            'status' => ContactMessageStatus::RESOLVED->value,
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'Message marked as resolved.',
-            'data'    => new ContactMessageResource($message)
+            'data' => new ContactMessageResource($message),
         ]);
     }
 }

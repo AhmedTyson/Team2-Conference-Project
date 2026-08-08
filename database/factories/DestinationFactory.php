@@ -20,10 +20,10 @@ class DestinationFactory extends Factory
     {
         return [
             'country_id' => Country::inRandomOrder()->first()?->id ?? Country::factory(),
-            'name' =>fake()->city(),
+            'name' => fake()->city(),
             'city_name' => fake()->city(),
             'description' => fake()->paragraph(),
-            'image' => 'img/' . fake()->randomElement(['destination.jpg', 'Paris.jpg', 'Safari.jpg']),
+            'image' => 'img/'.fake()->randomElement(['destination.jpg', 'Paris.jpg', 'Safari.jpg']),
             'latitude' => fake()->latitude(),
             'longitude' => fake()->longitude(),
         ];

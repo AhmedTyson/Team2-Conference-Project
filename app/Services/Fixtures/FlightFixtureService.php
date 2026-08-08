@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 class FlightFixtureService
 {
     public const AIRPORTS_URL = 'https://raw.githubusercontent.com/jpatokal/openflights/master/data/airports.dat';
+
     public const ROUTES_URL = 'https://raw.githubusercontent.com/jpatokal/openflights/master/data/routes.dat';
 
     public function sync(?int $limit = null): array
@@ -15,12 +16,12 @@ class FlightFixtureService
         try {
             $airports = $this->fetchAirports();
             if (empty($airports)) {
-                throw new \Exception("No airports loaded from OpenFlights");
+                throw new \Exception('No airports loaded from OpenFlights');
             }
 
             $routes = $this->fetchRoutes();
             if (empty($routes)) {
-                throw new \Exception("No routes loaded from OpenFlights");
+                throw new \Exception('No routes loaded from OpenFlights');
             }
 
             $flights = [];
@@ -34,7 +35,7 @@ class FlightFixtureService
                 $departureIata = $route['departure_airport'];
                 $arrivalIata = $route['arrival_airport'];
 
-                if (!isset($airports[$departureIata]) || !isset($airports[$arrivalIata])) {
+                if (! isset($airports[$departureIata]) || ! isset($airports[$arrivalIata])) {
                     continue;
                 }
 
@@ -58,12 +59,12 @@ class FlightFixtureService
             }
 
             if (empty($flights)) {
-                throw new \Exception("No valid routes produced from OpenFlights data");
+                throw new \Exception('No valid routes produced from OpenFlights data');
             }
 
             return $flights;
         } catch (\Exception $e) {
-            Log::warning("FlightFixtureService failed: " . $e->getMessage());
+            Log::warning('FlightFixtureService failed: '.$e->getMessage());
             throw $e;
         }
     }
@@ -71,8 +72,8 @@ class FlightFixtureService
     private function fetchAirports(): array
     {
         $response = Http::timeout(30)->get(self::AIRPORTS_URL);
-        if (!$response->successful()) {
-            throw new \Exception("OpenFlights airports returned status: " . $response->status());
+        if (! $response->successful()) {
+            throw new \Exception('OpenFlights airports returned status: '.$response->status());
         }
 
         $airports = [];
@@ -82,7 +83,7 @@ class FlightFixtureService
                 continue;
             }
             $iata = strtoupper(trim($row[4]));
-            if ($iata === '' || $iata === '\\N' || !$this->isIata($iata)) {
+            if ($iata === '' || $iata === '\\N' || ! $this->isIata($iata)) {
                 continue;
             }
             $airports[$iata] = [
@@ -100,8 +101,8 @@ class FlightFixtureService
     private function fetchRoutes(): array
     {
         $response = Http::timeout(30)->get(self::ROUTES_URL);
-        if (!$response->successful()) {
-            throw new \Exception("OpenFlights routes returned status: " . $response->status());
+        if (! $response->successful()) {
+            throw new \Exception('OpenFlights routes returned status: '.$response->status());
         }
 
         $routes = [];
@@ -117,10 +118,10 @@ class FlightFixtureService
             if ($departureIata === '\\N' || $arrivalIata === '\\N' || $departureIata === '' || $arrivalIata === '') {
                 continue;
             }
-            if (!is_numeric($stops) || (int) $stops > 0) {
+            if (! is_numeric($stops) || (int) $stops > 0) {
                 continue;
             }
-            if (!$this->isIata($departureIata) || !$this->isIata($arrivalIata)) {
+            if (! $this->isIata($departureIata) || ! $this->isIata($arrivalIata)) {
                 continue;
             }
 
@@ -145,6 +146,7 @@ class FlightFixtureService
         $dLng = deg2rad($lng2 - $lng1);
         $a = sin($dLat / 2) ** 2
             + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLng / 2) ** 2;
+
         return $earthRadiusKm * 2 * atan2(sqrt($a), sqrt(1 - $a));
     }
 
@@ -152,6 +154,7 @@ class FlightFixtureService
     {
         $base = 55.0 + $distanceKm * 0.12;
         $noise = mt_rand(-15, 20) / 100.0 * $base;
+
         return round(max(49.0, $base + $noise), 2);
     }
 }

@@ -4,9 +4,9 @@ namespace Tests\Feature;
 
 use App\Enums\ContactMessageStatus;
 use App\Models\ContactMessage;
-use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
@@ -21,10 +21,10 @@ class ContactAndSettingsTest extends TestCase
         // Create standard and admin roles
         Role::create(['name' => 'traveler', 'guard_name' => 'api']);
         $adminRole = Role::create(['name' => 'admin', 'guard_name' => 'api']);
-        
-        \Spatie\Permission\Models\Permission::create(['name' => 'manage contacts', 'guard_name' => 'api']);
-        \Spatie\Permission\Models\Permission::create(['name' => 'manage settings', 'guard_name' => 'api']);
-        
+
+        Permission::create(['name' => 'manage contacts', 'guard_name' => 'api']);
+        Permission::create(['name' => 'manage settings', 'guard_name' => 'api']);
+
         $adminRole->syncPermissions(['manage contacts', 'manage settings']);
     }
 
@@ -34,16 +34,16 @@ class ContactAndSettingsTest extends TestCase
             'name' => 'John Doe',
             'email' => 'john@example.com',
             'subject' => 'Test Inquiry',
-            'message' => 'This is a test message.'
+            'message' => 'This is a test message.',
         ];
 
         $response = $this->postJson('/api/v1/contacts', $payload);
 
         $response->assertStatus(201)
-                 ->assertJson([
-                     'success' => true,
-                     'message' => 'Your message has been sent successfully.'
-                 ]);
+            ->assertJson([
+                'success' => true,
+                'message' => 'Your message has been sent successfully.',
+            ]);
 
         $this->assertDatabaseHas('contact_messages', [
             'email' => 'john@example.com',
@@ -67,19 +67,19 @@ class ContactAndSettingsTest extends TestCase
         // List messages
         $response = $this->actingAs($admin, 'api')->getJson('/api/v1/admin/contacts');
         $response->assertStatus(200)
-                 ->assertJsonPath('data.0.email', 'jane@example.com');
+            ->assertJsonPath('data.0.email', 'jane@example.com');
 
         // Mark as read
         $responseRead = $this->actingAs($admin, 'api')->patchJson("/api/v1/admin/contacts/{$message->id}/read");
         $responseRead->assertStatus(200)
-                     ->assertJsonPath('data.status', 'read');
+            ->assertJsonPath('data.status', 'read');
 
         $this->assertDatabaseHas('contact_messages', ['id' => $message->id, 'status' => 'read']);
 
         // Mark as resolved
         $responseResolved = $this->actingAs($admin, 'api')->patchJson("/api/v1/admin/contacts/{$message->id}/resolve");
         $responseResolved->assertStatus(200)
-                         ->assertJsonPath('data.status', 'resolved');
+            ->assertJsonPath('data.status', 'resolved');
 
         $this->assertDatabaseHas('contact_messages', ['id' => $message->id, 'status' => 'resolved']);
     }
@@ -92,22 +92,22 @@ class ContactAndSettingsTest extends TestCase
         $payload = [
             'settings' => [
                 ['key' => 'site_name', 'value' => 'ThreeDOS'],
-                ['key' => 'support_email', 'value' => 'support@threedos.com']
-            ]
+                ['key' => 'support_email', 'value' => 'support@threedos.com'],
+            ],
         ];
 
         // Put settings
         $response = $this->actingAs($admin, 'api')->putJson('/api/v1/admin/settings', $payload);
         $response->assertStatus(200)
-                 ->assertJsonPath('data.site_name', 'ThreeDOS')
-                 ->assertJsonPath('data.support_email', 'support@threedos.com');
+            ->assertJsonPath('data.site_name', 'ThreeDOS')
+            ->assertJsonPath('data.support_email', 'support@threedos.com');
 
         $this->assertDatabaseHas('settings', ['key' => 'site_name', 'value' => 'ThreeDOS']);
 
         // Get settings
         $getResponse = $this->actingAs($admin, 'api')->getJson('/api/v1/admin/settings');
         $getResponse->assertStatus(200)
-                    ->assertJsonPath('data.site_name', 'ThreeDOS');
+            ->assertJsonPath('data.site_name', 'ThreeDOS');
     }
 
     public function test_normal_user_cannot_access_admin_endpoints()
@@ -117,7 +117,7 @@ class ContactAndSettingsTest extends TestCase
 
         // Inbox
         $this->actingAs($user, 'api')->getJson('/api/v1/admin/contacts')->assertStatus(403);
-        
+
         // Settings
         $this->actingAs($user, 'api')->getJson('/api/v1/admin/settings')->assertStatus(403);
     }

@@ -43,6 +43,7 @@ class Hotel extends Model
     {
         return $this->morphToMany(Trip::class, 'item', 'trip_items')->withTimestamps();
     }
+
     public function favourites(): MorphMany
     {
         return $this->morphMany(Favourite::class, 'favorable');

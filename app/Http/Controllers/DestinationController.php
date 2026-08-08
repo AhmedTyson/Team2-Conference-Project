@@ -3,32 +3,32 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\DestinationResource;
-use App\Models\Destination;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
+use App\Services\DestinationService;
 
 class DestinationController extends Controller
 {
+    protected $destinationService;
+
+    public function __construct(DestinationService $destinationService)
+    {
+        $this->destinationService = $destinationService;
+    }
+
     public function index()
     {
-
-        $destinations = Cache::remember('destinations',now()->addHours(1),function()
-        {
-            return Destination::with('country')->get();
-        });
-
         return response()->json([
-            "success"=>true,
-            "message"=>"Destinations fetched successfully",
-            "data"=>DestinationResource::collection($destinations)
+            'success' => true,
+            'message' => 'Destinations fetched successfully',
+            'data' => DestinationResource::collection($this->destinationService->index()),
         ]);
-
     }
 
     public function show($id)
     {
-        $destination = Destination::with('country')->findOrFail($id);
-
-        return new DestinationResource($destination);
+        return response()->json([
+            'success' => true,
+            'message' => 'Destination fetched successfully',
+            'data' => new DestinationResource($this->destinationService->show($id)),
+        ]);
     }
 }

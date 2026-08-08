@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ContactMessageStatus;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreContactMessageRequest;
 use App\Models\ContactMessage;
 use Illuminate\Http\JsonResponse;
@@ -16,11 +15,11 @@ class ContactController extends Controller
     public function store(StoreContactMessageRequest $request): JsonResponse
     {
         $message = ContactMessage::create([
-            'name'    => $request->validated('name'),
-            'email'   => $request->validated('email'),
+            'name' => $request->validated('name'),
+            'email' => $request->validated('email'),
             'subject' => $request->validated('subject'),
             'message' => $request->validated('message'),
-            'status'  => ContactMessageStatus::UNREAD->value,
+            'status' => ContactMessageStatus::UNREAD->value,
         ]);
 
         return response()->json([

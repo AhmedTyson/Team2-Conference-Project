@@ -22,7 +22,7 @@ class DestinationTest extends TestCase
 
         Role::create(['name' => 'traveler', 'guard_name' => 'api']);
         $adminRole = Role::create(['name' => 'admin', 'guard_name' => 'api']);
-        
+
         Permission::create(['name' => 'manage destinations', 'guard_name' => 'api']);
         $adminRole->syncPermissions(['manage destinations']);
     }
@@ -38,7 +38,7 @@ class DestinationTest extends TestCase
         $response = $this->actingAs($admin, 'api')->getJson('/api/v1/admin/destinations');
 
         $response->assertStatus(200)
-                 ->assertJsonCount(3, 'data');
+            ->assertJsonCount(3, 'data');
     }
 
     public function test_normal_user_cannot_access_destinations()
@@ -59,9 +59,9 @@ class DestinationTest extends TestCase
         // Mock OpenStreetService
         $mockService = Mockery::mock(OpenStreetService::class);
         $mockService->shouldReceive('getCoordinates')
-                    ->with('Paris, France')
-                    ->once()
-                    ->andReturn(['lat' => 48.8566, 'lng' => 2.3522]);
+            ->with('Paris, France')
+            ->once()
+            ->andReturn(['lat' => 48.8566, 'lng' => 2.3522]);
 
         $this->app->instance(OpenStreetService::class, $mockService);
 
@@ -75,14 +75,14 @@ class DestinationTest extends TestCase
         $response = $this->actingAs($admin, 'api')->postJson('/api/v1/admin/destinations', $payload);
 
         $response->assertStatus(201)
-                 ->assertJsonPath('data.name', 'Eiffel Tower Area')
-                 ->assertJsonPath('data.latitude', 48.8566)
-                 ->assertJsonPath('data.longitude', 2.3522);
+            ->assertJsonPath('data.name', 'Eiffel Tower Area')
+            ->assertJsonPath('data.latitude', 48.8566)
+            ->assertJsonPath('data.longitude', 2.3522);
 
         $this->assertDatabaseHas('destinations', [
             'name' => 'Eiffel Tower Area',
             'latitude' => 48.8566,
-            'longitude' => 2.3522
+            'longitude' => 2.3522,
         ]);
     }
 
@@ -96,20 +96,20 @@ class DestinationTest extends TestCase
             'country_id' => $country->id,
             'name' => 'Old Name',
             'latitude' => 10.0,
-            'longitude' => 20.0
+            'longitude' => 20.0,
         ]);
 
         $payload = [
             'name' => 'New Name',
             'latitude' => 15.0, // Manually update coordinates
-            'longitude' => 25.0
+            'longitude' => 25.0,
         ];
 
         $response = $this->actingAs($admin, 'api')->putJson("/api/v1/admin/destinations/{$destination->id}", $payload);
 
         $response->assertStatus(200)
-                 ->assertJsonPath('data.name', 'New Name');
-                 
+            ->assertJsonPath('data.name', 'New Name');
+
         $this->assertEquals(15.0, (float) $response->json('data.latitude'));
 
         $this->assertDatabaseHas('destinations', [
@@ -130,7 +130,7 @@ class DestinationTest extends TestCase
         $response = $this->actingAs($admin, 'api')->deleteJson("/api/v1/admin/destinations/{$destination->id}");
 
         $response->assertStatus(200)
-                 ->assertJsonPath('message', 'Destination deleted successfully.');
+            ->assertJsonPath('message', 'Destination deleted successfully.');
 
         $this->assertDatabaseMissing('destinations', ['id' => $destination->id]);
     }

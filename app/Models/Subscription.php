@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\SubscriptionStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -27,6 +28,7 @@ class Subscription extends Model
         'price_cents' => 'integer',
         'started_at' => 'datetime',
         'renews_at' => 'datetime',
+        'status' => SubscriptionStatus::class,
     ];
 
     public function user(): BelongsTo
@@ -41,6 +43,6 @@ class Subscription extends Model
 
     public function scopeActive(Builder $query): Builder
     {
-        return $query->where('status', 'active');
+        return $query->where('status', SubscriptionStatus::ACTIVE->value);
     }
 }

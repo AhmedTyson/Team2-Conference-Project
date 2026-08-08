@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\InitiateCheckoutRequest;
 use App\Services\CheckoutService;
+use App\Support\ApiResponse;
 use Exception;
 
 class CheckoutController extends Controller
@@ -28,14 +29,15 @@ class CheckoutController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => $data
+                'data' => $data,
             ]);
 
         } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage()
-            ], 422);
+            return ApiResponse::fail(
+                $e->getMessage(),
+                'checkout_failed',
+                422
+            );
         }
     }
 }

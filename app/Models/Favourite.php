@@ -17,5 +17,8 @@ class Favourite extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function favorable() { return $this->morphTo(); }
+    public function favorable()
+    {
+        return $this->morphTo();
+    }
 }

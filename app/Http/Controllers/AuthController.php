@@ -1,46 +1,43 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Http\Controllers\Controller;
+
+use App\Http\Requests\Auth\ForgotPasswordRequest;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Http\Requests\Auth\RegisterRequest;
+use App\Http\Requests\Auth\ResetPasswordRequest;
+use App\Http\Requests\Auth\UpdateProfileRequest;
 use App\Models\Role;
 use App\Models\User;
-use Exception;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Hash;
+use App\Notifications\WelcomeNotification;
+use App\Support\ApiResponse;
 use Illuminate\Auth\Events\Verified;
-use App\Http\Requests\Auth\RegisterRequest;
-use App\Http\Requests\Auth\UpdateProfileRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Password;
+
 class AuthController extends Controller
 {
- 
-   
-    //Register a new user 
-    public function register(Request $request)
+    // Register a new user
+    public function register(RegisterRequest $request)
     {
-         
-           
-            $role = Role::firstOrCreate(['name' => 'user']);
 
-            $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|email|unique:users,email',
-                'password' => 'required|min:8',
-                'phone' => 'nullable|string|max:20',
-            ]);
+        $role = Role::firstOrCreate(['name' => 'user']);
 
-            $user = User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-                'phone' => $request->phone,
-            ]);
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'phone' => $request->phone,
+        ]);
 
-            $user->assignRole($role);
-            $user->sendEmailVerificationNotification();
+        $user->assignRole($role);
+        $user->sendEmailVerificationNotification();
+        $user->notify(new WelcomeNotification);
 
-            $token = auth('api')->login($user);
-        
+        $token = auth('api')
+            ->claims(['roles' => $user->getRoleNames()->toArray()])
+            ->login($user);
 
         return response()->json([
             'message' => 'user created',
@@ -54,18 +51,22 @@ class AuthController extends Controller
             ],
         ], 201);
     }
-    
-    
+
     // Verify email & login
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
         $credentials = $request->only('email', 'password');
-        $token = auth('api')->attempt($credentials);
+        $user = User::where('email', $request->email)->first();
+        $token = $user
+            ? auth('api')->claims(['roles' => $user->getRoleNames()->toArray()])->attempt($credentials)
+            : null;
 
         if (! $token) {
-            return response()->json([
-                'message' => 'Invalid email or password',
-            ], 401);
+            return ApiResponse::fail(
+                'Invalid email or password',
+                'invalid_credentials',
+                401
+            );
         }
 
         $user = auth('api')->user();
@@ -78,11 +79,11 @@ class AuthController extends Controller
                 'name' => $user->name,
                 'email' => $user->email,
                 'roles' => $user->getRoleNames(),
-            
+
             ],
         ]);
     }
-    
+
     // Profile
     public function me()
     {
@@ -99,19 +100,18 @@ class AuthController extends Controller
             ],
         ]);
     }
-    
-    
-    //verfication notifaction
+
+    // verfication notifaction
     public function verificationNotice()
     {
-        return response()->json([
-            'success' => false,
-            'message' => 'Please verify your email address.',
-        ], 403);
+        return ApiResponse::fail(
+            'Please verify your email address.',
+            'email_not_verified',
+            403
+        );
     }
-    
-    
-    //verify Email
+
+    // verify Email
     public function verifyEmail(Request $request, $id, $hash)
     {
         $user = User::findOrFail($id);
@@ -139,9 +139,8 @@ class AuthController extends Controller
             'message' => 'Email verified successfully',
         ]);
     }
-    
-    
-    //Resend the verification email 
+
+    // Resend the verification email
     public function resendVerificationEmail(Request $request)
     {
         if ($request->user()->hasVerifiedEmail()) {
@@ -158,9 +157,8 @@ class AuthController extends Controller
             'message' => 'Verification link sent successfully.',
         ], 200);
     }
-    
-    
-    //LOGOUT
+
+    // LOGOUT
     public function logout()
     {
         auth('api')->logout();
@@ -174,34 +172,27 @@ class AuthController extends Controller
     public function refresh()
     {
         $token = auth('api')->refresh();
+
         return response()->json([
-            'token'=> $token
+            'token' => $token,
         ]);
     }
 
     // ForgetPass
-    public function forgetPassword(Request $request)
+    public function forgetPassword(ForgotPasswordRequest $request)
     {
-        $request->validate([
-            'email'=>['required', 'email', 'exists:users,email']
-        ]);
-
         $stat = Password::sendResetLink($request->only('email'));
 
-        if($stat == Password::RESET_LINK_SENT){
-            return response()->json(["message" => __($stat)]);
+        if ($stat == Password::RESET_LINK_SENT) {
+            return response()->json(['message' => __($stat)]);
         }
-        return response()->json(["message" => __($stat)], 422);
+
+        return ApiResponse::fail(__($stat), 'reset_link_failed', 422);
     }
 
     // ResetPass
-    public function resetPassword(Request $request){
-        $request->validate([
-            'email' => 'required|email',
-            'token' => 'required',
-            'password' => 'required|confirmed|min:8'
-        ]);
-
+    public function resetPassword(ResetPasswordRequest $request)
+    {
         $stat = Password::reset(
             $request->only(
                 'email',
@@ -211,24 +202,22 @@ class AuthController extends Controller
             ),
             function (User $user, string $password) {
                 $user->update([
-                    'password' => Hash::make($password)
+                    'password' => Hash::make($password),
                 ]);
             }
         );
 
-        if($stat == Password::PASSWORD_RESET){
+        if ($stat == Password::PASSWORD_RESET) {
             return response()->json([
-                'message'=> "Passwrod reset successfully"
+                'message' => 'Passwrod reset successfully',
             ], 200);
         }
 
-        return response()->json([
-            'message' => $stat
-        ], 422);
+        return ApiResponse::fail((string) $stat, 'reset_failed', 422);
 
     }
 
-// Update the authenticated user's own profile 
+    // Update the authenticated user's own profile
     public function updateProfile(UpdateProfileRequest $request)
     {
         $user = auth('api')->user();
@@ -265,5 +254,4 @@ class AuthController extends Controller
             ],
         ], 200);
     }
-
 }

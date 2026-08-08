@@ -2,8 +2,8 @@
 
 namespace App\Strategies\Checkout;
 
-use App\Models\Trip;
 use App\Models\Setting;
+use App\Models\Trip;
 use Illuminate\Database\Eloquent\Model;
 
 class TripPackageStrategy implements CheckoutStrategyInterface

@@ -1,62 +1,34 @@
-# P0 — Frontend Shows No Data — Investigation & Fix
+## Email UI/UX & Testing (5 Phases)
 
-**Spec:** `frontend-data-fetching` — 8 admin pages empty. **Status: RESOLVED (verified 8/8).** Report: `docs/frontend-data-fetching-investigation.md`. Fix plan: `docs/frontend-data-fetching-fix-plan.md`.
+### Phase 1: Marketing-Grade UI/UX Design
+**Description:** Transform the basic HTML emails into beautiful, premium marketing assets.
+- [ ] Overhaul `resources/views/emails/layouts/main.blade.php` with a modern, responsive layout (max-width 600px, centered, rounded corners, soft shadows).
+- [ ] Add a premium header (Logo placement, brand colors) and a marketing footer (social icons, copyright, support links).
+- [ ] Redesign `payment-success.blade.php` and `payment-failed.blade.php` with distinct trust signals (green/red accents, receipt-like tables).
+- [ ] Redesign `welcome.blade.php` with a hero image placeholder and onboarding steps.
+- [ ] Redesign `trip-forked.blade.php` with social proof elements.
+- [ ] Redesign `subscription-activated.blade.php` highlighting premium features.
 
-**Rules honored:** prove before fix; no masking (no fake data / empty-array hacks / auth removal); find common root cause first. ✔
+### Phase 2: Mailable Visual Previews
+**Description:** Enable local browser previewing of the new email templates.
+- [ ] Create a `routes/web.php` endpoint `/mail-preview` (restricted to local environment).
+- [ ] Instantiate dummy data (Mock `User`, `Order`, `Trip`) and return the Mailables (e.g., `return new WelcomeMail($user);`).
+- [ ] Visually verify responsiveness and typography across mobile/desktop views.
 
----
+### Phase 3: Routing & Integration Tests
+**Description:** Ensure business logic correctly triggers the Mailables with exact data.
+- [ ] Write `test_welcome_email_dispatched_on_register` in `Tests\Feature\AuthTest.php` (or similar).
+- [ ] Write `test_payment_success_email_contains_order_details` verifying the Mailable content includes the correct currency and amount.
+- [ ] Assert `Mail::assertSent()` passes for all 5 email types.
 
-## Phase 0 — Recon ✔
-- [x] Ports: :8080 python http.server (PID 33472, root `<repo>/frontend`), :8001 `php artisan serve` (PID 9284)
-- [x] `config.js` apiBase `http://127.0.0.1:8001/api`; token key `itinari_token`
-- [x] All 8 pages = `config.js?v=…`, `api.js`, `admin-chrome.js?v=12`, `admin-crud.js?v=8`
-- [x] DB counts: users 11, trips 8, destinations 40, hotels 53, restaurants 54, countries 250, attractions 20, reviews 50
+### Phase 4: Concurrency & Idempotency Tests
+**Description:** Prove that the system prevents duplicate email spam during race conditions.
+- [ ] Write a test that fires `PaymentSucceeded` twice instantly.
+- [ ] Assert that the `PaymentSucceededNotification` is queued, but the overlapping lock prevents the second email from being dispatched.
+- [ ] Verify `WithoutOverlapping` middleware behaves correctly.
 
-## Phase 1 — Prove the Failure ✔
-- [x] All 8 endpoints: 200 with Bearer (admin@threedos.com), 401 without; shape `{data, links, meta}`
-- [x] Browser path (headless Chrome): real exceptions captured — TDZ panic (admin-chrome), parse corruption (admin-crud), selector mismatch, `moduleName` ReferenceError
-- [x] Root-cause matrix: 4 shared defects, not per-resource
-
-## Phase 2 — Report Gate ✔
-- [x] 2.1 `docs/frontend-data-fetching-investigation.md` written
-- [x] 2.2 User approved at "proceed" (fixes landed only after evidence)
-- [x] 2.3 `docs/frontend-data-fetching-fix-plan.md` written
-
-## Phase 3 — Implement Fixes ✔
-| Fix | File | Detail | Version |
-|---|---|---|---|
-| 1 | (runtime) | static server re-rooted to `frontend/` | – |
-| 2 | `admin-chrome.js` | stray `panel.hidden` before `const panel` → TDZ; removed | v11→v12 |
-| 3 | `admin-crud.js` | mangled template literal → parse failure; repaired | v5→v6 |
-| 4 | `admin-crud.js` | hardcoded `el("crud-table")` → `tableHost()` per-module fallback | v6→v7 |
-| 5 | `admin-crud.js` | `moduleName` undefined in `renderTr` → dataset.module | v7→v8 |
-- [x] 3.1–3.9 All 8 pages render backend rows, 6/page, zero console errors
-
-## Phase 4 — Verification & Regression ✔
-- [x] 4.1 All 8 endpoints 200 w/ auth post-fix
-- [x] 4.2 8/8 browser: request 200, rows rendered, no console/page errors; users page spot-check (real names+emails)
-- [x] 4.3 Auth regression: 401 without token; super_admin intact; no middleware removed
-- [x] 4.4 Cleanup: `dbcounts.php` deleted, smoke-test user force-deleted (user 12), temp scripts live only in Temp/opencode
-- [x] 4.5 Spec §28 criteria met
-
----
-
-## Deferred / still open
-- none
-
-## Phase 5 — Real Data Depth + User Details (RESOLVED)
-- [x] `per_page` clamp in 8 admin controllers (`paginate(min((int) request("per_page", 15) ?: 15, 100))`) — users/trips/hotels/countries/restaurants/reviews/attractions/destinations
-- [x] `AdminUserController::show` removed nonexistent `bookings` relation → `loadMissing(['trips','reviews','subscriptions'])` (was 500)
-- [x] `UserResource` now exposes `trips` (whenLoaded): id/title/budget/status/no_of_days/start/end
-- [x] `admin-crud.js` `PER_PAGE_DEFAULT` 6→25, options `[15,25,50,100]`; `normalize()` detects Laravel paginated shape `{data,links,meta}` → serverPaged (footer was never rendered before)
-- [x] E2E: all 8 pages real totals w/ pager: destinations 40, hotels 53, restaurants 54, countries 250, reviews 50; page 2 → "Showing 26–50 of 250"
-- [x] user-details: id=2 → profile + 3 real trips; id=1 → profile + "No trips" empty state; zero errors
-- [x] PHPUnit regression: 46 passed (118 assertions)
-
-## Phase 5 — UX Polish (RESOLVED)
-- [x] Skeleton loaders (kit-grid-skeleton) + empty states (kit-empty w/ icon, "No matches" vs "No records" + CTA)
-- [x] Page-size switcher: toolbar + pager footer selects, persisted via localStorage (`admin-crud:page-size`), `per_page` honored
-- [x] Sticky table header (`thead th` sticky + translucent card bg)
-- [x] CSV export in server-paged mode: collects all pages via `per_page=100` loop (250-country export verified)
-- [x] E2E: switcher 25→50 → "Showing 1–50 of 250", persists across reload; export toast "250 countries"; zero errors
-- [x] PHPUnit contract tests (46 passed)
+### Phase 5: E2E Mail Delivery & Log Verification
+**Description:** Run the full pipeline and verify the final compiled output in the logs.
+- [ ] Set `MAIL_MAILER=log` in `.env` (or override in PHPUnit).
+- [ ] Run the E2E checkout feature test.
+- [ ] Assert or manually verify that `storage/logs/laravel.log` contains the fully rendered, minified HTML structure of the marketing emails.

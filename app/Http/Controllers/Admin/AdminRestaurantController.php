@@ -3,27 +3,24 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreRestaurantRequest;
+use App\Http\Requests\UpdateRestaurantRequest;
 use App\Models\Restaurant;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AdminRestaurantController extends Controller
 {
     public function index()
     {
-        return JsonResource::collection(Restaurant::paginate(min((int) request("per_page", 15) ?: 15, 100)));
+        return JsonResource::collection(Restaurant::paginate(min((int) request('per_page', 15) ?: 15, 100)));
     }
 
-    public function store(Request $request)
+    public function store(StoreRestaurantRequest $request)
     {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'cuisine' => 'required|string|max:255',
-            'rating' => 'required|integer|min:1|max:5',
-            'destination_id' => 'required|exists:destinations,id',
-        ]);
+        $validated = $request->validated();
 
         $restaurant = Restaurant::create($validated);
+
         return new JsonResource($restaurant);
     }
 
@@ -32,18 +29,14 @@ class AdminRestaurantController extends Controller
         return new JsonResource(Restaurant::findOrFail($id));
     }
 
-    public function update(Request $request, $id)
+    public function update(UpdateRestaurantRequest $request, $id)
     {
         $restaurant = Restaurant::findOrFail($id);
-        
-        $validated = $request->validate([
-            'name' => 'sometimes|string|max:255',
-            'cuisine' => 'sometimes|string|max:255',
-            'rating' => 'sometimes|integer|min:1|max:5',
-            'destination_id' => 'sometimes|exists:destinations,id',
-        ]);
+
+        $validated = $request->validated();
 
         $restaurant->update($validated);
+
         return new JsonResource($restaurant);
     }
 
@@ -51,6 +44,7 @@ class AdminRestaurantController extends Controller
     {
         $restaurant = Restaurant::findOrFail($id);
         $restaurant->delete();
+
         return response()->json(['success' => true]);
     }
 }

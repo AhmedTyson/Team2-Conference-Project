@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\AdminSetSubscriptionPlanRequest;
 use App\Models\Plan;
-use Illuminate\Http\Request;
 
 class AdminSetSubscriptionPlanController extends Controller
 {

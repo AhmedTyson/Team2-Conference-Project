@@ -78,7 +78,7 @@ class UserTest extends TestCase
             ->postJson('/api/v1/admin/users', ['email' => 'missing-fields@example.com']);
 
         $response->assertStatus(422);
-        $response->assertJsonStructure(['error', 'message']);
+        $response->assertJsonStructure(['error' => ['type', 'status', 'message', 'timestamp']]);
     }
 
     public function test_traveler_cannot_list_or_create_users(): void

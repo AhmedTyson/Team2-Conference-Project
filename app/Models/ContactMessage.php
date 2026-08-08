@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use App\Enums\ContactMessageStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Enums\ContactMessageStatus;
 
 class ContactMessage extends Model
 {
@@ -19,5 +19,3 @@ class ContactMessage extends Model
         ];
     }
 }
-
-

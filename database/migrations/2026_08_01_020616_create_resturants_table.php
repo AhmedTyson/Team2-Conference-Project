@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('cuisine');
 
             $table->string('price_range')->nullable();
-            
-            $table->decimal('rating',2,1)->nullable();
+
+            $table->decimal('rating', 2, 1)->nullable();
             $table->string('address')->nullable();
             $table->string('image')->nullable();
 
@@ -36,4 +36,3 @@ return new class extends Migration
         Schema::dropIfExists('restaurants');
     }
 };
-
