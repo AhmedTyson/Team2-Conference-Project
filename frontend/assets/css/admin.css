@@ -316,6 +316,13 @@ body[data-page="admin"] { padding: 0; display: block; place-items: unset; }
   vertical-align: middle;
 }
 .kit-table tr:hover td { background: hsl(var(--accent) / 0.5); }
+.kit-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: hsl(var(--card) / 0.96);
+  box-shadow: inset 0 -1px 0 hsl(var(--border));
+}
 .kit-table .th-actions, .kit-table .td-actions { text-align: right; white-space: nowrap; }
 .kit-table .kit-empty { text-align: center; color: hsl(var(--muted-foreground)); padding: var(--space-5); }
 .td-actions { display: flex; gap: 0.4rem; justify-content: flex-end; }
@@ -735,6 +742,7 @@ border-radius: 2px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
   gap: var(--space-3);
   padding: var(--space-3) var(--space-6) var(--space-4);
   border-top: 1px solid hsl(var(--border));
@@ -742,6 +750,7 @@ border-radius: 2px;
   color: hsl(var(--muted-foreground));
 }
 .kit-pagination .pager-group { display: flex; gap: 0.4rem; }
+.kit-pagination .ctl-select { margin-left: auto; }
 .pager-btn {
   padding: 0.35rem 0.7rem;
   font-family: inherit;

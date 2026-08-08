@@ -194,7 +194,7 @@
 
   const PER_PAGE_DEFAULT = 25;
   const PAGE_SIZE_OPTIONS = [15, 25, 50, 100];
-  const state = { search: "", page: 1, sort: null, dir: "asc", rows: [], serverPaged: false, total: 0, pageSize: PER_PAGE_DEFAULT, density: "normal", hidden: {}, selected: {} };
+  const state = { search: "", page: 1, sort: null, dir: "asc", rows: [], serverPaged: false, total: 0, pageSize: storedPageSize() || PER_PAGE_DEFAULT, density: "normal", hidden: {}, selected: {} };
   let searchTimer = null;
 
   function el(id) { return document.getElementById(id); }
@@ -232,6 +232,30 @@
       optionCache[field.optionsUrl] = list;
       return list;
     });
+  }
+
+  function storedPageSize() {
+    try { return Number(localStorage.getItem("admin-crud:page-size")) || 0; } catch (e) { return 0; }
+  }
+
+  function buildPageSelect() {
+    const size = document.createElement("select");
+    size.className = "ctl-select";
+    size.setAttribute("aria-label", "Rows per page");
+    PAGE_SIZE_OPTIONS.forEach(function (n) {
+      const o = document.createElement("option");
+      o.value = String(n);
+      o.textContent = n + " rows / page";
+      size.appendChild(o);
+    });
+    size.value = String(state.pageSize);
+    size.addEventListener("change", function () {
+      const n = Number(size.value);
+      state.pageSize = n;
+      try { localStorage.setItem("admin-crud:page-size", String(n)); } catch (e) {}
+      setPage(1);
+    });
+    return size;
   }
 
   /* ---------- datatable ---------- */
@@ -411,20 +435,7 @@
     });
     bar.appendChild(dense);
 
-    const size = document.createElement("select");
-    size.className = "ctl-select";
-    size.setAttribute("aria-label", "Rows per page");
-    PAGE_SIZE_OPTIONS.forEach(function (n) {
-      const o = document.createElement("option");
-      o.value = String(n);
-      o.textContent = n + " rows / page";
-      size.appendChild(o);
-    });
-    size.value = String(state.pageSize);
-    size.addEventListener("change", function () {
-      state.pageSize = Number(size.value);
-      setPage(1);
-    });
+    const size = buildPageSelect();
     bar.appendChild(size);
 
     host.appendChild(bar);
@@ -662,27 +673,53 @@
       return label !== "Actions" && !isColHidden(label);
     });
     const headers = labels;
-    const rows = state.rows.filter(matches);
-    if (state.sort) rows.sort(compare);
-    const csv = [headers.map(csvEsc).join(",")].concat(rows.map(function (row) {
-      return labels.map(function (label) {
-        if (label === "ID") return String(row.id);
-        if (label === "Name") return row.name || "";
-        const idx = mod.cols.indexOf(label);
-        const cell = mod.cells[idx - 2];
-        const val = cell ? cell(row) : "";
-        return String(val === "–" ? "" : val).replace(/&[a-z]+;/g, "");
-      }).map(csvEsc).join(",");
-    })).join("\n");
-    const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = mod.listLabel + "-" + new Date().toISOString().slice(0, 10) + ".csv";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
-    toast("Exported " + rows.length + " " + mod.listLabel + " to CSV.", "ok");
+    const done = function (rows) {
+      if (state.sort) rows.sort(compare);
+      const csv = [headers.map(csvEsc).join(",")].concat(rows.map(function (row) {
+        return labels.map(function (label) {
+          if (label === "ID") return String(row.id);
+          if (label === "Name") return row.name || "";
+          const idx = mod.cols.indexOf(label);
+          const cell = mod.cells[idx - 2];
+          const val = cell ? cell(row) : "";
+          return String(val === "–" ? "" : val).replace(/&[a-z]+;/g, "");
+        }).map(csvEsc).join(",");
+      })).join("\n");
+      const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = mod.listLabel + "-" + new Date().toISOString().slice(0, 10) + ".csv";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+      toast("Exported " + rows.length + " " + mod.listLabel + " to CSV.", "ok");
+    };
+    if (!state.serverPaged) {
+      done(state.rows.filter(matches));
+      return;
+    }
+    const q = [];
+    if (state.search) q.push("search=" + encodeURIComponent(state.search));
+    if (state.sort) q.push("sort_by=" + encodeURIComponent(state.sort), "sort_order=" + state.dir);
+    const qs = q.length ? "&" + q.join("&") : "";
+    const fetchPage = function (page) {
+      return It.apiGet(mod.url + "?page=" + page + "&per_page=100" + qs, { auth: true }).then(function (res) {
+        const norm = normalize(res);
+        const total = norm.meta ? Number(norm.meta.total || 0) : norm.rows.length;
+        return { rows: norm.rows, next: page * 100 < total ? page + 1 : null };
+      });
+    };
+    fetchPage(1).then(function walk(r) {
+      let acc = [];
+      const loop = function (r) {
+        acc = acc.concat(r.rows);
+        return r.next ? fetchPage(r.next).then(loop) : Promise.resolve(acc);
+      };
+      return loop(r);
+    }).then(function (all) {
+      done(all.filter(matches));
+    });
   }
 
   function csvEsc(val) {
@@ -764,6 +801,7 @@
     group.appendChild(numbers);
     group.appendChild(next);
     foot.appendChild(info);
+    foot.appendChild(buildPageSelect());
     foot.appendChild(group);
     host.appendChild(foot);
   }

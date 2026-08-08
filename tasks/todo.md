@@ -42,7 +42,7 @@
 ---
 
 ## Deferred / still open
-- Phase 5 UX polish (skeleton loaders, empty states already partial) — previous 5-phase plan item
+- none
 
 ## Phase 5 — Real Data Depth + User Details (RESOLVED)
 - [x] `per_page` clamp in 8 admin controllers (`paginate(min((int) request("per_page", 15) ?: 15, 100))`) — users/trips/hotels/countries/restaurants/reviews/attractions/destinations
@@ -52,3 +52,11 @@
 - [x] E2E: all 8 pages real totals w/ pager: destinations 40, hotels 53, restaurants 54, countries 250, reviews 50; page 2 → "Showing 26–50 of 250"
 - [x] user-details: id=2 → profile + 3 real trips; id=1 → profile + "No trips" empty state; zero errors
 - [x] PHPUnit regression: 46 passed (118 assertions)
+
+## Phase 5 — UX Polish (RESOLVED)
+- [x] Skeleton loaders (kit-grid-skeleton) + empty states (kit-empty w/ icon, "No matches" vs "No records" + CTA)
+- [x] Page-size switcher: toolbar + pager footer selects, persisted via localStorage (`admin-crud:page-size`), `per_page` honored
+- [x] Sticky table header (`thead th` sticky + translucent card bg)
+- [x] CSV export in server-paged mode: collects all pages via `per_page=100` loop (250-country export verified)
+- [x] E2E: switcher 25→50 → "Showing 1–50 of 250", persists across reload; export toast "250 countries"; zero errors
+- [x] PHPUnit contract tests (46 passed)
