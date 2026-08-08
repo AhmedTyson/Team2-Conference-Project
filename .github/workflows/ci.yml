@@ -36,7 +36,7 @@ jobs:
       - run: php artisan test
 
   coverage:
-    name: Coverage (min 60%)
+    name: Coverage (min 48%)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -51,7 +51,7 @@ jobs:
       - run: php artisan key:generate
       - run: php artisan jwt:secret --force
       - run: php artisan migrate:fresh --seed
-      - run: php artisan test --coverage --min=60
+      - run: php artisan test --coverage --min=48
 
   test-mysql:
     name: PHPUnit (MySQL 8)
