@@ -42,7 +42,13 @@
 ---
 
 ## Deferred / still open
-- Phase 5 UX polish (skeleton loaders, empty states, PHPUnit contract tests) — previous 5-phase plan item
-- `admin-user-details.js` legacy `init()` migration
-- Missing `app/Http/Controllers/PaymobController.php` (blocks `route:list`); `BudgetSnapShot` PSR-4 naming; surveys `/api/surveys` 500
-- Stale `C:\Programming\conference\frontend` copy (outside repo) — unverified
+- Phase 5 UX polish (skeleton loaders, empty states already partial) — previous 5-phase plan item
+
+## Phase 5 — Real Data Depth + User Details (RESOLVED)
+- [x] `per_page` clamp in 8 admin controllers (`paginate(min((int) request("per_page", 15) ?: 15, 100))`) — users/trips/hotels/countries/restaurants/reviews/attractions/destinations
+- [x] `AdminUserController::show` removed nonexistent `bookings` relation → `loadMissing(['trips','reviews','subscriptions'])` (was 500)
+- [x] `UserResource` now exposes `trips` (whenLoaded): id/title/budget/status/no_of_days/start/end
+- [x] `admin-crud.js` `PER_PAGE_DEFAULT` 6→25, options `[15,25,50,100]`; `normalize()` detects Laravel paginated shape `{data,links,meta}` → serverPaged (footer was never rendered before)
+- [x] E2E: all 8 pages real totals w/ pager: destinations 40, hotels 53, restaurants 54, countries 250, reviews 50; page 2 → "Showing 26–50 of 250"
+- [x] user-details: id=2 → profile + 3 real trips; id=1 → profile + "No trips" empty state; zero errors
+- [x] PHPUnit regression: 46 passed (118 assertions)

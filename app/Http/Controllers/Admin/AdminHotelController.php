@@ -12,7 +12,7 @@ class AdminHotelController extends Controller
 {
     public function index()
     {
-        return JsonResource::collection(Hotel::paginate(15));
+        return JsonResource::collection(Hotel::paginate(min((int) request("per_page", 15) ?: 15, 100)));
     }
 
     public function store(Request $request)

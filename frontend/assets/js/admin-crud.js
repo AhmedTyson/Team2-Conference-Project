@@ -192,8 +192,8 @@
       },
     };
 
-  const PER_PAGE_DEFAULT = 6;
-  const PAGE_SIZE_OPTIONS = [6, 10, 25, 50];
+  const PER_PAGE_DEFAULT = 25;
+  const PAGE_SIZE_OPTIONS = [15, 25, 50, 100];
   const state = { search: "", page: 1, sort: null, dir: "asc", rows: [], serverPaged: false, total: 0, pageSize: PER_PAGE_DEFAULT, density: "normal", hidden: {}, selected: {} };
   let searchTimer = null;
 
@@ -238,6 +238,10 @@
 
   function normalize(res) {
     const body = res.body || {};
+    const hasLaravelPage = body.data && Array.isArray(body.data) && (body.links || body.meta);
+    if (hasLaravelPage) {
+      return { rows: body.data, serverPaged: true, meta: body.meta || null };
+    }
     const wrapped = body.data && Array.isArray(body.data.data);
     const rows = wrapped ? body.data.data : (Array.isArray(body.data) ? body.data : (Array.isArray(body) ? body : []));
     return { rows: rows, serverPaged: !!(wrapped && body.data.links), meta: (wrapped && body.data.meta) || null };

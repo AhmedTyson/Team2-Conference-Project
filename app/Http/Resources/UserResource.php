@@ -22,6 +22,17 @@ class UserResource extends JsonResource
             "verified_at" => $this->email_verified_at,
             "is_active" => $this->is_active,
             "created_at" => $this->created_at,
+            "trips" => $this->whenLoaded('trips', fn () => $this->trips->map(
+                fn ($trip) => [
+                    'id' => $trip->id,
+                    'title' => $trip->title,
+                    'budget' => $trip->budget,
+                    'status' => $trip->status?->value ?? (string) $trip->status,
+                    'no_of_days' => $trip->no_of_days,
+                    'start_date' => $trip->start_date,
+                    'end_date' => $trip->end_date,
+                ]
+            )->values()),
         ];
     }
 }

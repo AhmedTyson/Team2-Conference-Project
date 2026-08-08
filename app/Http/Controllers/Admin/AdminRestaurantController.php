@@ -11,7 +11,7 @@ class AdminRestaurantController extends Controller
 {
     public function index()
     {
-        return JsonResource::collection(Restaurant::paginate(15));
+        return JsonResource::collection(Restaurant::paginate(min((int) request("per_page", 15) ?: 15, 100)));
     }
 
     public function store(Request $request)

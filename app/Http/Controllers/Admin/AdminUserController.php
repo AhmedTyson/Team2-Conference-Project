@@ -14,13 +14,13 @@ class AdminUserController extends Controller
 {
     public function index()
     {
-        $users = User::with(['roles'])->latest()->paginate(15);
+        $users = User::with(['roles'])->latest()->paginate(min((int) request("per_page", 15) ?: 15, 100));
         return UserResource::collection($users);
     }
 
     public function show(User $user)
     {
-        $user->loadMissing(['trips', 'bookings', 'reviews']);
+        $user->loadMissing(['trips', 'reviews', 'subscriptions']);
         return new UserResource($user);
     }
 

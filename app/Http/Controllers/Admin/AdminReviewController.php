@@ -16,7 +16,7 @@ class AdminReviewController extends Controller
      */
     public function index()
     {
-        $reviews = Review::with('user', 'reviewable')->latest()->paginate(15);
+        $reviews = Review::with('user', 'reviewable')->latest()->paginate(min((int) request("per_page", 15) ?: 15, 100));
 
         return ReviewResource::collection($reviews);
     }

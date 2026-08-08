@@ -21,7 +21,7 @@ class DestinationController extends Controller
 
     public function index()
     {
-        $destinations = Destination::with('country')->paginate(15);
+        $destinations = Destination::with('country')->paginate(min((int) request("per_page", 15) ?: 15, 100));
         return \App\Http\Resources\DestinationResource::collection($destinations);
     }
 

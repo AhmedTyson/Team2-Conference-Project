@@ -21,7 +21,7 @@ class AdminAttractionController extends Controller
             $query->where('category_id', $request->input('category_id'));
         }
 
-        return JsonResource::collection($query->paginate(15));
+        return JsonResource::collection($query->paginate(min((int) request("per_page", 15) ?: 15, 100)));
     }
 
     public function store(Request $request)

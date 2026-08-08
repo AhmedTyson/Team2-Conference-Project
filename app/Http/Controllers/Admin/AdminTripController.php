@@ -15,7 +15,7 @@ class AdminTripController extends Controller
     // View all trips
     public function index()
     {
-        $trips = Trip::with(['user', 'destinations'])->latest()->paginate(15);
+        $trips = Trip::with(['user', 'destinations'])->latest()->paginate(min((int) request("per_page", 15) ?: 15, 100));
 
         return TripResource::collection($trips);
     }
