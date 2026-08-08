@@ -1,0 +1,3965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Countries · Itinari Admin</title>
+  <!-- inlined: ../assets/css/admin.css?v=14 -->
+<style>
+@import "auth.css?v=2";
+
+/* ---------- shell layout ---------- */
+html, body { height: 100%; }
+body[data-page="admin"] { padding: 0; display: block; place-items: unset; }
+
+.shell {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ---------- sidebar ---------- */
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+}
+.sidebar-brand {
+  padding: 1.1rem 1.25rem;
+  border-bottom: 1px solid hsl(var(--border));
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.sidebar-brand .brand { font-weight: 800; letter-spacing: -0.02em; color: hsl(var(--primary)); }
+.brand-sub { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: hsl(var(--muted-foreground)); }
+
+.nav { padding: var(--space-3); display: flex; flex-direction: column; gap: 0.2rem; flex: 1; }
+.nav-section {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: hsl(var(--muted-foreground));
+  padding: 0.9rem 0.6rem 0.3rem;
+}
+.nav-item {
+  display: block;
+  padding: 0.5rem 0.65rem;
+  border-radius: var(--radius-md);
+  color: hsl(var(--muted-foreground));
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  transition: background var(--dur-fast) var(--ease-in-out), color var(--dur-fast) var(--ease-in-out), transform var(--dur-fast) var(--ease-in-out);
+}
+.nav-item:hover { background: hsl(var(--accent)); color: hsl(var(--foreground)); }
+@media (min-width: 1024px) { .nav-item:active { transform: translateY(1px); } }
+.nav-item.is-active { position: relative; }`n.nav-item.is-active::before { content: ""; position: absolute; left: -0.65rem; top: 15%; bottom: 15%; width: 3px; background: hsl(var(--primary)); border-radius: 0 4px 4px 0; }`n.nav-item.is-active { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); }
+
+.sidebar-foot { padding: 0.9rem 1.25rem; border-top: 1px solid hsl(var(--border)); }
+.btn-block { width: 100%; }
+
+.btn-ghost {
+  padding: 0.4rem 0.8rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: hsl(var(--muted-foreground));
+  background: transparent;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+.btn-ghost:hover { color: hsl(var(--foreground)); border-color: hsl(var(--input)); }
+
+/* ---------- content ---------- */
+.content { flex: 1; min-width: 0; padding: 0 1.5rem 3rem; }
+.content-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: 1.6rem 0 1.1rem;
+  margin-bottom: var(--space-2);
+  border-bottom: 1px solid hsl(var(--border));
+}
+.content-head h1 { margin: 0 0 0.15rem; font-size: 1.45rem; letter-spacing: -0.02em; }
+.view-sub { margin: 0; color: hsl(var(--muted-foreground)); font-size: 0.9rem; }
+.right-title p { margin: 0; }
+
+.view[hidden] { display: none; }
+
+/* ---------- chips ---------- */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--radius-full);
+  background: hsl(var(--accent));
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.chip[hidden] { display: none; }
+.chip-role {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.1rem 0.45rem;
+  border-radius: var(--radius-full);
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+/* ---------- kpis ---------- */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+.kpi {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 1rem 1.1rem;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-lg);
+}
+.kpi-label { font-size: 0.75rem; color: hsl(var(--muted-foreground)); }
+.kpi-value { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; }
+
+/* ---------- panels ---------- */
+.panel {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+}
+.panel h2 { margin: 0 0 0.35rem; font-size: 1.05rem; letter-spacing: -0.01em; }
+.muted { color: hsl(var(--muted-foreground)); font-size: 0.88rem; }
+
+/* ---------- analytics ---------- */
+.columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-5);
+  margin-bottom: var(--space-5);
+}
+@media (max-width: 900px) { .columns { grid-template-columns: 1fr; } }
+
+.chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.35rem;
+  min-height: 9rem;
+  padding-top: var(--space-3);
+}
+.chart .bar {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.3rem;
+  min-height: 100%;
+}
+.chart .bar-fill {
+  width: 100%;
+  max-width: 2.2rem;
+  min-height: 2px;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  background: hsl(var(--primary));
+  transition: height 0.35s ease;
+}
+.chart .bar-empty .bar-fill { background: var(--track-fill); }
+.chart .bar-label { font-size: 0.66rem; color: hsl(var(--muted-foreground)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 4.5rem; }
+.chart .bar-value { font-size: 0.7rem; color: hsl(var(--muted-foreground)); }
+.chart .chart-empty { align-self: center; width: 100%; text-align: center; color: hsl(var(--muted-foreground)); font-size: 0.85rem; padding: var(--space-5) 0; }
+
+.module-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+.module {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-lg);
+  background: hsl(var(--background));
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+.module:hover { border-color: hsl(var(--primary)); transform: translateY(-1px); }
+.module strong { font-size: 0.92rem; }
+.module span { font-size: 0.78rem; color: hsl(var(--muted-foreground)); }
+
+/* ---------- access denied ---------- */
+.access-denied { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: var(--space-6); }
+.access-denied[hidden] { display: none; }
+.denied-card {
+  max-width: 380px;
+  text-align: center;
+  padding: 2.5rem 2rem;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-lg);
+}
+.denied-icon { font-size: 2.2rem; display: block; margin-bottom: var(--space-3); }
+.denied-card h1 { margin: 0 0 0.4rem; font-size: 1.35rem; }
+.denied-card p { margin: 0 0 1.25rem; color: hsl(var(--muted-foreground)); font-size: 0.92rem; }
+
+/* ---------- skel loading ---------- */
+.shell-loading { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.8rem; }
+.shell-loading[hidden] { display: none; }
+.shell-loading p { margin: 0; color: hsl(var(--muted-foreground)); font-size: 0.9rem; }
+.spinner {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 3px solid hsl(var(--border));
+  border-top-color: hsl(var(--primary));
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------- placeholder ---------- */
+.placeholder { text-align: center; padding: 3rem 1.5rem; }
+.placeholder-icon { font-size: 2rem; display: block; margin-bottom: var(--space-2); }
+
+/* ---------- skeleton (inherited) ---------- */
+.kpi.skeleton { min-height: 3.8rem; }
+.skeleton {
+  min-height: 2.4rem;
+  border-radius: var(--radius-md);
+  background: linear-gradient(100deg, hsl(var(--muted)) 40%, hsl(var(--accent)) 50%, hsl(var(--muted)) 60%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+/* ---------- footer banner (shared) ---------- */
+#site-banner {
+  position: fixed;
+  left: 50%;
+  bottom: 1.25rem;
+  transform: translate(-50%, 140%);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  max-width: min(560px, calc(100% - 2rem));
+  padding: 0.75rem 1rem;
+  font-size: 0.88rem;
+  border-radius: var(--radius-lg);
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.3);
+  border: 1px solid hsl(var(--border));
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  z-index: 50;
+}
+#site-banner.is-show { transform: translate(-50%, 0); opacity: 1; }
+#site-banner.is-error { border-color: hsl(var(--destructive)); }
+#site-banner.is-error::before { content: "⚠"; color: hsl(var(--destructive)); font-weight: 700; }
+#site-banner.is-info { border-color: hsl(var(--ring)); }
+#site-banner.is-ok { border-color: var(--ok-line); }
+#site-banner.is-ok::before { content: "✓"; color: var(--ok-line); font-weight: 700; }
+#site-banner-drain {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 100%;
+  background: var(--ok-drain);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  transform-origin: left center;
+}
+#site-banner.is-error #site-banner-drain { background: hsl(var(--destructive) / 0.7); }
+
+/* ---------- responsive ---------- */
+@media (max-width: 720px) {
+  .content-head { flex-direction: column; align-items: flex-start; }
+  
+}
+
+/* ---------- kit: grids, tables, forms, modal ---------- */
+.kit-grid { display: flex; flex-direction: column; gap: var(--space-3); }
+.kit-toolbar { display: flex; flex-wrap: wrap; gap: var(--space-3); justify-content: space-between; align-items: center; }
+.kit-grid-skeleton { display: flex; flex-direction: column; gap: var(--space-2); }
+.kit-grid-skeleton .box { min-height: 3rem; }
+.kit-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); }
+.kit-error {
+  padding: 1.25rem;
+  border: 1px solid hsl(var(--destructive));
+  border-radius: var(--radius-lg);
+  color: hsl(var(--destructive));
+  background: hsl(var(--card));
+  font-size: 0.9rem;
+}
+.kit-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+.kit-table th {
+  text-align: left;
+  padding: 0.6rem 0.75rem;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: hsl(var(--muted-foreground));
+  border-bottom: 1px solid hsl(var(--border));
+}
+.kit-table td {
+  padding: 0.65rem 0.75rem;
+  border-bottom: 1px solid hsl(var(--border));
+  vertical-align: middle;
+}
+.kit-table tr:hover td { background: hsl(var(--accent) / 0.5); }
+.kit-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: hsl(var(--card) / 0.96);
+  box-shadow: inset 0 -1px 0 hsl(var(--border));
+}
+.kit-table .th-actions, .kit-table .td-actions { text-align: right; white-space: nowrap; }
+.kit-table .kit-empty { text-align: center; color: hsl(var(--muted-foreground)); padding: var(--space-5); }
+.td-actions { display: flex; gap: 0.4rem; justify-content: flex-end; }
+
+.btn-sm { padding: 0.25rem 0.55rem; font-size: 0.78rem; }
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.badge-ok { background: var(--ok-bg); color: var(--ok-fg); }
+.badge-off { background: var(--neutral-bg); color: var(--neutral-fg); }
+.badge-warn { background: var(--warn-bg); color: var(--warn-fg); }
+.badge-danger { background: var(--danger-bg); color: var(--danger-fg); }
+.td-comment { max-width: 22rem; white-space: normal; overflow-wrap: anywhere; }
+.is-danger-text { color: hsl(var(--destructive)); }
+.is-danger-text:hover { border-color: hsl(var(--destructive)); color: hsl(var(--destructive)); }
+.btn-primary.is-danger { background: hsl(var(--destructive)); border-color: hsl(var(--destructive)); color: #fff; }
+.btn-primary.is-danger:hover { background: hsl(var(--destructive) / 0.85); }
+
+/* modal */
+.kit-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 5vh 1rem 2rem;
+  background: rgb(0 0 0 / 0.45);
+  z-index: 100;
+  overflow-y: auto;
+}
+.kit-modal {
+  width: min(480px, 100%);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-lg);
+  box-shadow: 0 24px 60px -12px rgb(0 0 0 / 0.4);
+}
+.kit-modal-head { padding: 1rem 1.25rem 0.6rem; border-bottom: 1px solid hsl(var(--border)); }
+.kit-modal-head h3 { margin: 0; font-size: 1.05rem; }
+.kit-modal-body { padding: 1.25rem; }
+.kit-modal-foot { padding: 0.9rem 1.25rem; border-top: 1px solid hsl(var(--border)); display: flex; justify-content: flex-end; gap: var(--space-2); }
+.confirm-text { margin: 0 0 1rem; font-size: 0.92rem; }
+
+/* form fields (auth-field anatomy, kit namespace) */
+.kit-form { display: flex; flex-direction: column; gap: var(--space-3); }
+.kit-field { display: flex; flex-direction: column; gap: 0.3rem; }
+.kit-field label { font-size: 0.82rem; font-weight: 600; }
+.kit-field label.is-required::after { content: " *"; color: hsl(var(--destructive)); }
+.kit-field .field-hint { font-size: 0.75rem; color: hsl(var(--muted-foreground)); }
+.kit-field input,
+.kit-field select,
+.kit-field textarea {
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--input));
+  border-radius: var(--radius-sm);
+}
+.kit-field input:focus-visible,
+.kit-field select:focus-visible,
+.kit-field textarea:focus-visible {
+  outline: none;
+  border-color: hsl(var(--ring));
+  box-shadow: 0 0 0 3px hsl(var(--ring) / 0.2);
+}
+.kit-field.has-error input,
+.kit-field.has-error select,
+.kit-field.has-error textarea,
+.kit-field input.is-error {
+  border-color: hsl(var(--destructive));
+}
+.kit-field input.is-valid { border-color: var(--ok-line); }
+.field-error { font-size: 0.76rem; color: hsl(var(--destructive)); }
+
+/* =====================================================================
+   Phase 16 — BOARDING-PASS / DEPARTURE-BOARD MOTIF (admin.css v2)
+   All colors/radii/spacing from tokens.css zinc set. No new colors.
+   ===================================================================== */
+
+/* mono "gate label" eyebrow — section labels, ticket captions */
+.label-eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-eyebrow);
+  line-height: var(--text-eyebrow-lh);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: hsl(var(--muted-foreground));
+}
+
+/* dashed divider — boarding-pass perforation strip */
+.dash {
+  height: 1px;
+  background: repeating-linear-gradient(90deg, hsl(var(--border)) 0 4px, transparent 4px 8px);
+}
+
+/* ticket card — perforated bottom edge w/ two cutout notches */
+.ticket {
+  position: relative;
+  padding: var(--space-5);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-sm);
+}
+.ticket::before,
+.ticket::after {
+  content: "";
+  position: absolute;
+  bottom: calc(var(--motif-perf) * -1);
+  width: calc(var(--motif-perf) * 2);
+  height: calc(var(--motif-perf) * 2);
+  border-radius: 50%;
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--border));
+  z-index: 1;
+}
+.ticket::before { left: calc(var(--motif-perf) * -1); }
+.ticket::after  { right: calc(var(--motif-perf) * -1); }
+/* perforation strip above the notch line */
+.ticket-edge {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--motif-perf);
+  border-top: 1px dashed hsl(var(--border));
+}
+/* content below the perforation (barcode / stub row) */
+.ticket-stub {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+}
+
+/* flat layered silhouette — departure-board skyline (no imagery) */
+.sil {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-1);
+  height: 4.5rem;
+  pointer-events: none;
+}
+.sil span {
+  flex: 1;
+  min-width: 0;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  background: hsl(var(--muted));
+}
+.sil span:nth-child(1) { height: 45%; }
+.sil span:nth-child(2) { height: 78%; }
+.sil span:nth-child(3) { height: 100%; }
+.sil span:nth-child(4) { height: 58%; }
+.sil span:nth-child(5) { height: 84%; }
+.sil span:nth-child(6) { height: 66%; }
+.sil span:nth-child(odd) { background: hsl(var(--primary) / 0.18); }
+.sil span:nth-child(3n)  { background: hsl(var(--secondary)); }
+
+/* brand gate label in sidebar */
+.sidebar-brand .brand-gate {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+}
+.sidebar-brand .brand {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: hsl(var(--primary));
+}
+
+/* ticket KPI card */
+.kpi-ticket {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-height: 7.5rem;
+}
+.kpi-ticket .kpi-value {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.kpi-ticket .kpi-label { margin-top: auto; }
+
+/* table housed in a ticket panel */
+.ticket-panel { padding: 0; overflow: hidden; }
+.ticket-panel .panel-head {
+  padding: var(--space-4) var(--space-5) 0;
+}
+.ticket-panel table { margin-top: var(--space-3); }
+/* =====================================================================
+   Phase 16.9 — DESKTOP DENSITY PASS (generous desktop scale)
+   Same zinc tokens; widens shell, bumps type/padding/table rows.
+   ===================================================================== */
+
+.shell { min-height: 100vh; }
+
+.sidebar { width: 264px; }
+.sidebar-brand { padding: 1.35rem 1.5rem; gap: 0.2rem; }
+.sidebar-brand .brand { font-size: 1.05rem; }
+.nav { padding: var(--space-4); gap: 0.25rem; }
+.nav-section { font-size: 0.7rem; padding: 1.1rem 0.8rem 0.4rem; }
+.nav-item { padding: 0.65rem 0.85rem; font-size: 0.92rem; border-radius: var(--radius-md); }
+.sidebar-foot { padding: 1.1rem 1.5rem; }
+
+.content {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 3rem 4.5rem;
+}
+.content-head { padding: 2.5rem 0 1.75rem; gap: var(--space-5); }
+.content-head h1 { font-size: 1.8rem; }
+.view-sub { font-size: 0.95rem; }
+
+.chip { padding: 0.45rem 0.9rem; font-size: 0.9rem; }
+.chip-role { font-size: 0.72rem; }
+
+.kpi-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-5); margin-bottom: var(--space-6); }
+.kpi-ticket { min-height: 11rem; gap: var(--space-3); padding: var(--space-6); }
+.kpi-ticket .kpi-value { font-size: 2.6rem; }
+.kpi-ticket .ticket-stub { margin-top: var(--space-4); padding-top: var(--space-4); }
+
+.ticket { padding: var(--space-6); }
+.ticket-stub { margin-top: var(--space-5); padding-top: var(--space-5); }
+.ticket-panel .panel-head { padding: var(--space-5) var(--space-6) 0; }
+.ticket-panel .panel-head h2 { font-size: 1.2rem; }
+.ticket-panel .panel-body { padding: var(--space-4) var(--space-6) var(--space-5); }
+.ticket-panel table { margin-top: var(--space-4); }
+
+.sil { height: 5.5rem; gap: var(--space-2); }
+
+.label-eyebrow { letter-spacing: 0.18em; }
+
+.columns { gap: var(--space-6); margin-bottom: var(--space-6); }
+.chart { min-height: 11rem; gap: 0.5rem; }
+.chart .bar-fill { max-width: 2.6rem; }
+.chart .bar-value { font-size: 0.74rem; }
+.chart .bar-label { font-size: 0.7rem; max-width: 5rem; }
+
+.kit-toolbar { gap: var(--space-3); }
+.kit-grid { gap: var(--space-4); }
+
+.kit-table { font-size: 0.92rem; }
+.kit-table th { padding: 0.8rem 1rem; font-size: 0.74rem; }
+.kit-table td { padding: 0.85rem 1rem; }
+.td-actions { gap: 0.5rem; }
+.kit-empty { padding: var(--space-6); }
+
+.badge { padding: 0.2rem 0.65rem; font-size: 0.72rem; }
+.btn-ghost { padding: 0.5rem 1rem; font-size: 0.9rem; border-radius: var(--radius-md); }
+.btn-sm { padding: 0.3rem 0.65rem; font-size: 0.8rem; }
+
+.kit-modal { width: min(560px, 100%); }
+.kit-modal-head { padding: 1.25rem 1.5rem 0.75rem; }
+.kit-modal-head h3 { font-size: 1.15rem; }
+.kit-modal-body { padding: 1.5rem; }
+.kit-modal-foot { padding: 1.1rem 1.5rem; }
+
+.kit-form { gap: var(--space-4); }
+.kit-field { gap: 0.35rem; }
+.kit-field label { font-size: 0.85rem; }
+.kit-field input,
+.kit-field select,
+.kit-field textarea { padding: 0.6rem 0.8rem; font-size: 0.95rem; border-radius: var(--radius-md); }
+.kit-grid-2 { gap: var(--space-4); }
+/* =====================================================================
+   Phase 17 — SHADCNSPACE-INSPIRED REFINEMENT (topbar, dark, datatable,
+   toasts, dialogs). Ported patterns only; zinc tokens from tokens.css.
+   ===================================================================== */
+
+/* ---------- topbar ---------- */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 0.9rem 0;
+  border-bottom: 1px solid hsl(var(--border));
+  background: hsl(var(--background) / 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.table-search-group {
+  position: relative;
+  flex: 1;
+  max-width: 420px;
+}
+.table-search-group svg {
+  position: absolute;
+  left: 0.8rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 15px;
+  height: 15px;
+  color: hsl(var(--muted-foreground));
+  pointer-events: none;
+}
+.table-search-group .table-search {
+  width: 100%;
+  padding: 0.55rem 0.9rem 0.55rem 2.4rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: hsl(var(--foreground));
+  background: hsl(var(--background));
+  border: 1px solid hsl(var(--input));
+  border-radius: var(--radius-full);
+}
+.table-search-group .table-search:focus-visible {
+  outline: none;
+  border-color: hsl(var(--ring));
+  box-shadow: 0 0 0 3px hsl(var(--ring) / 0.2);
+}
+.topbar-right { margin-left: auto; display: flex; align-items: center; gap: var(--space-4); }
+
+.icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2rem;
+  height: 2.2rem;
+  padding: 0;
+  font-family: inherit;
+  color: hsl(var(--muted-foreground));
+  background: transparent;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+.icon-btn:hover { color: hsl(var(--foreground)); border-color: hsl(var(--input)); background: hsl(var(--accent)); }
+.icon-btn:focus-visible { outline: none; border-color: hsl(var(--ring)); box-shadow: 0 0 0 3px hsl(var(--ring) / 0.2); }
+.icon-btn svg { width: 16px; height: 16px; }
+
+/* theme toggle glyphs */
+.icon-btn .icon-sun { display: block; }
+.icon-btn .icon-moon { display: none; }
+html.dark .icon-btn .icon-sun { display: none; }
+html.dark .icon-btn .icon-moon { display: block; }
+.icon-btn.is-dark { color: hsl(var(--foreground)); border-color: hsl(var(--input)); }
+
+/* ---------- sidebar: brand row + collapse ---------- */
+.sidebar-brand { flex-direction: row; align-items: center; gap: 0.75rem; }
+.sidebar-brand-inner { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.collapse-btn { margin-left: auto; flex-shrink: 0; }
+
+/* collapsed state: 82px icon rail */
+.shell.is-collapsed .sidebar { width: 82px; }
+.shell.is-collapsed .sidebar-brand { padding: 1.2rem 1rem; }
+.shell.is-collapsed .sidebar-brand-inner,
+.shell.is-collapsed .nav-label,
+.shell.is-collapsed .nav-section { display: none; }
+.shell.is-collapsed .nav { align-items: center; }
+.shell.is-collapsed .nav-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  padding: 0;
+  border-radius: var(--radius-md);
+}
+.shell.is-collapsed .sidebar-foot { padding: 1rem; display: flex; justify-content: center; }
+.shell.is-collapsed .sidebar-foot .btn-block { width: auto; }
+
+/* active pill w/ left indicator (shadcnspace sidebar pattern) */
+.nav-item { position: relative; }
+.nav-item.is-active { position: relative; }`n.nav-item.is-active::before { content: ""; position: absolute; left: -0.65rem; top: 15%; bottom: 15%; width: 3px; background: hsl(var(--primary)); border-radius: 0 4px 4px 0; }`n.nav-item.is-active {
+  background: hsl(var(--accent));
+  color: hsl(var(--foreground));
+  font-weight: 600;
+}
+.nav-item.is-active::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 18%;
+  bottom: 18%;
+  width: 3px;
+border-radius: 2px;
+  background: hsl(var(--primary));
+}
+
+/* ---------- datatable: sortable headers + pagination ---------- */
+.kit-table th.sortable { cursor: pointer; user-select: none; }
+.kit-table th.sortable:hover { color: hsl(var(--foreground)); }
+.kit-table .th-sort {
+  display: inline-flex;
+  flex-direction: column;
+  margin-left: 0.3rem;
+  vertical-align: middle;
+  line-height: 0.6;
+}
+.kit-table .th-sort svg { width: 9px; height: 9px; color: hsl(var(--muted-foreground) / 0.6); }
+.kit-table th.sort-asc .th-sort .arrow-up { color: hsl(var(--primary)); }
+.kit-table th.sort-desc .th-sort .arrow-down { color: hsl(var(--primary)); }
+
+.kit-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-6) var(--space-4);
+  border-top: 1px solid hsl(var(--border));
+  font-size: 0.85rem;
+  color: hsl(var(--muted-foreground));
+}
+.kit-pagination .pager-group { display: flex; gap: 0.4rem; }
+.kit-pagination .ctl-select { margin-left: auto; }
+.pager-btn {
+  padding: 0.35rem 0.7rem;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  background: transparent;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+.pager-btn:hover:not(:disabled) { border-color: hsl(var(--input)); background: hsl(var(--accent)); }
+.pager-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* ---------- empty state upgrade ---------- */
+.kit-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  text-align: center;
+  padding: var(--space-7) var(--space-5);
+  color: hsl(var(--muted-foreground));
+}
+.kit-empty .kit-empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  margin-bottom: 0.4rem;
+  border-radius: var(--radius-full);
+  background: hsl(var(--accent));
+  color: hsl(var(--muted-foreground));
+}
+.kit-empty .kit-empty-icon svg { width: 22px; height: 22px; }
+.kit-empty .kit-empty-title { font-size: 0.95rem; font-weight: 600; color: hsl(var(--foreground)); }
+.kit-empty .kit-empty-hint { font-size: 0.85rem; }
+.kit-empty .btn-ghost { margin-top: 0.6rem; }
+
+/* ---------- toast stack (shadcn toast pattern) ---------- */
+.toast-stack {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  z-index: 130;
+  pointer-events: none;
+}
+.toast {
+  position: relative;
+  overflow: hidden;
+  min-width: 260px;
+  max-width: min(380px, calc(100vw - 2.5rem));
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.8rem 1rem 0.9rem;
+  font-size: 0.88rem;
+  border-radius: var(--radius-lg);
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  border: 1px solid hsl(var(--border));
+  box-shadow: var(--shadow-md);
+  pointer-events: auto;
+}
+.toast .toast-icon { flex-shrink: 0; font-weight: 800; line-height: 1; }
+.toast.is-ok { border-color: hsl(150 50% 40%); }
+.toast.is-ok .toast-icon { color: hsl(150 50% 40%); }
+.toast.is-error { border-color: hsl(var(--destructive)); }
+.toast.is-error .toast-icon { color: hsl(var(--destructive)); }
+.toast.is-info { border-color: hsl(var(--ring)); }
+.toast.is-info .toast-icon { color: hsl(var(--ring)); }
+.toast .toast-drain {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  width: 100%;
+  background: hsl(var(--border));
+  transform-origin: left center;
+}
+.toast.is-ok .toast-drain { background: hsl(150 50% 40% / 0.7); }
+.toast.is-error .toast-drain { background: hsl(var(--destructive) / 0.7); }
+.toast.is-info .toast-drain { background: hsl(var(--ring) / 0.7); }
+.toast .toast-close {
+  margin-left: auto;
+  background: none;
+  border: 0;
+  padding: 0.1rem 0.2rem;
+  cursor: pointer;
+  color: hsl(var(--muted-foreground));
+  font-family: inherit;
+  font-size: 0.95rem;
+  line-height: 1;
+}
+.toast .toast-undo {
+  flex-shrink: 0;
+  background: none;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-sm);
+  padding: 0.25rem 0.65rem;
+  margin-left: 0.4rem;
+  cursor: pointer;
+  color: hsl(var(--primary));
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.toast .toast-undo:hover,
+.toast .toast-undo:focus-visible {
+  border-color: hsl(var(--ring));
+  background: hsl(var(--primary) / 0.08);
+}
+.toast.is-action { padding-bottom: 1rem; }
+
+/* ---------- modal polish ---------- */
+body.is-modal-open { overflow: hidden; }
+.kit-modal-backdrop {
+  background: rgb(0 0 0 / 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.kit-modal { max-height: calc(100vh - 10vh - 2rem); }
+.kit-modal-body { max-height: calc(86vh - 9rem); overflow-y: auto; }
+.kit-modal.is-lg { width: min(760px, 100%); }
+
+/* ---------- form valid/invalid states ---------- */
+.kit-field.has-valid input,
+.kit-field.has-valid select,
+.kit-field.has-valid textarea { border-color: hsl(150 55% 38%); }
+.kit-field .field-hint.is-error { color: hsl(var(--destructive)); }
+.kit-field .field-hint.is-ok { color: hsl(150 55% 38%); }
+
+/* ---------- KPI delta chip (widgets pattern) ---------- */
+.kpi-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  align-self: flex-start;
+  padding: 0.18rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border-radius: var(--radius-full);
+}
+.kpi-delta.is-up { background: var(--ok-bg); color: var(--ok-fg); }
+.kpi-delta.is-down { background: var(--danger-bg); color: var(--danger-fg); }
+.kpi-delta.is-neutral { background: var(--neutral-bg); color: var(--neutral-fg); }
+
+/* ---------- chart card head (widgets consistency) ---------- */
+.chart-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: var(--space-2);
+}
+.chart-head .chart-chip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: var(--radius-md);
+  background: hsl(var(--accent));
+  color: hsl(var(--foreground));
+}
+.chart-head .chart-chip svg { width: 15px; height: 15px; }
+.chart-head .chart-title { margin: 0; font-size: 1rem; letter-spacing: -0.01em; }
+
+/* ---------- topbar responsive ---------- */
+@media (max-width: 720px) {
+  .topbar { flex-wrap: wrap; }
+
+}
+
+/* ---------- form error state (Phase 17) ---------- */
+.kit-field.is-error input,
+.kit-field.is-error select,
+.kit-field.is-error textarea { border-color: hsl(var(--destructive)); }
+.kit-field.is-error input:focus-visible,
+.kit-field.is-error select:focus-visible,
+.kit-field.is-error textarea:focus-visible { box-shadow: 0 0 0 3px hsl(var(--destructive) / 0.2); }
+
+/* ---------- modal size + close ---------- */
+.kit-modal.is-medium { width: min(560px, 100%); }
+.kit-modal-close {
+  margin-left: auto;
+  background: none;
+  border: 0;
+  font-family: inherit;
+  font-size: 1.3rem;
+  line-height: 1;
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  padding: 0.15rem 0.35rem;
+}
+.kit-modal-close:hover { color: hsl(var(--foreground)); }
+
+/* =====================================================================
+   Phase 18 — SIDEBAR MINI / COLLAPSED RAIL
+   Icons per nav item, width transition, hover+focus tooltips, monogram,
+   dual-icon collapse button, compact logout. (P0 baseline kept.)
+   ===================================================================== */
+
+/* nav items become icon + label rows */
+.nav-item { position: relative; display: flex; align-items: center; gap: 0.7rem; }
+.nav-icon { flex-shrink: 0; width: 1.15rem; height: 1.15rem; display: inline-flex; align-items: center; justify-content: center; }
+.nav-icon svg { width: 100%; height: 100%; display: block; }
+
+/* collapse width transition (both directions) */
+.sidebar { transition: width 0.28s cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+/* brand monogram (hidden expanded, shown collapsed) */
+.brand-mark {
+  display: none;
+  flex-shrink: 0;
+  width: 1.7rem; height: 1.7rem;
+  align-items: center; justify-content: center;
+  border-radius: 0.55rem;
+  background: hsl(var(--primary) / 0.12);
+  color: hsl(var(--primary));
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+/* collapse button: dual icons */
+.icon-panel-right { display: none; }
+
+/* collapsed rail */
+.shell.is-collapsed .sidebar-brand { padding: 1.05rem 0.5rem; justify-content: center; gap: 0.5rem; }
+.shell.is-collapsed .brand-mark { display: flex; }
+.shell.is-collapsed .collapse-btn { width: 1.6rem; height: 1.6rem; margin-left: 0; }
+.shell.is-collapsed .collapse-btn svg { width: 13px; height: 13px; }
+.shell.is-collapsed .icon-panel-left { display: none; }
+.shell.is-collapsed .icon-panel-right { display: inline-flex; align-items: center; justify-content: center; }
+
+/* collapsed nav items: label becomes hover/focus tooltip */
+.shell.is-collapsed .nav-item {
+  position: relative;
+  width: 2.6rem; height: 2.6rem;
+  margin-inline: auto;
+  padding: 0;
+  border-radius: var(--radius-md);
+}
+.shell.is-collapsed .nav-item .nav-label,
+.shell.is-collapsed .sidebar-logout .nav-label {
+  display: flex;
+  position: absolute;
+  left: calc(100% + 30px); /* rail(82px) - item(2.6rem) gap + 10px */
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  padding: 0.38rem 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: hsl(var(--foreground));
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-sm);
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.12);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 70;
+  transition: opacity 0.12s ease 0.08s, visibility 0.12s ease 0.08s;
+}
+.shell.is-collapsed .nav-item:hover .nav-label,
+.shell.is-collapsed .nav-item:focus-visible .nav-label,
+.shell.is-collapsed .sidebar-logout:hover .nav-label,
+.shell.is-collapsed .sidebar-logout:focus-visible .nav-label {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* active indicator sits on the rail edge when collapsed */
+.shell.is-collapsed .nav-item.is-active::before { left: -1.1rem; top: 22%; bottom: 22%; }
+
+/* logout button becomes icon chip in collapsed rail */
+.sidebar-logout { display: flex; align-items: center; justify-content: center; gap: 0.6rem; }
+.sidebar-logout svg { flex-shrink: 0; width: 1.05rem; height: 1.05rem; }
+.shell.is-collapsed .sidebar-foot .sidebar-logout {
+  width: 2.6rem; height: 2.6rem;
+  margin-inline: auto;
+  padding: 0;
+border-radius: var(--radius-md);
+  position: relative;
+}
+
+/* ---------- Phase 2: user identity menu ---------- */
+.user-menu { position: relative; display: inline-flex; }
+.user-menu-trigger {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-md);
+  padding: 0.3rem 0.55rem 0.3rem 0.3rem;
+  color: hsl(var(--foreground));
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.user-menu-trigger:hover { border-color: hsl(var(--border) / 1); background: hsl(var(--accent) / 0.5); }
+.user-menu-trigger:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 2px; }
+.user-menu-trigger[aria-expanded="true"] { border-color: hsl(var(--primary)); background: hsl(var(--accent) / 0.5); }
+.user-menu-trigger .user-avatar {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1.7rem; height: 1.7rem;
+  border-radius: 50%;
+  background: hsl(var(--primary) / 0.14);
+  color: hsl(var(--primary));
+  font-family: var(--font-display);
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.02em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+.user-menu-trigger .chip { pointer-events: none; background: transparent; border: none; padding: 0; } .user-menu-trigger .chip-role { font-weight: normal; color: hsl(var(--muted-foreground)); text-transform: capitalize; } @media (max-width: 640px) { .user-menu-trigger .chip { display: none; } .user-menu-trigger { padding: 0.3rem; border-radius: 50%; border-color: transparent; background: transparent; } .user-menu-trigger .user-caret { display: none; } }
+.user-menu-trigger .user-caret { width: 14px; height: 14px; color: hsl(var(--muted-foreground)); flex-shrink: 0; }
+.user-menu-trigger[aria-expanded="true"] .user-caret { transform: rotate(180deg); }
+.user-caret { transition: transform 0.15s ease; }
+
+.user-menu-panel {
+  position: absolute; right: 0; top: calc(100% + 0.4rem);
+  z-index: 80;
+  min-width: 190px;
+  padding: 0.35rem;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 26px rgb(0 0 0 / 0.16);
+}
+.user-menu-panel[hidden] { display: none; }
+.user-menu-item {
+  display: block; width: 100%;
+  text-align: left;
+  padding: 0.45rem 0.7rem;
+  border: 0; border-radius: var(--radius-sm);
+  background: transparent;
+  color: hsl(var(--foreground));
+  font: inherit; font-size: 0.86rem;
+  cursor: pointer;
+}
+.user-menu-item:hover,
+.user-menu-item.is-active { background: hsl(var(--accent)); }
+.user-menu-item:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: -2px; }
+.user-menu-item.is-danger { color: hsl(var(--destructive)); }
+.user-menu-item.is-danger:hover,
+.user-menu-item.is-danger.is-active { background: hsl(var(--destructive) / 0.12); }
+.user-menu-panel hr { border: 0; border-top: 1px solid hsl(var(--border)); margin: 0.3rem 0; }
+
+/* ---------- Phase 3: command palette (⌘K) ---------- */
+.palette-trigger { flex-shrink: 0; }
+.palette-backdrop {
+  position: fixed; inset: 0; z-index: 120;
+  background: rgb(0 0 0 / 0.45);
+  display: flex; align-items: flex-start; justify-content: center;
+  padding: min(16vh, 7rem) 1rem 1rem;
+}
+.palette-backdrop[hidden] { display: none; }
+.palette {
+  width: min(560px, 100%);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-lg, 0.75rem);
+  box-shadow: 0 20px 60px rgb(0 0 0 / 0.3);
+  overflow: hidden;
+}
+.palette-title {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0);
+  margin: 0;
+}
+.palette-input {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  font: inherit; font-size: 0.95rem;
+  color: hsl(var(--foreground));
+  background: transparent;
+  border: 0; border-bottom: 1px solid hsl(var(--border));
+  outline: none;
+}
+.palette-input::placeholder { color: hsl(var(--muted-foreground)); }
+.palette-results { max-height: min(46vh, 380px); overflow-y: auto; padding: 0.4rem; }
+.palette-results[hidden] { display: none; }
+.palette-item {
+  display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 0; border-radius: var(--radius-sm);
+  background: transparent;
+  color: hsl(var(--foreground));
+  font: inherit; font-size: 0.88rem;
+  text-align: left;
+  cursor: pointer;
+}
+.palette-item.is-active { background: hsl(var(--accent)); }
+.palette-item.is-active .palette-item-hint { color: hsl(var(--primary)); }
+.palette-item-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.palette-item-hint { flex-shrink: 0; font-size: 0.72rem; color: hsl(var(--muted-foreground)); }
+.palette-empty {
+  margin: 0; padding: 1.25rem 1rem;
+  color: hsl(var(--muted-foreground));
+  font-size: 0.86rem; text-align: center;
+}
+.palette-foot {
+  display: flex; gap: 1rem; align-items: center;
+  padding: 0.55rem 1rem;
+  border-top: 1px solid hsl(var(--border));
+  color: hsl(var(--muted-foreground));
+  font-size: 0.7rem;
+}
+
+/* ---------- Phase 4: breadcrumb + action slot ---------- */
+.breadcrumb {
+  display: flex; align-items: center; gap: 0.4rem;
+  list-style: none;
+  margin: 0 0 0.45rem; padding: 0;
+  font-size: 0.75rem;
+  color: hsl(var(--muted-foreground));
+}
+.breadcrumb li { display: flex; align-items: center; gap: 0.4rem; }
+.breadcrumb li + li::before { content: "/"; color: hsl(var(--muted-foreground) / 0.6); }
+.breadcrumb a { color: hsl(var(--muted-foreground)); text-decoration: none; border-radius: 0.2rem; }
+.breadcrumb a:hover { color: hsl(var(--foreground)); text-decoration: underline; }
+.breadcrumb a:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 2px; }
+.breadcrumb span[aria-current="page"] { color: hsl(var(--foreground)); font-weight: 600; }
+.content-head .right { min-width: 0; }
+.content-actions {
+  display: inline-flex; gap: var(--space-2);
+  flex-shrink: 0;
+  margin-left: auto;
+}
+.content-actions .btn-ghost { white-space: nowrap; }
+
+/* ---------- PHASE 5: datatable controls, sticky header, density, columns ---------- */
+.table-toolbar {
+  display: flex; flex-wrap: wrap; gap: var(--space-2);
+  align-items: center;
+  padding: var(--space-3);
+  border-bottom: 1px solid hsl(var(--border));
+}
+.table-toolbar .table-ctl { position: relative; }
+.ctl-select {
+  appearance: none; -webkit-appearance: none;
+  font: inherit; font-size: 0.85rem;
+  color: hsl(var(--foreground));
+  background: transparent;
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius, 0.5rem);
+  padding: 0.35rem 1.6rem 0.35rem 0.6rem;
+  background-image: linear-gradient(45deg, transparent 50%, hsl(var(--muted-foreground)) 50%),
+    linear-gradient(135deg, hsl(var(--muted-foreground)) 50%, transparent 50%);
+  background-position: calc(100% - 0.75rem) 0.55rem, calc(100% - 0.6rem) 0.55rem;
+  background-size: 0.3rem 0.3rem;
+  background-repeat: no-repeat;
+  cursor: pointer;
+}
+.ctl-select:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 2px; }
+.cols-pop {
+  position: absolute; top: calc(100% + 6px); left: 0; z-index: 30;
+  min-width: 12rem;
+  padding: var(--space-2);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius, 0.5rem);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+  display: flex; flex-direction: column; gap: 0.2rem;
+}
+.cols-opt {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 0.9rem; color: hsl(var(--foreground));
+  padding: 0.3rem 0.4rem; border-radius: 0.3rem; cursor: pointer;
+}
+.cols-opt:hover { background: hsl(var(--muted) / 0.4); }
+.cols-opt input { accent-color: hsl(var(--primary)); }
+
+.table-scroll {
+  overflow: auto;
+  max-height: 62vh;
+  border-radius: var(--radius, 0.5rem);
+}
+.table-scroll .kit-table { --radius: 0; border-radius: 0; }
+.kit-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: hsl(var(--card, var(--background)));
+  box-shadow: inset 0 -1px 0 hsl(var(--border));
+}
+.kit-table.density-compact tbody td { padding-top: 0.35rem; padding-bottom: 0.35rem; }
+
+.pager-numbers { display: inline-flex; gap: 0.25rem; }
+.pager-btn {
+  font: inherit; font-size: 0.85rem;
+  color: hsl(var(--foreground));
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius, 0.5rem);
+  padding: 0.3rem 0.65rem;
+  cursor: pointer;
+}
+.pager-btn:not(:disabled):hover:not(.is-current) { background: hsl(var(--muted) / 0.4); }
+.pager-btn.is-current {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+.pager-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.pager-btn:focus-visible { outline: 2px solid hsl(var(--primary)); outline-offset: 2px; }
+
+/* ---------- PHASE 6: bulk select + export ---------- */
+.kit-table .td-select {
+  width: 2.4rem;
+  text-align: center;
+}
+.kit-table .td-select input { accent-color: hsl(var(--primary)); width: 1rem; height: 1rem; cursor: pointer; }
+.kit-table tbody tr.is-selected { background: hsl(var(--primary) / 0.08); }
+.kit-table tbody tr.is-selected:hover { background: hsl(var(--primary) / 0.12); }
+.kit-table tbody tr.is-selected td:first-child { box-shadow: inset 3px 0 0 hsl(var(--primary)); }
+
+.bulk-bar {
+  display: flex; align-items: center; gap: var(--space-2);
+  margin-top: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius, 0.5rem);
+}
+.bulk-label { font-weight: 600; font-size: 0.9rem; margin-right: auto; }
+.bulk-close {
+  font: inherit; color: hsl(var(--muted-foreground));
+  background: transparent; border: 0; cursor: pointer;
+  padding: 0 var(--space-1); border-radius: 0.3rem;
+}
+.bulk-close::before { content: "✕"; }
+.bulk-close:hover { color: hsl(var(--foreground)); background: hsl(var(--muted) / 0.4); }
+
+.kit-table .td-actions { white-space: nowrap; }
+.kit-table tbody .td-actions .btn-ghost {
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+.kit-table tbody tr:hover .td-actions .btn-ghost,
+.kit-table tbody tr:focus-within .td-actions .btn-ghost,
+.kit-table tbody tr.is-selected .td-actions .btn-ghost {
+  opacity: 1;
+}
+
+/* =====================================================================
+   Phase 10 — chart axes / gridlines / tooltips / skeletons
+   ===================================================================== */
+.chart-bars {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  gap: 0.35rem;
+  min-height: 8.5rem;
+}
+.chart-bars .bar {
+  justify-content: flex-end;
+  gap: 0.25rem;
+}
+.bar-grow {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.25rem;
+}
+.chart-bars .bar-fill {
+  position: relative;
+  min-height: 2px;
+  background: hsl(var(--primary));
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+}
+.chart-bars .bar:hover .bar-fill { background: hsl(var(--ring)); }
+.chart-grid {
+  display: flex;
+  align-self: stretch;
+  width: 100%;
+  gap: 0.5rem;
+  min-height: 8.5rem;
+  position: relative;
+  background-image: repeating-linear-gradient(
+    to top,
+    hsl(var(--border) / 0.45) 0 1px,
+    transparent 1px 50%
+  );
+}
+.chart-ticks {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-bottom: 1.1rem;
+  font-size: 0.62rem;
+  color: hsl(var(--muted-foreground));
+  min-width: 2.4rem;
+  text-align: right;
+}
+.chart-ticks span { line-height: 1; }
+.bar-skeleton {
+  flex: 1;
+  border-radius: var(--radius-sm);
+  background: linear-gradient(100deg, hsl(var(--muted)) 40%, hsl(var(--accent)) 50%, hsl(var(--muted)) 60%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+.chart:has(.bar-grid) { align-items: stretch; }
+.chart-bar-badges { display: none; }
+
+/* =====================================================================
+   Phase 12 — mobile off-canvas drawer
+   ===================================================================== */
+.topbar-burger { display: none; }
+
+@media (max-width: 1023.98px) {
+  .shell { position: relative; }
+  .sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: min(286px, 86vw);
+    max-width: 86vw;
+z-index: 60;
+    transform: translateX(-102%);
+    transition: transform var(--dur-base) var(--ease-out);
+    border-right: 1px solid hsl(var(--border));
+  }
+  .shell.is-drawer-open .sidebar {
+    transform: translateX(0);
+    box-shadow: 0 24px 70px rgb(0 0 0 / 0.4);
+  }
+  .drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 55;
+    background: rgb(0 0 0 / 0.45);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--dur-fast) var(--ease-in-out);
+  }
+  .shell.is-drawer-open .drawer-backdrop { opacity: 1; pointer-events: auto; }
+#sidebar-collapse { display: none; }
+  .topbar-burger { display: inline-flex; }
+}
+/* ---------- crafted micro-motion (hand-tuned curves, no stock timings) ---------- */
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+.ticket-panel { animation: rise-in var(--dur-slow) var(--ease-out) both; }
+.badge { transition: transform var(--dur-fast) var(--ease-spring); }
+.badge:hover { transform: translateY(-1px); }
+.toast { transition: transform var(--dur-base) var(--ease-out), opacity var(--dur-fast) var(--ease-in-out); }
+.td-actions .btn-ghost { transition: opacity var(--dur-fast) var(--ease-in-out); }
+/* ---------- Refinements ---------- */
+.text-right { text-align: right; }
+.td-actions { position: sticky; right: 0; background: hsl(var(--card)); z-index: 2; box-shadow: -4px 0 12px hsl(var(--background) / 0.5); }
+@media (max-width: 640px) { .chart-bars { padding-bottom: 2rem; } .chart-bar .bar-label { transform: rotate(-45deg); transform-origin: top right; } }
+
+@media (max-width: 640px) { .kit-modal.is-medium, .palette { border-radius: var(--radius-xl) var(--radius-xl) 0 0; top: auto; bottom: 0; transform: translateY(0); width: 100%; max-height: 80vh; } }
+
+@media (min-width: 641px) { .topbar-right > .icon-btn { position: relative; } .topbar-right > .icon-btn:last-of-type::after { content: ''; position: absolute; right: -1rem; top: 15%; bottom: 15%; width: 1px; background: hsl(var(--border)); } .user-menu { margin-left: 1rem; } }
+
+/* =====================================================================
+   Settings split-screen layout
+   ===================================================================== */
+.settings-layout {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: var(--space-6);
+  align-items: start;
+  padding: 0 var(--space-5) var(--space-6);
+}
+.settings-nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  position: sticky;
+  top: calc(var(--topbar-h, 3.5rem) + var(--space-4));
+}
+.settings-nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: hsl(var(--muted-foreground));
+  text-decoration: none;
+  transition: background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);
+}
+.settings-nav-item svg { width: 1rem; height: 1rem; flex-shrink: 0; }
+.settings-nav-item:hover { background: hsl(var(--accent)); color: hsl(var(--accent-foreground)); }
+.settings-nav-item.is-active { background: hsl(var(--accent)); color: hsl(var(--primary)); font-weight: 600; }
+.settings-panels { display: flex; flex-direction: column; gap: var(--space-5); }
+.settings-section { animation: rise-in var(--dur-slow) var(--ease-out) both; }
+.settings-form-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid hsl(var(--border));
+}
+.settings-save-status { font-size: 0.8rem; font-weight: 500; }
+.settings-hint { font-size: 0.75rem; font-weight: 400; color: hsl(var(--muted-foreground)); margin-left: var(--space-1); }
+.settings-loading { padding: var(--space-4); }
+.settings-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-3);
+}
+.settings-summary-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-3);
+  background: hsl(var(--muted) / 0.5);
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+}
+.settings-summary-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: hsl(var(--muted-foreground));
+}
+.settings-summary-value {
+  font-size: 1rem;
+  font-weight: 700;
+  color: hsl(var(--foreground));
+  font-variant-numeric: tabular-nums;
+}
+/* btn-primary for settings save */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border: none;
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-spring);
+}
+.btn-primary:hover { opacity: 0.88; transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+@media (max-width: 768px) {
+  .settings-layout { grid-template-columns: 1fr; }
+  .settings-nav { flex-direction: row; flex-wrap: wrap; position: static; }
+}
+
+/* =====================================================================
+   Dashboard activity feed
+   ===================================================================== */
+.activity-feed { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0; }
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid hsl(var(--border) / 0.5);
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.activity-item:last-child { border-bottom: none; }
+.activity-item:hover { background: hsl(var(--accent) / 0.4); }
+.activity-dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: hsl(var(--primary));
+  margin-top: 0.35rem;
+  flex-shrink: 0;
+}
+.activity-dot.is-review { background: hsl(var(--ring)); }
+.activity-dot.is-contact { background: hsl(var(--chart-3, 220 70% 60%)); }
+.activity-body { flex: 1; min-width: 0; }
+.activity-text { font-size: 0.875rem; line-height: 1.4; color: hsl(var(--foreground)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.activity-meta { font-size: 0.75rem; color: hsl(var(--muted-foreground)); margin-top: 0.15rem; }
+
+</style>
+</head>
+<body data-page="admin" data-module="reviews">
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="sidebar-brand"><span class="brand-mark" aria-hidden="true">IT</span><div class="sidebar-brand-inner"><span class="brand-gate">ITINARI · ADM</span><span class="brand">Departure Control</span></div><button type="button" id="sidebar-collapse" class="icon-btn collapse-btn" aria-label="Collapse sidebar" aria-expanded="true" aria-keyshortcuts="Control+B Meta+B"><span class="icon-panel-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="9" y1="4" x2="9" y2="20"/></svg></span><span class="icon-panel-right"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="15" y1="4" x2="15" y2="20"/></svg></span></button></div>
+      <nav class="nav" aria-label="Admin">
+        <a href="index.html" class="nav-item" title="Dashboard"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></span><span class="nav-label">Dashboard</span></a>
+        <span class="nav-section">Content</span>
+        <a href="users.html" class="nav-item" title="Users"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span><span class="nav-label">Users</span></a>
+        <a href="trips.html" class="nav-item" title="Trips"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></svg></span><span class="nav-label">Trips</span></a>
+        <a href="destinations.html" class="nav-item" title="Destinations"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg></span><span class="nav-label">Destinations</span></a>
+        <a href="hotels.html" class="nav-item" title="Hotels"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6"/><path d="M18 9h2a2 2 0 0 1 2 2v9"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg></span><span class="nav-label">Hotels</span></a>
+        <a href="restaurants.html" class="nav-item" title="Restaurants"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg></span><span class="nav-label">Restaurants</span></a>
+        <a href="countries.html" class="nav-item" title="Countries"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1Z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></span><span class="nav-label">Countries</span></a>
+        <a href="attractions.html" class="nav-item" title="Attractions"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3Z"/><circle cx="12" cy="13" r="3"/></svg></span><span class="nav-label">Attractions</span></a>
+        <a href="reviews.html" class="nav-item is-active" aria-current="page"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"/><path d="M8 9h8"/><path d="M8 13h5"/></svg></span><span class="nav-label">Reviews</span></a>
+        <span class="nav-section">Operations</span>
+        <a href="analytics.html" class="nav-item" title="Analytics"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg></span><span class="nav-label">Analytics</span></a>
+        <a href="settings.html" class="nav-item" title="Settings"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg></span><span class="nav-label">Settings</span></a>
+      </nav>
+      <div class="sidebar-foot">
+        <button type="button" id="logout-btn" class="btn-ghost btn-block sidebar-logout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span class="nav-label">Log out</span></button>
+      </div>
+    </aside>
+
+    <main id="main" class="content">
+      <div class="topbar">
+        <div class="topbar-right">
+          <button type="button" id="theme-toggle" class="icon-btn" aria-pressed="false" aria-label="Toggle theme"><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.9" y1="4.9" x2="6.3" y2="6.3"/><line x1="17.7" y1="17.7" x2="19.1" y2="19.1"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.9" y1="19.1" x2="6.3" y2="17.7"/><line x1="17.7" y1="6.3" x2="19.1" y2="4.9"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
+        </div>
+      </div>
+      <header class="content-head">
+        <div class="right">
+          <p class="label-eyebrow" style="margin: 0 0 0.35rem;">GATE M-01 · REVIEWS</p>
+          <h1>Reviews</h1>
+          <p class="view-sub">Moderation, ratings, comments</p>
+        </div>
+        <span id="user-chip" class="chip" hidden>
+          <span id="chip-name"></span>
+          <span id="chip-role" class="chip-role"></span>
+        </span>
+      </header>
+
+      <div class="kit-toolbar" style="margin-bottom: var(--space-4);">
+          <label class="table-search-group">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+  <input id="global-search" class="table-search" type="search" placeholder="Search..." autocomplete="off" aria-label="Search records" />
+</label>
+        <button type="button" id="btn-new" class="btn-ghost" hidden>New review</button>
+      </div>
+
+      <section class="ticket ticket-panel" aria-label="Countries">
+        <div id="reviews-table" class="panel-body"></div>
+      </section>
+    </main>
+  </div>
+
+  <div id="modal-root"></div>
+
+  <div id="site-banner" role="status">
+    <span id="site-banner-msg"></span><span id="site-banner-drain" aria-hidden="true"></span>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script>
+/* inlined: ../assets/js/config.js?v=1786177601 */
+/**
+ * config.js — global constants + token helpers. No DOM, no animation.
+ * Load this before api.js / auth.js.
+ */
+(function (global) {
+  "use strict";
+
+  var CONFIG = {
+    apiBase: "http://127.0.0.1:8001/api",
+    // frontend static pages (served from this site's root, e.g. :8080)
+    dashboardUrl: "/dashboard.html",
+    adminUrl: "/admin/index.html",
+    tokenKey: "itinari_token",
+    // token persistence: "localStorage" | "memory"
+    tokenStorage: "localStorage",
+    routes: {
+      login: "/login",
+      register: "/register",
+      forgot: "/forgot-password",
+      reset: "/reset-password",
+      resend: "/email/resend",
+      me: "/user",
+      logout: "/logout",
+    },
+    // role → landing/gate mapping (phase 8)
+    role: {
+      dashboard: "/dashboard.html",
+      admin: "/admin/index.html",
+      super_admin: "/admin/index.html",
+    },
+  };
+
+  var memoryToken = null;
+
+  function storeToken(tok) {
+    if (CONFIG.tokenStorage === "memory") {
+      memoryToken = tok;
+      return;
+    }
+    try { localStorage.setItem(CONFIG.tokenKey, tok); } catch (e) { /* private mode */ }
+  }
+
+  function readToken() {
+    if (CONFIG.tokenStorage === "memory") return memoryToken;
+    try { return localStorage.getItem(CONFIG.tokenKey); } catch (e) { return null; }
+  }
+
+  function clearToken() {
+    memoryToken = null;
+    try { localStorage.removeItem(CONFIG.tokenKey); } catch (e) {}
+  }
+
+  global.Itinari = global.Itinari || {};
+  global.Itinari.CONFIG = CONFIG;
+  global.Itinari.storeToken = storeToken;
+  global.Itinari.readToken = readToken;
+  global.Itinari.clearToken = clearToken;
+})(window);
+</script>
+  <script>
+/* inlined: ../assets/js/api.js */
+/**
+ * api.js — transport layer. Pure HTTP. No animation, no DOM state.
+ * Depends on config.js (window.Itinari.CONFIG / storeToken).
+ */
+(function (global) {
+  "use strict";
+
+  const It = global.Itinari;
+
+  /**
+   * Core request. method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE".
+   * opts.auth  → attach `Authorization: Bearer <token>` from storage (no-op if absent).
+   * opts.headers → extra headers merged in.
+   * Returns { ok, status, body }.
+   * Non-2xx surfaces as ok:false. Network errors throw Error with name "NetworkError".
+   */
+  async function request(method, path, data, opts) {
+    opts = opts || {};
+    const headers = Object.assign(
+      { Accept: "application/json" },
+      (opts.headers || {})
+    );
+    if (data !== undefined) headers["Content-Type"] = "application/json";
+    
+    // Auto-attach token for any apiBase request
+    const token = It.readToken();
+    if (token) {
+      headers["Authorization"] = "Bearer " + token;
+    }
+
+    let res;
+    try {
+      res = await fetch(It.CONFIG.apiBase + path, {
+        method: method,
+        headers: headers,
+        body: data !== undefined ? JSON.stringify(data) : undefined,
+      });
+    } catch (e) {
+      const err = new Error("Could not reach the server. Please try again.");
+      err.name = "NetworkError";
+      throw err;
+    }
+
+    let body = {};
+    try { body = await res.json(); }
+    catch (e) { body = {}; }
+
+    // Centralized 401 Unauthorized interceptor
+    if (res.status === 401 && It.session && typeof It.session.logout === "function") {
+      if (path !== It.CONFIG.routes.logout) {
+        It.session.clearSession();
+        It.session.redirectToLogin();
+      }
+    }
+
+    return { ok: res.ok, status: res.status, body };
+  }
+
+  /** POST JSON to an API route. See request(). */
+  function apiPost(path, data, opts) {
+    return request("POST", path, data, opts);
+  }
+
+  /** GET from an API route. opts.auth attaches Bearer automatically. */
+  function apiGet(path, opts) {
+    return request("GET", path, undefined, opts);
+  }
+
+  /** PUT JSON to an API route. */
+  function apiPut(path, data, opts) {
+    return request("PUT", path, data, opts);
+  }
+
+  /** PATCH JSON to an API route. */
+  function apiPatch(path, data, opts) {
+    return request("PATCH", path, data, opts);
+  }
+
+  /** DELETE a resource. */
+  function apiDelete(path, opts) {
+    return request("DELETE", path, undefined, opts);
+  }
+
+  /** Pull a JWT/token out of Laravel-style responses (token, access_token, or nested data). */
+  function extractToken(body) {
+    if (!body || typeof body !== "object") return null;
+    if (body.token) return body.token;
+    if (body.access_token) return body.access_token;
+    if (body.data) return extractToken(body.data);
+    return null;
+  }
+
+  /** The (errors) map is per-field arrays. Returns type JsonObject if present. */
+  function isFieldErrors(body) {
+    return !!(body && body.errors && typeof body.errors === "object");
+  }
+
+  It.apiPost = apiPost;
+  It.apiGet = apiGet;
+  It.apiPut = apiPut;
+  It.apiPatch = apiPatch;
+  It.apiDelete = apiDelete;
+  It.extractToken = extractToken;
+  It.isFieldErrors = isFieldErrors;
+})(window);
+</script>
+  <script>
+/* inlined: ../assets/js/animations.js?v=3 */
+/**
+ * animations.js — GSAP feedback layer. THE ONLY place that touches GSAP.
+ * Swappable: to switch animation engines, replace this file and keep the
+ * identical API surface (Itinari.feedback.*). No form logic lives here.
+ */
+(function (global) {
+  "use strict";
+
+  const It = (global.Itinari = global.Itinari || {});
+
+  function reducedMotion() {
+    return (
+      global.matchMedia &&
+      global.matchMedia("(prefers-reduced-motion: reduce)").matches
+    );
+  }
+
+  /** subtle horizontal shake + red border flash on a single input */
+  function shakeField(inputEl) {
+    if (!inputEl) return;
+    inputEl.classList.add("is-invalid-ring");
+    const g = global.gsap;
+    if (!g || reducedMotion()) {
+      window.setTimeout(function () {
+        inputEl.classList.remove("is-invalid-ring");
+      }, 600);
+      return;
+    }
+    g.killTweensOf(inputEl);
+    g.fromTo(
+      inputEl,
+      { x: 0 },
+      {
+        x: 6,
+        duration: 0.05,
+        repeat: 5,
+        yoyo: true,
+        ease: "sine.inOut",
+        onComplete: function () {
+          g.set(inputEl, { x: 0, clearProps: "x" });
+          inputEl.classList.remove("is-invalid-ring");
+        },
+      }
+    );
+  }
+
+  /** soft green pass flicker on an input that just validated clean */
+  function validFlicker(inputEl) {
+    if (!inputEl) return;
+    const g = global.gsap;
+    if (!g || reducedMotion()) return;
+    g.killTweensOf(inputEl);
+    g.fromTo(
+      inputEl,
+      { boxShadow: "0 0 0 3px rgba(88,180,137,0)" },
+      { boxShadow: "0 0 0 3px rgba(88,180,137,0.35)", duration: 0.18, repeat: 1, yoyo: true, ease: "power1.out" }
+    );
+  }
+
+  /** big success pulse on the whole form/card (after a 2xx) */
+  function successPulse(formEl) {
+    if (!formEl) return;
+    const g = global.gsap;
+    if (!g || reducedMotion()) return;
+    g.fromTo(
+      formEl,
+      { opacity: 0.92, scale: 0.995 },
+      { opacity: 1, scale: 1, duration: 0.45, ease: "power2.out" }
+    );
+  }
+
+  /** toggle a button's loading state (disabled + spinner via class) */
+  function loading(btn, on) {
+    if (!btn) return;
+    btn.classList.toggle("is-loading", on);
+    btn.disabled = on;
+    btn.setAttribute("aria-busy", String(on));
+  }
+
+  /** reveal / update a success note */
+  function flashNote(el, msgOrNull) {
+    if (!el) return;
+    if (msgOrNull !== undefined && msgOrNull !== null) el.textContent = msgOrNull;
+    const g = global.gsap;
+    if (!g || reducedMotion()) {
+      el.style.opacity = "1";
+      el.classList.add("is-show");
+      return;
+    }
+    g.killTweensOf(el);
+    g.fromTo(el, { autoAlpha: 0, y: 6 }, { autoAlpha: 1, y: 0, duration: 0.3, ease: "power2.out" });
+    el.classList.add("is-show");
+  }
+
+  /** global banner (fixed bottom) for server-level errors + success toasts */
+  function banner(msg, tone) {
+    const el = document.getElementById("site-banner");
+    if (!el) return;
+    const msgEl = document.getElementById("site-banner-msg");
+    if (msgEl) msgEl.textContent = msg;
+    el.classList.remove("is-error", "is-info", "is-ok");
+    if (tone) el.classList.add(tone);
+
+    const g = global.gsap;
+    if (g && !reducedMotion()) {
+      g.killTweensOf(el);
+      g.fromTo(el, { autoAlpha: 0, y: 12 }, { autoAlpha: 1, y: 0, duration: 0.35, ease: "power2.out" });
+    }
+    el.classList.add("is-show");
+
+    const drain = document.getElementById("site-banner-drain");
+    if (drain) {
+      if (g && !reducedMotion()) {
+        g.killTweensOf(drain);
+        g.set(drain, { transformOrigin: "left center", scaleX: 1 });
+        g.to(drain, { scaleX: 0, duration: 5, ease: "linear" });
+      } else {
+        drain.style.transform = "scaleX(1)";
+      }
+    }
+
+    clearTimeout(banner.__t);
+    banner.__t = setTimeout(function () {
+      if (g && !reducedMotion()) {
+        g.killTweensOf(el);
+        g.to(el, { autoAlpha: 0, y: 12, duration: 0.25, ease: "power2.in", onComplete: function () {
+          el.classList.remove("is-show");
+        } });
+      } else {
+        el.classList.remove("is-show");
+      }
+    }, 5000);
+  }
+
+  /** toast stack (bottom-right) — Phase 17 shadcn-style notifications */
+  function toast(msg, tone, opts) {
+    const g = global.gsap;
+    const stack = document.querySelector(".toast-stack") ||
+      (function () {
+        const s = document.createElement("div");
+        s.className = "toast-stack";
+        s.setAttribute("aria-live", "polite");
+        s.setAttribute("aria-relevant", "additions");
+        document.body.appendChild(s);
+        return s;
+      })();
+
+    const t = document.createElement("div");
+    t.className = "toast " + (tone || "is-info");
+    if (tone === "ok") t.setAttribute("role", "status");
+    else if (tone === "error") t.setAttribute("role", "alert");
+    const icon = document.createElement("span");
+    icon.className = "toast-icon";
+    icon.setAttribute("aria-hidden", "true");
+    icon.textContent = tone === "ok" ? "OK" : tone === "error" ? "!" : "i";
+    const text = document.createElement("span");
+    text.textContent = msg;
+    const close = document.createElement("button");
+    close.type = "button";
+    close.className = "toast-close";
+    close.setAttribute("aria-label", "Dismiss");
+    close.textContent = "\u00d7";
+    const drain = document.createElement("span");
+    drain.className = "toast-drain";
+    drain.setAttribute("aria-hidden", "true");
+    t.appendChild(icon);
+    t.appendChild(text);
+    t.appendChild(close);
+    t.appendChild(drain);
+
+    const action = (opts && opts.action) || null;
+    const holdMs = action ? 9000 : 4300;
+    if (action) t.classList.add("is-action");
+
+    function dismiss() {
+      if (g && !reducedMotion()) {
+        g.to(t, { autoAlpha: 0, y: 6, duration: 0.2, ease: "power2.in", onComplete: function () { t.remove(); } });
+      } else {
+        t.remove();
+      }
+    }
+    if (action) {
+      const undo = document.createElement("button");
+      undo.type = "button";
+      undo.className = "toast-undo";
+      undo.textContent = action.label || "Undo";
+      undo.addEventListener("click", function () {
+        clearTimeout(t.__t);
+        dismiss();
+        if (typeof action.onClick === "function") action.onClick();
+      });
+      t.appendChild(undo);
+      t.querySelector(".toast-close").addEventListener("click", function () { clearTimeout(t.__t); dismiss(); });
+    }
+
+    stack.appendChild(t);
+
+    if (g && !reducedMotion()) {
+      g.fromTo(t, { autoAlpha: 0, y: 10, scale: 0.97 }, { autoAlpha: 1, y: 0, scale: 1, duration: 0.25, ease: "power2.out" });
+      g.fromTo(drain, { scaleX: 1 }, { scaleX: 0, duration: holdMs / 1000, ease: "linear", delay: 0.2 });
+    } else {
+      drain.style.transform = "scaleX(1)";
+      drain.style.transition = "transform " + (holdMs / 1000) + "s linear 0.2s";
+      drain.style.transformOrigin = "left center";
+    }
+
+    close.addEventListener("click", dismiss);
+    t.__t = setTimeout(dismiss, holdMs + 200);
+    while (stack.children.length > 4) stack.firstElementChild.remove();
+  }
+
+  It.feedback = {
+    shakeField: shakeField,
+    validFlicker: validFlicker,
+    successPulse: successPulse,
+    loading: loading,
+    flashNote: flashNote,
+    banner: banner,
+    toast: toast,
+  };
+})(window);
+</script>
+  <script>
+/* inlined: ../assets/js/session.js */
+/**
+ * session.js — auth/session + role resolution.
+ * Depends on config.js (CONFIG, readToken, clearToken) + api.js (apiGet, apiPost).
+ * No DOM, no animation.
+ */
+(function (global) {
+  "use strict";
+
+  const It = global.Itinari;
+
+  // cached profile so boot role resolution hits /api/user at most once
+  let _user = null;
+
+  /** Decode a JWT payload (display only — no signature verification). */
+  function decodeJwt(token) {
+    if (!token) return null;
+    try {
+      const part = token.split(".")[1];
+      if (!part) return null;
+      const b64 = part.replace(/-/g, "+").replace(/_/g, "/");
+      const json = decodeURIComponent(
+        atob(b64).split("").map(function (c) {
+          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join("")
+      );
+      return JSON.parse(json);
+    } catch (e) { return null; }
+  }
+
+  /** Payload of stored token (sub/id). Null when no token or undecodable. */
+  function tokenPayload() {
+    const token = It.readToken();
+    if (!token) return null;
+    return decodeJwt(token);
+  }
+
+  function hasToken() {
+    return !!It.readToken();
+  }
+
+  /** First meaningful/role from a user's roles list. */
+  function roleOf(user) {
+    if (!user) return null;
+    let list = user.roles || user.role;
+    if (typeof list === "string") list = [list];
+    list = list || [];
+    if (list.indexOf("super_admin") !== -1) return "super_admin";
+    if (list.indexOf("admin") !== -1) return "admin";
+    return list.length ? list[0] : null;
+  }
+
+  function isAdminRole(role) {
+    return role === "admin" || role === "super_admin";
+  }
+
+  /**
+   * Resolve current user: cached profile, else GET /api/user (Bearer).
+   * Resolves null on no token / failure. Never throws.
+   */
+  async function currentUser() {
+    if (_user) return _user;
+    const payload = tokenPayload();
+    if (!payload) return null;
+    try {
+      const res = await It.apiGet(It.CONFIG.routes.me, { auth: true });
+      if (res.ok && res.body && res.body.success && res.body.user) {
+        _user = res.body.user;
+        return _user;
+      }
+    } catch (e) { /* network — caller decides */ }
+    return null;
+  }
+
+  /**
+   * Async boot guard. Returns { user, role, redirected }.
+   * - no token  → redirect to login, redirected:true
+   * - token but user fetch fails → still acknowledges token (defensive)
+   */
+  async function resolveSession() {
+    if (!hasToken()) {
+      redirectToLogin();
+      return { user: null, role: null, redirected: true };
+    }
+    const user = await currentUser();
+    if (!user) {
+      clearSession();
+      redirectToLogin();
+      return { user: null, role: null, redirected: true };
+    }
+    return { user: user, role: roleOf(user), redirected: false };
+  }
+
+  /** Sync gate for pages that can redirect before async work (cheap). */
+  function requireAuth() {
+    if (hasToken()) return false;
+    redirectToLogin();
+    return true;
+  }
+
+  function redirectToLogin() {
+    global.location.replace("/login.html");
+  }
+
+  function clearSession() {
+    _user = null;
+    It.clearToken();
+  }
+
+  /** POST logout (best-effort), then wipe local session + go to login. */
+  async function logout() {
+    try {
+      await It.apiPost(It.CONFIG.routes.logout, {}, { auth: true });
+    } catch (e) { /* best-effort */ }
+    clearSession();
+    redirectToLogin();
+  }
+
+  It.session = {
+    hasToken: hasToken,
+    tokenPayload: tokenPayload,
+    decodeJwt: decodeJwt,
+    roleOf: roleOf,
+    isAdminRole: isAdminRole,
+    currentUser: currentUser,
+    bootAuth: resolveSession,
+    requireAuth: requireAuth,
+    redirectToLogin: redirectToLogin,
+    clearSession: clearSession,
+    logout: logout,
+  };
+})(window);
+</script>
+  <script>
+/* inlined: ../assets/js/admin-chrome.js?v=12 */
+/**
+ * admin-chrome.js — shared admin chrome (Phase 17).
+ * Theme toggle (.dark from tokens.css), sidebar collapse, active nav
+ * highlight, global search bus, modal ESC + body scroll-lock.
+ * Depends on config/api/session; included by every admin/*.html.
+ */
+(function (global) {
+  "use strict";
+
+  const THEME_KEY = "itinari_theme";
+  const SIDEBAR_KEY = "itinari_sidebar";
+
+  function el(id) { return document.getElementById(id); }
+
+  function systemDark() {
+    return !!(global.matchMedia && global.matchMedia("(prefers-color-scheme: dark)").matches);
+  }
+
+  function currentMode() {
+    try { return global.localStorage.getItem(THEME_KEY) || "system"; } catch (e) { return "system"; }
+  }
+
+  function applyTheme(mode, persist) {
+    const dark = mode === "dark" || (mode === "system" && systemDark());
+    document.documentElement.classList.toggle("dark", dark);
+    const btn = el("theme-toggle");
+    if (btn) {
+      btn.setAttribute("aria-pressed", String(dark));
+      btn.classList.toggle("is-dark", dark);
+      btn.setAttribute("aria-label", "Theme: " + (mode === "system" ? "System" : dark ? "Dark" : "Light"));
+    }
+    if (persist) {
+      try { global.localStorage.setItem(THEME_KEY, mode); } catch (e) { /* private mode */ }
+    }
+  }
+
+  function initTheme() {
+    applyTheme(currentMode(), false);
+    const mql = global.matchMedia && global.matchMedia("(prefers-color-scheme: dark)");
+    if (mql && mql.addEventListener) {
+      mql.addEventListener("change", function () { applyTheme(currentMode(), false); });
+    }
+    const btn = el("theme-toggle");
+    if (btn) btn.addEventListener("click", function () {
+      const next = document.documentElement.classList.contains("dark") ? "light" : "dark";
+      applyTheme(next, true);
+    });
+  }
+
+  function setCollapsed(shell, btn, collapsed) {
+    shell.classList.toggle("is-collapsed", collapsed);
+    btn.setAttribute("aria-expanded", String(!collapsed));
+    btn.setAttribute("aria-label", collapsed ? "Expand sidebar" : "Collapse sidebar");
+  }
+
+  function initSidebar() {
+    const btn = el("sidebar-collapse");
+    const shell = document.querySelector(".shell");
+    if (!btn || !shell) return;
+    let collapsed = false;
+    try { collapsed = global.localStorage.getItem(SIDEBAR_KEY) === "1"; } catch (e) { /* ignore */ }
+    setCollapsed(shell, btn, collapsed);
+    function toggle() {
+      collapsed = !collapsed;
+      setCollapsed(shell, btn, collapsed);
+      try { global.localStorage.setItem(SIDEBAR_KEY, collapsed ? "1" : "0"); } catch (e) { /* ignore */ }
+    }
+    btn.addEventListener("click", toggle);
+    global.document.addEventListener("keydown", function (e) {
+      var target = e.target;
+      if (target && target.closest && target.closest("input, textarea, select, [contenteditable]")) return;
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "b") {
+        e.preventDefault();
+        toggle();
+      }
+    });
+  }
+
+  function initActiveNav() {
+    const path = global.location.pathname.split("/").pop() || "index.html";
+    document.querySelectorAll(".nav-item").forEach(function (a) {
+      const href = (a.getAttribute("href") || "").split("?")[0].split("#")[0];
+      a.classList.toggle("is-active", href === path);
+    });
+  }
+
+  function initSearch() {
+    const input = el("global-search");
+    if (!input) return;
+    input.addEventListener("input", function () {
+      document.dispatchEvent(new CustomEvent("admin:search", { detail: input.value }));
+    });
+  }
+
+  function syncScrollLock() {
+    const open = !!document.querySelector(".kit-modal-backdrop") || !!document.querySelector(".kit-modal[open], [aria-modal='true']:not([hidden])");
+    document.body.classList.toggle("is-modal-open", open);
+  }
+
+  function initModalHandling() {
+    const mo = new MutationObserver(syncScrollLock);
+    mo.observe(document.body, { childList: true, subtree: true });
+    global.document.addEventListener("keydown", function (e) {
+      if (e.key !== "Escape") return;
+      const backdrop = document.querySelector(".kit-modal-backdrop");
+      if (!backdrop) return;
+      e.stopPropagation();
+      const root = el("modal-root");
+      if (root) root.textContent = "";
+      if (global.Itinari && global.Itinari.kit && global.Itinari.kit.closeModal) {
+        global.Itinari.kit.closeModal();
+      }
+      syncScrollLock();
+    });
+  }
+
+  function initialsOf(name) {
+    const n = String(name || "").trim();
+    if (!n) return "U";
+    const parts = n.split(/\s+/);
+    return (parts[0][0] || "") + (parts.length > 1 ? (parts[parts.length - 1][0] || "") : "").toUpperCase();
+  }
+
+  function initUserMenu() {
+    const chip = el("user-chip");
+    if (!chip) return;
+
+    const wrap = document.createElement("div");
+    wrap.className = "user-menu";
+    wrap.id = "user-menu";
+
+    const trigger = document.createElement("button");
+    trigger.type = "button";
+    trigger.className = "user-menu-trigger";
+    trigger.id = "user-menu-trigger";
+    trigger.setAttribute("aria-haspopup", "menu");
+    trigger.setAttribute("aria-expanded", "false");
+    trigger.setAttribute("aria-label", "Account menu");
+
+    const avatar = document.createElement("span");
+    avatar.className = "user-avatar";
+    avatar.setAttribute("aria-hidden", "true");
+
+    const caret = document.createElement("svg");
+    caret.className = "user-caret";
+    caret.setAttribute("viewBox", "0 0 24 24");
+    caret.setAttribute("fill", "none");
+    caret.setAttribute("stroke", "currentColor");
+    caret.setAttribute("stroke-width", "2");
+    caret.setAttribute("stroke-linecap", "round");
+    caret.setAttribute("stroke-linejoin", "round");
+    caret.setAttribute("aria-hidden", "true");
+    caret.innerHTML = '<path d="m6 9 6 6 6-6"/>';
+
+    trigger.appendChild(avatar);
+
+    const panel = document.createElement("div");
+    panel.className = "user-menu-panel";
+    panel.id = "user-menu-panel";
+    panel.setAttribute("role", "menu");
+    panel.setAttribute("aria-labelledby", "user-menu-trigger");
+    panel.hidden = true;
+
+    const items = [
+      { label: "Profile", id: "user-menu-profile", action: function () { window.location.href = "user-details.html?id=current"; } },
+      { label: "Manage account", id: "user-menu-account", action: function () { window.location.href = "user-details.html?id=current"; } },
+    ];
+    items.forEach(function (it) {
+      const item = document.createElement("button");
+      item.type = "button";
+      item.className = "user-menu-item";
+      item.id = it.id;
+      item.setAttribute("role", "menuitem");
+      item.tabIndex = -1;
+      item.textContent = it.label;
+      item.addEventListener("click", function () {
+        close();
+        it.action();
+      });
+      panel.appendChild(item);
+    });
+
+    panel.appendChild(document.createElement("hr"));
+
+    const logout = document.createElement("button");
+    logout.type = "button";
+    logout.className = "user-menu-item is-danger";
+    logout.id = "user-menu-signout";
+    logout.setAttribute("role", "menuitem");
+    logout.tabIndex = -1;
+    logout.textContent = "Sign out";
+    logout.addEventListener("click", function () {
+      close();
+      if (global.Itinari && global.Itinari.session && global.Itinari.session.logout) {
+        global.Itinari.session.logout();
+      }
+    });
+    panel.appendChild(logout);
+
+    /* observe chip so all per-page renderProfile() fills keep working */
+    const render = function () {
+      const uname = document.getElementById("chip-name");
+      if (uname && uname.textContent) avatar.textContent = initialsOf(uname.textContent);
+    };
+
+    chip.parentNode.insertBefore(wrap, chip);
+    wrap.appendChild(trigger);
+    wrap.appendChild(panel);
+    trigger.appendChild(chip);
+    trigger.appendChild(caret);
+    chip.classList.add("is-inline");
+
+    var menuItems = function () {
+      return Array.prototype.slice.call(panel.querySelectorAll('[role="menuitem"]'));
+    };
+    var indexOf = function (item) { return menuItems().indexOf(item); };
+    var activeIndex = 0;
+
+    function open() {
+      activeIndex = 0;
+      trigger.setAttribute("aria-expanded", "true");
+      panel.hidden = false;
+      const setItem = setActive.bind(null);
+      setItem(0);
+    }
+    function setActive(i) {
+      const list = menuItems();
+      list.forEach(function (el2, idx) { el2.classList.toggle("is-active", idx === i); });
+      activeIndex = i;
+    }
+    function close() {
+      trigger.setAttribute("aria-expanded", "false");
+      panel.hidden = true;
+      menuItems().forEach(function (el2) { el2.classList.remove("is-active"); });
+    }
+
+    trigger.addEventListener("click", function () {
+      if (panel.hidden) { open(); } else { close(); }
+    });
+
+    trigger.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter" || e.key === " ") {
+        if (panel.hidden) {
+          e.preventDefault();
+          open();
+        }
+      }
+      if (!panel.hidden && e.key === "ArrowDown") {
+        e.preventDefault();
+        const list = menuItems();
+        activeIndex = (activeIndex + 1) % list.length;
+        setActive(activeIndex);
+        list[activeIndex].focus();
+      }
+      if (!panel.hidden && e.key === "ArrowUp") {
+        e.preventDefault();
+        const list = menuItems();
+        activeIndex = (activeIndex - 1 + list.length) % list.length;
+        setActive(activeIndex);
+        list[activeIndex].focus();
+      }
+      if (!panel.hidden && e.key === "Tab") {
+        e.preventDefault();
+        close();
+        trigger.focus();
+      }
+    });
+
+    panel.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        e.preventDefault();
+        close();
+        trigger.focus();
+      }
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        const list = menuItems();
+        activeIndex = (activeIndex + 1) % list.length;
+        setActive(activeIndex);
+        list[activeIndex].focus();
+      }
+      if (e.key === "ArrowUp") {
+        e.preventDefault();
+        const list = menuItems();
+        activeIndex = (activeIndex - 1 + list.length) % list.length;
+        setActive(activeIndex);
+        list[activeIndex].focus();
+      }
+      if (e.key === "Home") {
+        e.preventDefault();
+        activeIndex = 0;
+        setActive(0);
+        menuItems()[0].focus();
+      }
+      if (e.key === "End") {
+        e.preventDefault();
+        const list = menuItems();
+        activeIndex = list.length - 1;
+        setActive(activeIndex);
+        list[list.length - 1].focus();
+      }
+    });
+
+    global.addEventListener("mousedown", function (e) {
+      if (panel.hidden) return;
+      if (e.target.closest && !e.target.closest(".user-menu-panel") && !e.target.closest("#user-menu-trigger")) close();
+    });
+
+    const ro = new MutationObserver(render);
+    ro.observe(chip, { characterData: true, childList: true, subtree: true, attributes: true });
+    render();
+  }
+
+  /* ---------- Phase 3: command palette (⌘K) ---------- */
+  const PALETTE_MODULES = [
+    { key: "destinations", label: "Destinations", page: "destinations.html", nameOf: function (r) { return r.name; }, subOf: function (r) { return r.city_name || ""; } },
+    { key: "hotels", label: "Hotels", page: "hotels.html", nameOf: function (r) { return r.name; }, subOf: function (r) { return (r.destination && r.destination.name) || ""; } },
+    { key: "users", label: "Users", page: "users.html", nameOf: function (r) { return r.name || r.email || ""; }, subOf: function (r) { return r.email || ""; } },
+    { key: "trips", label: "Trips", page: "trips.html", nameOf: function (r) { return r.name || r.title || ""; }, subOf: function (r) { return ""; } },
+    { key: "reviews", label: "Reviews", page: "reviews.html", nameOf: function (r) { return r.title || r.comment || ""; }, subOf: function (r) { return r.user && r.user.name ? r.user.name : ""; } },
+    { key: "restaurants", label: "Restaurants", page: "restaurants.html", nameOf: function (r) { return r.name; }, subOf: function (r) { return ""; } },
+    { key: "countries", label: "Countries", page: "countries.html", nameOf: function (r) { return r.name; }, subOf: function (r) { return r.code || ""; } },
+    { key: "attractions", label: "Attractions", page: "attractions.html", nameOf: function (r) { return r.name; }, subOf: function (r) { return ""; } },
+  ];
+
+  function paletteShortcuts() {
+    return [
+      { label: "Theme: Light", hint: "Appearance", run: function () { applyTheme("light", true); } },
+      { label: "Theme: Dark", hint: "Appearance", run: function () { applyTheme("dark", true); } },
+      { label: "Theme: System", hint: "Appearance", run: function () { applyTheme("system", true); } },
+      { label: "Collapse sidebar", hint: "Shortcut", run: function () {
+          const btn = el("sidebar-collapse");
+          if (btn) btn.click();
+        } },
+      { label: "Sign out", hint: "Shortcut", run: function () {
+          if (global.Itinari && global.Itinari.session && global.Itinari.session.logout) global.Itinari.session.logout();
+        } },
+    ];
+  }
+
+  function palettePageItems() {
+    const out = [];
+    document.querySelectorAll(".nav-item").forEach(function (a) {
+      const href = (a.getAttribute("href") || "").split("?")[0].split("#")[0];
+      if (!href) return;
+      const label = a.textContent.replace(/\s+/g, " ").trim() || href;
+      out.push({ label: label, hint: "Page", url: href, run: function () { global.location.href = a.getAttribute("href"); } });
+    });
+    return out;
+  }
+
+  function initCmdPalette() {
+    const bar = document.querySelector(".topbar-right");
+    if (!bar) return;
+
+    const trigger = document.createElement("button");
+    trigger.type = "button";
+    trigger.className = "icon-btn palette-trigger";
+    trigger.id = "palette-trigger";
+    trigger.setAttribute("aria-label", "Open command palette (Ctrl K)");
+    trigger.setAttribute("aria-haspopup", "dialog");
+    trigger.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3Z"/></svg>';
+    bar.appendChild(trigger);
+
+    const overlay = document.createElement("div");
+    overlay.className = "palette-backdrop";
+    overlay.hidden = true;
+
+    const panel = document.createElement("div");
+    panel.className = "palette";
+    panel.id = "palette-panel";
+    panel.setAttribute("role", "dialog");
+    panel.setAttribute("aria-modal", "true");
+    panel.hidden = true;
+    panel.setAttribute("aria-labelledby", "palette-title");
+
+    const title = document.createElement("h2");
+    title.id = "palette-title";
+    title.className = "palette-title";
+    title.textContent = "Command palette";
+
+    const input = document.createElement("input");
+    input.type = "search";
+    input.id = "palette-input";
+    input.className = "palette-input";
+    input.placeholder = "Type to search pages, records, actions…";
+    input.setAttribute("aria-label", "Search pages, records, actions");
+    input.autocomplete = "off";
+
+    const results = document.createElement("div");
+    results.className = "palette-results";
+    results.id = "palette-results";
+    results.setAttribute("role", "listbox");
+
+    const empty = document.createElement("p");
+    empty.className = "palette-empty";
+    empty.textContent = "No matches.";
+
+    const foot = document.createElement("div");
+    foot.className = "palette-foot";
+    foot.innerHTML = '<span>↑↓ navigate</span><span>↵ select</span><span>esc close</span>';
+
+    panel.appendChild(title);
+    panel.appendChild(input);
+    panel.appendChild(results);
+    panel.appendChild(empty);
+    panel.appendChild(foot);
+    overlay.appendChild(panel);
+    document.body.appendChild(overlay);
+
+    var items = [];
+    var activeIndex = 0;
+    var moduleCache = null;
+
+    function allItems(query) {
+      const q = String(query || "").trim().toLowerCase();
+      const out = [];
+      function pushGroup(group) {
+        group.forEach(function (it) {
+          const hay = (it.label + " " + (it.hint || "")).toLowerCase();
+          if (!q || hay.indexOf(q) !== -1) out.push(it);
+        });
+      }
+      pushGroup(palettePageItems());
+      pushGroup(paletteShortcuts());
+      if (moduleCache) {
+        moduleCache.forEach(function (group) {
+          group.forEach(function (it) { pushGroup([it]); });
+        });
+      }
+      return out;
+    }
+
+    function render(query) {
+      items = allItems(query);
+      results.textContent = "";
+      if (!items.length) {
+        empty.hidden = false;
+        results.hidden = true;
+        activeIndex = 0;
+        return;
+      }
+      empty.hidden = true;
+      results.hidden = false;
+      items.forEach(function (it, i) {
+        const row = document.createElement("button");
+        row.type = "button";
+        row.className = "palette-item" + (i === activeIndex ? " is-active" : "");
+        row.setAttribute("role", "option");
+        row.setAttribute("aria-selected", String(i === activeIndex));
+        row.id = "palette-item-" + i;
+        const l = document.createElement("span");
+        l.className = "palette-item-label";
+        l.textContent = it.label;
+        const h = document.createElement("span");
+        h.className = "palette-item-hint";
+        h.textContent = it.hint || "";
+        row.appendChild(l);
+        row.appendChild(h);
+        row.addEventListener("click", function () { activate(it); });
+        row.addEventListener("mousemove", function () { setActive(i); });
+        results.appendChild(row);
+      });
+    }
+
+    function setActive(i) {
+      activeIndex = i;
+      const rows = results.querySelectorAll(".palette-item");
+      rows.forEach(function (r, idx) {
+        r.classList.toggle("is-active", idx === i);
+        r.setAttribute("aria-selected", String(idx === i));
+      });
+    }
+
+    function activate(it) {
+      if (!it) return;
+      closePalette();
+      if (it.run) it.run();
+    }
+
+    function openPalette() {
+      overlay.hidden = false;
+        panel.hidden = false;
+      loadModules();
+      activeIndex = 0;
+      render(input.value);
+      input.focus();
+      input.select();
+      syncScrollLock();
+    }
+
+    function closePalette() {
+      if (overlay.hidden) return;
+      overlay.hidden = true;
+        panel.hidden = true;
+      items = [];
+      syncScrollLock();
+      trigger.focus();
+    }
+
+    function loadModules() {
+      if (moduleCache) return;
+      if (!global.Itinari || !global.Itinari.apiGet || !global.Itinari.session || !global.Itinari.session.hasToken()) {
+        moduleCache = [];
+        return;
+      }
+      moduleCache = [];
+      PALETTE_MODULES.forEach(function (mod) {
+        global.Itinari.apiGet("/v1/admin/" + mod.key, { auth: true }).then(function (res) {
+          let list = [];
+          if (res && res.ok && res.body) {
+            if (Array.isArray(res.body)) list = res.body;
+            else if (res.body.data && Array.isArray(res.body.data)) list = res.body.data;
+            else if (res.body.data && res.body.data.data && Array.isArray(res.body.data.data)) list = res.body.data.data;
+          }
+          const group = list.filter(function (r) { return r && mod.nameOf(r); }).slice(0, 12).map(function (r) {
+            return {
+              label: mod.nameOf(r),
+              hint: mod.label + (mod.subOf(r) ? " · " + mod.subOf(r) : ""),
+              url: mod.page,
+              run: function () { global.location.href = mod.page; },
+            };
+          });
+          moduleCache.push(group);
+          if (!overlay.hidden) render(input.value);
+        }).catch(function () { /* offline — skip group */ });
+      });
+    }
+
+    trigger.addEventListener("click", openPalette);
+
+    input.addEventListener("input", function () { activeIndex = 0; render(input.value); });
+
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") { e.preventDefault(); closePalette(); }
+      else if (e.key === "ArrowDown") { e.preventDefault(); if (!items.length) return; setActive((activeIndex + 1) % items.length); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); if (!items.length) return; setActive((activeIndex - 1 + items.length) % items.length); }
+      else if (e.key === "Enter") { e.preventDefault(); if (items.length) activate(items[activeIndex]); }
+      else if (e.key === "Tab") { e.preventDefault(); closePalette(); }
+    });
+
+    overlay.addEventListener("mousedown", function (e) {
+      if (e.target === overlay) closePalette();
+    });
+
+    global.document.addEventListener("keydown", function (e) {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        if (overlay.hidden) { openPalette(); } else { closePalette(); }
+        return;
+      }
+      if (e.key === "/" && !e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey) {
+        const target = e.target;
+        const inSearch = target && target.id === "global-search";
+        if (inSearch) {
+          e.preventDefault();
+          openPalette();
+        }
+        return;
+      }
+    });
+  }
+
+  /* ---------- Phase 4: breadcrumb + action slot ---------- */
+  function initBreadcrumb() {
+    const head = document.querySelector(".content-head .right");
+    if (!head) return;
+
+    const nav = document.createElement("nav");
+    nav.setAttribute("aria-label", "Breadcrumb");
+
+    const ol = document.createElement("ol");
+    ol.className = "breadcrumb";
+
+    function crumb(label, href) {
+      const li = document.createElement("li");
+      if (href) {
+        const a = document.createElement("a");
+        a.href = href;
+        a.textContent = label;
+        li.appendChild(a);
+      } else {
+        const span = document.createElement("span");
+        span.setAttribute("aria-current", "page");
+        span.textContent = label;
+        li.appendChild(span);
+      }
+      return li;
+    }
+
+    const h1 = head.querySelector("h1");
+    const page = h1 ? h1.textContent.trim() : document.title.replace(/\s*·.*$/, "").trim() || "Admin";
+
+    ol.appendChild(crumb("Home", "index.html"));
+    ol.appendChild(crumb(page, null));
+    nav.appendChild(ol);
+    head.insertBefore(nav, head.firstChild);
+  }
+
+  function initActionSlot() {
+    const head = document.querySelector(".content-head");
+    if (!head) return;
+
+    const toolbars = document.querySelectorAll(".kit-toolbar");
+    if (!toolbars.length) return;
+
+    const slot = document.createElement("div");
+    slot.className = "content-actions";
+
+    toolbars.forEach(function (tb) {
+      const buttons = tb.querySelectorAll("button");
+      if (!buttons.length) return;
+      Array.prototype.slice.call(buttons).forEach(function (b) { slot.appendChild(b); });
+      tb.remove();
+    });
+
+    head.appendChild(slot);
+  }
+
+  /* ---------- Phase 12: mobile off-canvas drawer ---------- */
+  function initDrawer() {
+    const shell = document.querySelector(".shell");
+    const sidebar = document.querySelector(".sidebar");
+    const topbar = document.querySelector(".topbar");
+    if (!shell || !sidebar || !topbar) return;
+
+    const burger = document.createElement("button");
+    burger.type = "button";
+    burger.className = "icon-btn topbar-burger";
+    burger.id = "drawer-toggle";
+    burger.setAttribute("aria-label", "Open navigation");
+    burger.setAttribute("aria-expanded", "false");
+    burger.setAttribute("aria-controls", "drawer-sidebar");
+    burger.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>';
+    sidebar.id = sidebar.id || "drawer-sidebar";
+    topbar.insertBefore(burger, topbar.firstChild);
+
+    const backdrop = document.createElement("div");
+    backdrop.className = "drawer-backdrop";
+    backdrop.setAttribute("aria-hidden", "true");
+    backdrop.hidden = true;
+    shell.appendChild(backdrop);
+
+    function open() {
+      shell.classList.add("is-drawer-open");
+      backdrop.hidden = false;
+      burger.setAttribute("aria-expanded", "true");
+      burger.setAttribute("aria-label", "Close navigation");
+    }
+    function close() {
+      shell.classList.remove("is-drawer-open");
+      backdrop.hidden = true;
+      burger.setAttribute("aria-expanded", "false");
+      burger.setAttribute("aria-label", "Open navigation");
+    }
+    burger.addEventListener("click", function () {
+      if (shell.classList.contains("is-drawer-open")) close(); else open();
+    });
+    backdrop.addEventListener("click", close);
+    global.document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && shell.classList.contains("is-drawer-open")) close();
+    });
+    sidebar.querySelectorAll("a, button").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (shell.classList.contains("is-drawer-open")) close();
+      });
+    });
+    const mq = global.matchMedia && global.matchMedia("(max-width: 1023.98px)");
+    if (mq && mq.addEventListener) {
+      mq.addEventListener("change", function () { if (!mq.matches) close(); });
+    }
+  }
+
+  function initGlobalUser() {
+    const It = global.Itinari;
+    if (!It || !It.session) return;
+    
+    if (!It.session.hasToken()) { 
+        It.session.redirectToLogin(); 
+        return; 
+    }
+
+    It.session.currentUser().then(function (user) {
+      if (!user) { 
+          It.session.clearSession(); 
+          It.session.redirectToLogin(); 
+          return; 
+      }
+      if (!It.session.isAdminRole(It.session.roleOf(user))) {
+          It.session.clearSession();
+          It.session.redirectToLogin();
+          return;
+      }
+
+      const chip = document.getElementById("user-chip");
+      if (chip) {
+        const nameEl = document.getElementById("chip-name");
+        const roleEl = document.getElementById("chip-role");
+        if (nameEl) nameEl.textContent = user.name || "";
+        if (roleEl) roleEl.textContent = It.session.roleOf(user) || "admin";
+        chip.hidden = false;
+        
+        // Trigger manual update of the user menu avatar since the observer might have fired early
+        const avatar = document.querySelector(".user-avatar");
+        if (avatar && user.name) {
+          const parts = user.name.split(" ");
+          const initials = parts.length > 1 ? parts[0].charAt(0) + parts[parts.length - 1].charAt(0) : parts[0].substring(0, 2);
+          avatar.textContent = initials.toUpperCase();
+        }
+
+        // Link profile if it's the dashboard
+        if (!chip.closest("a")) {
+            chip.style.cursor = "pointer";
+            chip.addEventListener("click", function() {
+                window.location.href = "user-details.html?id=current";
+            });
+        }
+      }
+
+      const logoutBtn = el("logout-btn");
+      if (logoutBtn) {
+          logoutBtn.addEventListener("click", function () { It.session.logout(); });
+      }
+
+      document.dispatchEvent(new CustomEvent("itinari:ready", { detail: user }));
+    });
+  }
+
+  function init() {
+    initTheme();
+    initSidebar();
+    initDrawer();
+    initActiveNav();
+    initSearch();
+    initModalHandling();
+    initUserMenu();
+    initCmdPalette();
+    initBreadcrumb();
+    initActionSlot();
+    initGlobalUser();
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})(window);
+
+</script>
+  <script>
+/* inlined: ../assets/js/admin-crud.js?v=12 */
+/**
+ * admin-crud.js — Generic admin CRUD tables (Phase 16, from scratch, no kit).
+ * One file drives destinations / hotels / restaurants / countries via
+ * <body data-module="...">. Route shape: GET/POST/PUT/DELETE /v1/admin/{module}.
+ *
+ * Phase 17: datatable (search/sort/pagination), empty-state, dialog polish,
+ * form validation states, toasts. Query contract:
+ *   GET /v1/admin/{module}?page&per_page&search&sort_by&sort_order
+ * When the backend returns {data:{data,links,meta}} the list is server-paged;
+ * a bare array is treated as the full set and paged client-side.
+ */
+(function (global) {
+  "use strict";
+
+  const It = global.Itinari;
+
+  const MODULES = {
+    destinations: {
+      url: "/v1/admin/destinations",
+      listLabel: "destinations",
+      singular: "destination",
+      sortable: { ID: "id", Name: "name", City: "city_name", Country: "country_id", Created: "created_at" },
+      cols: ["ID", "Name", "City", "Country", "Created", "Actions"],
+      cells: [
+        function (row) { return row.city_name || "–"; },
+        function (row) { return (row.country && row.country.name) || row.country_id || "–"; },
+        function (row) { return fmtDate(row.created_at); },
+      ],
+      fields: [
+        { key: "name", label: "Name", type: "text", required: true },
+        { key: "city_name", label: "City", type: "text", required: true },
+        { key: "country_id", label: "Country", type: "select", optionsUrl: "/v1/admin/countries", optionLabel: "name" },
+        { key: "description", label: "Description", type: "textarea" },
+        { key: "latitude", label: "Latitude", type: "number", step: "0.000001" },
+        { key: "longitude", label: "Longitude", type: "number", step: "0.000001" },
+        { key: "image", label: "Image URL", type: "text" },
+      ],
+    },
+    hotels: {
+      url: "/v1/admin/hotels",
+      listLabel: "hotels",
+      singular: "hotel",
+      sortable: {
+        ID: "id", Name: "name", Stars: "stars", "Price / night": "price_per_night",
+        Availability: "availability", Destination: "destination_id", Created: "created_at",
+      },
+      cols: ["ID", "Name", "Stars", "Price / night", "Availability", "Destination", "Created", "Actions"],
+      cells: [
+        function (row) { return String(row.stars ?? "–"); },
+        function (row) { return row.price_per_night == null ? "–" : "$" + Number(row.price_per_night).toLocaleString(); },
+        function (row) { return row.availability || "–"; },
+        function (row) { return (row.destination && row.destination.name) || row.destination_id || "–"; },
+        function (row) { return fmtDate(row.created_at); },
+      ],
+      fields: [
+        { key: "name", label: "Name", type: "text", required: true },
+        { key: "destination_id", label: "Destination", type: "select", optionsUrl: "/v1/admin/destinations", optionLabel: "name", required: true },
+        { key: "address", label: "Address", type: "text" },
+        { key: "price_per_night", label: "Price / night (USD)", type: "number", step: "0.01" },
+        { key: "stars", label: "Stars", type: "number", min: "1", max: "5" },
+        { key: "rating", label: "Rating", type: "number", step: "0.1", min: "0", max: "5" },
+        { key: "availability", label: "Availability", type: "text" },
+        { key: "image", label: "Image URL", type: "text" },
+      ],
+    },
+    restaurants: {
+      url: "/v1/admin/restaurants",
+      listLabel: "restaurants",
+      singular: "restaurant",
+      sortable: {
+        ID: "id", Name: "name", Cuisine: "cuisine", "Price range": "price_range",
+        Rating: "rating", Destination: "destination_id", Created: "created_at",
+      },
+      cols: ["ID", "Name", "Cuisine", "Price range", "Rating", "Destination", "Created", "Actions"],
+      cells: [
+        function (row) { return row.cuisine || "–"; },
+        function (row) { return row.price_range || "–"; },
+        function (row) { return row.rating == null ? "–" : Number(row.rating).toFixed(1); },
+        function (row) { return (row.destination && row.destination.name) || row.destination_id || "–"; },
+        function (row) { return fmtDate(row.created_at); },
+      ],
+      fields: [
+        { key: "name", label: "Name", type: "text", required: true },
+        { key: "destination_id", label: "Destination", type: "select", optionsUrl: "/v1/admin/destinations", optionLabel: "name", required: true },
+        { key: "cuisine", label: "Cuisine", type: "text" },
+        { key: "price_range", label: "Price range", type: "text" },
+        { key: "rating", label: "Rating", type: "number", step: "0.1", min: "0", max: "5" },
+        { key: "address", label: "Address", type: "text" },
+        { key: "image", label: "Image URL", type: "text" },
+      ],
+    },
+    countries: {
+      url: "/v1/admin/countries",
+      listLabel: "countries",
+      singular: "country",
+      sortable: { ID: "id", Name: "name", ISO: "iso_code", Capital: "capital", Currency: "currency" },
+      cols: ["ID", "Name", "ISO", "Capital", "Currency", "Actions"],
+      cells: [
+        function (row) { return row.iso_code || "–"; },
+        function (row) { return row.capital || "–"; },
+        function (row) { return row.currency || "–"; },
+      ],
+      fields: [
+        { key: "name", label: "Name", type: "text", required: true },
+        { key: "iso_code", label: "ISO code", type: "text" },
+        { key: "capital", label: "Capital", type: "text" },
+        { key: "currency", label: "Currency", type: "text" },
+        { key: "languages", label: "Languages (comma separated)", type: "text" },
+        { key: "flag_url", label: "Flag URL", type: "text" },
+      ],
+      serialize: function (payload, fields, get) {
+        const v = get("languages");
+        payload.languages = v ? v.split(",").map(function (s) { return s.trim(); }).filter(Boolean) : [];
+        return payload;
+      },
+      fill: function (row) {
+        return { languages: Array.isArray(row.languages) ? row.languages.join(", ") : row.languages || "" };
+      },
+    },
+      attractions: {
+        url: "/v1/admin/attractions",
+        listLabel: "attractions",
+        singular: "attraction",
+        sortable: { ID: "id", Name: "name", Destination: "destination_id", Category: "category_id" },
+        cols: ["ID", "Name", "Destination", "Category", "Actions"],
+        cells: [
+          function (row) { return (row.destination && row.destination.name) || row.destination_id || "–"; },
+          function (row) { return row.category_id || "–"; },
+        ],
+        fields: [
+          { key: "name", label: "Name", type: "text", required: true },
+          { key: "destination_id", label: "Destination", type: "select", optionsUrl: "/v1/admin/destinations", optionLabel: "name", required: true },
+          { key: "category_id", label: "Category ID", type: "number" },
+          { key: "description", label: "Description", type: "textarea" },
+          { key: "latitude", label: "Latitude", type: "number", step: "0.000001" },
+          { key: "longitude", label: "Longitude", type: "number", step: "0.000001" },
+          { key: "image", label: "Image URL", type: "text" },
+        ],
+      },
+      users: {
+        url: "/v1/admin/users",
+        listLabel: "users",
+        singular: "user",
+        sortable: { ID: "id", Name: "name", Email: "email", Status: "is_active", Created: "created_at" },
+        cols: ["ID", "Name", "Email", "Status", "Created", "Actions"],
+        cells: [
+          function (row) { return row.email || "–"; },
+          function (row) { return row.is_active ? "Active" : "Blocked"; },
+          function (row) { return fmtDate(row.created_at); },
+        ],
+        fields: [
+          { key: "name", label: "Name", type: "text", required: true },
+          { key: "email", label: "Email", type: "email", required: true },
+          { key: "password", label: "Password (leave blank to keep current)", type: "password" },
+          { key: "is_active", label: "Status", type: "select", options: [{id: 1, name: "Active"}, {id: 0, name: "Blocked"}], optionLabel: "name" },
+        ],
+      },
+      trips: {
+        url: "/v1/admin/trips",
+        listLabel: "trips",
+        singular: "trip",
+        sortable: { ID: "id", Title: "title", Budget: "budget", Status: "status", Start: "start_date" },
+        cols: ["ID", "Title", "Budget", "Status", "Start", "Actions"],
+        cells: [
+          function (row) { return row.budget == null ? "–" : "$" + Number(row.budget).toLocaleString(); },
+          function (row) { return row.status || "–"; },
+          function (row) { return fmtDate(row.start_date); },
+        ],
+        fields: [
+          { key: "title", label: "Title", type: "text", required: true },
+          { key: "budget", label: "Budget", type: "number", step: "0.01", required: true },
+          { key: "status", label: "Status", type: "select", options: [{id: "planned", name: "Planned"}, {id: "active", name: "Active"}, {id: "completed", name: "Completed"}, {id: "cancelled", name: "Cancelled"}], optionLabel: "name" },
+          { key: "start_date", label: "Start Date", type: "text" },
+          { key: "end_date", label: "End Date", type: "text" },
+        ],
+      },
+      reviews: {
+        url: "/v1/admin/reviews",
+        listLabel: "reviews",
+        singular: "review",
+        sortable: { ID: "id", Rating: "rating", Status: "status", Created: "created_at" },
+        cols: ["ID", "Name", "Rating", "Comment", "Status", "Created", "Actions"],
+        cells: [
+          function (row) { return row.rating || "–"; },
+          function (row) { return row.comment || "–"; },
+          function (row) { return row.status || "–"; },
+          function (row) { return fmtDate(row.created_at); },
+        ],
+        fields: [
+          { key: "status", label: "Status", type: "select", options: [{id: "pending", name: "Pending"}, {id: "approved", name: "Approved"}, {id: "rejected", name: "Rejected"}], optionLabel: "name" },
+        ],
+      },
+    };
+
+  const PER_PAGE_DEFAULT = 25;
+  const PAGE_SIZE_OPTIONS = [15, 25, 50, 100];
+  const state = { search: "", page: 1, sort: null, dir: "asc", rows: [], serverPaged: false, total: 0, pageSize: storedPageSize() || PER_PAGE_DEFAULT, density: "normal", hidden: {}, selected: {} };
+  let searchTimer = null;
+
+  function el(id) { return document.getElementById(id); }
+
+  function module() { return MODULES[document.body.dataset.module]; }
+
+    function fmtDate(v) {
+    if (!v) return "–";
+    const d = new Date(v);
+    return isNaN(d.getTime()) ? String(v) : d.toLocaleDateString();
+  }
+
+  function badge(text) {
+    const b = document.createElement("span");
+    b.className = "badge badge-off";
+    b.textContent = String(text ?? "–").toUpperCase();
+    return b;
+  }
+
+  /* ---------- toasts ---------- */
+
+  function toast(message, kind, opts) {
+    if (It.feedback && It.feedback.toast) It.feedback.toast(message, kind || "is-info", opts);
+  }
+
+  /* ---------- option fetch ---------- */
+
+  const optionCache = {};
+  function fetchOptions(field) {
+    if (!field.optionsUrl) return Promise.resolve([]);
+    if (optionCache[field.optionsUrl]) return Promise.resolve(optionCache[field.optionsUrl]);
+    return It.apiGet(field.optionsUrl, { auth: true }).then(function (res) {
+      const data = res.body ? (res.body.data && res.body.data.data) || res.body.data : res.body;
+      const list = Array.isArray(data) ? data : [];
+      optionCache[field.optionsUrl] = list;
+      return list;
+    });
+  }
+
+  function storedPageSize() {
+    try { return Number(localStorage.getItem("admin-crud:page-size")) || 0; } catch (e) { return 0; }
+  }
+
+  function buildPageSelect() {
+    const size = document.createElement("select");
+    size.className = "ctl-select";
+    size.setAttribute("aria-label", "Rows per page");
+    PAGE_SIZE_OPTIONS.forEach(function (n) {
+      const o = document.createElement("option");
+      o.value = String(n);
+      o.textContent = n + " rows / page";
+      size.appendChild(o);
+    });
+    size.value = String(state.pageSize);
+    size.addEventListener("change", function () {
+      const n = Number(size.value);
+      state.pageSize = n;
+      try { localStorage.setItem("admin-crud:page-size", String(n)); } catch (e) {}
+      setPage(1);
+    });
+    return size;
+  }
+
+  /* ---------- datatable ---------- */
+
+  function normalize(res) {
+    const body = res.body || {};
+    const hasLaravelPage = body.data && Array.isArray(body.data) && (body.links || body.meta);
+    if (hasLaravelPage) {
+      return { rows: body.data, serverPaged: true, meta: body.meta || null };
+    }
+    const wrapped = body.data && Array.isArray(body.data.data);
+    const rows = wrapped ? body.data.data : (Array.isArray(body.data) ? body.data : (Array.isArray(body) ? body : []));
+    return { rows: rows, serverPaged: !!(wrapped && body.data.links), meta: (wrapped && body.data.meta) || null };
+  }
+
+  function queryString() {
+    const q = [];
+    q.push("page=" + state.page, "per_page=" + state.pageSize);
+    if (state.search) q.push("search=" + encodeURIComponent(state.search));
+    if (state.sort) q.push("sort_by=" + encodeURIComponent(state.sort), "sort_order=" + state.dir);
+    return "?" + q.join("&");
+  }
+
+  function matches(row) {
+    const s = String(state.search || "").toLowerCase();
+    if (!s) return true;
+    for (const k in row) {
+      const v = row[k];
+      if (v === null || v === undefined) continue;
+      if (typeof v === "object") continue;
+      if (String(v).toLowerCase().indexOf(s) !== -1) return true;
+    }
+    return false;
+  }
+
+  function compare(a, b) {
+    const key = state.sort;
+    const av = a[key], bv = b[key];
+    const an = (typeof av === "number") && (typeof bv === "number");
+    let cmp;
+    if (an) cmp = av - bv;
+    else cmp = String(av ?? "").localeCompare(String(bv ?? ""));
+    return state.dir === "desc" ? -cmp : cmp;
+  }
+
+  function tableHost() {
+    const key = (document.body.dataset.module || "") + "-table";
+    return el(key) || el("crud-table");
+  }
+
+  function load() {
+    const mod = module();
+    const host = tableHost();
+    if (host) {
+      host.textContent = "";
+      host.innerHTML = '<div class="kit-grid-skeleton"><div class="box skeleton"></div><div class="box skeleton"></div><div class="box skeleton"></div></div>';
+    }
+    It.apiGet(mod.url + queryString(), { auth: true }).then(function (res) {
+      if (!res.ok || !res.body) {
+        host.textContent = "";
+        It.feedback.banner("Could not load " + mod.listLabel + ".", "is-error");
+        return;
+      }
+      const norm = normalize(res);
+      state.serverPaged = norm.serverPaged;
+      state.rows = norm.rows;
+      state.total = state.serverPaged && norm.meta ? Number(norm.meta.total || 0) : state.rows.length;
+      renderTable();
+    });
+  }
+
+  function setPage(p) {
+    if (p < 1) return;
+    state.page = p;
+    load();
+  }
+
+  function setSearch(value) {
+    state.search = String(value || "").trim();
+    state.page = 1;
+    if (searchTimer) global.clearTimeout(searchTimer);
+    searchTimer = global.setTimeout(function () {
+      const mod = module();
+      if (state.search) toast("Filtering " + mod.listLabel + "…", "info");
+      load();
+    }, 240);
+  }
+
+  function cycleSort(thIndex, label) {
+    const key = module().sortable ? module().sortable[label] : null;
+    if (!key) return;
+    if (state.sort === key && state.dir === "asc") state.dir = "desc";
+    else if (state.sort === key && state.dir === "desc") { state.sort = null; state.dir = "asc"; }
+    else { state.sort = key; state.dir = "asc"; }
+    state.page = 1;
+    load();
+  }
+
+  /* ---------- render ---------- */
+
+  function sortHeader(h, label) {
+    const key = module().sortable ? module().sortable[label] : null;
+    if (!key) {
+      h.textContent = label;
+      return;
+    }
+    h.classList.add("sortable");
+    if (state.sort === key) h.classList.add(state.dir === "asc" ? "sort-asc" : "sort-desc");
+    if (state.sort === key) h.setAttribute("aria-sort", state.dir === "asc" ? "ascending" : "descending");
+    else h.removeAttribute("aria-sort");
+    h.textContent = label;
+    const tip = document.createElement("span");
+    tip.className = "th-sort";
+    tip.innerHTML =
+      '<svg class="arrow-up" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="m18 15-6-6-6 6"/></svg>' +
+      '<svg class="arrow-down" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg>';
+    h.appendChild(tip);
+    h.addEventListener("click", function () { cycleSort(h, label); });
+  }
+
+  function isColHidden(label) {
+    return !!state.hidden[label];
+  }
+
+  function renderControls(host) {
+    const bar = document.createElement("div");
+    bar.className = "table-toolbar";
+
+    const colsBtn = document.createElement("button");
+    colsBtn.type = "button";
+    colsBtn.className = "btn-ghost btn-sm table-ctl";
+    colsBtn.textContent = "Columns";
+    colsBtn.setAttribute("aria-expanded", "false");
+    bar.appendChild(colsBtn);
+
+    const pop = document.createElement("div");
+    pop.className = "cols-pop";
+    pop.hidden = true;
+    module().cols.forEach(function (label) {
+      if (label === "Actions") return;
+      const lab = document.createElement("label");
+      lab.className = "cols-opt";
+      const cb = document.createElement("input");
+      cb.type = "checkbox";
+      cb.checked = !isColHidden(label);
+      cb.addEventListener("change", function () {
+        if (!cb.checked) state.hidden[label] = true; else delete state.hidden[label];
+        renderTable();
+      });
+      lab.appendChild(cb);
+      lab.appendChild(document.createTextNode(label));
+      pop.appendChild(lab);
+    });
+    bar.appendChild(pop);
+    colsBtn.addEventListener("click", function () {
+      pop.hidden = !pop.hidden;
+      colsBtn.setAttribute("aria-expanded", String(!pop.hidden));
+    });
+    document.addEventListener("click", function (e) {
+      if (pop.hidden) return;
+      if (e.target.closest && !e.target.closest(".cols-pop") && e.target !== colsBtn && !colsBtn.contains(e.target)) pop.hidden = true;
+    });
+
+    const dense = document.createElement("select");
+    dense.className = "ctl-select";
+    dense.setAttribute("aria-label", "Row density");
+    [["normal", "Density: normal"], ["compact", "Density: compact"]].forEach(function (pair) {
+      const o = document.createElement("option");
+      o.value = pair[0];
+      o.textContent = pair[1];
+      dense.appendChild(o);
+    });
+    dense.value = state.density;
+    dense.addEventListener("change", function () {
+      state.density = dense.value;
+      renderTable();
+    });
+    bar.appendChild(dense);
+
+    const size = buildPageSelect();
+    bar.appendChild(size);
+
+    host.appendChild(bar);
+  }
+
+  function renderTable(rowsOverride) {
+    const host = tableHost();
+    if (!host) return;
+    host.textContent = "";
+
+    const filtered = state.rows.filter(matches);
+    if (state.sort) filtered.sort(compare);
+    const total = state.serverPaged ? state.total : filtered.length;
+    const pageRows = state.serverPaged ? filtered : filtered.slice((state.page - 1) * state.pageSize, state.page * state.pageSize);
+
+    if (!pageRows.length) {
+      renderEmpty(host);
+      return;
+    }
+
+    renderControls(host);
+
+    const scroll = document.createElement("div");
+    scroll.className = "table-scroll";
+
+    const table = document.createElement("table");
+    table.className = "kit-table" + (state.density === "compact" ? " density-compact" : "");
+    const thead = document.createElement("thead");
+    const htr = document.createElement("tr");
+
+    const selTh = document.createElement("th");
+    selTh.className = "td-select";
+    const selAll = document.createElement("input");
+    selAll.type = "checkbox";
+    selAll.setAttribute("aria-label", "Select all rows");
+    const selectedOnPage = pageRows.filter(function (r) { return state.selected[r.id]; }).length;
+    selAll.checked = pageRows.length > 0 && selectedOnPage === pageRows.length;
+    selAll.indeterminate = selectedOnPage > 0 && selectedOnPage < pageRows.length;
+    selAll.addEventListener("change", function () {
+      pageRows.forEach(function (r) {
+        if (selAll.checked) state.selected[r.id] = true;
+        else delete state.selected[r.id];
+      });
+      renderBulk();
+      syncRowChecked();
+    });
+    selTh.appendChild(selAll);
+    htr.appendChild(selTh);
+
+    module().cols.forEach(function (label, i) {
+      if (isColHidden(label)) return;
+      const th = document.createElement("th");
+      sortHeader(th, label, i);
+      htr.appendChild(th);
+    });
+    thead.appendChild(htr);
+    table.appendChild(thead);
+
+    const tbody = document.createElement("tbody");
+    pageRows.forEach(function (row) {
+      tbody.appendChild(renderTr(row));
+    });
+    table.appendChild(tbody);
+    scroll.appendChild(table);
+    host.appendChild(scroll);
+
+    renderBulk(host);
+    renderPagination(host, total);
+  }
+
+  function renderTr(row) {
+    const mod = module();
+    const moduleName = mod.id || document.body.dataset.module || "";
+    const tr = document.createElement("tr");
+    tr.dataset.rowId = String(row.id);
+    const td = function (content) {
+      const c = document.createElement("td");
+        if (typeof content === "number") c.classList.add("text-right");
+      const node = typeof content === "string" ? document.createTextNode(content)
+        : (content instanceof Node ? content : document.createTextNode(String(content)));
+      c.appendChild(node);
+      return c;
+    };
+    const sel = document.createElement("td");
+    sel.className = "td-select";
+    const cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.setAttribute("aria-label", "Select " + (row.name || ("row " + row.id)));
+    sel.appendChild(cb);
+    tr.appendChild(sel);
+    if (state.selected[row.id]) { tr.classList.add("is-selected"); cb.checked = true; }
+    cb.addEventListener("change", function () {
+      if (cb.checked) state.selected[row.id] = true;
+      else delete state.selected[row.id];
+      tr.classList.toggle("is-selected", cb.checked);
+      renderBulk();
+      syncSelectAll();
+    });
+      if (!isColHidden("ID")) tr.appendChild(td(String(row.id)));
+      
+      if (!isColHidden("Name")) {
+        const nameCell = document.createElement("td");
+        if (moduleName === "users") {
+          const a = document.createElement("a");
+          a.href = "user-details.html?id=" + row.id;
+          a.textContent = row.name || "–";
+          a.style.textDecoration = "underline";
+          a.style.color = "hsl(var(--primary))";
+          nameCell.appendChild(a);
+        } else {
+          nameCell.textContent = row.name || "–";
+        }
+        tr.appendChild(nameCell);
+      }
+      
+      mod.cols.slice(2, -1).forEach(function (label, i) {
+      if (isColHidden(label)) return;
+      tr.appendChild(td(mod.cells[i](row)));
+    });
+
+    const cell = document.createElement("td");
+    cell.className = "td-actions";
+    const editBtn = document.createElement("button");
+    editBtn.type = "button";
+    editBtn.className = "btn-ghost btn-sm";
+    editBtn.textContent = "Edit";
+    editBtn.addEventListener("click", function () { openModal("edit", row); });
+    const delBtn = document.createElement("button");
+    delBtn.type = "button";
+    delBtn.className = "btn-ghost btn-sm is-danger-text";
+    delBtn.textContent = "Delete";
+    delBtn.addEventListener("click", function () { removeRow(row.id); });
+    cell.appendChild(editBtn);
+    cell.appendChild(delBtn);
+    tr.appendChild(cell);
+    return tr;
+  }
+
+  function selectedCount() {
+    return Object.keys(state.selected).length;
+  }
+
+  function syncRowChecked() {
+    document.querySelectorAll('.kit-table tbody tr').forEach(function (tr) {
+      const cb = tr.querySelector('input[type=checkbox]');
+      const id = Number(tr.dataset.rowId);
+      if (cb && id) { cb.checked = !!state.selected[id]; tr.classList.toggle("is-selected", cb.checked); }
+    });
+  }
+
+  function syncSelectAll() {
+    const selAll = document.querySelector('.kit-table thead .td-select input');
+    if (!selAll) return;
+    const rows = document.querySelectorAll('.kit-table tbody tr');
+    const cbs = document.querySelectorAll('.kit-table tbody input[type=checkbox]');
+    const pageCount = rows.length;
+    let onPage = 0;
+    cbs.forEach(function (cb) { if (cb.checked) onPage++; });
+    selAll.checked = pageCount > 0 && onPage === pageCount;
+    selAll.indeterminate = onPage > 0 && onPage < pageCount;
+  }
+
+  function renderBulk(host) {
+    const hostEl = host || tableHost();
+    const existing = document.querySelector(".bulk-bar");
+    if (existing) existing.remove();
+    if (selectedCount() === 0) return;
+    const bar = document.createElement("div");
+    bar.className = "bulk-bar";
+    const label = document.createElement("span");
+    label.className = "bulk-label";
+    label.textContent = selectedCount() + " selected";
+    bar.appendChild(label);
+    const exportBtn = document.createElement("button");
+    exportBtn.type = "button";
+    exportBtn.className = "btn-ghost btn-sm";
+    exportBtn.textContent = "Export CSV";
+    exportBtn.addEventListener("click", exportCsv);
+    bar.appendChild(exportBtn);
+    const delBtn = document.createElement("button");
+    delBtn.type = "button";
+    delBtn.className = "btn-ghost btn-sm is-danger-text";
+    delBtn.textContent = "Delete";
+    delBtn.addEventListener("click", bulkDelete);
+    bar.appendChild(delBtn);
+    const closeBtn = document.createElement("button");
+    closeBtn.type = "button";
+    closeBtn.className = "bulk-close";
+    closeBtn.setAttribute("aria-label", "Clear selection");
+    closeBtn.addEventListener("click", function () {
+      state.selected = {};
+      renderTable();
+      syncSelectAll();
+    });
+    bar.appendChild(closeBtn);
+    hostEl.appendChild(bar);
+  }
+
+  function bulkDelete() {
+    const mod = module();
+    const ids = Object.keys(state.selected).map(Number);
+    if (!ids.length) return;
+    if (!global.confirm("Delete " + ids.length + " selected " + mod.listLabel + "?")) return;
+    const removed = state.rows.filter(function (r) { return state.selected[r.id]; });
+    Promise.all(ids.map(function (id) {
+      return It.apiDelete(mod.url + "/" + id, { auth: true }).then(function () { return id; }, function () { return id; });
+    })).then(function () {
+      state.selected = {};
+      It.feedback.banner(ids.length + " deleted.", "is-ok");
+      toast(ids.length + " " + mod.listLabel + " deleted.", "ok", { action: undoAction(mod, removed) });
+      state.page = 1;
+      load();
+    });
+  }
+
+  function undoAction(mod, rows) {
+    if (!rows || !rows.length) return null;
+    return {
+      label: "Undo",
+      onClick: function () {
+        Promise.all(rows.map(function (row) {
+          return It.apiPost(mod.url, row, { auth: true });
+        })).then(function () {
+          It.feedback.banner(rows.length + " restored.", "is-ok");
+          toast(rows.length + " " + mod.listLabel + " restored.", "ok");
+          load();
+        });
+      }
+    };
+  }
+
+  function exportCsv() {
+    const mod = module();
+    const labels = mod.cols.filter(function (label) {
+      return label !== "Actions" && !isColHidden(label);
+    });
+    const headers = labels;
+    const done = function (rows) {
+      if (state.sort) rows.sort(compare);
+      const csv = [headers.map(csvEsc).join(",")].concat(rows.map(function (row) {
+        return labels.map(function (label) {
+          if (label === "ID") return String(row.id);
+          if (label === "Name") return row.name || "";
+          const idx = mod.cols.indexOf(label);
+          const cell = mod.cells[idx - 2];
+          const val = cell ? cell(row) : "";
+          return String(val === "–" ? "" : val).replace(/&[a-z]+;/g, "");
+        }).map(csvEsc).join(",");
+      })).join("\n");
+      const blob = new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = mod.listLabel + "-" + new Date().toISOString().slice(0, 10) + ".csv";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+      toast("Exported " + rows.length + " " + mod.listLabel + " to CSV.", "ok");
+    };
+    if (!state.serverPaged) {
+      done(state.rows.filter(matches));
+      return;
+    }
+    const q = [];
+    if (state.search) q.push("search=" + encodeURIComponent(state.search));
+    if (state.sort) q.push("sort_by=" + encodeURIComponent(state.sort), "sort_order=" + state.dir);
+    const qs = q.length ? "&" + q.join("&") : "";
+    const fetchPage = function (page) {
+      return It.apiGet(mod.url + "?page=" + page + "&per_page=100" + qs, { auth: true }).then(function (res) {
+        const norm = normalize(res);
+        const total = norm.meta ? Number(norm.meta.total || 0) : norm.rows.length;
+        return { rows: norm.rows, next: page * 100 < total ? page + 1 : null };
+      });
+    };
+    fetchPage(1).then(function walk(r) {
+      let acc = [];
+      const loop = function (r) {
+        acc = acc.concat(r.rows);
+        return r.next ? fetchPage(r.next).then(loop) : Promise.resolve(acc);
+      };
+      return loop(r);
+    }).then(function (all) {
+      done(all.filter(matches));
+    });
+  }
+
+  function csvEsc(val) {
+    const s = String(val);
+    return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+
+  /* ---------- empty ---------- */
+
+  function renderEmpty(host) {
+    const div = document.createElement("div");
+    div.className = "kit-empty";
+    div.innerHTML =
+      '<span class="kit-empty-icon">' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg></span>' +
+      '<p class="kit-empty-title">' + (state.search ? "No matches" : "No " + module().listLabel + " yet.") + "</p>" +
+      '<p class="kit-empty-hint">' + (state.search ? "Nothing matched &ldquo;" + esc(state.search) + "&rdquo;. Try a different term or clear the search." : "Create your first one to get going.") + "</p>" +
+      (state.search ? "" : '<button type="button" class="btn-ghost" data-empty-new>Add ' + module().singular + "</button>");
+    host.appendChild(div);
+    const btn = div.querySelector("[data-empty-new]");
+    if (btn) btn.addEventListener("click", function () { openModal("new", null, {}); });
+  }
+
+  function renderPagination(host, total) {
+    const pages = Math.max(1, Math.ceil(total / state.pageSize));
+    if (pages <= 1 && !state.serverPaged) return;
+    const foot = document.createElement("div");
+    foot.className = "kit-pagination";
+    const from = total === 0 ? 0 : (state.page - 1) * state.pageSize + 1;
+    const to = Math.min(total, state.page * state.pageSize);
+    const info = document.createElement("span");
+    info.textContent = "Showing " + from + "–" + to + " of " + total + " " + module().listLabel;
+    const group = document.createElement("div");
+    group.className = "pager-group";
+    const prev = document.createElement("button");
+    prev.type = "button";
+    prev.className = "pager-btn";
+    prev.textContent = "Prev";
+    prev.disabled = state.page <= 1;
+    prev.addEventListener("click", function () { setPage(state.page - 1); });
+
+    const numbers = document.createElement("div");
+    numbers.className = "pager-numbers";
+    numbers.setAttribute("role", "group");
+    numbers.setAttribute("aria-label", "Pagination");
+    numbers.setAttribute("tabindex", "-1");
+    numbers.addEventListener("keydown", function (e) {
+      if (e.key !== "ArrowLeft" && e.key !== "ArrowRight" && e.key !== "Home" && e.key !== "End") return;
+      e.preventDefault();
+      const btns = Array.from(numbers.querySelectorAll(".pager-btn"));
+      const idx = btns.indexOf(document.activeElement);
+      let target = -1;
+      if (e.key === "ArrowLeft") target = Math.max(0, (idx === -1 ? state.page - 1 : idx) - 1);
+      else if (e.key === "ArrowRight") target = Math.min(pages - 1, (idx === -1 ? state.page - 1 : idx) + 1);
+      else if (e.key === "Home") target = 0;
+      else if (e.key === "End") target = pages - 1;
+      const nextBtn = btns[target];
+      if (nextBtn && !nextBtn.disabled) nextBtn.focus();
+    });
+    for (let p = 1; p <= pages; p++) {
+      const num = document.createElement("button");
+      num.type = "button";
+      num.className = "pager-btn" + (p === state.page ? " is-current" : "");
+      num.textContent = String(p);
+      num.setAttribute("aria-label", "Page " + p);
+      if (p === state.page) num.setAttribute("aria-current", "page");
+      num.setAttribute("aria-pressed", String(p === state.page));
+      num.addEventListener("click", function () { setPage(p); });
+      numbers.appendChild(num);
+    }
+
+    const next = document.createElement("button");
+    next.type = "button";
+    next.className = "pager-btn";
+    next.textContent = "Next";
+    next.disabled = state.page >= pages;
+    next.addEventListener("click", function () { setPage(state.page + 1); });
+    group.appendChild(prev);
+    group.appendChild(numbers);
+    group.appendChild(next);
+    foot.appendChild(info);
+    foot.appendChild(buildPageSelect());
+    foot.appendChild(group);
+    host.appendChild(foot);
+  }
+
+  function esc(s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  /* ---------- modal / form ---------- */
+
+  function fieldInput(field, value, extra) {
+    const desc = (extra && extra.desc) || "";
+    if (field.type === "select") {
+      const opts = (extra && extra.options) || [];
+      const sel = opts.map(function (o) {
+        const id = o.id;
+        const label = o[field.optionLabel] || String(id);
+        return '<option value="' + id + '"' + (String(value) === String(id) ? " selected" : "") + ">" + esc(label) + "</option>";
+      }).join("");
+      return '<select id="f-' + field.key + '" name="' + field.key + '"' + desc + '><option value="">— none —</option>' + sel + "</select>";
+    }
+    if (field.type === "textarea") {
+      return '<textarea id="f-' + field.key + '" name="' + field.key + '" rows="3"' + desc + "></textarea>";
+    }
+    const attrs = [];
+    if (field.step) attrs.push('step="' + field.step + '"');
+    if (field.min) attrs.push('min="' + field.min + '"');
+    if (field.max) attrs.push('max="' + field.max + '"');
+    return '<input id="f-' + field.key + '" name="' + field.key + '" type="' + (field.type || "text") + '"' + (desc ? " " + desc : "") + " " + attrs.join(" ") + " />";
+  }
+
+  function openModal(mode, row, selectOptions) {
+    const root = el("modal-root");
+    root.textContent = "";
+    const mod = module();
+    const wrap = document.createElement("div");
+    wrap.className = "kit-modal-backdrop";
+    wrap.id = "crud-modal";
+    const title = (mode === "edit" ? "Edit " : "New ") + mod.singular;
+
+    const fieldsHtml = mod.fields.map(function (f) {
+      let value = "";
+      if (row) {
+        const fillVals = mod.fill ? mod.fill(row) : {};
+        value = (fillVals[f.key] !== undefined ? fillVals[f.key] : row[f.key]) ?? "";
+      }
+      const req = f.required ? ' <span class="field-hint">· required</span>' : "";
+      const desc = f.required ? ' aria-describedby="fe-' + f.key + '"' : "";
+      const opts = (selectOptions && selectOptions[f.key]) || undefined;
+      return '<div class="kit-field" data-field="' + f.key + '"><label for="f-' + f.key + '">' + f.label + req + "</label>" +
+        fieldInput(f, value, { options: opts, desc: desc }) +
+        '<p class="field-error" id="fe-' + f.key + '" role="alert" hidden></p></div>';
+    }).join("");
+
+    wrap.innerHTML =
+      '<div class="kit-modal kit-modal is-medium" role="dialog" aria-modal="true" aria-labelledby="crud-modal-title" aria-describedby="crud-modal-desc">' +
+      '<div class="kit-modal-head"><h3 id="crud-modal-title">' + title + "</h3>" +
+      '<button type="button" class="kit-modal-close" data-close aria-label="Close">&times;</button></div>' +
+      '<form id="crud-form" class="kit-form" novalidate>' +
+      '<div class="kit-modal-body"><p id="crud-modal-desc" class="view-sub">' + title + " " + mod.singular + " record</p>" + fieldsHtml + "</div>" +
+      '<div class="kit-modal-foot">' +
+      '<button type="button" class="btn-ghost" data-close>Cancel</button>' +
+      '<button type="submit" class="btn-primary is-danger" style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));border:1px solid transparent;border-radius:var(--radius-md);padding:0.45rem 0.95rem;font-weight:600;cursor:pointer;">Save</button>' +
+      "</div></form></div>";
+    root.appendChild(wrap);
+
+    if (row) {
+      mod.fields.forEach(function (f) {
+        const node = wrap.querySelector("#f-" + f.key);
+        if (!node) return;
+        let value = row[f.key];
+        if (mod.fill) {
+          const fillVals = mod.fill(row);
+          if (fillVals[f.key] !== undefined) value = fillVals[f.key];
+        }
+        if (value !== null && value !== undefined) node.value = value;
+      });
+    }
+
+    wrap.querySelectorAll("[data-close]").forEach(function (btn) {
+      btn.addEventListener("click", closeModal);
+    });
+    wrap.addEventListener("click", function (e) { if (e.target === wrap) closeModal(); });
+
+    wrap.querySelector("#crud-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const bad = validate(wrap);
+      if (bad) return;
+      const payload = {};
+      mod.fields.forEach(function (f) {
+        const node = wrap.querySelector("#f-" + f.key);
+        if (node && node.type === "checkbox") payload[f.key] = node.checked;
+        else if (node) payload[f.key] = node.value;
+      });
+      if (mod.serialize) payload = mod.serialize(payload, mod.fields, function (k) {
+        const node = wrap.querySelector("#f-" + k);
+        return node ? node.value : "";
+      });
+      const reqv = mode === "edit"
+        ? It.apiPut(mod.url + "/" + row.id, payload, { auth: true })
+        : It.apiPost(mod.url, payload, { auth: true });
+        reqv.then(function (res) {
+          if (res.ok) {
+            closeModal();
+            It.feedback.banner(mode === "edit" ? "Updated." : "Created.", "is-ok");
+            toast(mode === "edit" ? mod.singular + " updated." : mod.singular + " created.", "ok");
+            load();
+          } else if (res.status === 422 && res.body && res.body.error) {
+            const errs = res.body.error;
+            Object.keys(errs).forEach(function (k) {
+              const node = el("f-" + k);
+              if (node) {
+                const box = node.closest(".kit-field");
+                if (box) box.classList.add("has-error");
+                node.classList.add("is-error");
+                node.setAttribute("aria-invalid", "true");
+                const hint = el("fe-" + k);
+                if (hint) {
+                  hint.textContent = Array.isArray(errs[k]) ? errs[k][0] : errs[k];
+                  hint.hidden = false;
+                }
+              }
+            });
+            It.feedback.banner("Please correct the errors in the form.", "is-error");
+            toast("Validation failed.", "error");
+          } else {
+            const msg = (res.body && (res.body.message || (res.body.error && res.body.error.message))) || "Save failed.";
+            It.feedback.banner(String(msg).slice(0, 180), "is-error");
+            toast(String(msg).slice(0, 120), "error");
+          }
+        });
+    });
+
+    wrap.querySelectorAll("#crud-form input, #crud-form select, #crud-form textarea").forEach(function (node) {
+      node.addEventListener("input", function () { clearFieldError(node); });
+    });
+
+    const opener = document.activeElement;
+    const FOCUSABLE = 'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled])';
+    const trap = function (e) {
+      if (e.key === "Escape") { e.stopPropagation(); closeModal(); return; }
+      if (e.key !== "Tab") return;
+      const list = Array.from(wrap.querySelectorAll(FOCUSABLE));
+      if (!list.length) { e.preventDefault(); return; }
+      const first = list[0];
+      const last = list[list.length - 1];
+      const active = document.activeElement;
+      const inside = wrap.contains(active);
+      if (e.shiftKey) {
+        if (!inside || active === first) { e.preventDefault(); last.focus(); }
+      } else if (!inside || active === last) {
+        e.preventDefault(); first.focus();
+      }
+    };
+    wrap.addEventListener("keydown", trap);
+
+    const first = wrap.querySelector("input:not([type=hidden]), select, textarea");
+    if (first) first.focus();
+
+    modalCleanup = function () {
+      wrap.removeEventListener("keydown", trap);
+      if (opener && opener.isConnected) opener.focus();
+    };
+  }
+
+  let modalCleanup = null;
+
+  function clearFieldError(node) {
+    if (!node) return;
+    const box = node.closest(".kit-field");
+    if (!box) return;
+    box.classList.remove("has-error");
+    node.classList.remove("is-error");
+    const err = box.querySelector(".field-error");
+    if (err) err.hidden = true;
+    node.removeAttribute("aria-invalid");
+  }
+
+  function validate(wrap) {
+    const mod = module();
+    let firstBad = null;
+    mod.fields.forEach(function (f) {
+      const box = wrap.querySelector('[data-field="' + f.key + '"]');
+      if (!box) return;
+      const node = box.querySelector("input, select, textarea");
+      const err = box.querySelector(".field-error");
+      if (f.required) {
+        if (node && !String(node.value).trim()) {
+          box.classList.add("has-error");
+          node.classList.add("is-error");
+          if (err) {
+            err.hidden = false;
+            err.textContent = f.label + " is required.";
+          }
+          if (node) node.setAttribute("aria-invalid", "true");
+          if (!firstBad) firstBad = node;
+        } else {
+          clearFieldError(node);
+        }
+      }
+    });
+    if (firstBad) {
+      firstBad.focus();
+      toast("Please fill the highlighted fields.", "error");
+      return true;
+    }
+    return false;
+  }
+
+  function closeModal() {
+    const root = el("modal-root");
+    if (root) root.textContent = "";
+    if (modalCleanup) {
+      const cleanup = modalCleanup;
+      modalCleanup = null;
+      cleanup();
+    }
+  }
+
+  function removeRow(id) {
+    const mod = module();
+    if (!global.confirm("Delete " + mod.singular + " #" + id + "?")) return;
+    const removed = state.rows.filter(function (r) { return Number(r.id) === id; });
+    It.apiDelete(mod.url + "/" + id, { auth: true }).then(function (res) {
+      if (res.ok) {
+        It.feedback.banner("Deleted.", "is-ok");
+        toast(mod.singular + " deleted.", "ok", { action: undoAction(mod, removed) });
+        load();
+      } else {
+        It.feedback.banner((res.body && res.body.message) || "Delete failed.", "is-error");
+      }
+    });
+  }
+
+  function openNew() {
+    const needed = module().fields.filter(function (f) { return f.optionsUrl; });
+    if (!needed.length) { openModal("new", null, {}); return; }
+    Promise.all(needed.map(function (f) { return fetchOptions(f).then(function (o) { return [f.key, o]; }); }))
+      .then(function (pairs) {
+        const map = {};
+        pairs.forEach(function (p) { map[p[0]] = p[1]; });
+        openModal("new", null, map);
+      });
+  }
+
+    function boot(user) {
+      const btnNew = el("btn-new");
+      if (btnNew) btnNew.addEventListener("click", openNew);
+      document.addEventListener("admin:search", function (e) { setSearch(e.detail); });
+      load();
+    }
+
+    document.addEventListener("itinari:ready", function(e) {
+      boot(e.detail);
+    });
+  })(window);
+</script>
+</body>
+</html>
