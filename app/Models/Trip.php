@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
-use App\Enums\TripStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Enums\TripStatus;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -16,7 +16,10 @@ class Trip extends Model
 
     protected $fillable = [
         'user_id', 'title', 'travel_style', 'interests', 'no_of_travelers',
-        'budget', 'no_of_days', 'start_date', 'end_date', 'status', ];
+        'budget', 'no_of_days', 'start_date', 'end_date', 'status',
+        'estimated_cost', 'parent_trip_id', 'original_trip_id', 'is_fork',
+        'source_version_id',
+    ];
 
     protected function casts(): array
     {
@@ -25,7 +28,23 @@ class Trip extends Model
             'interests' => 'array',
             'start_date' => 'date',
             'end_date' => 'date',
+            'is_fork' => 'boolean',
         ];
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(Trip::class, 'parent_trip_id');
+    }
+
+    public function original(): BelongsTo
+    {
+        return $this->belongsTo(Trip::class, 'original_trip_id');
+    }
+
+    public function forks(): HasMany
+    {
+        return $this->hasMany(Trip::class, 'parent_trip_id');
     }
 
     public function user(): BelongsTo
@@ -75,3 +94,7 @@ class Trip extends Model
         return $this->morphedByMany(Restaurant::class, 'item', 'trip_items')->withTimestamps();
     }
 }
+
+
+
+

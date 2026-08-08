@@ -22,16 +22,16 @@ class RestaurantController extends Controller
 
         return new RestaurantResource($restaurant);
     }
-    // public function destroy($id)
-    // {
-    //     //restaurant policy
-    //     authorize('delete', Restaurant::class);
-    //     $restaurant = Restaurant::findOrFail($id);
+    public function destroy($id)
+    {
+        //restaurant policy
+        authorize('delete', Restaurant::class);
+        $restaurant = Restaurant::findOrFail($id);
 
-    //     $restaurant->delete();
+        $restaurant->delete();
 
-    //     return response()->json([
-    //         'message' => 'Restaurant deleted successfully'
-    //     ]);
-    // }
+        return response()->json([
+            'message' => 'Restaurant deleted successfully'
+        ]);
+    }
 }

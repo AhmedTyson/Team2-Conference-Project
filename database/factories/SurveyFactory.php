@@ -18,9 +18,9 @@ class SurveyFactory extends Factory
         return [
             'user_id' => User::factory(),
             'travel_style' => fake()->randomElement(['Adventure', 'Relaxation', 'Cultural', 'Family', 'Luxury', 'Backpacking']),
-            'budget_level' => fake()->randomElement(['low', 'medium', 'high', 'luxury']),
-            'interests' => fake()->randomElements(['Beaches', 'Museums', 'Hiking', 'Nightlife', 'Food', 'Shopping', 'History'],
-                fake()->numberBetween(2, 4)),
+            'budget_level' => fake()->randomElement(['7000','14000','21000']),
+            'interests' => fake()->randomElements(['Beaches', 'Museums', 'Hiking', 'Nightlife', 'Food', 'Shopping', 'History'], 
+            fake()->numberBetween(2, 4)),
         ];
     }
 }

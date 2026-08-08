@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\ApiExceptionHandler;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -46,9 +47,14 @@ return Application::configure(basePath: dirname(__DIR__))
         // 403 Forbidden Authorization
         $exceptions->render(function (AuthorizationException $e) {
             return response()->json([
-                "success" => false,
-                "message" => "You are not authorized to perform this action.",
-            ], Response::HTTP_FORBIDDEN);
+                'error' => [
+                    'type' => basename(get_class($e)),
+                    'status' => intval($e->getCode()) ?: 500,
+                    'message' => $e->getMessage(),
+                    'page' => $e->getFile(),
+                    'line' => $e->getLine(),
+                ]
+            ]);
         });
 
         // 404 Not Found
