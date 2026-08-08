@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ReportController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -234,7 +235,6 @@ Route::prefix('v1')->group(function () {
 // Weather
 Route::get('/weather', [WeatherController::class, 'show']);
 
-<<<<<<< HEAD
 // Plans & Subscriptions (money layer — S5)
 // Post /api/v1/admin/set-plans
 // GET  /api/v1/plans                      # shared with F2
@@ -289,3 +289,12 @@ Route::middleware(['auth:api'])->prefix('v1/notifications')->name('notifications
 Route::middleware(['auth:api', 'role:admin|super_admin'])->prefix('v1/admin/notifications')->name('admin.notifications.')->group(function () {
     Route::get('/', [\App\Http\Controllers\Admin\AdminNotificationController::class, 'index']);
 });
+
+//Report
+Route::middleware(['auth:api', 'role:admin|super_admin'])
+    ->prefix('v1/admin')
+    ->group(function () {
+        Route::get('reports', [ReportController::class, 'index']);
+        Route::post('reports/generate', [ReportController::class, 'generate']);
+        Route::get('reports/{id}/download', [ReportController::class, 'download']);
+    });

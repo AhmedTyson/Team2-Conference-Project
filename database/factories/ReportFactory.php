@@ -1,0 +1,25 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Models\Report;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+class ReportFactory extends Factory
+{
+    protected $model = Report::class;
+
+    public function definition(): array
+    {
+        $from = now()->subDays(rand(7, 60));
+        $to = $from->copy()->addDays(rand(1, 30));
+
+        return [
+            'user_id' => User::factory(),
+            'from_date' => $from,
+            'to_date' => $to,
+            'file_path' => 'reports/report_' . $this->faker->uuid() . '.pdf',
+        ];
+    }
+}
