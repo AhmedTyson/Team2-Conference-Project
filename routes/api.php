@@ -13,7 +13,7 @@ use App\Http\Controllers\Admin\AdminReviewController;
 use App\Http\Controllers\Admin\AdminTripController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\ContactMessageController;
-use App\Http\Controllers\Admin\DestinationController as AdminDestinationController;
+use App\Http\Controllers\Admin\AdminDestinationController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\AIController;
 use App\Http\Controllers\AttractionController;
@@ -299,3 +299,6 @@ Route::middleware(['auth:api', 'role:admin|super_admin'])
         Route::post('reports/generate', [ReportController::class, 'generate']);
         Route::get('reports/{id}/download', [ReportController::class, 'download']);
     });
+
+
+

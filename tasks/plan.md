@@ -1,25 +1,29 @@
-# Email UI/UX & Notification Testing Plan
+# Implementation Plan: Monolith to 5-Domain Architecture
 
-## 1. Overview
-The core notification and email infrastructure is in place. The objective now is to elevate the email templates to a professional, marketing-grade UI/UX standard (beautiful, responsive, visually appealing) and rigorously test the entire notification pipeline across 5 dedicated phases.
+## Objective
+Reorganize the current flat Laravel structure into a 5-domain modular monolith (`Trips`, `Catalog`, `Commerce`, `Account`, `System`) as specified in the updated architecture prompt. This includes moving Models, Controllers, Repositories, Services, Interfaces, Requests, Factories, Seeders, and Feature Tests into their respective domain subdirectories.
 
-## 2. Dependency Graph
-```
-Email Template Overhaul (UI/UX Polish)
-    │
-    ├── Mailable Preview & Content Verification
-    │       │
-    │       ├── Integration Testing (Routing & Data Binding)
-    │       │       │
-    │       │       └── Concurrency Testing (Idempotency)
-    │       │               │
-    │       │               └── E2E Delivery & Log Verification
-```
+## Current State Analysis
+The project currently has a standard, flat Laravel structure. All models are in `app/Models`, all services in `app/Services`, etc.
+Additionally, there are duplicate controllers (e.g., `DestinationController`), typo'd migrations, and leftover root files (`refine-upload/`, `.php` scripts, `*.md` docs).
 
-## 3. The 5-Phase Execution Plan
+## Dependency Graph & Risk
+Moving `Models` and `Interfaces` impacts the entire codebase because of `use` imports and container bindings. 
+To minimize downtime and broken states, we will slice the work Domain by Domain (Vertical Slicing).
 
-1.  **Phase 1: Marketing-Grade UI/UX Design.** Rewrite `main.blade.php` and all child templates. Implement mobile-responsive CSS, modern typography (e.g., Inter/Roboto), hero images, clear Call-to-Action (CTA) buttons, and standardized marketing footers (social links, legal text). Ensure the design doesn't feel "AI generated" but mimics premium travel/SaaS companies.
-2.  **Phase 2: Mailable Visual Previews.** Create a temporary development route (e.g., `/mail-preview`) returning the Mailables directly to the browser. This allows visual testing of the UI/UX across different device widths without sending real emails.
-3.  **Phase 3: Routing & Integration Tests.** Write Feature tests asserting that triggering the core business logic (Payment, Registration, Forking) correctly dispatches the Mailables to the specific user's email address with the correct subject lines and data payloads.
-4.  **Phase 4: Concurrency & Idempotency Tests.** Write tests simulating simultaneous webhook hits or rapid duplicate events to prove that the `WithoutOverlapping` middleware successfully drops duplicate emails, ensuring users are never spammed.
-5.  **Phase 5: E2E Mail Delivery & Log Verification.** Switch the `MAIL_MAILER` to `log`. Execute the entire checkout and registration flow via API requests, then parse `storage/logs/laravel.log` to verify the raw HTML, headers, and boundaries are correctly compiled and dispatched by the Queue worker.
+1. **Pre-requisite (Cleanup)**: Remove garbage files, fix typos, resolve duplicate files.
+2. **Domain Migrations**: For each domain, we move its Models, Repositories, Interfaces, Services, Controllers, Requests, and Tests, then run a global Search & Replace for their namespaces across the whole app.
+3. **Post-requisite**: Update `AppServiceProvider` and run `composer dump-autoload`.
+
+## Vertical Slicing Strategy
+1. **Phase 1**: Housekeeping (Cleanup Checklist from Section 7).
+2. **Phase 2**: System Domain Migration (Settings, ContactMessages, Reports, Cache, Weather).
+3. **Phase 3**: Account Domain Migration (Users, Auth, Roles, Profiles).
+4. **Phase 4**: Catalog Domain Migration (Attractions, Categories, Countries, Destinations, Hotels, Restaurants).
+5. **Phase 5**: Trips Domain Migration (Trips, ItineraryItems, Map, AI, Reviews).
+6. **Phase 6**: Commerce Domain Migration (Bookings, Payments, Subscriptions, Plans, Orders).
+
+## Testing & Verification
+After each domain migration:
+- Run `composer dump-autoload`.
+- Run `php artisan test` to ensure all imports and namespaces are correctly resolved.

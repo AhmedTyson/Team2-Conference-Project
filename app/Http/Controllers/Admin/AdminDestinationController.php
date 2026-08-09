@@ -12,7 +12,7 @@ use App\Services\Fixtures\OpenStreetService;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 
-class DestinationController extends Controller
+class AdminDestinationController extends Controller
 {
     protected OpenStreetService $mapService;
 
@@ -107,3 +107,4 @@ class DestinationController extends Controller
         ]);
     }
 }
+
