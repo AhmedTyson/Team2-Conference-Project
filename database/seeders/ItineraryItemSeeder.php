@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Catalog\Attraction;
 use App\Models\Catalog\Hotel;
-use App\Models\ItineraryItem;
+use App\Models\Trips\ItineraryItem;
 use Illuminate\Database\Seeder;
 
 class ItineraryItemSeeder extends Seeder

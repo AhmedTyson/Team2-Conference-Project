@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained()->cascadeOnDelete();
-            $table->morphs('product'); // e.g. product_type = App\Models\Plan or App\Models\Trip (for forks)
+            $table->morphs('product'); // e.g. product_type = App\Models\Plan or App\Models\Trips\Trip (for forks)
             $table->unsignedBigInteger('price_cents')->default(0);
             $table->json('metadata')->nullable(); // useful for storing snapshots, specific versions, etc.
             $table->timestamps();

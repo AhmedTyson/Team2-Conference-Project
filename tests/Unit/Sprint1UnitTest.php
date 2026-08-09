@@ -5,7 +5,7 @@ namespace Tests\Unit;
 use App\Models\Account\User;
 use App\Models\Catalog\Category;
 use App\Models\Catalog\Hotel;
-use App\Models\Trip;
+use App\Models\Trips\Trip;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

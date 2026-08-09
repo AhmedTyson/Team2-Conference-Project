@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\BudgetSnapshot;
-use App\Models\Trip;
+use App\Models\Trips\BudgetSnapshot;
+use App\Models\Trips\Trip;
 use Illuminate\Database\Seeder;
 
 class BudgetSnapshotSeeder extends Seeder

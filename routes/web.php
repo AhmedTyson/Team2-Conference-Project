@@ -10,7 +10,7 @@ use App\Models\Catalog\Destination;
 use App\Models\Order;
 use App\Models\Plan;
 use App\Models\Subscription;
-use App\Models\Trip;
+use App\Models\Trips\Trip;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {

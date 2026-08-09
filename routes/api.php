@@ -5,9 +5,6 @@ use App\Http\Controllers\Account\AuthController;
 // Public Controllers
 use App\Http\Controllers\Admin\AdminAnalyticsController;
 use App\Http\Controllers\Admin\AdminNotificationController;
-use App\Http\Controllers\Admin\AdminReviewController;
-use App\Http\Controllers\Admin\AdminTripController;
-use App\Http\Controllers\AIController;
 use App\Http\Controllers\Catalog\AdminAttractionController;
 use App\Http\Controllers\Catalog\AdminCategoryController;
 use App\Http\Controllers\Catalog\AdminCountryController;
@@ -17,15 +14,13 @@ use App\Http\Controllers\Catalog\AdminHotelController;
 use App\Http\Controllers\Catalog\AdminRestaurantController;
 use App\Http\Controllers\Catalog\AttractionController;
 use App\Http\Controllers\Catalog\CategoryController;
-// Admin Controllers
 use App\Http\Controllers\Catalog\DestinationController;
 use App\Http\Controllers\Catalog\FlightController;
 use App\Http\Controllers\Catalog\HotelController;
+// Admin Controllers
 use App\Http\Controllers\Catalog\RestaurantController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\InteractionController;
-use App\Http\Controllers\MapController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PaymobWebhookController;
 use App\Http\Controllers\PlanController;
@@ -36,7 +31,12 @@ use App\Http\Controllers\System\ReportController;
 use App\Http\Controllers\System\SettingController;
 use App\Http\Controllers\System\SiteSettingsController;
 use App\Http\Controllers\System\WeatherController;
-use App\Http\Controllers\TripController;
+use App\Http\Controllers\Trips\AdminReviewController;
+use App\Http\Controllers\Trips\AdminTripController;
+use App\Http\Controllers\Trips\AIController;
+use App\Http\Controllers\Trips\InteractionController;
+use App\Http\Controllers\Trips\MapController;
+use App\Http\Controllers\Trips\TripController;
 use App\Services\GroqService;
 use Illuminate\Support\Facades\Route;
 

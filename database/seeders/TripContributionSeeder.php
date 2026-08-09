@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Trip;
-use App\Models\TripContribution;
+use App\Models\Trips\Trip;
+use App\Models\Trips\TripContribution;
 use Illuminate\Database\Seeder;
 
 class TripContributionSeeder extends Seeder

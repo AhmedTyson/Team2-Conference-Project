@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Models\Plan;
 use App\Models\System\Setting;
-use App\Models\Trip;
+use App\Models\Trips\Trip;
 
 class PriceCalculatorService
 {

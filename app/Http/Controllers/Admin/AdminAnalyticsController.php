@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Enums\TripStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Account\User;
-use App\Models\Trip;
+use App\Models\Trips\Trip;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;

@@ -2,13 +2,14 @@
 
 namespace App\Services;
 
-use App\Http\Requests\AiTripRequest;
+use App\Http\Requests\Trips\AiTripRequest;
 use App\Models\Catalog\Attraction;
 use App\Models\Catalog\Country;
 use App\Models\Catalog\Destination;
 use App\Models\Catalog\Hotel;
 use App\Models\Catalog\Restaurant;
-use App\Models\Trip;
+use App\Models\Trips\Trip;
+use App\Services\Trips\AiUsageService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use LucianoTonet\GroqLaravel\Facades\Groq;

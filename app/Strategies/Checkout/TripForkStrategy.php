@@ -3,7 +3,7 @@
 namespace App\Strategies\Checkout;
 
 use App\Models\System\Setting;
-use App\Models\Trip;
+use App\Models\Trips\Trip;
 use Illuminate\Database\Eloquent\Model;
 
 class TripForkStrategy implements CheckoutStrategyInterface

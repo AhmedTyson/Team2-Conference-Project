@@ -3,7 +3,7 @@
 namespace App\Notifications;
 
 use App\Mail\TripForkedMail;
-use App\Models\Trip;
+use App\Models\Trips\Trip;
 
 class TripForkedNotification extends AppNotification
 {

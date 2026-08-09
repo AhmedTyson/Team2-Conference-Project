@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\TripResource;
-use App\Models\Favourite;
-use App\Models\Trip;
+use App\Models\Trips\Favourite;
+use App\Models\Trips\Trip;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
