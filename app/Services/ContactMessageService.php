@@ -3,13 +3,14 @@
 namespace App\Services;
 
 use App\Enums\ContactMessageStatus;
+use App\Interfaces\ContactMessageRepositoryInterface;
 use App\Repositories\ContactMessageRepository;
 
 class ContactMessageService
 {
     protected $contactMessageRepository;
 
-    public function __construct(ContactMessageRepository $contactMessageRepository)
+    public function __construct(ContactMessageRepositoryInterface $contactMessageRepository)
     {
         $this->contactMessageRepository = $contactMessageRepository;
     }

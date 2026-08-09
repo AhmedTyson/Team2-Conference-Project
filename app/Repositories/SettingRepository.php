@@ -2,10 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Interfaces\SettingRepositoryInterface;
 use App\Models\Setting;
 use Illuminate\Support\Collection;
 
-class SettingRepository
+class SettingRepository implements SettingRepositoryInterface
 {
     public function getAllFlat(): Collection
     {

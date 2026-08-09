@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Interfaces\UserRepositoryInterface;
 use App\Repositories\UserRepository;
 use Illuminate\Support\Facades\Hash;
 
@@ -9,7 +10,7 @@ class UserService
 {
     protected $userRepository;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepositoryInterface $userRepository)
     {
         $this->userRepository = $userRepository;
     }

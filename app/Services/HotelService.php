@@ -2,13 +2,14 @@
 
 namespace App\Services;
 
+use App\Interfaces\HotelRepositoryInterface;
 use App\Repositories\HotelRepository;
 
 class HotelService
 {
     protected $hotelRepository;
 
-    public function __construct(HotelRepository $hotelRepository)
+    public function __construct(HotelRepositoryInterface $hotelRepository)
     {
         $this->hotelRepository = $hotelRepository;
     }

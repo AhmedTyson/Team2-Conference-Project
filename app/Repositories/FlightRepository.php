@@ -2,10 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Interfaces\FlightRepositoryInterface;
 use App\Models\Flight;
 use Illuminate\Database\Eloquent\Collection;
 
-class FlightRepository
+class FlightRepository implements FlightRepositoryInterface
 {
     public function getForAdmin(): Collection
     {

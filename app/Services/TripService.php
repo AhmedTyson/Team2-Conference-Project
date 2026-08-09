@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Trip;
+use App\Interfaces\TripRepositoryInterface;
 use App\Repositories\TripRepository;
 use App\Repositories\DestinationRepository;
 
@@ -11,7 +12,7 @@ class TripService
     protected $tripRepository;
     protected $destinationRepository;
 
-    public function __construct(TripRepository $tripRepository, DestinationRepository $destinationRepository)
+    public function __construct(TripRepositoryInterface $tripRepository, DestinationRepository $destinationRepository)
     {
         $this->tripRepository = $tripRepository;
         $this->destinationRepository = $destinationRepository;

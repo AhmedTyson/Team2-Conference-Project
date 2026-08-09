@@ -2,10 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Interfaces\ReviewRepositoryInterface;
 use App\Models\Review;
 use Illuminate\Database\Eloquent\Collection;
 
-class ReviewRepository
+class ReviewRepository implements ReviewRepositoryInterface
 {
     public function getForAdmin(): Collection
     {

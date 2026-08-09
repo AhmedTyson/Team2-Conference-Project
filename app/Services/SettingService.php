@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Interfaces\SettingRepositoryInterface;
 use App\Repositories\SettingRepository;
 use Illuminate\Support\Facades\Cache;
 use App\Models\Setting;
@@ -11,7 +12,7 @@ class SettingService
 {
     protected $settingRepository;
 
-    public function __construct(SettingRepository $settingRepository)
+    public function __construct(SettingRepositoryInterface $settingRepository)
     {
         $this->settingRepository = $settingRepository;
     }

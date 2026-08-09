@@ -2,10 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Interfaces\ContactMessageRepositoryInterface;
 use App\Models\ContactMessage;
 use Illuminate\Database\Eloquent\Collection;
 
-class ContactMessageRepository
+class ContactMessageRepository implements ContactMessageRepositoryInterface
 {
     public function getAllForAdmin(): Collection
     {

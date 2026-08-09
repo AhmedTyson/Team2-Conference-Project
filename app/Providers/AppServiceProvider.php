@@ -30,45 +30,29 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
-        $this->app->bind(
-            PaymentGatewayInterface::class,
-            PaymobGateway::class
-        );
+        $this->app->bind(PaymentGatewayInterface::class, PaymobGateway::class);
+        $this->app->bind(OrderRepositoryInterface::class, OrderRepository::class);
+        $this->app->bind(PaymentRepositoryInterface::class, PaymentRepository::class);
+        $this->app->bind(SurveyRepositoryInterface::class, SurveyRepository::class);
+        $this->app->bind(CountryRepositoryInterface::class, CountryRepository::class);
+        $this->app->bind(PlanRepositoryInterface::class, PlanRepository::class);
 
-        $this->app->bind(
-            OrderRepositoryInterface::class,
-            OrderRepository::class
-        );
-
-        $this->app->bind(
-            PaymentRepositoryInterface::class,
-            PaymentRepository::class
-        );
-
-        $this->app->bind(
-            SurveyRepositoryInterface::class,
-            SurveyRepository::class
-        );
-
-        $this->app->bind(
-            CountryRepositoryInterface::class,
-            CountryRepository::class
-        );
-
-        $this->app->bind(
-            PlanRepositoryInterface::class,
-            PlanRepository::class
-        );
+        // N-Tier Interfaces
+        $this->app->bind(\App\Interfaces\AttractionRepositoryInterface::class, \App\Repositories\AttractionRepository::class);
+        $this->app->bind(\App\Interfaces\CategoryRepositoryInterface::class, \App\Repositories\CategoryRepository::class);
+        $this->app->bind(\App\Interfaces\ContactMessageRepositoryInterface::class, \App\Repositories\ContactMessageRepository::class);
+        $this->app->bind(\App\Interfaces\DestinationRepositoryInterface::class, \App\Repositories\DestinationRepository::class);
+        $this->app->bind(\App\Interfaces\FlightRepositoryInterface::class, \App\Repositories\FlightRepository::class);
+        $this->app->bind(\App\Interfaces\HotelRepositoryInterface::class, \App\Repositories\HotelRepository::class);
+        $this->app->bind(\App\Interfaces\RestaurantRepositoryInterface::class, \App\Repositories\RestaurantRepository::class);
+        $this->app->bind(\App\Interfaces\ReviewRepositoryInterface::class, \App\Repositories\ReviewRepository::class);
+        $this->app->bind(\App\Interfaces\SettingRepositoryInterface::class, \App\Repositories\SettingRepository::class);
+        $this->app->bind(\App\Interfaces\TripRepositoryInterface::class, \App\Repositories\TripRepository::class);
+        $this->app->bind(\App\Interfaces\UserRepositoryInterface::class, \App\Repositories\UserRepository::class);
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
         RateLimiter::for('login', function (Request $request) {

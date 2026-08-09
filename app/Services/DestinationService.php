@@ -2,13 +2,14 @@
 
 namespace App\Services;
 
+use App\Interfaces\DestinationRepositoryInterface;
 use App\Repositories\DestinationRepository;
 
 class DestinationService
 {
     protected $destinationRepository;
 
-    public function __construct(DestinationRepository $destinationRepository)
+    public function __construct(DestinationRepositoryInterface $destinationRepository)
     {
         $this->destinationRepository = $destinationRepository;
     }

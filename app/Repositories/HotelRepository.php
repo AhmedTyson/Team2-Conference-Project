@@ -2,9 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Interfaces\HotelRepositoryInterface;
 use App\Models\Hotel;
 
-class HotelRepository
+class HotelRepository implements HotelRepositoryInterface
 {
     public function getAll()
     {

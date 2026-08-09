@@ -2,10 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Interfaces\CountryRepositoryInterface;
 use App\Models\Country;
 use Illuminate\Database\Eloquent\Collection;
 
-class CountryRepository
+class CountryRepository implements CountryRepositoryInterface
 {
     public function getForAdmin(): Collection
     {

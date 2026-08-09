@@ -2,10 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Interfaces\TripRepositoryInterface;
 use App\Models\Trip;
 use Illuminate\Database\Eloquent\Collection;
 
-class TripRepository
+class TripRepository implements TripRepositoryInterface
 {
     public function getForAdmin(): Collection
     {

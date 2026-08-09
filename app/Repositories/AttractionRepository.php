@@ -2,10 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Interfaces\AttractionRepositoryInterface;
 use App\Models\Attraction;
 use Illuminate\Database\Eloquent\Collection;
 
-class AttractionRepository
+class AttractionRepository implements AttractionRepositoryInterface
 {
     public function getForAdmin(): Collection
     {

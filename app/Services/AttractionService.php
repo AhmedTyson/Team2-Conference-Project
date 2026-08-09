@@ -3,13 +3,14 @@
 namespace App\Services;
 
 use App\Models\Attraction;
+use App\Interfaces\AttractionRepositoryInterface;
 use App\Repositories\AttractionRepository;
 
 class AttractionService
 {
     protected $attractionRepository;
 
-    public function __construct(AttractionRepository $attractionRepository)
+    public function __construct(AttractionRepositoryInterface $attractionRepository)
     {
         $this->attractionRepository = $attractionRepository;
     }

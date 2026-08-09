@@ -3,13 +3,14 @@
 namespace App\Services;
 
 use App\Models\Restaurant;
+use App\Interfaces\RestaurantRepositoryInterface;
 use App\Repositories\RestaurantRepository;
 
 class RestaurantService
 {
     protected $restaurantRepository;
 
-    public function __construct(RestaurantRepository $restaurantRepository)
+    public function __construct(RestaurantRepositoryInterface $restaurantRepository)
     {
         $this->restaurantRepository = $restaurantRepository;
     }

@@ -2,10 +2,11 @@
 
 namespace App\Repositories;
 
+use App\Interfaces\RestaurantRepositoryInterface;
 use App\Models\Restaurant;
 use Illuminate\Database\Eloquent\Collection;
 
-class RestaurantRepository
+class RestaurantRepository implements RestaurantRepositoryInterface
 {
     public function getForAdmin(): Collection
     {

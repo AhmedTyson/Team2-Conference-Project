@@ -2,13 +2,14 @@
 
 namespace App\Services;
 
+use App\Interfaces\CountryRepositoryInterface;
 use App\Repositories\CountryRepository;
 
 class CountryService
 {
     protected $countryRepository;
 
-    public function __construct(CountryRepository $countryRepository)
+    public function __construct(CountryRepositoryInterface $countryRepository)
     {
         $this->countryRepository = $countryRepository;
     }

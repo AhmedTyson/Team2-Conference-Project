@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Interfaces\FlightRepositoryInterface;
 use App\Repositories\FlightRepository;
 use Illuminate\Support\Facades\Http;
 
@@ -9,7 +10,7 @@ class FlightService
 {
     protected $flightRepository;
 
-    public function __construct(FlightRepository $flightRepository)
+    public function __construct(FlightRepositoryInterface $flightRepository)
     {
         $this->flightRepository = $flightRepository;
     }
