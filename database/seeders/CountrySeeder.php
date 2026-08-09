@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Services\Fixtures\CountryFixtureService;
+use App\Services\Catalog\Fixtures\CountryFixtureService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 

@@ -4,6 +4,11 @@ namespace App\Models;
 
 use App\Enums\TripStatus;
 use App\Models\Account\User;
+use App\Models\Catalog\Attraction;
+use App\Models\Catalog\Destination;
+use App\Models\Catalog\Flight;
+use App\Models\Catalog\Hotel;
+use App\Models\Catalog\Restaurant;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

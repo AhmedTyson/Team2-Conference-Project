@@ -4,12 +4,12 @@ namespace Database\Seeders;
 
 use App\Models\Account\User;
 use App\Models\AiRecommendation;
-use App\Models\Attraction;
-use App\Models\Destination;
-use App\Models\Flight;
-use App\Models\Hotel;
+use App\Models\Catalog\Attraction;
+use App\Models\Catalog\Destination;
+use App\Models\Catalog\Flight;
+use App\Models\Catalog\Hotel;
+use App\Models\Catalog\Restaurant;
 use App\Models\ItineraryItem;
-use App\Models\Restaurant;
 use App\Models\Trip;
 use Illuminate\Database\Seeder;
 

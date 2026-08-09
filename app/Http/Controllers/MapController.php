@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Attraction;
-use App\Models\Destination;
-use App\Models\Hotel;
+use App\Models\Catalog\Attraction;
+use App\Models\Catalog\Destination;
+use App\Models\Catalog\Hotel;
 use App\Models\Trip;
-use App\Services\Fixtures\OpenStreetService;
+use App\Services\Catalog\Fixtures\OpenStreetService;
 use App\Support\ApiResponse;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Log;

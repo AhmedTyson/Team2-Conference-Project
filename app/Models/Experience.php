@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\ExperienceStatus;
 use App\Models\Account\User;
+use App\Models\Catalog\Destination;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

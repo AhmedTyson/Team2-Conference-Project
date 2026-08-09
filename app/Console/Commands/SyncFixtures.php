@@ -2,11 +2,11 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Destination;
-use App\Services\Fixtures\CountryFixtureService;
-use App\Services\Fixtures\FlightFixtureService;
-use App\Services\Fixtures\HotelFixtureService;
-use App\Services\Fixtures\RestaurantFixtureService;
+use App\Models\Catalog\Destination;
+use App\Services\Catalog\Fixtures\CountryFixtureService;
+use App\Services\Catalog\Fixtures\FlightFixtureService;
+use App\Services\Catalog\Fixtures\HotelFixtureService;
+use App\Services\Catalog\Fixtures\RestaurantFixtureService;
 use Illuminate\Console\Command;
 
 class SyncFixtures extends Command

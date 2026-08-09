@@ -3,13 +3,13 @@
 namespace Tests\Feature;
 
 use App\Models\Account\User;
-use App\Models\Attraction;
-use App\Models\Country;
-use App\Models\Destination;
-use App\Models\Hotel;
+use App\Models\Catalog\Attraction;
+use App\Models\Catalog\Country;
+use App\Models\Catalog\Destination;
+use App\Models\Catalog\Hotel;
+use App\Models\Catalog\Restaurant;
 use App\Models\ItineraryItem;
 use App\Models\Plan;
-use App\Models\Restaurant;
 use App\Models\Subscription;
 use App\Models\Trip;
 use Illuminate\Foundation\Testing\RefreshDatabase;

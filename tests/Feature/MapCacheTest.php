@@ -2,7 +2,7 @@
 
 namespace Tests\Feature;
 
-use App\Models\Destination;
+use App\Models\Catalog\Destination;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;

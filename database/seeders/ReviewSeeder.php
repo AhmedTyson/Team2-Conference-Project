@@ -13,10 +13,10 @@ class ReviewSeeder extends Seeder
         $faker = Faker::create();
 
         $morphTargets = [
-            'App\Models\Destination',
-            'App\Models\Hotel',
-            'App\Models\Restaurant',
-            'App\Models\Attraction',
+            'App\Models\Catalog\Destination',
+            'App\Models\Catalog\Hotel',
+            'App\Models\Catalog\Restaurant',
+            'App\Models\Catalog\Attraction',
         ];
 
         $reviews = [];

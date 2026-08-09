@@ -3,11 +3,11 @@
 namespace App\Services;
 
 use App\Http\Requests\AiTripRequest;
-use App\Models\Attraction;
-use App\Models\Country;
-use App\Models\Destination;
-use App\Models\Hotel;
-use App\Models\Restaurant;
+use App\Models\Catalog\Attraction;
+use App\Models\Catalog\Country;
+use App\Models\Catalog\Destination;
+use App\Models\Catalog\Hotel;
+use App\Models\Catalog\Restaurant;
 use App\Models\Trip;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;

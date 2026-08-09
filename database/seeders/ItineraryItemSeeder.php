@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Attraction;
-use App\Models\Hotel;
+use App\Models\Catalog\Attraction;
+use App\Models\Catalog\Hotel;
 use App\Models\ItineraryItem;
 use Illuminate\Database\Seeder;
 

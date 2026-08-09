@@ -3,8 +3,8 @@
 namespace Tests\Unit;
 
 use App\Models\Account\User;
-use App\Models\Category;
-use App\Models\Hotel;
+use App\Models\Catalog\Category;
+use App\Models\Catalog\Hotel;
 use App\Models\Trip;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

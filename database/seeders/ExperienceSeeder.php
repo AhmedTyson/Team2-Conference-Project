@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Destination;
+use App\Models\Catalog\Destination;
 use App\Models\Experience;
 use App\Models\ExperienceProvider;
 use Illuminate\Database\Seeder;

@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Hotel;
+use App\Models\Catalog\Hotel;
 use App\Models\Trip;
 use App\Models\TripItem;
 use Illuminate\Database\Eloquent\Factories\Factory;

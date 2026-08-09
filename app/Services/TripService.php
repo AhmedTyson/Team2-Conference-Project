@@ -2,14 +2,13 @@
 
 namespace App\Services;
 
-use App\Models\Trip;
 use App\Interfaces\TripRepositoryInterface;
-use App\Repositories\TripRepository;
-use App\Repositories\DestinationRepository;
+use App\Repositories\Catalog\DestinationRepository;
 
 class TripService
 {
     protected $tripRepository;
+
     protected $destinationRepository;
 
     public function __construct(TripRepositoryInterface $tripRepository, DestinationRepository $destinationRepository)
@@ -45,12 +44,14 @@ class TripService
     public function update($id, array $data)
     {
         $trip = $this->tripRepository->findById($id);
+
         return $this->tripRepository->update($trip, $data);
     }
 
     public function destroy($id)
     {
         $trip = $this->tripRepository->findById($id);
+
         return $this->tripRepository->delete($trip);
     }
 }
