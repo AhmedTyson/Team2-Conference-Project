@@ -6,55 +6,50 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserResource;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
+use App\Services\UserService;
 
 class AdminUserController extends Controller
 {
+    protected $userService;
+
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     public function index()
     {
-        $users = User::with(['roles'])->latest()->paginate(min((int) request('per_page', 15) ?: 15, 100));
-
+        $users = $this->userService->getAdminList();
         return UserResource::collection($users);
     }
 
-    public function show(User $user)
+    public function show(int $id)
     {
-        $user->loadMissing(['trips', 'reviews', 'subscriptions']);
-
+        $user = $this->userService->showAdmin($id);
         return new UserResource($user);
     }
 
     public function store(StoreUserRequest $request)
     {
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'is_active' => $request->is_active ?? 1,
-        ]);
-
+        $user = $this->userService->store($request->validated());
         return new UserResource($user);
     }
 
-    public function update(UpdateUserRequest $request, User $user)
+    public function update(UpdateUserRequest $request, int $id)
     {
-        $user->update($request->validated());
-
+        $user = $this->userService->update($id, $request->validated());
         return new UserResource($user);
     }
 
-    public function active(User $user)
+    public function active(int $id)
     {
-        $user->update(['is_active' => 1]);
-
-        return new UserResource($user->fresh());
+        $user = $this->userService->setActive($id);
+        return new UserResource($user);
     }
 
-    public function block(User $user)
+    public function block(int $id)
     {
-        $user->update(['is_active' => 0]);
-
-        return new UserResource($user->fresh());
+        $user = $this->userService->setBlock($id);
+        return new UserResource($user);
     }
 }
