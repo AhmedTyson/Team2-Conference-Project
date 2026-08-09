@@ -12,7 +12,7 @@
           "name": "Admin (Users)",
           "item": [
             {
-              "name": "[GET] api/v1/admin/users",
+              "name": "api/v1/admin/users",
               "request": {
                 "method": "GET",
                 "header": [
@@ -36,7 +36,7 @@
               }
             },
             {
-              "name": "[GET] api/v1/admin/users/{user}",
+              "name": "api/v1/admin/users/{user}",
               "request": {
                 "method": "GET",
                 "header": [
@@ -67,7 +67,7 @@
               }
             },
             {
-              "name": "[POST] api/v1/admin/users",
+              "name": "api/v1/admin/users",
               "request": {
                 "method": "POST",
                 "header": [
@@ -100,7 +100,7 @@
               }
             },
             {
-              "name": "[PUT] api/v1/admin/users/{user}",
+              "name": "api/v1/admin/users/{user}",
               "request": {
                 "method": "PUT",
                 "header": [
@@ -140,7 +140,7 @@
               }
             },
             {
-              "name": "[PATCH] api/v1/admin/users/{user}/active",
+              "name": "api/v1/admin/users/{user}/active",
               "request": {
                 "method": "PATCH",
                 "header": [
@@ -181,7 +181,7 @@
               }
             },
             {
-              "name": "[PATCH] api/v1/admin/users/{user}/block",
+              "name": "api/v1/admin/users/{user}/block",
               "request": {
                 "method": "PATCH",
                 "header": [
@@ -229,7 +229,7 @@
           "name": "Profile",
           "item": [
             {
-              "name": "[PATCH] api/v1/profile",
+              "name": "api/v1/profile",
               "request": {
                 "method": "PATCH",
                 "header": [
@@ -268,7 +268,7 @@
           "name": "User Profile",
           "item": [
             {
-              "name": "[POST] api/v1/me/subscribe",
+              "name": "api/v1/me/subscribe",
               "request": {
                 "method": "POST",
                 "header": [
@@ -301,7 +301,7 @@
               }
             },
             {
-              "name": "[POST] api/v1/me/upgrade",
+              "name": "api/v1/me/upgrade",
               "request": {
                 "method": "POST",
                 "header": [
@@ -334,7 +334,7 @@
               }
             },
             {
-              "name": "[POST] api/v1/me/subscription/cancel",
+              "name": "api/v1/me/subscription/cancel",
               "request": {
                 "method": "POST",
                 "header": [
@@ -368,7 +368,7 @@
               }
             },
             {
-              "name": "[GET] api/v1/me/subscription",
+              "name": "api/v1/me/subscription",
               "request": {
                 "method": "GET",
                 "header": [
@@ -399,7 +399,7 @@
           "name": "Auth",
           "item": [
             {
-              "name": "POST /api/register",
+              "name": "api/register",
               "request": {
                 "method": "POST",
                 "header": [
@@ -420,7 +420,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\\n    \"name\": \"Jane Doe\",\\n    \"email\": \"jane@example.com\",\\n    \"password\": \"secret123\",\\n    \"password_confirmation\": \"secret123\"\\n}",
+                  "raw": "{\n    \"name\": \"Jane Doe\",\n    \"email\": \"jane@example.com\",\n    \"password\": \"secret123\",\n    \"password_confirmation\": \"secret123\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -430,7 +430,7 @@
               }
             },
             {
-              "name": "POST /api/login",
+              "name": "api/login",
               "request": {
                 "method": "POST",
                 "header": [
@@ -451,7 +451,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\\n    \"email\": \"jane@example.com\",\\n    \"password\": \"secret123\"\\n}",
+                  "raw": "{\n    \"email\": \"jane@example.com\",\n    \"password\": \"secret123\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -461,7 +461,7 @@
               }
             },
             {
-              "name": "POST /api/forgot-password",
+              "name": "api/forgot-password",
               "request": {
                 "method": "POST",
                 "header": [
@@ -482,7 +482,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\\n    \"email\": \"jane@example.com\"\\n}",
+                  "raw": "{\n    \"email\": \"jane@example.com\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -492,7 +492,7 @@
               }
             },
             {
-              "name": "POST /api/reset-password",
+              "name": "api/reset-password",
               "request": {
                 "method": "POST",
                 "header": [
@@ -513,7 +513,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\\n    \"email\": \"jane@example.com\",\\n    \"password\": \"newsecret123\",\\n    \"password_confirmation\": \"newsecret123\",\\n    \"token\": \"<reset token from email>\"\\n}",
+                  "raw": "{\n    \"email\": \"jane@example.com\",\n    \"password\": \"newsecret123\",\n    \"password_confirmation\": \"newsecret123\",\n    \"token\": \"<reset token from email>\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -523,7 +523,7 @@
               }
             },
             {
-              "name": "POST /api/refresh",
+              "name": "api/refresh",
               "request": {
                 "method": "POST",
                 "header": [
@@ -545,7 +545,7 @@
               }
             },
             {
-              "name": "POST /api/logout",
+              "name": "api/logout",
               "request": {
                 "method": "POST",
                 "header": [
@@ -567,7 +567,7 @@
               }
             },
             {
-              "name": "GET /api/email/verify-notice",
+              "name": "api/email/verify-notice",
               "request": {
                 "method": "GET",
                 "header": [
@@ -590,7 +590,7 @@
               }
             },
             {
-              "name": "GET /api/email/verify/:id/:hash",
+              "name": "api/email/verify/:id/:hash",
               "request": {
                 "method": "GET",
                 "header": [
@@ -615,7 +615,7 @@
               }
             },
             {
-              "name": "POST /api/email/resend",
+              "name": "api/email/resend",
               "request": {
                 "method": "POST",
                 "header": [
@@ -638,7 +638,7 @@
               }
             },
             {
-              "name": "GET /api/user (me)",
+              "name": "api/user (me)",
               "request": {
                 "method": "GET",
                 "header": [
@@ -671,7 +671,7 @@
           "name": "Admin (Attractions)",
           "item": [
             {
-              "name": "[GET] api/v1/admin/attractions",
+              "name": "api/v1/admin/attractions",
               "request": {
                 "method": "GET",
                 "header": [
@@ -695,7 +695,7 @@
               }
             },
             {
-              "name": "[POST] api/v1/admin/attractions",
+              "name": "api/v1/admin/attractions",
               "request": {
                 "method": "POST",
                 "header": [
@@ -728,7 +728,7 @@
               }
             },
             {
-              "name": "[PUT] api/v1/admin/attractions/{id}",
+              "name": "api/v1/admin/attractions/{id}",
               "request": {
                 "method": "PUT",
                 "header": [
@@ -768,7 +768,7 @@
               }
             },
             {
-              "name": "[DELETE] api/v1/admin/attractions/{id}",
+              "name": "api/v1/admin/attractions/{id}",
               "request": {
                 "method": "DELETE",
                 "header": [
@@ -806,7 +806,7 @@
           "name": "Admin (Categories)",
           "item": [
             {
-              "name": "[GET] api/v1/admin/categories",
+              "name": "api/v1/admin/categories",
               "request": {
                 "method": "GET",
                 "header": [
@@ -830,7 +830,7 @@
               }
             },
             {
-              "name": "[POST] api/v1/admin/categories",
+              "name": "api/v1/admin/categories",
               "request": {
                 "method": "POST",
                 "header": [
@@ -863,7 +863,7 @@
               }
             },
             {
-              "name": "[PUT] api/v1/admin/categories/{category}",
+              "name": "api/v1/admin/categories/{category}",
               "request": {
                 "method": "PUT",
                 "header": [
@@ -903,7 +903,7 @@
               }
             },
             {
-              "name": "[DELETE] api/v1/admin/categories/{category}",
+              "name": "api/v1/admin/categories/{category}",
               "request": {
                 "method": "DELETE",
                 "header": [
@@ -941,7 +941,7 @@
           "name": "Admin (Countries)",
           "item": [
             {
-              "name": "[GET] api/v1/admin/countries",
+              "name": "api/v1/admin/countries",
               "request": {
                 "method": "GET",
                 "header": [
@@ -965,7 +965,7 @@
               }
             },
             {
-              "name": "[POST] api/v1/admin/countries",
+              "name": "api/v1/admin/countries",
               "request": {
                 "method": "POST",
                 "header": [
@@ -998,7 +998,7 @@
               }
             },
             {
-              "name": "[PUT] api/v1/admin/countries/{id}",
+              "name": "api/v1/admin/countries/{id}",
               "request": {
                 "method": "PUT",
                 "header": [
@@ -1038,7 +1038,7 @@
               }
             },
             {
-              "name": "[DELETE] api/v1/admin/countries/{id}",
+              "name": "api/v1/admin/countries/{id}",
               "request": {
                 "method": "DELETE",
                 "header": [
@@ -1076,7 +1076,7 @@
           "name": "Admin (Destinations)",
           "item": [
             {
-              "name": "[GET] api/v1/admin/destinations",
+              "name": "api/v1/admin/destinations",
               "request": {
                 "method": "GET",
                 "header": [
@@ -1100,7 +1100,7 @@
               }
             },
             {
-              "name": "[POST] api/v1/admin/destinations",
+              "name": "api/v1/admin/destinations",
               "request": {
                 "method": "POST",
                 "header": [
@@ -1133,7 +1133,7 @@
               }
             },
             {
-              "name": "[PUT] api/v1/admin/destinations/{id}",
+              "name": "api/v1/admin/destinations/{id}",
               "request": {
                 "method": "PUT",
                 "header": [
@@ -1173,7 +1173,7 @@
               }
             },
             {
-              "name": "[DELETE] api/v1/admin/destinations/{id}",
+              "name": "api/v1/admin/destinations/{id}",
               "request": {
                 "method": "DELETE",
                 "header": [
@@ -1211,7 +1211,7 @@
           "name": "Admin (Flights)",
           "item": [
             {
-              "name": "[GET] api/v1/admin/flights",
+              "name": "api/v1/admin/flights",
               "request": {
                 "method": "GET",
                 "header": [
@@ -1235,7 +1235,7 @@
               }
             },
             {
-              "name": "[POST] api/v1/admin/flights",
+              "name": "api/v1/admin/flights",
               "request": {
                 "method": "POST",
                 "header": [
@@ -1268,7 +1268,7 @@
               }
             },
             {
-              "name": "[PUT] api/v1/admin/flights/{id}",
+              "name": "api/v1/admin/flights/{id}",
               "request": {
                 "method": "PUT",
                 "header": [
@@ -1308,7 +1308,7 @@
               }
             },
             {
-              "name": "[DELETE] api/v1/admin/flights/{id}",
+              "name": "api/v1/admin/flights/{id}",
               "request": {
                 "method": "DELETE",
                 "header": [
@@ -1346,7 +1346,7 @@
           "name": "Admin (Hotels)",
           "item": [
             {
-              "name": "[GET] api/v1/admin/hotels",
+              "name": "api/v1/admin/hotels",
               "request": {
                 "method": "GET",
                 "header": [
@@ -1370,7 +1370,7 @@
               }
             },
             {
-              "name": "[POST] api/v1/admin/hotels",
+              "name": "api/v1/admin/hotels",
               "request": {
                 "method": "POST",
                 "header": [
@@ -1403,7 +1403,7 @@
               }
             },
             {
-              "name": "[PUT] api/v1/admin/hotels/{id}",
+              "name": "api/v1/admin/hotels/{id}",
               "request": {
                 "method": "PUT",
                 "header": [
@@ -1443,7 +1443,7 @@
               }
             },
             {
-              "name": "[DELETE] api/v1/admin/hotels/{id}",
+              "name": "api/v1/admin/hotels/{id}",
               "request": {
                 "method": "DELETE",
                 "header": [
@@ -1481,7 +1481,7 @@
           "name": "Admin (Restaurants)",
           "item": [
             {
-              "name": "[GET] api/v1/admin/restaurants",
+              "name": "api/v1/admin/restaurants",
               "request": {
                 "method": "GET",
                 "header": [
@@ -1505,7 +1505,7 @@
               }
             },
             {
-              "name": "[POST] api/v1/admin/restaurants",
+              "name": "api/v1/admin/restaurants",
               "request": {
                 "method": "POST",
                 "header": [
@@ -1538,7 +1538,7 @@
               }
             },
             {
-              "name": "[PUT] api/v1/admin/restaurants/{id}",
+              "name": "api/v1/admin/restaurants/{id}",
               "request": {
                 "method": "PUT",
                 "header": [
@@ -1578,7 +1578,7 @@
               }
             },
             {
-              "name": "[DELETE] api/v1/admin/restaurants/{id}",
+              "name": "api/v1/admin/restaurants/{id}",
               "request": {
                 "method": "DELETE",
                 "header": [
@@ -1616,7 +1616,7 @@
           "name": "Attractions",
           "item": [
             {
-              "name": "[GET] api/v1/attractions",
+              "name": "api/v1/attractions",
               "request": {
                 "method": "GET",
                 "header": [
@@ -1639,7 +1639,7 @@
               }
             },
             {
-              "name": "[GET] api/v1/attractions/{id}",
+              "name": "api/v1/attractions/{id}",
               "request": {
                 "method": "GET",
                 "header": [
@@ -1676,7 +1676,7 @@
           "name": "Categories",
           "item": [
             {
-              "name": "[GET] api/v1/categories",
+              "name": "api/v1/categories",
               "request": {
                 "method": "GET",
                 "header": [
@@ -1699,7 +1699,7 @@
               }
             },
             {
-              "name": "[GET] api/v1/categories/{category}",
+              "name": "api/v1/categories/{category}",
               "request": {
                 "method": "GET",
                 "header": [
@@ -1736,7 +1736,7 @@
           "name": "Destinations",
           "item": [
             {
-              "name": "[GET] api/v1/destinations",
+              "name": "api/v1/destinations",
               "request": {
                 "method": "GET",
                 "header": [
@@ -1759,7 +1759,7 @@
               }
             },
             {
-              "name": "[GET] api/v1/destinations/{id}",
+              "name": "api/v1/destinations/{id}",
               "request": {
                 "method": "GET",
                 "header": [
@@ -1796,7 +1796,7 @@
           "name": "Flights",
           "item": [
             {
-              "name": "[GET] api/v1/flights",
+              "name": "api/v1/flights",
               "request": {
                 "method": "GET",
                 "header": [
@@ -1819,7 +1819,7 @@
               }
             },
             {
-              "name": "[GET] api/v1/flights/{id}",
+              "name": "api/v1/flights/{id}",
               "request": {
                 "method": "GET",
                 "header": [
@@ -1856,7 +1856,7 @@
           "name": "Hotels",
           "item": [
             {
-              "name": "[GET] api/v1/hotels",
+              "name": "api/v1/hotels",
               "request": {
                 "method": "GET",
                 "header": [
@@ -1879,7 +1879,7 @@
               }
             },
             {
-              "name": "[GET] api/v1/hotels/{id}",
+              "name": "api/v1/hotels/{id}",
               "request": {
                 "method": "GET",
                 "header": [
@@ -1916,7 +1916,7 @@
           "name": "Restaurants",
           "item": [
             {
-              "name": "[GET] api/v1/restaurants",
+              "name": "api/v1/restaurants",
               "request": {
                 "method": "GET",
                 "header": [
@@ -1939,7 +1939,7 @@
               }
             },
             {
-              "name": "[GET] api/v1/restaurants/{id}",
+              "name": "api/v1/restaurants/{id}",
               "request": {
                 "method": "GET",
                 "header": [
@@ -1976,7 +1976,7 @@
           "name": "Site-settings",
           "item": [
             {
-              "name": "[GET] api/v1/site-settings",
+              "name": "api/v1/site-settings",
               "request": {
                 "method": "GET",
                 "header": [
@@ -2012,7 +2012,7 @@
           "name": "Admin (Reviews)",
           "item": [
             {
-              "name": "[GET] api/v1/admin/reviews",
+              "name": "api/v1/admin/reviews",
               "request": {
                 "method": "GET",
                 "header": [
@@ -2036,7 +2036,7 @@
               }
             },
             {
-              "name": "[PATCH] api/v1/admin/reviews/{id}/approve",
+              "name": "api/v1/admin/reviews/{id}/approve",
               "request": {
                 "method": "PATCH",
                 "header": [
@@ -2077,7 +2077,7 @@
               }
             },
             {
-              "name": "[PATCH] api/v1/admin/reviews/{id}/reject",
+              "name": "api/v1/admin/reviews/{id}/reject",
               "request": {
                 "method": "PATCH",
                 "header": [
@@ -2118,7 +2118,7 @@
               }
             },
             {
-              "name": "[DELETE] api/v1/admin/reviews/{id}",
+              "name": "api/v1/admin/reviews/{id}",
               "request": {
                 "method": "DELETE",
                 "header": [
@@ -2156,7 +2156,7 @@
           "name": "Admin (Trips)",
           "item": [
             {
-              "name": "[GET] api/v1/admin/trips",
+              "name": "api/v1/admin/trips",
               "request": {
                 "method": "GET",
                 "header": [
@@ -2180,7 +2180,7 @@
               }
             },
             {
-              "name": "[POST] api/v1/admin/trips",
+              "name": "api/v1/admin/trips",
               "request": {
                 "method": "POST",
                 "header": [
@@ -2213,7 +2213,7 @@
               }
             },
             {
-              "name": "[PUT] api/v1/admin/trips/{id}",
+              "name": "api/v1/admin/trips/{id}",
               "request": {
                 "method": "PUT",
                 "header": [
@@ -2253,7 +2253,7 @@
               }
             },
             {
-              "name": "[DELETE] api/v1/admin/trips/{id}",
+              "name": "api/v1/admin/trips/{id}",
               "request": {
                 "method": "DELETE",
                 "header": [
@@ -2291,7 +2291,7 @@
           "name": "Favourites",
           "item": [
             {
-              "name": "[POST] api/v1/favourites/{type}/{id}",
+              "name": "api/v1/favourites/{type}/{id}",
               "request": {
                 "method": "POST",
                 "header": [
@@ -2342,7 +2342,7 @@
           "name": "Maps",
           "item": [
             {
-              "name": "[GET] api/v1/maps/destination/{destination}",
+              "name": "api/v1/maps/destination/{destination}",
               "request": {
                 "method": "GET",
                 "header": [
@@ -2373,7 +2373,7 @@
               }
             },
             {
-              "name": "[GET] api/v1/maps/trip/{trip}",
+              "name": "api/v1/maps/trip/{trip}",
               "request": {
                 "method": "GET",
                 "header": [
@@ -2411,7 +2411,7 @@
           "name": "Reviews",
           "item": [
             {
-              "name": "[POST] api/v1/reviews/{type}/{id}",
+              "name": "api/v1/reviews/{type}/{id}",
               "request": {
                 "method": "POST",
                 "header": [
@@ -2455,7 +2455,7 @@
               }
             },
             {
-              "name": "[DELETE] api/v1/reviews/{id}",
+              "name": "api/v1/reviews/{id}",
               "request": {
                 "method": "DELETE",
                 "header": [
@@ -2492,7 +2492,7 @@
           "name": "Trips",
           "item": [
             {
-              "name": "[GET] api/v1/trips/create",
+              "name": "api/v1/trips/create",
               "request": {
                 "method": "GET",
                 "header": [
@@ -2516,7 +2516,7 @@
               }
             },
             {
-              "name": "[POST] api/v1/trips",
+              "name": "api/v1/trips",
               "request": {
                 "method": "POST",
                 "header": [
@@ -2548,7 +2548,7 @@
               }
             },
             {
-              "name": "[POST] api/v1/trips/{trip}/attach/{type}",
+              "name": "api/v1/trips/{trip}/attach/{type}",
               "request": {
                 "method": "POST",
                 "header": [
@@ -2593,7 +2593,7 @@
               }
             },
             {
-              "name": "[DELETE] api/v1/trips/{trip}/detach/{id}",
+              "name": "api/v1/trips/{trip}/detach/{id}",
               "request": {
                 "method": "DELETE",
                 "header": [
@@ -2629,7 +2629,7 @@
               }
             },
             {
-              "name": "[GET] api/v1/trips/{trip}",
+              "name": "api/v1/trips/{trip}",
               "request": {
                 "method": "GET",
                 "header": [
@@ -2659,7 +2659,7 @@
               }
             },
             {
-              "name": "POST /api/trips/{trip_id}/fork",
+              "name": "api/trips/{trip_id}/fork",
               "request": {
                 "method": "POST",
                 "header": [
@@ -2690,7 +2690,7 @@
           "name": "AI Reviews",
           "item": [
             {
-              "name": "POST /api/review (generate AI)",
+              "name": "api/review (generate AI)",
               "request": {
                 "method": "POST",
                 "header": [
@@ -2711,7 +2711,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\\n    \"destination_country_id\": 1,\\n    \"number_of_days\": 5,\\n    \"budget\": 2000,\\n    \"interests\": [\"culture\",\"food\"],\\n    \"number_of_travelers\": 2,\\n    \"travel_style\": \"relaxed\"\\n}",
+                  "raw": "{\n    \"destination_country_id\": 1,\n    \"number_of_days\": 5,\n    \"budget\": 2000,\n    \"interests\": [\"culture\",\"food\"],\n    \"number_of_travelers\": 2,\n    \"travel_style\": \"relaxed\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -2721,7 +2721,7 @@
               }
             },
             {
-              "name": "GET /api/review/:reaId",
+              "name": "api/review/:reaId",
               "request": {
                 "method": "GET",
                 "header": [
@@ -2755,7 +2755,7 @@
           "name": "Admin (Analytics)",
           "item": [
             {
-              "name": "[GET] api/v1/admin/analytics/revenue",
+              "name": "api/v1/admin/analytics/revenue",
               "request": {
                 "method": "GET",
                 "header": [
@@ -2780,7 +2780,7 @@
               }
             },
             {
-              "name": "[GET] api/v1/admin/analytics",
+              "name": "api/v1/admin/analytics",
               "request": {
                 "method": "GET",
                 "header": [
@@ -2811,7 +2811,7 @@
           "name": "Admin (Set-plans)",
           "item": [
             {
-              "name": "[POST] api/v1/admin/set-plans",
+              "name": "api/v1/admin/set-plans",
               "request": {
                 "method": "POST",
                 "header": [
@@ -2851,7 +2851,7 @@
           "name": "Checkout",
           "item": [
             {
-              "name": "[POST] api/v1/checkout/initiate",
+              "name": "api/v1/checkout/initiate",
               "request": {
                 "method": "POST",
                 "header": [
@@ -2891,7 +2891,7 @@
           "name": "Paymob",
           "item": [
             {
-              "name": "[POST] api/v1/paymob/webhook",
+              "name": "api/v1/paymob/webhook",
               "request": {
                 "method": "POST",
                 "header": [
@@ -2924,7 +2924,7 @@
               }
             },
             {
-              "name": "[GET] api/v1/paymob/callback",
+              "name": "api/v1/paymob/callback",
               "request": {
                 "method": "GET",
                 "header": [
@@ -2955,7 +2955,7 @@
           "name": "Plans",
           "item": [
             {
-              "name": "[GET] api/v1/plans",
+              "name": "api/v1/plans",
               "request": {
                 "method": "GET",
                 "header": [
@@ -2991,7 +2991,7 @@
           "name": "Admin (Contacts)",
           "item": [
             {
-              "name": "[GET] api/v1/admin/contacts",
+              "name": "api/v1/admin/contacts",
               "request": {
                 "method": "GET",
                 "header": [
@@ -3015,7 +3015,7 @@
               }
             },
             {
-              "name": "[PATCH] api/v1/admin/contacts/{id}/read",
+              "name": "api/v1/admin/contacts/{id}/read",
               "request": {
                 "method": "PATCH",
                 "header": [
@@ -3056,7 +3056,7 @@
               }
             },
             {
-              "name": "[PATCH] api/v1/admin/contacts/{id}/resolve",
+              "name": "api/v1/admin/contacts/{id}/resolve",
               "request": {
                 "method": "PATCH",
                 "header": [
@@ -3104,7 +3104,7 @@
           "name": "Admin (Notifications)",
           "item": [
             {
-              "name": "[GET] api/v1/admin/notifications",
+              "name": "api/v1/admin/notifications",
               "request": {
                 "method": "GET",
                 "header": [
@@ -3135,7 +3135,7 @@
           "name": "Admin (Reports)",
           "item": [
             {
-              "name": "[GET] api/v1/admin/reports",
+              "name": "api/v1/admin/reports",
               "request": {
                 "method": "GET",
                 "header": [
@@ -3159,7 +3159,7 @@
               }
             },
             {
-              "name": "[POST] api/v1/admin/reports/generate",
+              "name": "api/v1/admin/reports/generate",
               "request": {
                 "method": "POST",
                 "header": [
@@ -3193,7 +3193,7 @@
               }
             },
             {
-              "name": "[GET] api/v1/admin/reports/{id}/download",
+              "name": "api/v1/admin/reports/{id}/download",
               "request": {
                 "method": "GET",
                 "header": [
@@ -3232,7 +3232,7 @@
           "name": "Admin (Settings)",
           "item": [
             {
-              "name": "[GET] api/v1/admin/settings",
+              "name": "api/v1/admin/settings",
               "request": {
                 "method": "GET",
                 "header": [
@@ -3256,7 +3256,7 @@
               }
             },
             {
-              "name": "[PUT] api/v1/admin/settings",
+              "name": "api/v1/admin/settings",
               "request": {
                 "method": "PUT",
                 "header": [
@@ -3289,7 +3289,7 @@
               }
             },
             {
-              "name": "[PATCH] api/v1/admin/settings/{key}",
+              "name": "api/v1/admin/settings/{key}",
               "request": {
                 "method": "PATCH",
                 "header": [
@@ -3336,7 +3336,7 @@
           "name": "Contacts",
           "item": [
             {
-              "name": "[POST] api/v1/contacts",
+              "name": "api/v1/contacts",
               "request": {
                 "method": "POST",
                 "header": [
@@ -3375,7 +3375,7 @@
           "name": "Dashboard",
           "item": [
             {
-              "name": "[GET] api/v1/dashboard",
+              "name": "api/v1/dashboard",
               "request": {
                 "method": "GET",
                 "header": [
@@ -3398,7 +3398,7 @@
               }
             },
             {
-              "name": "[GET] api/v1/dashboard/trips",
+              "name": "api/v1/dashboard/trips",
               "request": {
                 "method": "GET",
                 "header": [
@@ -3422,7 +3422,7 @@
               }
             },
             {
-              "name": "[GET] api/v1/dashboard/favourites",
+              "name": "api/v1/dashboard/favourites",
               "request": {
                 "method": "GET",
                 "header": [
@@ -3453,7 +3453,7 @@
           "name": "Notifications",
           "item": [
             {
-              "name": "[GET] api/v1/notifications",
+              "name": "api/v1/notifications",
               "request": {
                 "method": "GET",
                 "header": [
@@ -3476,7 +3476,7 @@
               }
             },
             {
-              "name": "[PATCH] api/v1/notifications/read-all",
+              "name": "api/v1/notifications/read-all",
               "request": {
                 "method": "PATCH",
                 "header": [
@@ -3509,7 +3509,7 @@
               }
             },
             {
-              "name": "[PATCH] api/v1/notifications/{notification}/read",
+              "name": "api/v1/notifications/{notification}/read",
               "request": {
                 "method": "PATCH",
                 "header": [
@@ -3556,7 +3556,7 @@
           "name": "Weather",
           "item": [
             {
-              "name": "GET /api/weather",
+              "name": "api/weather",
               "request": {
                 "method": "GET",
                 "header": [
@@ -3583,7 +3583,7 @@
           "name": "Surveys",
           "item": [
             {
-              "name": "GET /api/surveys",
+              "name": "api/surveys",
               "request": {
                 "method": "GET",
                 "header": [
@@ -3605,7 +3605,7 @@
               }
             },
             {
-              "name": "POST /api/surveys",
+              "name": "api/surveys",
               "request": {
                 "method": "POST",
                 "header": [
@@ -3626,7 +3626,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\\n    \"title\": \"Guest feedback\",\\n    \"questions\": []\\n}",
+                  "raw": "{\n    \"title\": \"Guest feedback\",\n    \"questions\": []\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -3636,7 +3636,7 @@
               }
             },
             {
-              "name": "GET /api/surveys/:survey",
+              "name": "api/surveys/:survey",
               "request": {
                 "method": "GET",
                 "header": [
@@ -3659,7 +3659,7 @@
               }
             },
             {
-              "name": "PUT /api/surveys/:survey",
+              "name": "api/surveys/:survey",
               "request": {
                 "method": "PUT",
                 "header": [
@@ -3681,7 +3681,7 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\\n    \"title\": \"Updated title\"\\n}",
+                  "raw": "{\n    \"title\": \"Updated title\"\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -3691,7 +3691,7 @@
               }
             },
             {
-              "name": "DELETE /api/surveys/:survey",
+              "name": "api/surveys/:survey",
               "request": {
                 "method": "DELETE",
                 "header": [
@@ -3719,7 +3719,7 @@
           "name": "My Reports",
           "item": [
             {
-              "name": "GET /api/me/reports",
+              "name": "api/me/reports",
               "request": {
                 "method": "GET",
                 "header": [
