@@ -6,7 +6,7 @@ use App\Enums\OrderStatus;
 use App\Interfaces\OrderRepositoryInterface;
 use App\Interfaces\PaymentGatewayInterface;
 use App\Interfaces\PaymentRepositoryInterface;
-use App\Models\User;
+use App\Models\Account\User;
 use App\Strategies\Checkout\CheckoutStrategyFactory;
 use Exception;
 use Illuminate\Support\Facades\DB;

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Account\User;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\DatabaseNotification;
 

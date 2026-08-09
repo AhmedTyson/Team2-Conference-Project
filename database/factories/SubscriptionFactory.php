@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Account\User;
 use App\Models\Plan;
 use App\Models\Subscription;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Account\User;
 use App\Models\Booking;
-use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class BookingSeeder extends Seeder

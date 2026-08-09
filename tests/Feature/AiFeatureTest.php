@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Account\User;
 use App\Models\Attraction;
 use App\Models\Country;
 use App\Models\Destination;
@@ -11,7 +12,6 @@ use App\Models\Plan;
 use App\Models\Restaurant;
 use App\Models\Subscription;
 use App\Models\Trip;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use LucianoTonet\GroqLaravel\Facades\Groq;
 use Mockery;

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Interfaces\Account\UserRepositoryInterface;
 use App\Interfaces\AttractionRepositoryInterface;
 use App\Interfaces\CategoryRepositoryInterface;
 use App\Interfaces\CountryRepositoryInterface;
@@ -18,7 +19,7 @@ use App\Interfaces\SurveyRepositoryInterface;
 use App\Interfaces\System\ContactMessageRepositoryInterface;
 use App\Interfaces\System\SettingRepositoryInterface;
 use App\Interfaces\TripRepositoryInterface;
-use App\Interfaces\UserRepositoryInterface;
+use App\Models\Account\User;
 use App\Models\Attraction;
 use App\Models\Destination;
 use App\Models\Flight;
@@ -26,7 +27,7 @@ use App\Models\Hotel;
 use App\Models\Plan;
 use App\Models\Restaurant;
 use App\Models\Trip;
-use App\Models\User;
+use App\Repositories\Account\UserRepository;
 use App\Repositories\AttractionRepository;
 use App\Repositories\CategoryRepository;
 use App\Repositories\CountryRepository;
@@ -42,7 +43,6 @@ use App\Repositories\SurveyRepository;
 use App\Repositories\System\ContactMessageRepository;
 use App\Repositories\System\SettingRepository;
 use App\Repositories\TripRepository;
-use App\Repositories\UserRepository;
 use App\Services\PaymobGateway;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Relations\Relation;

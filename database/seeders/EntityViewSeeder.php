@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Account\User;
 use App\Models\EntityView;
 use App\Models\Experience;
-use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class EntityViewSeeder extends Seeder

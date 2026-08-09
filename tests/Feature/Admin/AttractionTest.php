@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Models\Account\User;
 use App\Models\Attraction;
 use App\Models\Category;
 use App\Models\Destination;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;

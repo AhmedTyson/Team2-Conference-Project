@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Account\User;
 use App\Models\ExperienceProvider;
-use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class ExperienceProviderSeeder extends Seeder

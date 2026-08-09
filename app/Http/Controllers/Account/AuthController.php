@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Account;
 
-use App\Http\Requests\Auth\ForgotPasswordRequest;
-use App\Http\Requests\Auth\LoginRequest;
-use App\Http\Requests\Auth\RegisterRequest;
-use App\Http\Requests\Auth\ResetPasswordRequest;
-use App\Http\Requests\Auth\UpdateProfileRequest;
-use App\Models\Role;
-use App\Models\User;
+use App\Http\Requests\Account\Auth\ForgotPasswordRequest;
+use App\Http\Requests\Account\Auth\LoginRequest;
+use App\Http\Requests\Account\Auth\RegisterRequest;
+use App\Http\Requests\Account\Auth\ResetPasswordRequest;
+use App\Http\Requests\Account\Auth\UpdateProfileRequest;
+use App\Models\Account\Role;
+use App\Models\Account\User;
 use App\Notifications\WelcomeNotification;
+use App\Http\Controllers\Controller;
 use App\Support\ApiResponse;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;

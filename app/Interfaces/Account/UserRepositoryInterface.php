@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Interfaces;
+namespace App\Interfaces\Account;
 
-use App\Models\User;
+use App\Models\Account\User;
 use Illuminate\Database\Eloquent\Collection;
 
 interface UserRepositoryInterface

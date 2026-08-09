@@ -5,12 +5,12 @@ use App\Mail\PaymentSuccessMail;
 use App\Mail\SubscriptionActivatedMail;
 use App\Mail\TripForkedMail;
 use App\Mail\WelcomeMail;
+use App\Models\Account\User;
 use App\Models\Destination;
 use App\Models\Order;
 use App\Models\Plan;
 use App\Models\Subscription;
 use App\Models\Trip;
-use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {

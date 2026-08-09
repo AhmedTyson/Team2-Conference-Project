@@ -3,8 +3,8 @@
 namespace App\Services;
 
 use App\Interfaces\PlanRepositoryInterface;
+use App\Models\Account\User;
 use App\Models\Subscription;
-use App\Models\User;
 use Illuminate\Support\Carbon;
 
 class PlanService

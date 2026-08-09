@@ -1,9 +1,15 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Account;
 
+use App\Models\Favourite;
+use App\Models\Notification;
+use App\Models\Review;
+use App\Models\Subscription;
+use App\Models\Survey;
+use App\Models\Trip;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
+use Database\Factories\Account\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;

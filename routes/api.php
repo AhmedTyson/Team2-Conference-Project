@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\Account\AdminUserController;
+use App\Http\Controllers\Account\AuthController;
+// Public Controllers
 use App\Http\Controllers\Admin\AdminAnalyticsController;
 use App\Http\Controllers\Admin\AdminAttractionController;
-// Public Controllers
 use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminCountryController;
 use App\Http\Controllers\Admin\AdminDestinationController;
@@ -12,10 +14,8 @@ use App\Http\Controllers\Admin\AdminNotificationController;
 use App\Http\Controllers\Admin\AdminRestaurantController;
 use App\Http\Controllers\Admin\AdminReviewController;
 use App\Http\Controllers\Admin\AdminTripController;
-use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\AIController;
 use App\Http\Controllers\AttractionController;
-use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 // Admin Controllers
 use App\Http\Controllers\CheckoutController;

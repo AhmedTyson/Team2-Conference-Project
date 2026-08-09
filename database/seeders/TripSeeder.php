@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Account\User;
 use App\Models\AiRecommendation;
 use App\Models\Attraction;
 use App\Models\Destination;
@@ -10,7 +11,6 @@ use App\Models\Hotel;
 use App\Models\ItineraryItem;
 use App\Models\Restaurant;
 use App\Models\Trip;
-use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class TripSeeder extends Seeder

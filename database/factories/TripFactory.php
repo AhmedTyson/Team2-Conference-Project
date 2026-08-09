@@ -3,8 +3,8 @@
 namespace Database\Factories;
 
 use App\Enums\TripStatus;
+use App\Models\Account\User;
 use App\Models\Trip;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

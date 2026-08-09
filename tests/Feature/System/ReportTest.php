@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\System;
 
+use App\Models\Account\User;
 use App\Models\System\Report;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;

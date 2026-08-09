@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\Feature\Admin;
+namespace Tests\Feature\Account;
 
-use App\Models\User;
+use App\Models\Account\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;

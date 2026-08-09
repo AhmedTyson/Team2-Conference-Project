@@ -2,9 +2,9 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Models\Account\User;
 use App\Models\Country;
 use App\Models\Destination;
-use App\Models\User;
 use App\Services\Fixtures\OpenStreetService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;

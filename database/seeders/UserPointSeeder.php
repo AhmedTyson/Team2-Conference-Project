@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use App\Models\UserPoint;
+use App\Models\Account\User;
+use App\Models\Account\UserPoint;
 use Illuminate\Database\Seeder;
 
 class UserPointSeeder extends Seeder

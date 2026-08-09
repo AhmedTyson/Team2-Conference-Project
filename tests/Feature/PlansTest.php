@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\Account\User;
 use App\Models\Plan;
 use App\Models\Subscription;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;

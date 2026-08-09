@@ -2,10 +2,10 @@
 
 namespace Tests\Unit;
 
+use App\Models\Account\User;
 use App\Models\Category;
 use App\Models\Hotel;
 use App\Models\Trip;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

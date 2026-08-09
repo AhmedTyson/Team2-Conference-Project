@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreUserRequest;
-use App\Http\Requests\UpdateUserRequest;
+use App\Http\Requests\Account\StoreUserRequest;
+use App\Http\Requests\Account\UpdateUserRequest;
 use App\Http\Resources\UserResource;
-use App\Services\UserService;
+use App\Services\Account\UserService;
 
 class AdminUserController extends Controller
 {

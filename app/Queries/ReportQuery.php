@@ -2,10 +2,10 @@
 
 namespace App\Queries;
 
+use App\Models\Account\User;
 use App\Models\Booking;
 use App\Models\Hotel;
 use App\Models\Restaurant;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Carbon;

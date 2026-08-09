@@ -3,8 +3,8 @@
 namespace Database\Factories;
 
 use App\Enums\NotificationStatus;
+use App\Models\Account\User;
 use App\Models\Notification;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

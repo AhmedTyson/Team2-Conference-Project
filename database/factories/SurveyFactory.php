@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Account\User;
 use App\Models\Survey;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
