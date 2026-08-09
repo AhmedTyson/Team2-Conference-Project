@@ -39,7 +39,7 @@ use App\Http\Controllers\System\SettingController;
 use App\Http\Controllers\System\SiteSettingsController;
 use App\Http\Controllers\System\SurveyController;
 use App\Http\Controllers\System\WeatherController;
-
+use App\Http\Controllers\System\FlagController;
 // Trips
 use App\Http\Controllers\Trips\AdminReviewController;
 use App\Http\Controllers\Trips\AdminTripController;
@@ -338,11 +338,18 @@ Route::middleware(['auth:api', 'role:admin|super_admin'])
 
 
 Route::middleware(['auth:api'])->prefix('v1')->group(function () {
-    Route::post('/agency-requests', [\App\Http\Controllers\Commerce\AgencyRequestController::class, 'store']);
-    Route::post('/admin/agency-requests/{assignment}/approve', [\App\Http\Controllers\Commerce\AdminAgencyController::class, 'approve'])->middleware('role:admin|super_admin');
-    Route::post('/agency/assignments/{assignment}/approve', [\App\Http\Controllers\Commerce\AgencyAssignmentController::class, 'approve'])->middleware('role:agency');
-    Route::post('/agency/assignments/{assignment}/decline', [\App\Http\Controllers\Commerce\AgencyAssignmentController::class, 'decline'])->middleware('role:agency');
-    Route::post('/agency/assignments/{assignment}/trips', [\App\Http\Controllers\Commerce\AgencyAssignmentController::class, 'createTrip'])->middleware('role:agency');
-    Route::get('/agency/assignments', [\App\Http\Controllers\Commerce\AgencyAssignmentController::class, 'index'])->middleware('role:agency');
+    Route::post('/agency-requests', [AgencyRequestController::class, 'store']);
+    Route::post('/admin/agency-requests/{assignment}/approve', [AdminAgencyController::class, 'approve'])->middleware('role:admin|super_admin');
+    Route::post('/agency/assignments/{assignment}/approve', [AgencyAssignmentController::class, 'approve'])->middleware('role:agency');
+    Route::post('/agency/assignments/{assignment}/decline', [AgencyAssignmentController::class, 'decline'])->middleware('role:agency');
+    Route::post('/agency/assignments/{assignment}/trips', [AgencyAssignmentController::class, 'createTrip'])->middleware('role:agency');
+    Route::get('/agency/assignments', [AgencyAssignmentController::class, 'index'])->middleware('role:agency');
+
+
+    // Plans
+    Route::post('/agency-assignments/{assignment}/report', [FlagController::class, 'store'])->middleware('auth:api');
+    Route::get('/admin/flags', [AdminFlagController::class, 'index'])->middleware('role:admin|super_admin');
+    Route::post('/admin/flags/{flag}/approve', [AdminFlagController::class, 'approve'])->middleware('role:admin|super_admin');
+    Route::post('/admin/flags/{flag}/decline', [AdminFlagController::class, 'decline'])->middleware('role:admin|super_admin');
 });
 
