@@ -1,0 +1,1157 @@
+[
+  {
+    "method": "GET|HEAD",
+    "uri": "/",
+    "controller": "Closure",
+    "middleware": "web",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "api/email/resend",
+    "controller": "App\\Http\\Controllers\\Account\\AuthController@resendVerificationEmail",
+    "middleware": "api,auth:api,throttle:6,1",
+    "name": "verification.resend"
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/email/verify-notice",
+    "controller": "App\\Http\\Controllers\\Account\\AuthController@verificationNotice",
+    "middleware": "api,auth:api",
+    "name": "verification.notice"
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/email/verify/{id}/{hash}",
+    "controller": "App\\Http\\Controllers\\Account\\AuthController@verifyEmail",
+    "middleware": "api,signed",
+    "name": "verification.verify"
+  },
+  {
+    "method": "POST",
+    "uri": "api/forgot-password",
+    "controller": "App\\Http\\Controllers\\Account\\AuthController@forgetPassword",
+    "middleware": "api,throttle:3,10",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "api/login",
+    "controller": "App\\Http\\Controllers\\Account\\AuthController@login",
+    "middleware": "api,throttle:login",
+    "name": "login"
+  },
+  {
+    "method": "POST",
+    "uri": "api/logout",
+    "controller": "App\\Http\\Controllers\\Account\\AuthController@logout",
+    "middleware": "api,auth:api",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/me/reports",
+    "controller": "App\\Http\\Controllers\\System\\ReportController@myReports",
+    "middleware": "api,auth:api",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "api/refresh",
+    "controller": "App\\Http\\Controllers\\Account\\AuthController@refresh",
+    "middleware": "api,auth:api,throttle:15,1",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "api/register",
+    "controller": "App\\Http\\Controllers\\Account\\AuthController@register",
+    "middleware": "api,throttle:register",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "api/reset-password",
+    "controller": "App\\Http\\Controllers\\Account\\AuthController@resetPassword",
+    "middleware": "api,throttle:5,1",
+    "name": "password.reset"
+  },
+  {
+    "method": "POST",
+    "uri": "api/review",
+    "controller": "App\\Services\\GroqService@generateAi",
+    "middleware": "api,auth:api,permission:generate ai itineraries",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/review/{id}",
+    "controller": "App\\Http\\Controllers\\Trips\\AIController@review",
+    "middleware": "api,auth:api",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/surveys",
+    "controller": "App\\Http\\Controllers\\System\\SurveyController@index",
+    "middleware": "api,auth:api",
+    "name": "surveys.index"
+  },
+  {
+    "method": "POST",
+    "uri": "api/surveys",
+    "controller": "App\\Http\\Controllers\\System\\SurveyController@store",
+    "middleware": "api,auth:api",
+    "name": "surveys.store"
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/surveys/{survey}",
+    "controller": "App\\Http\\Controllers\\System\\SurveyController@show",
+    "middleware": "api,auth:api",
+    "name": "surveys.show"
+  },
+  {
+    "method": "PUT|PATCH",
+    "uri": "api/surveys/{survey}",
+    "controller": "App\\Http\\Controllers\\System\\SurveyController@update",
+    "middleware": "api,auth:api",
+    "name": "surveys.update"
+  },
+  {
+    "method": "DELETE",
+    "uri": "api/surveys/{survey}",
+    "controller": "App\\Http\\Controllers\\System\\SurveyController@destroy",
+    "middleware": "api,auth:api",
+    "name": "surveys.destroy"
+  },
+  {
+    "method": "POST",
+    "uri": "api/trips/{trip}/fork",
+    "controller": "App\\Http\\Controllers\\Trips\\TripController@fork",
+    "middleware": "api,auth:api",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/user",
+    "controller": "App\\Http\\Controllers\\Account\\AuthController@me",
+    "middleware": "api,auth:api",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/admin/analytics",
+    "controller": "App\\Http\\Controllers\\Commerce\\AdminAnalyticsController@index",
+    "middleware": "api,auth:api,permission:view analytics",
+    "name": "admin.analytics.index"
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/admin/analytics/revenue",
+    "controller": "App\\Http\\Controllers\\Commerce\\AdminAnalyticsController@revenue",
+    "middleware": "api,auth:api,permission:view analytics",
+    "name": "admin.analytics.revenue"
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/admin/attractions",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminAttractionController@index",
+    "middleware": "api,auth:api,permission:manage attractions",
+    "name": "admin."
+  },
+  {
+    "method": "POST",
+    "uri": "api/v1/admin/attractions",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminAttractionController@store",
+    "middleware": "api,auth:api,permission:manage attractions",
+    "name": "admin."
+  },
+  {
+    "method": "PUT",
+    "uri": "api/v1/admin/attractions/{id}",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminAttractionController@update",
+    "middleware": "api,auth:api,permission:manage attractions",
+    "name": "admin."
+  },
+  {
+    "method": "DELETE",
+    "uri": "api/v1/admin/attractions/{id}",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminAttractionController@destroy",
+    "middleware": "api,auth:api,permission:manage attractions",
+    "name": "admin."
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/admin/categories",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminCategoryController@index",
+    "middleware": "api,auth:api,permission:manage categories",
+    "name": "admin.categories.index"
+  },
+  {
+    "method": "POST",
+    "uri": "api/v1/admin/categories",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminCategoryController@store",
+    "middleware": "api,auth:api,permission:manage categories",
+    "name": "admin.categories.store"
+  },
+  {
+    "method": "PUT",
+    "uri": "api/v1/admin/categories/{category}",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminCategoryController@update",
+    "middleware": "api,auth:api,permission:manage categories",
+    "name": "admin.categories.update"
+  },
+  {
+    "method": "DELETE",
+    "uri": "api/v1/admin/categories/{category}",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminCategoryController@destroy",
+    "middleware": "api,auth:api,permission:manage categories",
+    "name": "admin.categories.destroy"
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/admin/contacts",
+    "controller": "App\\Http\\Controllers\\System\\ContactMessageController@index",
+    "middleware": "api,auth:api,permission:manage contacts",
+    "name": "admin.contacts.index"
+  },
+  {
+    "method": "PATCH",
+    "uri": "api/v1/admin/contacts/{id}/read",
+    "controller": "App\\Http\\Controllers\\System\\ContactMessageController@markAsRead",
+    "middleware": "api,auth:api,permission:manage contacts",
+    "name": "admin.contacts.read"
+  },
+  {
+    "method": "PATCH",
+    "uri": "api/v1/admin/contacts/{id}/resolve",
+    "controller": "App\\Http\\Controllers\\System\\ContactMessageController@markAsResolved",
+    "middleware": "api,auth:api,permission:manage contacts",
+    "name": "admin.contacts.resolve"
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/admin/countries",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminCountryController@index",
+    "middleware": "api,auth:api,permission:manage countries",
+    "name": "admin."
+  },
+  {
+    "method": "POST",
+    "uri": "api/v1/admin/countries",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminCountryController@store",
+    "middleware": "api,auth:api,permission:manage countries",
+    "name": "admin."
+  },
+  {
+    "method": "PUT",
+    "uri": "api/v1/admin/countries/{id}",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminCountryController@update",
+    "middleware": "api,auth:api,permission:manage countries",
+    "name": "admin."
+  },
+  {
+    "method": "DELETE",
+    "uri": "api/v1/admin/countries/{id}",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminCountryController@destroy",
+    "middleware": "api,auth:api,permission:manage countries",
+    "name": "admin."
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/admin/destinations",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminDestinationController@index",
+    "middleware": "api,auth:api,permission:manage destinations",
+    "name": "admin.destinations.index"
+  },
+  {
+    "method": "POST",
+    "uri": "api/v1/admin/destinations",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminDestinationController@store",
+    "middleware": "api,auth:api,permission:manage destinations",
+    "name": "admin.destinations.store"
+  },
+  {
+    "method": "PUT",
+    "uri": "api/v1/admin/destinations/{id}",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminDestinationController@update",
+    "middleware": "api,auth:api,permission:manage destinations",
+    "name": "admin.destinations.update"
+  },
+  {
+    "method": "DELETE",
+    "uri": "api/v1/admin/destinations/{id}",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminDestinationController@destroy",
+    "middleware": "api,auth:api,permission:manage destinations",
+    "name": "admin.destinations.destroy"
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/admin/flights",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminFlightController@index",
+    "middleware": "api,auth:api,permission:manage flights",
+    "name": "admin."
+  },
+  {
+    "method": "POST",
+    "uri": "api/v1/admin/flights",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminFlightController@store",
+    "middleware": "api,auth:api,permission:manage flights",
+    "name": "admin."
+  },
+  {
+    "method": "PUT",
+    "uri": "api/v1/admin/flights/{id}",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminFlightController@update",
+    "middleware": "api,auth:api,permission:manage flights",
+    "name": "admin."
+  },
+  {
+    "method": "DELETE",
+    "uri": "api/v1/admin/flights/{id}",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminFlightController@destroy",
+    "middleware": "api,auth:api,permission:manage flights",
+    "name": "admin."
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/admin/hotels",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminHotelController@index",
+    "middleware": "api,auth:api,permission:manage hotels",
+    "name": "admin."
+  },
+  {
+    "method": "POST",
+    "uri": "api/v1/admin/hotels",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminHotelController@store",
+    "middleware": "api,auth:api,permission:manage hotels",
+    "name": "admin."
+  },
+  {
+    "method": "PUT",
+    "uri": "api/v1/admin/hotels/{id}",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminHotelController@update",
+    "middleware": "api,auth:api,permission:manage hotels",
+    "name": "admin."
+  },
+  {
+    "method": "DELETE",
+    "uri": "api/v1/admin/hotels/{id}",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminHotelController@destroy",
+    "middleware": "api,auth:api,permission:manage hotels",
+    "name": "admin."
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/admin/notifications",
+    "controller": "App\\Http\\Controllers\\System\\AdminNotificationController@index",
+    "middleware": "api,auth:api,role:admin|super_admin",
+    "name": "admin.notifications."
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/admin/reports",
+    "controller": "App\\Http\\Controllers\\System\\ReportController@index",
+    "middleware": "api,auth:api,role:admin|super_admin",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "api/v1/admin/reports/generate",
+    "controller": "App\\Http\\Controllers\\System\\ReportController@generate",
+    "middleware": "api,auth:api,role:admin|super_admin",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/admin/reports/{id}/download",
+    "controller": "App\\Http\\Controllers\\System\\ReportController@download",
+    "middleware": "api,auth:api,role:admin|super_admin",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/admin/restaurants",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminRestaurantController@index",
+    "middleware": "api,auth:api,permission:manage restaurants",
+    "name": "admin."
+  },
+  {
+    "method": "POST",
+    "uri": "api/v1/admin/restaurants",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminRestaurantController@store",
+    "middleware": "api,auth:api,permission:manage restaurants",
+    "name": "admin."
+  },
+  {
+    "method": "PUT",
+    "uri": "api/v1/admin/restaurants/{id}",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminRestaurantController@update",
+    "middleware": "api,auth:api,permission:manage restaurants",
+    "name": "admin."
+  },
+  {
+    "method": "DELETE",
+    "uri": "api/v1/admin/restaurants/{id}",
+    "controller": "App\\Http\\Controllers\\Catalog\\AdminRestaurantController@destroy",
+    "middleware": "api,auth:api,permission:manage restaurants",
+    "name": "admin."
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/admin/reviews",
+    "controller": "App\\Http\\Controllers\\Trips\\AdminReviewController@index",
+    "middleware": "api,auth:api,permission:manage reviews",
+    "name": "admin."
+  },
+  {
+    "method": "DELETE",
+    "uri": "api/v1/admin/reviews/{id}",
+    "controller": "App\\Http\\Controllers\\Trips\\AdminReviewController@destroy",
+    "middleware": "api,auth:api,permission:manage reviews",
+    "name": "admin."
+  },
+  {
+    "method": "PATCH",
+    "uri": "api/v1/admin/reviews/{id}/approve",
+    "controller": "App\\Http\\Controllers\\Trips\\AdminReviewController@approve",
+    "middleware": "api,auth:api,permission:manage reviews",
+    "name": "admin."
+  },
+  {
+    "method": "PATCH",
+    "uri": "api/v1/admin/reviews/{id}/reject",
+    "controller": "App\\Http\\Controllers\\Trips\\AdminReviewController@reject",
+    "middleware": "api,auth:api,permission:manage reviews",
+    "name": "admin."
+  },
+  {
+    "method": "POST",
+    "uri": "api/v1/admin/set-plans",
+    "controller": "App\\Http\\Controllers\\Commerce\\PlanController@setPlans",
+    "middleware": "api,auth:api,permission:manage plans",
+    "name": "plans."
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/admin/settings",
+    "controller": "App\\Http\\Controllers\\System\\SettingController@index",
+    "middleware": "api,auth:api,permission:manage settings",
+    "name": "admin.settings.index"
+  },
+  {
+    "method": "PUT",
+    "uri": "api/v1/admin/settings",
+    "controller": "App\\Http\\Controllers\\System\\SettingController@update",
+    "middleware": "api,auth:api,permission:manage settings",
+    "name": "admin.settings.update"
+  },
+  {
+    "method": "PATCH",
+    "uri": "api/v1/admin/settings/{key}",
+    "controller": "App\\Http\\Controllers\\System\\SettingController@patchKey",
+    "middleware": "api,auth:api,permission:manage settings",
+    "name": "admin.settings.patchKey"
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/admin/trips",
+    "controller": "App\\Http\\Controllers\\Trips\\AdminTripController@index",
+    "middleware": "api,auth:api,permission:manage trips",
+    "name": "admin."
+  },
+  {
+    "method": "POST",
+    "uri": "api/v1/admin/trips",
+    "controller": "App\\Http\\Controllers\\Trips\\AdminTripController@store",
+    "middleware": "api,auth:api,permission:manage trips",
+    "name": "admin."
+  },
+  {
+    "method": "PUT",
+    "uri": "api/v1/admin/trips/{id}",
+    "controller": "App\\Http\\Controllers\\Trips\\AdminTripController@update",
+    "middleware": "api,auth:api,permission:manage trips",
+    "name": "admin."
+  },
+  {
+    "method": "DELETE",
+    "uri": "api/v1/admin/trips/{id}",
+    "controller": "App\\Http\\Controllers\\Trips\\AdminTripController@destroy",
+    "middleware": "api,auth:api,permission:manage trips",
+    "name": "admin."
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/admin/users",
+    "controller": "App\\Http\\Controllers\\Account\\AdminUserController@index",
+    "middleware": "api,auth:api,permission:manage users",
+    "name": "admin."
+  },
+  {
+    "method": "POST",
+    "uri": "api/v1/admin/users",
+    "controller": "App\\Http\\Controllers\\Account\\AdminUserController@store",
+    "middleware": "api,auth:api,permission:manage users",
+    "name": "admin."
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/admin/users/{user}",
+    "controller": "App\\Http\\Controllers\\Account\\AdminUserController@show",
+    "middleware": "api,auth:api,permission:manage users",
+    "name": "admin."
+  },
+  {
+    "method": "PUT",
+    "uri": "api/v1/admin/users/{user}",
+    "controller": "App\\Http\\Controllers\\Account\\AdminUserController@update",
+    "middleware": "api,auth:api,permission:manage users",
+    "name": "admin."
+  },
+  {
+    "method": "PATCH",
+    "uri": "api/v1/admin/users/{user}/active",
+    "controller": "App\\Http\\Controllers\\Account\\AdminUserController@active",
+    "middleware": "api,auth:api,permission:manage users",
+    "name": "admin."
+  },
+  {
+    "method": "PATCH",
+    "uri": "api/v1/admin/users/{user}/block",
+    "controller": "App\\Http\\Controllers\\Account\\AdminUserController@block",
+    "middleware": "api,auth:api,permission:manage users",
+    "name": "admin."
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/attractions",
+    "controller": "App\\Http\\Controllers\\Catalog\\AttractionController@index",
+    "middleware": "api",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/attractions/{id}",
+    "controller": "App\\Http\\Controllers\\Catalog\\AttractionController@show",
+    "middleware": "api",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/categories",
+    "controller": "App\\Http\\Controllers\\Catalog\\CategoryController@index",
+    "middleware": "api",
+    "name": "categories.index"
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/categories/{category}",
+    "controller": "App\\Http\\Controllers\\Catalog\\CategoryController@show",
+    "middleware": "api",
+    "name": "categories.show"
+  },
+  {
+    "method": "POST",
+    "uri": "api/v1/checkout/initiate",
+    "controller": "App\\Http\\Controllers\\Commerce\\CheckoutController@initiate",
+    "middleware": "api,auth:api",
+    "name": "checkout.initiate"
+  },
+  {
+    "method": "POST",
+    "uri": "api/v1/contacts",
+    "controller": "App\\Http\\Controllers\\System\\ContactController@store",
+    "middleware": "api",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/dashboard",
+    "controller": "App\\Http\\Controllers\\System\\DashboardController@index",
+    "middleware": "api,auth:api",
+    "name": "dashboard.index"
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/dashboard/favourites",
+    "controller": "App\\Http\\Controllers\\System\\DashboardController@favourites",
+    "middleware": "api,auth:api",
+    "name": "dashboard.favourites"
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/dashboard/trips",
+    "controller": "App\\Http\\Controllers\\System\\DashboardController@trips",
+    "middleware": "api,auth:api",
+    "name": "dashboard.trips"
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/destinations",
+    "controller": "App\\Http\\Controllers\\Catalog\\DestinationController@index",
+    "middleware": "api",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/destinations/{id}",
+    "controller": "App\\Http\\Controllers\\Catalog\\DestinationController@show",
+    "middleware": "api",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "api/v1/favourites/{type}/{id}",
+    "controller": "App\\Http\\Controllers\\Trips\\InteractionController@toggleFavourite",
+    "middleware": "api,auth:api",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/flights",
+    "controller": "App\\Http\\Controllers\\Catalog\\FlightController@index",
+    "middleware": "api",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/flights/{id}",
+    "controller": "App\\Http\\Controllers\\Catalog\\FlightController@show",
+    "middleware": "api",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/hotels",
+    "controller": "App\\Http\\Controllers\\Catalog\\HotelController@index",
+    "middleware": "api",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/hotels/{id}",
+    "controller": "App\\Http\\Controllers\\Catalog\\HotelController@show",
+    "middleware": "api",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/maps/destination/{destination}",
+    "controller": "App\\Http\\Controllers\\Trips\\MapController@destination",
+    "middleware": "api",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/maps/trip/{trip}",
+    "controller": "App\\Http\\Controllers\\Trips\\MapController@trip",
+    "middleware": "api,auth:api",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "api/v1/me/subscribe",
+    "controller": "App\\Http\\Controllers\\Commerce\\PlanController@subscribe",
+    "middleware": "api,auth:api,permission:subscribe to plans",
+    "name": "plans."
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/me/subscription",
+    "controller": "App\\Http\\Controllers\\Commerce\\PlanController@subscription",
+    "middleware": "api,auth:api,permission:view my subscription",
+    "name": "plans."
+  },
+  {
+    "method": "POST",
+    "uri": "api/v1/me/subscription/cancel",
+    "controller": "App\\Http\\Controllers\\Commerce\\PlanController@cancel",
+    "middleware": "api,auth:api,permission:cancel subscription",
+    "name": "plans."
+  },
+  {
+    "method": "POST",
+    "uri": "api/v1/me/upgrade",
+    "controller": "App\\Http\\Controllers\\Commerce\\PlanController@upgrade",
+    "middleware": "api,auth:api,permission:upgrade plans",
+    "name": "plans."
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/notifications",
+    "controller": "App\\Http\\Controllers\\System\\NotificationController@index",
+    "middleware": "api,auth:api",
+    "name": "notifications."
+  },
+  {
+    "method": "PATCH",
+    "uri": "api/v1/notifications/read-all",
+    "controller": "App\\Http\\Controllers\\System\\NotificationController@markAllAsRead",
+    "middleware": "api,auth:api",
+    "name": "notifications."
+  },
+  {
+    "method": "PATCH",
+    "uri": "api/v1/notifications/{notification}/read",
+    "controller": "App\\Http\\Controllers\\System\\NotificationController@markAsRead",
+    "middleware": "api,auth:api",
+    "name": "notifications."
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/paymob/callback",
+    "controller": "App\\Http\\Controllers\\Commerce\\PaymobWebhookController@callback",
+    "middleware": "api",
+    "name": "paymob-v1.callback"
+  },
+  {
+    "method": "POST",
+    "uri": "api/v1/paymob/webhook",
+    "controller": "App\\Http\\Controllers\\Commerce\\PaymobWebhookController@handle",
+    "middleware": "api",
+    "name": "paymob-v1.webhook"
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/plans",
+    "controller": "App\\Http\\Controllers\\Commerce\\PlanController@index",
+    "middleware": "api,auth:api,permission:get plans",
+    "name": "plans."
+  },
+  {
+    "method": "PATCH",
+    "uri": "api/v1/profile",
+    "controller": "App\\Http\\Controllers\\Account\\AuthController@updateProfile",
+    "middleware": "api,auth:api",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/restaurants",
+    "controller": "App\\Http\\Controllers\\Catalog\\RestaurantController@index",
+    "middleware": "api",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/restaurants/{id}",
+    "controller": "App\\Http\\Controllers\\Catalog\\RestaurantController@show",
+    "middleware": "api",
+    "name": null
+  },
+  {
+    "method": "DELETE",
+    "uri": "api/v1/reviews/{id}",
+    "controller": "App\\Http\\Controllers\\Trips\\InteractionController@destroyReview",
+    "middleware": "api,auth:api",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "api/v1/reviews/{type}/{id}",
+    "controller": "App\\Http\\Controllers\\Trips\\InteractionController@storeReview",
+    "middleware": "api,auth:api",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/site-settings",
+    "controller": "App\\Http\\Controllers\\System\\SiteSettingsController@index",
+    "middleware": "api",
+    "name": "site-settings.index"
+  },
+  {
+    "method": "POST",
+    "uri": "api/v1/trips",
+    "controller": "App\\Http\\Controllers\\Trips\\TripController@store",
+    "middleware": "api,auth:api",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/trips/create",
+    "controller": "App\\Http\\Controllers\\Trips\\TripController@create",
+    "middleware": "api,auth:api",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/v1/trips/{trip}",
+    "controller": "App\\Http\\Controllers\\Trips\\TripController@show",
+    "middleware": "api,auth:api",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "api/v1/trips/{trip}/attach/{type}",
+    "controller": "App\\Http\\Controllers\\Trips\\TripController@attach",
+    "middleware": "api,auth:api",
+    "name": null
+  },
+  {
+    "method": "DELETE",
+    "uri": "api/v1/trips/{trip}/detach/{id}",
+    "controller": "App\\Http\\Controllers\\Trips\\TripController@detach",
+    "middleware": "api,auth:api",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "api/weather",
+    "controller": "App\\Http\\Controllers\\System\\WeatherController@show",
+    "middleware": "api",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "docs/api",
+    "controller": "Closure",
+    "middleware": "Dedoc\\Scramble\\Http\\Middleware\\RestrictedDocsAccess,web",
+    "name": "scramble.docs.ui"
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "docs/api.json",
+    "controller": "Closure",
+    "middleware": "Dedoc\\Scramble\\Http\\Middleware\\RestrictedDocsAccess,web",
+    "name": "scramble.docs.document"
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "mail-preview/{type}",
+    "controller": "Closure",
+    "middleware": "web",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "storage/{path}",
+    "controller": "Closure",
+    "middleware": "",
+    "name": "storage.local"
+  },
+  {
+    "method": "PUT",
+    "uri": "storage/{path}",
+    "controller": "Closure",
+    "middleware": "",
+    "name": "storage.local.upload"
+  },
+  {
+    "method": "POST",
+    "uri": "telescope/telescope-api/batches",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\QueueBatchesController@index",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "telescope/telescope-api/batches/{telescopeEntryId}",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\QueueBatchesController@show",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "telescope/telescope-api/cache",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\CacheController@index",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "telescope/telescope-api/cache/{telescopeEntryId}",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\CacheController@show",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "telescope/telescope-api/client-requests",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\ClientRequestController@index",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "telescope/telescope-api/client-requests/{telescopeEntryId}",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\ClientRequestController@show",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "telescope/telescope-api/commands",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\CommandsController@index",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "telescope/telescope-api/commands/{telescopeEntryId}",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\CommandsController@show",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "telescope/telescope-api/dumps",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\DumpController@index",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "DELETE",
+    "uri": "telescope/telescope-api/entries",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\EntriesController@destroy",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "telescope/telescope-api/events",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\EventsController@index",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "telescope/telescope-api/events/{telescopeEntryId}",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\EventsController@show",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "telescope/telescope-api/exceptions",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\ExceptionController@index",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "telescope/telescope-api/exceptions/{telescopeEntryId}",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\ExceptionController@show",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "PUT",
+    "uri": "telescope/telescope-api/exceptions/{telescopeEntryId}",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\ExceptionController@update",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "telescope/telescope-api/gates",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\GatesController@index",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "telescope/telescope-api/gates/{telescopeEntryId}",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\GatesController@show",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "telescope/telescope-api/jobs",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\QueueController@index",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "telescope/telescope-api/jobs/{telescopeEntryId}",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\QueueController@show",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "telescope/telescope-api/logs",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\LogController@index",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "telescope/telescope-api/logs/{telescopeEntryId}",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\LogController@show",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "telescope/telescope-api/mail",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\MailController@index",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "telescope/telescope-api/mail/{telescopeEntryId}",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\MailController@show",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "telescope/telescope-api/mail/{telescopeEntryId}/download",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\MailEmlController@show",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "telescope/telescope-api/mail/{telescopeEntryId}/preview",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\MailHtmlController@show",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "telescope/telescope-api/models",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\ModelsController@index",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "telescope/telescope-api/models/{telescopeEntryId}",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\ModelsController@show",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "telescope/telescope-api/monitored-tags",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\MonitoredTagController@index",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "telescope/telescope-api/monitored-tags",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\MonitoredTagController@store",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "telescope/telescope-api/monitored-tags/delete",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\MonitoredTagController@destroy",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "telescope/telescope-api/notifications",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\NotificationsController@index",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "telescope/telescope-api/notifications/{telescopeEntryId}",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\NotificationsController@show",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "telescope/telescope-api/queries",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\QueriesController@index",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "telescope/telescope-api/queries/{telescopeEntryId}",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\QueriesController@show",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "telescope/telescope-api/redis",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\RedisController@index",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "telescope/telescope-api/redis/{telescopeEntryId}",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\RedisController@show",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "telescope/telescope-api/requests",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\RequestsController@index",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "telescope/telescope-api/requests/{telescopeEntryId}",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\RequestsController@show",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "telescope/telescope-api/schedule",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\ScheduleController@index",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "telescope/telescope-api/schedule/{telescopeEntryId}",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\ScheduleController@show",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "telescope/telescope-api/toggle-recording",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\RecordingController@toggle",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "POST",
+    "uri": "telescope/telescope-api/views",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\ViewsController@index",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "telescope/telescope-api/views/{telescopeEntryId}",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\ViewsController@show",
+    "middleware": "telescope",
+    "name": null
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "telescope/{view?}",
+    "controller": "Laravel\\Telescope\\Http\\Controllers\\HomeController@index",
+    "middleware": "telescope",
+    "name": "telescope"
+  },
+  {
+    "method": "GET|HEAD",
+    "uri": "up",
+    "controller": "Closure",
+    "middleware": "",
+    "name": null
+  }
+]
