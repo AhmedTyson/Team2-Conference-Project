@@ -3,37 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\FlightResource;
-use App\Models\Flight;
+use App\Services\FlightService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class FlightController extends Controller
 {
-    // Display a listing of flights.
+    protected $flightService;
+
+    public function __construct(FlightService $flightService)
+    {
+        $this->flightService = $flightService;
+    }
 
     public function index(Request $request): AnonymousResourceCollection
     {
-        $query = Flight::query();
-
-        // Optional filtering by departure and arrival airports
-        if ($request->has('departure_airport')) {
-            $query->where('departure_airport', $request->query('departure_airport'));
-        }
-
-        if ($request->has('arrival_airport')) {
-            $query->where('arrival_airport', $request->query('arrival_airport'));
-        }
-
-        $flights = $query->paginate(10);
+        $flights = $this->flightService->getPublicList();
 
         return FlightResource::collection($flights);
     }
 
-    // Display the specified flight.
-
     public function show(int $id): FlightResource
     {
-        $flight = Flight::findOrFail($id);
+        $flight = $this->flightService->show($id);
 
         return new FlightResource($flight);
     }
