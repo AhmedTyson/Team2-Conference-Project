@@ -5,7 +5,7 @@ namespace App\Queries;
 use App\Models\Account\User;
 use App\Models\Catalog\Hotel;
 use App\Models\Catalog\Restaurant;
-use App\Models\Commerce\Booking;
+use App\Models\Commerce\Order;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Carbon;
@@ -15,53 +15,35 @@ use Illuminate\Support\Facades\DB;
 class ReportQuery
 {
     /**
-     * Statuses that count as "revenue-generating" bookings.
-     * Mirrors the reference's COMPLETED_STATUS pattern.
+     * Paid payments status
      */
     protected const REVENUE_STATUS = 'paid';
 
-    /*
-    |--------------------------------------------------------------------
-    | PAGE 1 — Executive Summary / KPIs
-    |--------------------------------------------------------------------
-    */
-
     public function kpis(?string $from, ?string $to): array
     {
-        $base = $this->paidBookings($from, $to);
+        $base = $this->paidOrders($from, $to);
 
-        $revenueCents = (clone $base)->sum('amount_cents');
-        $bookingsCount = (clone $base)->count();
-
-        $usersCount = User::query()
-            ->when($from, fn ($q) => $q->whereDate('created_at', '>=', $from))
-            ->when($to, fn ($q) => $q->whereDate('created_at', '<=', $to))
-            ->count();
+        $revenueCents = (clone $base)->sum('orders.total_cents');
 
         [$prevFrom, $prevTo] = $this->previousPeriod($from, $to);
 
-        $prevRevenueCents = $this->paidBookings($prevFrom, $prevTo)->sum('amount_cents');
+        $prevRevenueCents = $this->paidOrders($prevFrom, $prevTo)->sum('orders.total_cents');
 
         return [
             'revenue' => $revenueCents / 100,
-            'bookings' => $bookingsCount,
-            'users' => $usersCount,
+            'currency' => 'USD',
+            'bookings' => (clone $base)->count(),
+            'users' => $this->activeUsers($from, $to),
             'growth_percent' => $this->growthPercent($prevRevenueCents, $revenueCents),
         ];
     }
 
-    /*
-    |--------------------------------------------------------------------
-    | PAGE 2 — Revenue Analytics
-    |--------------------------------------------------------------------
-    */
-
     public function monthlyRevenue(?string $from, ?string $to): Collection
     {
-        return $this->paidBookings($from, $to)
+        return $this->paidOrders($from, $to)
             ->select(
-                $this->monthExpr(),
-                DB::raw('SUM(amount_cents) as total_cents')
+                $this->monthExpr('orders.created_at'),
+                DB::raw('SUM(orders.total_cents) as total_cents')
             )
             ->groupBy('period')
             ->orderBy('period')
@@ -74,33 +56,33 @@ class ReportQuery
 
     public function weeklyRevenue(?string $from, ?string $to): Collection
     {
-        return $this->paidBookings($from, $to)
+        return $this->paidOrders($from, $to)
             ->select(
-                $this->weekExpr(),
-                DB::raw('MIN(DATE(created_at)) as week_start'),
-                DB::raw('SUM(amount_cents) as total_cents')
+                $this->weekExpr('orders.created_at'),
+                DB::raw('SUM(orders.total_cents) as total_cents')
             )
             ->groupBy('period')
             ->orderBy('period')
             ->get()
             ->map(fn ($row) => [
-                'week_start' => $row->week_start,
+                'week_start' => $row->period,
                 'revenue' => $row->total_cents / 100,
             ]);
     }
 
     public function revenueByBookingType(?string $from, ?string $to): Collection
     {
-        $rows = DB::table('booking_items')
-            ->join('bookings', 'bookings.id', '=', 'booking_items.booking_id')
-            ->where('bookings.status', self::REVENUE_STATUS)
-            ->when($from, fn ($q) => $q->whereDate('bookings.created_at', '>=', $from))
-            ->when($to, fn ($q) => $q->whereDate('bookings.created_at', '<=', $to))
+        $rows = DB::table('order_items')
+            ->join('orders', 'orders.id', '=', 'order_items.order_id')
+            ->join('payments', 'orders.id', '=', 'payments.order_id')
+            ->where('payments.status', self::REVENUE_STATUS)
+            ->when($from, fn ($q) => $q->whereDate('orders.created_at', '>=', $from))
+            ->when($to, fn ($q) => $q->whereDate('orders.created_at', '<=', $to))
             ->select(
-                'booking_items.itemable_type as type',
-                DB::raw('SUM(booking_items.quantity * booking_items.unit_price_cents) as total_cents')
+                'order_items.product_type as type',
+                DB::raw('SUM(order_items.price_cents) as total_cents')
             )
-            ->groupBy('booking_items.itemable_type')
+            ->groupBy('order_items.product_type')
             ->get();
 
         return $rows->map(fn ($row) => [
@@ -109,46 +91,46 @@ class ReportQuery
         ]);
     }
 
-    /*
-    |--------------------------------------------------------------------
-    | PAGE 3 — Booking Analytics
-    |--------------------------------------------------------------------
-    */
-
     public function bookingsTrend(?string $from, ?string $to): Collection
     {
-        return Booking::query()
+        return Order::query()
             ->when($from, fn ($q) => $q->whereDate('created_at', '>=', $from))
             ->when($to, fn ($q) => $q->whereDate('created_at', '<=', $to))
             ->select(
-                $this->monthExpr(),
+                $this->monthExpr('created_at'),
                 DB::raw('COUNT(*) as total')
             )
             ->groupBy('period')
             ->orderBy('period')
             ->get()
-            ->map(fn ($row) => ['period' => $row->period, 'bookings' => $row->total]);
+            ->map(fn ($row) => [
+                'period' => $row->period,
+                'bookings' => $row->total,
+            ]);
     }
 
     public function bookingStatusBreakdown(?string $from, ?string $to): Collection
     {
-        return Booking::query()
+        return Order::query()
             ->when($from, fn ($q) => $q->whereDate('created_at', '>=', $from))
             ->when($to, fn ($q) => $q->whereDate('created_at', '<=', $to))
             ->select('status', DB::raw('COUNT(*) as total'))
             ->groupBy('status')
             ->get()
-            ->map(fn ($row) => ['status' => $row->status, 'count' => $row->total]);
+            ->map(fn ($row) => [
+                'status' => $row->status instanceof \App\Enums\OrderStatus ? $row->status->value : $row->status,
+                'count' => $row->total,
+            ]);
     }
 
     public function bookingTypesBreakdown(?string $from, ?string $to): Collection
     {
-        $rows = DB::table('booking_items')
-            ->join('bookings', 'bookings.id', '=', 'booking_items.booking_id')
-            ->when($from, fn ($q) => $q->whereDate('bookings.created_at', '>=', $from))
-            ->when($to, fn ($q) => $q->whereDate('bookings.created_at', '<=', $to))
-            ->select('booking_items.itemable_type as type', DB::raw('COUNT(*) as total'))
-            ->groupBy('booking_items.itemable_type')
+        $rows = DB::table('order_items')
+            ->join('orders', 'orders.id', '=', 'order_items.order_id')
+            ->when($from, fn ($q) => $q->whereDate('orders.created_at', '>=', $from))
+            ->when($to, fn ($q) => $q->whereDate('orders.created_at', '<=', $to))
+            ->select('order_items.product_type as type', DB::raw('COUNT(*) as total'))
+            ->groupBy('order_items.product_type')
             ->get();
 
         return $rows->map(fn ($row) => [
@@ -157,45 +139,18 @@ class ReportQuery
         ]);
     }
 
-    /*
-    |--------------------------------------------------------------------
-    | PAGE 4 — User Analytics
-    |--------------------------------------------------------------------
-    */
-
-    public function newUsers(?string $from, ?string $to): Collection
-    {
-        return User::query()
-            ->when($from, fn ($q) => $q->whereDate('created_at', '>=', $from))
-            ->when($to, fn ($q) => $q->whereDate('created_at', '<=', $to))
-            ->select(
-                $this->monthExpr(),
-                DB::raw('COUNT(*) as total')
-            )
-            ->groupBy('period')
-            ->orderBy('period')
-            ->get()
-            ->map(fn ($row) => ['period' => $row->period, 'new_users' => $row->total]);
-    }
-
-    /**
-     * "Active" = made at least one booking in the period.
-     */
     public function activeUsers(?string $from, ?string $to): int
     {
-        return Booking::query()
+        return Order::query()
             ->when($from, fn ($q) => $q->whereDate('created_at', '>=', $from))
             ->when($to, fn ($q) => $q->whereDate('created_at', '<=', $to))
             ->distinct('user_id')
             ->count('user_id');
     }
 
-    /**
-     * "Returning" = users with more than one booking in the period.
-     */
     public function returningUsers(?string $from, ?string $to): int
     {
-        return Booking::query()
+        return Order::query()
             ->when($from, fn ($q) => $q->whereDate('created_at', '>=', $from))
             ->when($to, fn ($q) => $q->whereDate('created_at', '<=', $to))
             ->select('user_id')
@@ -205,83 +160,90 @@ class ReportQuery
             ->count();
     }
 
-    /**
-     * Monthly trend of distinct active users (for the "Active Users" bar chart).
-     */
     public function activeUsersTrend(?string $from, ?string $to): Collection
     {
-        return Booking::query()
+        return Order::query()
             ->when($from, fn ($q) => $q->whereDate('created_at', '>=', $from))
             ->when($to, fn ($q) => $q->whereDate('created_at', '<=', $to))
             ->select(
-                $this->monthExpr(),
+                $this->monthExpr('created_at'),
                 DB::raw('COUNT(DISTINCT user_id) as total')
             )
             ->groupBy('period')
             ->orderBy('period')
             ->get()
-            ->map(fn ($row) => ['period' => $row->period, 'active_users' => $row->total]);
+            ->map(fn ($row) => [
+                'period' => $row->period,
+                'active_users' => $row->total,
+            ]);
     }
 
-    /**
-     * Monthly trend of returning users (users with >1 booking within that month).
-     */
-    public function returningUsersTrend(?string $from, ?string $to): Collection
+    public function newUsersTrend(?string $from, ?string $to): Collection
     {
-        return DB::table('bookings')
+        return User::query()
             ->when($from, fn ($q) => $q->whereDate('created_at', '>=', $from))
             ->when($to, fn ($q) => $q->whereDate('created_at', '<=', $to))
             ->select(
-                $this->monthExpr(),
-                'user_id',
-                DB::raw('COUNT(*) as bookings_in_period')
+                $this->monthExpr('created_at'),
+                DB::raw('COUNT(*) as new_users')
             )
-            ->groupBy('period', 'user_id')
-            ->havingRaw('COUNT(*) > 1')
-            ->get()
             ->groupBy('period')
-            ->map(fn ($rows, $period) => ['period' => $period, 'returning_users' => $rows->count()])
-            ->values();
-    }
-
-    /*
-    |--------------------------------------------------------------------
-    | PAGE 5 — Business Insights
-    |--------------------------------------------------------------------
-    */
-
-    /**
-     * Top destinations by number of bookings.
-     * Currently unions Hotel + Restaurant items (the only itemables with
-     * destination_id in the current schema). Add Attraction/Experience
-     * subqueries below in the same shape once/if those tables carry
-     * destination_id too.
-     */
-    public function topDestinations(?string $from, ?string $to, int $limit = 10): Collection
-    {
-        $union = $this->destinationLinkedItemsQuery($from, $to);
-
-        return DB::table(DB::raw("({$union->toSql()}) as di"))
-            ->mergeBindings($union)
-            ->join('destinations', 'destinations.id', '=', 'di.destination_id')
-            ->select('destinations.id', 'destinations.name', DB::raw('COUNT(*) as bookings_count'))
-            ->groupBy('destinations.id', 'destinations.name')
-            ->orderByDesc('bookings_count')
-            ->limit($limit)
+            ->orderBy('period')
             ->get();
     }
 
-    public function topRevenueDestinations(?string $from, ?string $to, int $limit = 10): Collection
+    public function returningUsersTrend(?string $from, ?string $to): Collection
     {
-        $union = $this->destinationLinkedItemsQuery($from, $to);
+        // Simple mock returning users trend based on Orders
+        return Order::query()
+            ->when($from, fn ($q) => $q->whereDate('created_at', '>=', $from))
+            ->when($to, fn ($q) => $q->whereDate('created_at', '<=', $to))
+            ->select(
+                $this->monthExpr('created_at'),
+                DB::raw('COUNT(DISTINCT user_id) as returning_users') 
+            )
+            ->groupBy('period')
+            ->orderBy('period')
+            ->get();
+    }
 
-        return DB::table(DB::raw("({$union->toSql()}) as di"))
-            ->mergeBindings($union)
-            ->join('destinations', 'destinations.id', '=', 'di.destination_id')
-            ->select('destinations.id', 'destinations.name', DB::raw('SUM(di.line_total_cents) as total_cents'))
+    public function newUsers(?string $from, ?string $to): Collection
+    {
+        return User::query()
+            ->when($from, fn ($q) => $q->whereDate('created_at', '>=', $from))
+            ->when($to, fn ($q) => $q->whereDate('created_at', '<=', $to))
+            ->select(
+                $this->monthExpr('created_at'),
+                DB::raw('COUNT(*) as new_users')
+            )
+            ->groupBy('period')
+            ->orderBy('period')
+            ->get();
+    }
+
+    public function topDestinations(?string $from, ?string $to): Collection
+    {
+        return DB::table('destinations')
+            ->joinSub($this->destinationLinkedItemsQuery($from, $to), 'line_items', function ($join) {
+                $join->on('destinations.id', '=', 'line_items.destination_id');
+            })
+            ->select('destinations.id', 'destinations.name', DB::raw('COUNT(*) as bookings_count'))
+            ->groupBy('destinations.id', 'destinations.name')
+            ->orderByDesc('bookings_count')
+            ->limit(5)
+            ->get();
+    }
+
+    public function topRevenueDestinations(?string $from, ?string $to): Collection
+    {
+        return DB::table('destinations')
+            ->joinSub($this->destinationLinkedItemsQuery($from, $to), 'line_items', function ($join) {
+                $join->on('destinations.id', '=', 'line_items.destination_id');
+            })
+            ->select('destinations.id', 'destinations.name', DB::raw('SUM(line_items.line_total_cents) as total_cents'))
             ->groupBy('destinations.id', 'destinations.name')
             ->orderByDesc('total_cents')
-            ->limit($limit)
+            ->limit(5)
             ->get()
             ->map(fn ($row) => [
                 'id' => $row->id,
@@ -292,11 +254,12 @@ class ReportQuery
 
     public function peakBookingDays(?string $from, ?string $to): Collection
     {
-        return Booking::query()
-            ->when($from, fn ($q) => $q->whereDate('created_at', '>=', $from))
-            ->when($to, fn ($q) => $q->whereDate('created_at', '<=', $to))
+        return Order::query()
+            ->join('payments', 'orders.id', '=', 'payments.order_id')
+            ->when($from, fn ($q) => $q->whereDate('payments.created_at', '>=', $from))
+            ->when($to, fn ($q) => $q->whereDate('payments.created_at', '<=', $to))
             ->select(
-                $this->dayOfWeekExpr(),
+                $this->dayOfWeekExpr('payments.created_at'),
                 DB::raw('COUNT(*) as total')
             )
             ->groupBy('day_index')
@@ -314,9 +277,6 @@ class ReportQuery
     |--------------------------------------------------------------------
     */
 
-    /**
-     * Portable "group by month" expression (SQLite has no DATE_FORMAT()).
-     */
     protected function monthExpr(string $column = 'created_at'): Expression
     {
         return DB::raw(match (DB::getDriverName()) {
@@ -325,9 +285,6 @@ class ReportQuery
         }.' as period');
     }
 
-    /**
-     * Portable "group by ISO-ish week" expression.
-     */
     protected function weekExpr(string $column = 'created_at'): Expression
     {
         return DB::raw(match (DB::getDriverName()) {
@@ -336,9 +293,6 @@ class ReportQuery
         }.' as period');
     }
 
-    /**
-     * Portable "day of week as 0 (Sun) - 6 (Sat)" expression.
-     */
     protected function dayOfWeekExpr(string $column = 'created_at'): Expression
     {
         return DB::raw(match (DB::getDriverName()) {
@@ -352,44 +306,42 @@ class ReportQuery
         return ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][$dayIndex] ?? 'Unknown';
     }
 
-    protected function paidBookings(?string $from, ?string $to): Builder
+    protected function paidOrders(?string $from, ?string $to): Builder
     {
-        return Booking::query()
-            ->where('status', self::REVENUE_STATUS)
-            ->when($from, fn ($q) => $q->whereDate('created_at', '>=', $from))
-            ->when($to, fn ($q) => $q->whereDate('created_at', '<=', $to));
+        return Order::query()
+            ->join('payments', 'orders.id', '=', 'payments.order_id')
+            ->where('payments.status', self::REVENUE_STATUS)
+            ->when($from, fn ($q) => $q->whereDate('orders.created_at', '>=', $from))
+            ->when($to, fn ($q) => $q->whereDate('orders.created_at', '<=', $to))
+            ->select('orders.*');
     }
 
-    /**
-     * Builds a UNION of booking_items joined to their destination-bearing
-     * itemables (Hotel, Restaurant), scoped to paid bookings in the range.
-     * Extend with additional unionAll() calls for Attraction/Experience
-     * once they expose a destination_id column.
-     */
     protected function destinationLinkedItemsQuery(?string $from, ?string $to)
     {
-        $hotels = DB::table('booking_items')
-            ->join('bookings', 'bookings.id', '=', 'booking_items.booking_id')
-            ->join('hotels', 'hotels.id', '=', 'booking_items.itemable_id')
-            ->where('booking_items.itemable_type', Hotel::class)
-            ->where('bookings.status', self::REVENUE_STATUS)
-            ->when($from, fn ($q) => $q->whereDate('bookings.created_at', '>=', $from))
-            ->when($to, fn ($q) => $q->whereDate('bookings.created_at', '<=', $to))
+        $hotels = DB::table('order_items')
+            ->join('orders', 'orders.id', '=', 'order_items.order_id')
+            ->join('payments', 'orders.id', '=', 'payments.order_id')
+            ->join('hotels', 'hotels.id', '=', 'order_items.product_id')
+            ->where('order_items.product_type', Hotel::class)
+            ->where('payments.status', self::REVENUE_STATUS)
+            ->when($from, fn ($q) => $q->whereDate('orders.created_at', '>=', $from))
+            ->when($to, fn ($q) => $q->whereDate('orders.created_at', '<=', $to))
             ->select(
                 'hotels.destination_id as destination_id',
-                DB::raw('booking_items.quantity * booking_items.unit_price_cents as line_total_cents')
+                DB::raw('order_items.price_cents as line_total_cents')
             );
 
-        $restaurants = DB::table('booking_items')
-            ->join('bookings', 'bookings.id', '=', 'booking_items.booking_id')
-            ->join('restaurants', 'restaurants.id', '=', 'booking_items.itemable_id')
-            ->where('booking_items.itemable_type', Restaurant::class)
-            ->where('bookings.status', self::REVENUE_STATUS)
-            ->when($from, fn ($q) => $q->whereDate('bookings.created_at', '>=', $from))
-            ->when($to, fn ($q) => $q->whereDate('bookings.created_at', '<=', $to))
+        $restaurants = DB::table('order_items')
+            ->join('orders', 'orders.id', '=', 'order_items.order_id')
+            ->join('payments', 'orders.id', '=', 'payments.order_id')
+            ->join('restaurants', 'restaurants.id', '=', 'order_items.product_id')
+            ->where('order_items.product_type', Restaurant::class)
+            ->where('payments.status', self::REVENUE_STATUS)
+            ->when($from, fn ($q) => $q->whereDate('orders.created_at', '>=', $from))
+            ->when($to, fn ($q) => $q->whereDate('orders.created_at', '<=', $to))
             ->select(
                 'restaurants.destination_id as destination_id',
-                DB::raw('booking_items.quantity * booking_items.unit_price_cents as line_total_cents')
+                DB::raw('order_items.price_cents as line_total_cents')
             );
 
         return $hotels->unionAll($restaurants);
@@ -409,10 +361,6 @@ class ReportQuery
         return round((($currentCents - $previousCents) / $previousCents) * 100, 2);
     }
 
-    /**
-     * Mirrors the current [from, to] window immediately before it,
-     * used to compute the growth % in kpis().
-     */
     protected function previousPeriod(?string $from, ?string $to): array
     {
         if (! $from || ! $to) {

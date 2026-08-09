@@ -4,6 +4,9 @@ namespace Tests\Feature\System;
 
 use App\Models\Account\User;
 use App\Models\System\Report;
+use App\Models\Commerce\Order;
+use App\Models\Commerce\OrderItem;
+use App\Models\Commerce\Payment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
@@ -47,6 +50,52 @@ class ReportTest extends TestCase
 
         $this->assertNotNull($path);
         Storage::disk('public')->assertExists($path);
+    }
+
+    public function test_report_reflects_real_order_and_payment_data(): void
+    {
+        Storage::fake('public');
+
+        $user = User::factory()->create();
+        
+        $order = Order::create([
+            'user_id' => $user->id,
+            'status' => 'fulfilled',
+            'total_cents' => 50000, // $500
+            'currency' => 'USD',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        OrderItem::create([
+            'order_id' => $order->id,
+            'product_type' => 'App\Models\Catalog\Hotel',
+            'product_id' => 1,
+            'price_cents' => 50000,
+            'metadata' => []
+        ]);
+
+        Payment::create([
+            'order_id' => $order->id,
+            'paymob_transaction_id' => 'abc1234',
+            'amount_cents' => 50000,
+            'currency' => 'USD',
+            'status' => 'paid',
+            'hmac_valid' => true,
+            'raw_payload' => '{}',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $response = $this->actingAs($this->admin(), 'api')->postJson('/api/v1/admin/reports/generate', [
+            'from' => now()->subDays(2)->toDateString(),
+            'to' => now()->addDays(2)->toDateString(),
+        ]);
+
+        $response->assertStatus(202);
+        
+        // Assert revenue is picked up correctly
+        $this->assertEquals(500, $response->json('data.kpis.revenue'));
     }
 
     public function test_admin_can_download_generated_report(): void

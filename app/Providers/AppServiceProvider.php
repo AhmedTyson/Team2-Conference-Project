@@ -11,6 +11,7 @@ use App\Interfaces\Catalog\FlightRepositoryInterface;
 use App\Interfaces\Catalog\HotelRepositoryInterface;
 use App\Interfaces\Catalog\RestaurantRepositoryInterface;
 use App\Interfaces\Commerce\OrderRepositoryInterface;
+use App\Interfaces\Commerce\AgencyAssignmentRepositoryInterface;
 use App\Interfaces\Commerce\PaymentGatewayInterface;
 use App\Interfaces\Commerce\PaymentRepositoryInterface;
 use App\Interfaces\Commerce\PlanRepositoryInterface;
@@ -36,6 +37,7 @@ use App\Repositories\Catalog\FlightRepository;
 use App\Repositories\Catalog\HotelRepository;
 use App\Repositories\Catalog\RestaurantRepository;
 use App\Repositories\Commerce\OrderRepository;
+use App\Repositories\Commerce\AgencyAssignmentRepository;
 use App\Repositories\Commerce\PaymentRepository;
 use App\Repositories\Commerce\PlanRepository;
 use App\Repositories\System\ContactMessageRepository;
@@ -54,6 +56,7 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
+        $this->app->bind(\App\Interfaces\Commerce\AgencyAssignmentRepositoryInterface::class, \App\Repositories\Commerce\AgencyAssignmentRepository::class);
         $this->app->bind(PaymentGatewayInterface::class, PaymobGateway::class);
         $this->app->bind(OrderRepositoryInterface::class, OrderRepository::class);
         $this->app->bind(PaymentRepositoryInterface::class, PaymentRepository::class);
@@ -99,3 +102,5 @@ class AppServiceProvider extends ServiceProvider
         ]);
     }
 }
+
+

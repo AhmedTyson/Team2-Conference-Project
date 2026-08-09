@@ -498,4 +498,53 @@ class PaymentFlowTest extends TestCase
         $this->assertEquals(OrderStatus::FAILED, $order->fresh()->status);
         $this->assertEquals(0, Trip::where('parent_trip_id', $sourceTrip->id)->count());
     }
+
+    public function test_payment_fulfillment_books_trip_package()
+    {
+        \Illuminate\Support\Facades\Notification::fake();
+
+        $user = User::factory()->create();
+        $trip = Trip::factory()->create([
+            'user_id' => $user->id,
+            'status' => \App\Enums\TripStatus::PLANNING
+        ]);
+
+        $order = \App\Models\Commerce\Order::create([
+            'user_id' => $user->id,
+            'status' => \App\Enums\OrderStatus::PAID,
+            'total_cents' => 50000,
+            'currency' => 'EGP',
+        ]);
+
+        \App\Models\Commerce\OrderItem::create([
+            'order_id' => $order->id,
+            'product_type' => Trip::class,
+            'product_id' => $trip->id,
+            'price_cents' => 50000,
+            'metadata' => ['purchase_type' => 'trip_package']
+        ]);
+
+        $payment = \App\Models\Commerce\Payment::create([
+            'order_id' => $order->id,
+            'amount_cents' => 50000,
+            'currency' => 'EGP',
+            'status' => 'paid',
+            'paymob_transaction_id' => 'tx_123',
+            'hmac_valid' => true,
+            'raw_payload' => '{}'
+        ]);
+
+        $listener = new \App\Listeners\FulfillOrderListener();
+        $listener->handle(new \App\Events\PaymentSucceeded($payment));
+
+        $this->assertEquals(\App\Enums\TripStatus::BOOKED, $trip->refresh()->status);
+        
+        \Illuminate\Support\Facades\Notification::assertSentTo(
+            $user,
+            \App\Notifications\TripBookedNotification::class,
+            fn ($notification) => $notification->trip->id === $trip->id
+        );
+    }
 }
+
+

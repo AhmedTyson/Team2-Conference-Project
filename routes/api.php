@@ -22,6 +22,9 @@ use App\Http\Controllers\Catalog\RestaurantController;
 // Commerce
 use App\Http\Controllers\Commerce\AdminAnalyticsController;
 use App\Http\Controllers\Commerce\CheckoutController;
+use App\Http\Controllers\Commerce\AgencyRequestController;
+use App\Http\Controllers\Commerce\AdminAgencyController;
+use App\Http\Controllers\Commerce\AgencyAssignmentController;
 use App\Http\Controllers\Commerce\PaymobWebhookController;
 use App\Http\Controllers\Commerce\PlanController;
 
@@ -332,3 +335,14 @@ Route::middleware(['auth:api', 'role:admin|super_admin'])
         Route::post('/reports/generate', [ReportController::class, 'generate']);
         Route::get('/reports/{id}/download', [ReportController::class, 'download']);
     });
+
+
+Route::middleware(['auth:api'])->prefix('v1')->group(function () {
+    Route::post('/agency-requests', [\App\Http\Controllers\Commerce\AgencyRequestController::class, 'store']);
+    Route::post('/admin/agency-requests/{assignment}/approve', [\App\Http\Controllers\Commerce\AdminAgencyController::class, 'approve'])->middleware('role:admin|super_admin');
+    Route::post('/agency/assignments/{assignment}/approve', [\App\Http\Controllers\Commerce\AgencyAssignmentController::class, 'approve'])->middleware('role:agency');
+    Route::post('/agency/assignments/{assignment}/decline', [\App\Http\Controllers\Commerce\AgencyAssignmentController::class, 'decline'])->middleware('role:agency');
+    Route::post('/agency/assignments/{assignment}/trips', [\App\Http\Controllers\Commerce\AgencyAssignmentController::class, 'createTrip'])->middleware('role:agency');
+    Route::get('/agency/assignments', [\App\Http\Controllers\Commerce\AgencyAssignmentController::class, 'index'])->middleware('role:agency');
+});
+

@@ -49,7 +49,15 @@ class RoleAndPermissionSeeder extends Seeder
             'view my subscription',
         ];
 
-        $allPermissions = array_merge($superAdminPermissions, $adminPermissions, $userPermissions);
+        $agencyPermissions = [
+            'catalog.hotels.view', 
+            'catalog.restaurants.view',
+            'catalog.attractions.view', 
+            'catalog.flights.view',
+            'catalog.destinations.view',
+        ];
+
+        $allPermissions = array_merge($superAdminPermissions, $adminPermissions, $userPermissions, $agencyPermissions);
         foreach ($allPermissions as $permission) {
             Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'api']);
         }
@@ -62,5 +70,8 @@ class RoleAndPermissionSeeder extends Seeder
 
         $userRole = Role::firstOrCreate(['name' => 'user', 'guard_name' => 'api']);
         $userRole->syncPermissions($userPermissions);
+
+        $agencyRole = Role::firstOrCreate(['name' => 'agency', 'guard_name' => 'api']);
+        $agencyRole->givePermissionTo($agencyPermissions);
     }
 }

@@ -12,6 +12,8 @@ use App\Models\Trips\Trip;
 use App\Notifications\PaymentFailedNotification;
 use App\Notifications\PaymentSucceededNotification;
 use App\Notifications\SubscriptionActivatedNotification;
+use App\Notifications\TripBookedNotification;
+use App\Enums\TripStatus;
 use App\Services\Trips\TripForkService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\DB;
@@ -38,6 +40,8 @@ class FulfillOrderListener implements ShouldQueue
                         $this->fulfillSubscription($order->user_id, $item->product_id, $payment);
                     } elseif (($item->product_type === Trip::class || $item->product_type === 'trip') && $purchaseType === 'trip_fork') {
                         $this->fulfillTripFork($order->user_id, $item->product_id);
+                    } elseif (($item->product_type === Trip::class || $item->product_type === 'trip') && $purchaseType === 'trip_package') {
+                        $this->fulfillTripPackage($order->user_id, $item->product_id);
                     }
                 }
 
@@ -65,6 +69,25 @@ class FulfillOrderListener implements ShouldQueue
         // Send Notification
         if ($order->user) {
             $order->user->notify(new PaymentSucceededNotification($order));
+        }
+    }
+
+    protected function fulfillTripPackage(int $userId, int $tripId): void
+    {
+        $trip = Trip::where('id', $tripId)->where('user_id', $userId)->first();
+        if (! $trip) {
+            return;
+        }
+
+        if (in_array($trip->status, [TripStatus::BOOKED, TripStatus::COMPLETED])) {
+            return;
+        }
+
+        $trip->update(['status' => TripStatus::BOOKED]);
+        
+        $user = User::find($userId);
+        if ($user) {
+            $user->notify(new TripBookedNotification($trip));
         }
     }
 
@@ -125,3 +148,4 @@ class FulfillOrderListener implements ShouldQueue
         $user->notify(new SubscriptionActivatedNotification($subscription));
     }
 }
+

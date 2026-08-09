@@ -18,7 +18,7 @@ class TripPackageStrategy implements CheckoutStrategyInterface
         /** @var Trip $product */
         $totalCents = 0;
 
-        $product->loadMissing(['flights', 'hotels']);
+        $product->loadMissing(['flights', 'hotels', 'restaurants']);
 
         foreach ($product->flights as $flight) {
             if (isset($flight->price) && is_numeric($flight->price)) {
@@ -32,6 +32,15 @@ class TripPackageStrategy implements CheckoutStrategyInterface
                 $totalCents += (int) round($hotel->price_per_night * $nights * 100);
             }
         }
+
+        foreach ($product->restaurants as $restaurant) {
+            if (isset($restaurant->price_cents) && is_numeric($restaurant->price_cents)) {
+                $totalCents += (int) $restaurant->price_cents;
+            }
+        }
+
+        // Leave Attractions out for now — no price field exists and no scope was given to add one.
+        // Attractions remain unpriced.
 
         $commissionRate = Setting::where('key', 'platform_booking_commission_rate')->value('value');
         $rate = $commissionRate !== null ? (float) $commissionRate : 0.05;

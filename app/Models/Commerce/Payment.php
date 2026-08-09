@@ -15,7 +15,6 @@ class Payment extends Model
     const UPDATED_AT = null;
 
     protected $fillable = [
-        'booking_id',
         'order_id',
         'paymob_transaction_id',
         'status',
@@ -45,3 +44,4 @@ class Payment extends Model
         return $this->belongsTo(Order::class);
     }
 }
+
