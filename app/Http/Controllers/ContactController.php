@@ -2,25 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\ContactMessageStatus;
 use App\Http\Requests\StoreContactMessageRequest;
-use App\Models\ContactMessage;
+use App\Services\ContactMessageService;
 use Illuminate\Http\JsonResponse;
 
 class ContactController extends Controller
 {
-    /**
-     * Submit a new contact inquiry.
-     */
+    protected $contactMessageService;
+
+    public function __construct(ContactMessageService $contactMessageService)
+    {
+        $this->contactMessageService = $contactMessageService;
+    }
+
     public function store(StoreContactMessageRequest $request): JsonResponse
     {
-        $message = ContactMessage::create([
-            'name' => $request->validated('name'),
-            'email' => $request->validated('email'),
-            'subject' => $request->validated('subject'),
-            'message' => $request->validated('message'),
-            'status' => ContactMessageStatus::UNREAD->value,
-        ]);
+        $this->contactMessageService->store($request->validated());
 
         return response()->json([
             'success' => true,

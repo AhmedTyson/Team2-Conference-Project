@@ -2,34 +2,29 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Enums\ContactMessageStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ContactMessageResource;
-use App\Models\ContactMessage;
+use App\Services\ContactMessageService;
 use Illuminate\Http\JsonResponse;
 
 class ContactMessageController extends Controller
 {
-    /**
-     * List all contact messages paginated.
-     */
+    protected $contactMessageService;
+
+    public function __construct(ContactMessageService $contactMessageService)
+    {
+        $this->contactMessageService = $contactMessageService;
+    }
+
     public function index()
     {
-        $messages = ContactMessage::latest()->paginate(20);
-
+        $messages = $this->contactMessageService->getAdminList();
         return ContactMessageResource::collection($messages);
     }
 
-    /**
-     * Mark message as Read.
-     */
     public function markAsRead(int $id): JsonResponse
     {
-        $message = ContactMessage::findOrFail($id);
-
-        $message->update([
-            'status' => ContactMessageStatus::READ->value,
-        ]);
+        $message = $this->contactMessageService->markAsRead($id);
 
         return response()->json([
             'success' => true,
@@ -38,16 +33,9 @@ class ContactMessageController extends Controller
         ]);
     }
 
-    /**
-     * Mark message as Resolved.
-     */
     public function markAsResolved(int $id): JsonResponse
     {
-        $message = ContactMessage::findOrFail($id);
-
-        $message->update([
-            'status' => ContactMessageStatus::RESOLVED->value,
-        ]);
+        $message = $this->contactMessageService->markAsResolved($id);
 
         return response()->json([
             'success' => true,
