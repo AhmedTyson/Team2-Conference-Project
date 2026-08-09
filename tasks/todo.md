@@ -131,9 +131,9 @@
 ### Task 13: Validate + Commit
 **Description:** Final validation and commit.
 **Acceptance criteria:**
-- [ ] Collection parses; schema `2.1.0`; `jq empty` ok
-- [ ] `php artisan test` green; `git status` shows only intended files
-- [ ] Two commits: (1) `refactor(routes)` prefix (2) `chore(postman)`
+- [x] Collection parses; schema `2.1.0`; `jq empty` ok
+- [x] `php artisan test` green; `git status` shows only intended files
+- [x] Two commits: (1) `refactor(routes)` prefix (2) `chore(postman)`
 **Verification:** Commits pushed? (only if user asks)
 **Size:** XS
 
