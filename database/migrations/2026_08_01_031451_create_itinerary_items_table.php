@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('itinerary_items', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('trip_id')->constrained()->onDelete('cascade');
+            $table->foreignId('trip_id')->constrained()->cascadeOnDelete();
             $table->morphs('itemable');
 
             $table->decimal('day_number');

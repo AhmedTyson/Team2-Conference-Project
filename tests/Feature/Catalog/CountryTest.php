@@ -80,7 +80,7 @@ class CountryTest extends TestCase
         $this->actingAs($admin, 'api')->deleteJson("/api/v1/admin/countries/{$country->id}")
             ->assertStatus(200);
 
-        $this->assertDatabaseMissing('countries', ['id' => $country->id]);
+        $this->assertSoftDeleted('countries', ['id' => $country->id]);
     }
 
     public function test_traveler_cannot_access_admin_countries(): void

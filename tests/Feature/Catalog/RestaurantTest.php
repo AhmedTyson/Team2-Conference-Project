@@ -93,7 +93,7 @@ class RestaurantTest extends TestCase
         $this->actingAs($admin, 'api')->deleteJson("/api/v1/admin/restaurants/{$restaurant->id}")
             ->assertStatus(200);
 
-        $this->assertDatabaseMissing('restaurants', ['id' => $restaurant->id]);
+        $this->assertSoftDeleted('restaurants', ['id' => $restaurant->id]);
     }
 
     public function test_restaurant_creation_without_destination_returns_422(): void

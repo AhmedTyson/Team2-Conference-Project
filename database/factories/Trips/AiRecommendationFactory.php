@@ -2,7 +2,7 @@
 
 namespace Database\Factories\Trips;
 
-use App\Models\Trips\Trips\AiRecommendation;
+use App\Models\Trips\AiRecommendation;
 use App\Models\Trips\Trip;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

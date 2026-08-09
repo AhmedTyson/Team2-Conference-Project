@@ -96,7 +96,7 @@ class HotelTest extends TestCase
         $response = $this->actingAs($admin, 'api')->deleteJson("/api/v1/admin/hotels/{$hotel->id}");
 
         $response->assertStatus(200);
-        $this->assertDatabaseMissing('hotels', ['id' => $hotel->id]);
+        $this->assertSoftDeleted('hotels', ['id' => $hotel->id]);
     }
 
     public function test_hotel_creation_validation_returns_error_contract(): void

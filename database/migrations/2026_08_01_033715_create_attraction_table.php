@@ -14,13 +14,14 @@ return new class extends Migration
         Schema::create('attractions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('category_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignId('destination_id')->constrained()->onDelete('cascade');
+            $table->foreignId('destination_id')->constrained()->cascadeOnDelete();
 
             $table->string('name');
             $table->text('description')->nullable();
             $table->string('image')->nullable();
             $table->decimal('latitude', 10, 7)->nullable();
             $table->decimal('longitude', 10, 7)->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

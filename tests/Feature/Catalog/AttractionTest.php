@@ -96,7 +96,7 @@ class AttractionTest extends TestCase
         $this->actingAs($admin, 'api')->deleteJson("/api/v1/admin/attractions/{$attraction->id}")
             ->assertStatus(200);
 
-        $this->assertDatabaseMissing('attractions', ['id' => $attraction->id]);
+        $this->assertSoftDeleted('attractions', ['id' => $attraction->id]);
     }
 
     public function test_traveler_cannot_access_admin_attractions(): void

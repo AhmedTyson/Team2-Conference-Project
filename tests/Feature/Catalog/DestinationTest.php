@@ -132,6 +132,6 @@ class DestinationTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonPath('message', 'Destination deleted successfully.');
 
-        $this->assertDatabaseMissing('destinations', ['id' => $destination->id]);
+        $this->assertSoftDeleted('destinations', ['id' => $destination->id]);
     }
 }

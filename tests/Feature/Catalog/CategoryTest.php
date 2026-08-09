@@ -106,7 +106,7 @@ class CategoryTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonPath('message', 'Category deleted successfully');
 
-        $this->assertDatabaseMissing('categories', ['id' => $category->id]);
+        $this->assertSoftDeleted('categories', ['id' => $category->id]);
     }
 
     public function test_traveler_cannot_access_admin_categories(): void

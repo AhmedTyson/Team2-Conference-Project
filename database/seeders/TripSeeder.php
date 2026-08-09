@@ -10,7 +10,7 @@ use App\Models\Catalog\Hotel;
 use App\Models\Catalog\Restaurant;
 use App\Models\Trips\ItineraryItem;
 use App\Models\Trips\Trip;
-use App\Models\Trips\Trips\AiRecommendation;
+use App\Models\Trips\AiRecommendation;
 use Illuminate\Database\Seeder;
 
 class TripSeeder extends Seeder

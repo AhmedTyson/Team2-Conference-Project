@@ -6,11 +6,13 @@ use App\Enums\BudgetLevel;
 use App\Models\Account\User;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Survey extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = ['user_id', 'travel_style', 'budget_level', 'interests'];
 

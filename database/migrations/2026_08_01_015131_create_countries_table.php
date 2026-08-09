@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('countries', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('iso_code', 3)->unique();
+            $table->string('iso_code', 3);
             $table->string('capital')->nullable();
             $table->string('flag_url')->nullable();
             $table->string('currency', 10)->nullable();
             $table->json('languages');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
