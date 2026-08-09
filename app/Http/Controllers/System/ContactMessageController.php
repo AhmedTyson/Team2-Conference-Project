@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\System;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ContactMessageResource;
-use App\Services\ContactMessageService;
+use App\Services\System\ContactMessageService;
 use Illuminate\Http\JsonResponse;
 
 class ContactMessageController extends Controller

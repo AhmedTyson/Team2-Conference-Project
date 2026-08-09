@@ -2,8 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Models\Report;
-use App\Services\GenerateReportService;
+use App\Models\System\Report;
+use App\Services\System\GenerateReportService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 

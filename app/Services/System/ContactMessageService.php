@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\System;
 
 use App\Enums\ContactMessageStatus;
-use App\Interfaces\ContactMessageRepositoryInterface;
-use App\Repositories\ContactMessageRepository;
+use App\Interfaces\System\ContactMessageRepositoryInterface;
+use App\Repositories\System\ContactMessageRepository;
 
 class ContactMessageService
 {

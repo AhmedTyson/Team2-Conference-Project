@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\Plan;
-use App\Models\Setting;
+use App\Models\System\Setting;
 use App\Models\Trip;
 
 class PriceCalculatorService

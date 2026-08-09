@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\System;
 
-use App\Services\SettingService;
+use App\Http\Controllers\Controller;
+
+use App\Services\System\SettingService;
 use Illuminate\Http\JsonResponse;
 
 class SiteSettingsController extends Controller

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\System;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\UpdateSettingRequest;
-use App\Http\Requests\UpdateSettingValueRequest;
-use App\Services\SettingService;
+use App\Http\Requests\System\UpdateSettingRequest;
+use App\Http\Requests\System\UpdateSettingValueRequest;
+use App\Services\System\SettingService;
 use Illuminate\Http\JsonResponse;
 
 class SettingController extends Controller

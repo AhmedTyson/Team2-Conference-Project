@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\System;
 
-use App\Http\Requests\GenerateReportRequest;
+use App\Http\Controllers\Controller;
+
+use App\Http\Requests\System\GenerateReportRequest;
 use App\Jobs\GenerateReportJob;
-use App\Models\Report;
+use App\Models\System\Report;
 use App\Queries\ReportQuery;
 use App\Support\ApiResponse;
 use Illuminate\Cache\TaggableStore;

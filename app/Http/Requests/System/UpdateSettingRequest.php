@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\System;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class GenerateReportRequest extends FormRequest
+class UpdateSettingRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return $this->user() && $this->user()->hasAnyRole(['admin', 'super_admin']);
+        return true;
     }
 
     /**
@@ -23,8 +23,9 @@ class GenerateReportRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'from' => 'required|date',
-            'to' => 'required|date|after_or_equal:from',
+            'settings' => ['required', 'array'],
+            'settings.*.key' => ['required', 'string', 'max:255'],
+            'settings.*.value' => ['nullable', 'string'],
         ];
     }
 }

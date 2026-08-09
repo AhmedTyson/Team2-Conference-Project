@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\System;
 
 use App\Enums\ContactMessageStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

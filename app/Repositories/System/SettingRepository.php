@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\System;
 
-use App\Interfaces\SettingRepositoryInterface;
-use App\Models\Setting;
+use App\Interfaces\System\SettingRepositoryInterface;
+use App\Models\System\Setting;
 use Illuminate\Support\Collection;
 
 class SettingRepository implements SettingRepositoryInterface

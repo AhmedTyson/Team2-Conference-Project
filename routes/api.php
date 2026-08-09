@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\AdminAttractionController;
 // Public Controllers
 use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminCountryController;
+use App\Http\Controllers\Admin\AdminDestinationController;
 use App\Http\Controllers\Admin\AdminFlightController;
 use App\Http\Controllers\Admin\AdminHotelController;
 use App\Http\Controllers\Admin\AdminNotificationController;
@@ -12,16 +13,12 @@ use App\Http\Controllers\Admin\AdminRestaurantController;
 use App\Http\Controllers\Admin\AdminReviewController;
 use App\Http\Controllers\Admin\AdminTripController;
 use App\Http\Controllers\Admin\AdminUserController;
-use App\Http\Controllers\Admin\ContactMessageController;
-use App\Http\Controllers\Admin\AdminDestinationController;
-use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\AIController;
 use App\Http\Controllers\AttractionController;
-// Admin Controllers
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
+// Admin Controllers
 use App\Http\Controllers\CheckoutController;
-use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DestinationController;
 use App\Http\Controllers\FlightController;
@@ -31,12 +28,15 @@ use App\Http\Controllers\MapController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PaymobWebhookController;
 use App\Http\Controllers\PlanController;
-use App\Http\Controllers\ReportController;
 use App\Http\Controllers\RestaurantController;
-use App\Http\Controllers\SiteSettingsController;
 use App\Http\Controllers\SurveyController;
+use App\Http\Controllers\System\ContactController;
+use App\Http\Controllers\System\ContactMessageController;
+use App\Http\Controllers\System\ReportController;
+use App\Http\Controllers\System\SettingController;
+use App\Http\Controllers\System\SiteSettingsController;
+use App\Http\Controllers\System\WeatherController;
 use App\Http\Controllers\TripController;
-use App\Http\Controllers\WeatherController;
 use App\Services\GroqService;
 use Illuminate\Support\Facades\Route;
 
@@ -299,6 +299,3 @@ Route::middleware(['auth:api', 'role:admin|super_admin'])
         Route::post('reports/generate', [ReportController::class, 'generate']);
         Route::get('reports/{id}/download', [ReportController::class, 'download']);
     });
-
-
-

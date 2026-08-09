@@ -2,12 +2,23 @@
 
 namespace App\Providers;
 
+use App\Interfaces\AttractionRepositoryInterface;
+use App\Interfaces\CategoryRepositoryInterface;
 use App\Interfaces\CountryRepositoryInterface;
+use App\Interfaces\DestinationRepositoryInterface;
+use App\Interfaces\FlightRepositoryInterface;
+use App\Interfaces\HotelRepositoryInterface;
 use App\Interfaces\OrderRepositoryInterface;
 use App\Interfaces\PaymentGatewayInterface;
 use App\Interfaces\PaymentRepositoryInterface;
 use App\Interfaces\PlanRepositoryInterface;
+use App\Interfaces\RestaurantRepositoryInterface;
+use App\Interfaces\ReviewRepositoryInterface;
 use App\Interfaces\SurveyRepositoryInterface;
+use App\Interfaces\System\ContactMessageRepositoryInterface;
+use App\Interfaces\System\SettingRepositoryInterface;
+use App\Interfaces\TripRepositoryInterface;
+use App\Interfaces\UserRepositoryInterface;
 use App\Models\Attraction;
 use App\Models\Destination;
 use App\Models\Flight;
@@ -16,11 +27,22 @@ use App\Models\Plan;
 use App\Models\Restaurant;
 use App\Models\Trip;
 use App\Models\User;
+use App\Repositories\AttractionRepository;
+use App\Repositories\CategoryRepository;
 use App\Repositories\CountryRepository;
+use App\Repositories\DestinationRepository;
+use App\Repositories\FlightRepository;
+use App\Repositories\HotelRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\PaymentRepository;
 use App\Repositories\PlanRepository;
+use App\Repositories\RestaurantRepository;
+use App\Repositories\ReviewRepository;
 use App\Repositories\SurveyRepository;
+use App\Repositories\System\ContactMessageRepository;
+use App\Repositories\System\SettingRepository;
+use App\Repositories\TripRepository;
+use App\Repositories\UserRepository;
 use App\Services\PaymobGateway;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -40,17 +62,17 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(PlanRepositoryInterface::class, PlanRepository::class);
 
         // N-Tier Interfaces
-        $this->app->bind(\App\Interfaces\AttractionRepositoryInterface::class, \App\Repositories\AttractionRepository::class);
-        $this->app->bind(\App\Interfaces\CategoryRepositoryInterface::class, \App\Repositories\CategoryRepository::class);
-        $this->app->bind(\App\Interfaces\ContactMessageRepositoryInterface::class, \App\Repositories\ContactMessageRepository::class);
-        $this->app->bind(\App\Interfaces\DestinationRepositoryInterface::class, \App\Repositories\DestinationRepository::class);
-        $this->app->bind(\App\Interfaces\FlightRepositoryInterface::class, \App\Repositories\FlightRepository::class);
-        $this->app->bind(\App\Interfaces\HotelRepositoryInterface::class, \App\Repositories\HotelRepository::class);
-        $this->app->bind(\App\Interfaces\RestaurantRepositoryInterface::class, \App\Repositories\RestaurantRepository::class);
-        $this->app->bind(\App\Interfaces\ReviewRepositoryInterface::class, \App\Repositories\ReviewRepository::class);
-        $this->app->bind(\App\Interfaces\SettingRepositoryInterface::class, \App\Repositories\SettingRepository::class);
-        $this->app->bind(\App\Interfaces\TripRepositoryInterface::class, \App\Repositories\TripRepository::class);
-        $this->app->bind(\App\Interfaces\UserRepositoryInterface::class, \App\Repositories\UserRepository::class);
+        $this->app->bind(AttractionRepositoryInterface::class, AttractionRepository::class);
+        $this->app->bind(CategoryRepositoryInterface::class, CategoryRepository::class);
+        $this->app->bind(ContactMessageRepositoryInterface::class, ContactMessageRepository::class);
+        $this->app->bind(DestinationRepositoryInterface::class, DestinationRepository::class);
+        $this->app->bind(FlightRepositoryInterface::class, FlightRepository::class);
+        $this->app->bind(HotelRepositoryInterface::class, HotelRepository::class);
+        $this->app->bind(RestaurantRepositoryInterface::class, RestaurantRepository::class);
+        $this->app->bind(ReviewRepositoryInterface::class, ReviewRepository::class);
+        $this->app->bind(SettingRepositoryInterface::class, SettingRepository::class);
+        $this->app->bind(TripRepositoryInterface::class, TripRepository::class);
+        $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
     }
 
     public function boot(): void

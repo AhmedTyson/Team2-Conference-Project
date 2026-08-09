@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\System;
 
-use App\Models\Report;
+use App\Models\System\Report;
 use App\Queries\ReportQuery;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;

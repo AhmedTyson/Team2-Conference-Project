@@ -1,8 +1,8 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Factories\System;
 
-use App\Models\ContactMessage;
+use App\Models\System\ContactMessage;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

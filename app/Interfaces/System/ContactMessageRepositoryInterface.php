@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Interfaces;
+namespace App\Interfaces\System;
 
-use App\Models\ContactMessage;
+use App\Models\System\ContactMessage;
 use Illuminate\Database\Eloquent\Collection;
 
 interface ContactMessageRepositoryInterface

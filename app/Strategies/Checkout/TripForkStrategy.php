@@ -2,7 +2,7 @@
 
 namespace App\Strategies\Checkout;
 
-use App\Models\Setting;
+use App\Models\System\Setting;
 use App\Models\Trip;
 use Illuminate\Database\Eloquent\Model;
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\System;
 
-use App\Interfaces\SettingRepositoryInterface;
-use App\Repositories\SettingRepository;
+use App\Interfaces\System\SettingRepositoryInterface;
+use App\Repositories\System\SettingRepository;
 use Illuminate\Support\Facades\Cache;
-use App\Models\Setting;
+use App\Models\System\Setting;
 use Illuminate\Support\Facades\Storage;
 
 class SettingService

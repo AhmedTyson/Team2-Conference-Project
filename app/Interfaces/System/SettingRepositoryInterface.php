@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Interfaces;
+namespace App\Interfaces\System;
 
-use App\Models\Setting;
+use App\Models\System\Setting;
 use Illuminate\Database\Eloquent\Collection;
 
 interface SettingRepositoryInterface
