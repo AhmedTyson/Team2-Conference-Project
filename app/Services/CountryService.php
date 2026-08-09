@@ -13,9 +13,9 @@ class CountryService
         $this->countryRepository = $countryRepository;
     }
 
-    public function getAdminList(int $perPage)
+    public function getAdminList()
     {
-        return $this->countryRepository->getForAdmin($perPage);
+        return $this->countryRepository->getForAdmin();
     }
 
     public function showAdmin($id)

@@ -16,26 +16,15 @@ class AdminReviewController extends Controller
         $this->reviewService = $reviewService;
     }
 
-    /**
-     * 1) GET /api/v1/admin/reviews
-     * View all reviews (any status).
-     */
     public function index()
     {
-        $perPage = min((int) request('per_page', 15) ?: 15, 100);
-        $reviews = $this->reviewService->getAdminList($perPage);
-
+        $reviews = $this->reviewService->getAdminList();
         return ReviewResource::collection($reviews);
     }
 
-    /**
-     * 2) PATCH /api/v1/admin/reviews/{id}/approve
-     * Approve a review (make it publicly visible).
-     */
     public function approve(int $id): JsonResponse
     {
         $review = $this->reviewService->approve($id);
-
         return response()->json([
             'success' => true,
             'message' => 'Review approved successfully.',
@@ -43,14 +32,9 @@ class AdminReviewController extends Controller
         ]);
     }
 
-    /**
-     * 3) PATCH /api/v1/admin/reviews/{id}/reject
-     * Reject a review (hide it from public view).
-     */
     public function reject(int $id): JsonResponse
     {
         $review = $this->reviewService->reject($id);
-
         return response()->json([
             'success' => true,
             'message' => 'Review rejected successfully.',
@@ -58,14 +42,9 @@ class AdminReviewController extends Controller
         ]);
     }
 
-    /**
-     * 4) DELETE /api/v1/admin/reviews/{id}
-     * Permanently delete a review.
-     */
     public function destroy(int $id): JsonResponse
     {
         $this->reviewService->destroy($id);
-
         return response()->json([
             'success' => true,
             'message' => 'Review deleted successfully.',

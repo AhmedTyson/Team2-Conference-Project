@@ -14,9 +14,9 @@ class AttractionService
         $this->attractionRepository = $attractionRepository;
     }
 
-    public function getAdminList(array $filters, int $perPage)
+    public function getAdminList()
     {
-        return $this->attractionRepository->getForAdmin($filters, $perPage);
+        return $this->attractionRepository->getForAdmin();
     }
 
     public function getPublicList()

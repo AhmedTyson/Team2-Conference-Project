@@ -3,13 +3,13 @@
 namespace App\Repositories;
 
 use App\Models\Country;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 class CountryRepository
 {
-    public function getForAdmin(int $perPage): LengthAwarePaginator
+    public function getForAdmin(): Collection
     {
-        return Country::paginate($perPage);
+        return Country::all();
     }
 
     public function findById($id): Country

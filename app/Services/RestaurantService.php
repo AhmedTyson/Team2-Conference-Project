@@ -14,14 +14,14 @@ class RestaurantService
         $this->restaurantRepository = $restaurantRepository;
     }
 
-    public function getAdminList(int $perPage)
+    public function getAdminList()
     {
-        return $this->restaurantRepository->getForAdmin($perPage);
+        return $this->restaurantRepository->getForAdmin();
     }
 
-    public function getPublicList(int $perPage = 10)
+    public function getPublicList()
     {
-        return $this->restaurantRepository->getForPublic($perPage);
+        return $this->restaurantRepository->getForPublic();
     }
 
     public function showAdmin($id)

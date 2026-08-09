@@ -3,13 +3,13 @@
 namespace App\Repositories;
 
 use App\Models\Trip;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 class TripRepository
 {
-    public function getForAdmin(int $perPage): LengthAwarePaginator
+    public function getForAdmin(): Collection
     {
-        return Trip::with(['user', 'destinations'])->latest()->paginate($perPage);
+        return Trip::with(['user', 'destinations'])->latest()->get();
     }
 
     public function findById($id): Trip

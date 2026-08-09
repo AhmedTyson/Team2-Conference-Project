@@ -22,7 +22,6 @@ class TripController extends Controller
     public function create(Request $request)
     {
         $data = $this->tripService->getCreationData();
-
         return response()->json([
             'success' => true,
             'message' => 'Trip creation data retrieved successfully.',
@@ -47,11 +46,7 @@ class TripController extends Controller
     public function show(Request $request, Trip $trip)
     {
         if ($trip->user_id !== $request->user()->id) {
-            return ApiResponse::fail(
-                'Trip not found or does not belong to this user.',
-                'not_found',
-                404
-            );
+            return ApiResponse::fail('Trip not found or does not belong to this user.', 'not_found', 404);
         }
 
         $trip->load(['itineraryItems.itemable', 'destinations']);

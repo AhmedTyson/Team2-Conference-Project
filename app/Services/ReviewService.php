@@ -14,9 +14,9 @@ class ReviewService
         $this->reviewRepository = $reviewRepository;
     }
 
-    public function getAdminList(int $perPage)
+    public function getAdminList()
     {
-        return $this->reviewRepository->getForAdmin($perPage);
+        return $this->reviewRepository->getForAdmin();
     }
 
     public function approve($id)

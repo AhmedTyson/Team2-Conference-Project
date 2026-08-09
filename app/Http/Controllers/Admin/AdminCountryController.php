@@ -19,37 +19,31 @@ class AdminCountryController extends Controller
 
     public function index()
     {
-        $perPage = min((int) request('per_page', 15) ?: 15, 100);
-        $countries = $this->countryService->getAdminList($perPage);
-
+        $countries = $this->countryService->getAdminList();
         return JsonResource::collection($countries);
     }
 
     public function store(StoreCountryRequest $request)
     {
         $country = $this->countryService->store($request->validated());
-
         return new JsonResource($country);
     }
 
     public function show($id)
     {
         $country = $this->countryService->showAdmin($id);
-
         return new JsonResource($country);
     }
 
     public function update(UpdateCountryRequest $request, $id)
     {
         $country = $this->countryService->update($id, $request->validated());
-
         return new JsonResource($country);
     }
 
     public function destroy($id)
     {
         $this->countryService->destroy($id);
-
         return response()->json(['success' => true]);
     }
 }

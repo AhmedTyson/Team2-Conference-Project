@@ -18,26 +18,19 @@ class RestaurantController extends Controller
     public function index()
     {
         $restaurants = $this->restaurantService->getPublicList();
-
         return RestaurantResource::collection($restaurants);
     }
 
     public function show($id)
     {
         $restaurant = $this->restaurantService->showPublic($id);
-
         return new RestaurantResource($restaurant);
     }
 
     public function destroy($id)
     {
-        // restaurant policy
         authorize('delete', Restaurant::class);
-        
         $this->restaurantService->destroy($id);
-
-        return response()->json([
-            'message' => 'Restaurant deleted successfully',
-        ]);
+        return response()->json(['message' => 'Restaurant deleted successfully']);
     }
 }

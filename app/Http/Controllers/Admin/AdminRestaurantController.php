@@ -19,37 +19,31 @@ class AdminRestaurantController extends Controller
 
     public function index()
     {
-        $perPage = min((int) request('per_page', 15) ?: 15, 100);
-        $restaurants = $this->restaurantService->getAdminList($perPage);
-
+        $restaurants = $this->restaurantService->getAdminList();
         return JsonResource::collection($restaurants);
     }
 
     public function store(StoreRestaurantRequest $request)
     {
         $restaurant = $this->restaurantService->store($request->validated());
-
         return new JsonResource($restaurant);
     }
 
     public function show($id)
     {
         $restaurant = $this->restaurantService->showAdmin($id);
-
         return new JsonResource($restaurant);
     }
 
     public function update(UpdateRestaurantRequest $request, $id)
     {
         $restaurant = $this->restaurantService->update($id, $request->validated());
-
         return new JsonResource($restaurant);
     }
 
     public function destroy($id)
     {
         $this->restaurantService->destroy($id);
-
         return response()->json(['success' => true]);
     }
 }

@@ -20,16 +20,13 @@ class AdminTripController extends Controller
 
     public function index()
     {
-        $perPage = min((int) request('per_page', 15) ?: 15, 100);
-        $trips = $this->tripService->getAdminList($perPage);
-
+        $trips = $this->tripService->getAdminList();
         return TripResource::collection($trips);
     }
 
     public function store(StoreTripRequest $request): JsonResponse
     {
         $trip = $this->tripService->store($request->validated());
-
         return response()->json([
             'success' => true,
             'message' => 'Trip created successfully',
@@ -40,7 +37,6 @@ class AdminTripController extends Controller
     public function update(UpdateTripRequest $request, int $id): JsonResponse
     {
         $trip = $this->tripService->update($id, $request->validated());
-
         return response()->json([
             'success' => true,
             'message' => 'Trip updated successfully.',
@@ -51,7 +47,6 @@ class AdminTripController extends Controller
     public function destroy(int $id): JsonResponse
     {
         $this->tripService->destroy($id);
-
         return response()->json([
             'success' => true,
             'message' => 'Trip deleted successfully.',

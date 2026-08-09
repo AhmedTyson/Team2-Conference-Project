@@ -3,13 +3,13 @@
 namespace App\Repositories;
 
 use App\Models\Review;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 class ReviewRepository
 {
-    public function getForAdmin(int $perPage): LengthAwarePaginator
+    public function getForAdmin(): Collection
     {
-        return Review::with('user', 'reviewable')->latest()->paginate($perPage);
+        return Review::with('user', 'reviewable')->latest()->get();
     }
 
     public function findById($id): Review

@@ -3,24 +3,13 @@
 namespace App\Repositories;
 
 use App\Models\Attraction;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Collection;
 
 class AttractionRepository
 {
-    public function getForAdmin(array $filters, int $perPage): LengthAwarePaginator
+    public function getForAdmin(): Collection
     {
-        $query = Attraction::query();
-
-        if (isset($filters['destination_id'])) {
-            $query->where('destination_id', $filters['destination_id']);
-        }
-
-        if (isset($filters['category_id'])) {
-            $query->where('category_id', $filters['category_id']);
-        }
-
-        return $query->paginate($perPage);
+        return Attraction::all();
     }
 
     public function getForPublic(): Collection
@@ -31,11 +20,9 @@ class AttractionRepository
     public function findById($id, array $relations = []): Attraction
     {
         $query = Attraction::query();
-
         if (!empty($relations)) {
             $query->with($relations);
         }
-
         return $query->findOrFail($id);
     }
 

@@ -3,28 +3,26 @@
 namespace App\Repositories;
 
 use App\Models\Restaurant;
-use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Collection;
 
 class RestaurantRepository
 {
-    public function getForAdmin(int $perPage): LengthAwarePaginator
+    public function getForAdmin(): Collection
     {
-        return Restaurant::paginate($perPage);
+        return Restaurant::all();
     }
 
-    public function getForPublic(int $perPage = 10): LengthAwarePaginator
+    public function getForPublic(): Collection
     {
-        return Restaurant::with(['destination', 'category'])->paginate($perPage);
+        return Restaurant::with(['destination', 'category'])->get();
     }
 
     public function findById($id, array $relations = []): Restaurant
     {
         $query = Restaurant::query();
-
         if (!empty($relations)) {
             $query->with($relations);
         }
-
         return $query->findOrFail($id);
     }
 
