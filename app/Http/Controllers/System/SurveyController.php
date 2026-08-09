@@ -46,7 +46,7 @@ class SurveyController extends Controller
      */
     public function show(string $id)
     {
-        $survey = $this->surveyService->getSurveyById($id);
+        $survey = $this->surveyService->getSurveyById($id, auth()->id());
 
         return response()->json([
             'message' => 'Survey retrieved successfully',
@@ -59,7 +59,10 @@ class SurveyController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $this->surveyService->updateSurvey($id, $request->all());
+        $data = $request->all();
+        unset($data['user_id']);
+
+        $this->surveyService->updateSurvey($id, $data, auth()->id());
 
         return response()->json([
             'message' => 'Survey updated successfully',
@@ -71,7 +74,7 @@ class SurveyController extends Controller
      */
     public function destroy(string $id)
     {
-        $this->surveyService->deleteSurvey($id);
+        $this->surveyService->deleteSurvey($id, auth()->id());
 
         return response()->json([
             'message' => 'Survey deleted successfully',

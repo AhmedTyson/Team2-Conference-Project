@@ -23,9 +23,9 @@ class SurveyService
         return $this->surveyRepository->getSurveyByUserId($userId);
     }
 
-    public function getSurveyById($surveyId)
+    public function getSurveyById($surveyId, $userId = null)
     {
-        return $this->surveyRepository->getSurveyById($surveyId);
+        return $this->surveyRepository->getSurveyById($surveyId, $userId);
     }
 
     public function createSurvey(array $surveyDetails)
@@ -33,13 +33,13 @@ class SurveyService
         return $this->surveyRepository->createSurvey($surveyDetails);
     }
 
-    public function updateSurvey($surveyId, array $newDetails)
+    public function updateSurvey($surveyId, array $newDetails, $userId = null)
     {
-        return $this->surveyRepository->updateSurvey($surveyId, $newDetails);
+        return $this->surveyRepository->updateSurvey($surveyId, $newDetails, $userId);
     }
 
-    public function deleteSurvey($surveyId)
+    public function deleteSurvey($surveyId, $userId = null)
     {
-        return $this->surveyRepository->deleteSurvey($surveyId);
+        return $this->surveyRepository->deleteSurvey($surveyId, $userId);
     }
 }

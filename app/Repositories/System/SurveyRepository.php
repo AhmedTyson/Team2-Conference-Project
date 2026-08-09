@@ -19,9 +19,9 @@ class SurveyRepository implements SurveyRepositoryInterface
 
     }
 
-    public function getSurveyById($surveyId)
+    public function getSurveyById($surveyId, $userId = null)
     {
-        return Survey::findOrFail($surveyId);
+        return Survey::when($userId, fn ($q) => $q->where('user_id', $userId))->findOrFail($surveyId);
     }
 
     public function createSurvey(array $surveyDetails)
@@ -30,18 +30,19 @@ class SurveyRepository implements SurveyRepositoryInterface
 
     }
 
-    public function updateSurvey($surveyId, array $newDetails)
+    public function updateSurvey($surveyId, array $newDetails, $userId = null)
     {
-        $survey = Survey::findOrFail($surveyId);
+        $survey = Survey::when($userId, fn ($q) => $q->where('user_id', $userId))->findOrFail($surveyId);
         $survey->update($newDetails);
 
         return $survey;
 
     }
 
-    public function deleteSurvey($surveyId)
+    public function deleteSurvey($surveyId, $userId = null)
     {
-        Survey::destroy($surveyId);
+        $survey = Survey::when($userId, fn ($q) => $q->where('user_id', $userId))->findOrFail($surveyId);
+        $survey->delete();
 
     }
 }

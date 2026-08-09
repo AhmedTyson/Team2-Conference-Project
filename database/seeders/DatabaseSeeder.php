@@ -52,7 +52,6 @@ class DatabaseSeeder extends Seeder
             RestaurantSeeder::class,
             AttractionSeeder::class,
             FlightSeeder::class,
-            NotificationSeeder::class,
             ReviewSeeder::class,
             FavouriteSeeder::class,
             TripSeeder::class,
