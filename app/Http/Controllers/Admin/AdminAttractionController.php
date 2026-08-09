@@ -5,56 +5,53 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAttractionRequest;
 use App\Http\Requests\UpdateAttractionRequest;
-use App\Models\Attraction;
+use App\Services\AttractionService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AdminAttractionController extends Controller
 {
+    protected $attractionService;
+
+    public function __construct(AttractionService $attractionService)
+    {
+        $this->attractionService = $attractionService;
+    }
+
     public function index(Request $request)
     {
-        $query = Attraction::query();
+        $filters = $request->only(['destination_id', 'category_id']);
+        $perPage = min((int) $request->input('per_page', 15) ?: 15, 100);
 
-        if ($request->has('destination_id')) {
-            $query->where('destination_id', $request->input('destination_id'));
-        }
+        $attractions = $this->attractionService->getAdminList($filters, $perPage);
 
-        if ($request->has('category_id')) {
-            $query->where('category_id', $request->input('category_id'));
-        }
-
-        return JsonResource::collection($query->paginate(min((int) request('per_page', 15) ?: 15, 100)));
+        return JsonResource::collection($attractions);
     }
 
     public function store(StoreAttractionRequest $request)
     {
-        $validated = $request->validated();
-
-        $attraction = Attraction::create($validated);
+        $attraction = $this->attractionService->store($request->validated());
 
         return new JsonResource($attraction);
     }
 
     public function show($id)
     {
-        return new JsonResource(Attraction::findOrFail($id));
+        $attraction = $this->attractionService->showAdmin($id);
+
+        return new JsonResource($attraction);
     }
 
     public function update(UpdateAttractionRequest $request, $id)
     {
-        $attraction = Attraction::findOrFail($id);
-
-        $validated = $request->validated();
-
-        $attraction->update($validated);
+        $attraction = $this->attractionService->update($id, $request->validated());
 
         return new JsonResource($attraction);
     }
 
     public function destroy($id)
     {
-        $attraction = Attraction::findOrFail($id);
-        $attraction->delete();
+        $this->attractionService->destroy($id);
 
         return response()->json(['success' => true]);
     }

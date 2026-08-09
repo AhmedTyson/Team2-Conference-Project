@@ -3,20 +3,27 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\AttractionResource;
-use App\Models\Attraction;
+use App\Services\AttractionService;
 
 class AttractionController extends Controller
 {
+    protected $attractionService;
+
+    public function __construct(AttractionService $attractionService)
+    {
+        $this->attractionService = $attractionService;
+    }
+
     public function index()
     {
-        $attractions = Attraction::with(['destination', 'category'])->get();
+        $attractions = $this->attractionService->getPublicList();
 
         return AttractionResource::collection($attractions);
     }
 
     public function show($id)
     {
-        $attraction = Attraction::with(['destination', 'category'])->findOrFail($id);
+        $attraction = $this->attractionService->showPublic($id);
 
         return new AttractionResource($attraction);
     }
