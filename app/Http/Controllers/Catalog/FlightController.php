@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Catalog;
 
+use App\Http\Controllers\Controller;
 use App\Http\Resources\FlightResource;
 use App\Services\Catalog\FlightService;
 use Illuminate\Http\Request;

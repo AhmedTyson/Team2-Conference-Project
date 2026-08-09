@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Catalog;
 
+use App\Http\Controllers\Controller;
 use App\Http\Resources\AttractionResource;
 use App\Services\Catalog\AttractionService;
 

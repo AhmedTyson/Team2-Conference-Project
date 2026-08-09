@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Catalog;
 
+use App\Http\Controllers\Controller;
 use App\Http\Resources\RestaurantResource;
 use App\Services\Catalog\RestaurantService;
 use App\Models\Catalog\Restaurant;

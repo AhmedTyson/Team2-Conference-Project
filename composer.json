@@ -13,7 +13,6 @@
         "laravel/tinker": "^2.10.1",
         "lucianotonet/groq-laravel": "^1.0",
         "openspout/openspout": "^4.28",
-        "paymob/laravel-package": "^1.0",
         "paymob/php-library": "^1.0",
         "predis/predis": "^3.5",
         "spatie/laravel-permission": "^6.25",

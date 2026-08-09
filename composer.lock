@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "1a9768551f75171c8dce2ada8b729a28",
+    "content-hash": "5a612a087fd8394b5f80c292fd88d317",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -3306,58 +3306,6 @@
                 }
             ],
             "time": "2025-09-03T16:03:54+00:00"
-        },
-        {
-            "name": "paymob/laravel-package",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://gitlab.com/paymob-integrations/laravel-package.git",
-                "reference": "64bd6fe225297f376e3517a608a942bd0dc6955c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://gitlab.com/api/v4/projects/paymob-integrations%2Flaravel-package/repository/archive.zip?sha=64bd6fe225297f376e3517a608a942bd0dc6955c",
-                "reference": "64bd6fe225297f376e3517a608a942bd0dc6955c",
-                "shasum": ""
-            },
-            "require": {
-                "paymob/php-library": "1.0.*"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Paymob\\LaravelPackage\\PaymobServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Paymob\\LaravelPackage\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0-only"
-            ],
-            "authors": [
-                {
-                    "name": "Paymob Technical Team"
-                }
-            ],
-            "description": "Paymob Payment for Laravel.",
-            "homepage": "https://paymob.com/",
-            "keywords": [
-                "laravel",
-                "payment",
-                "paymob"
-            ],
-            "support": {
-                "issues": "https://gitlab.com/paymob-integrations/laravel-package/-/issues",
-                "source": "https://gitlab.com/paymob-integrations/laravel-package/-/tree/1.0.0"
-            },
-            "time": "2024-05-14T11:56:02+00:00"
         },
         {
             "name": "paymob/php-library",
