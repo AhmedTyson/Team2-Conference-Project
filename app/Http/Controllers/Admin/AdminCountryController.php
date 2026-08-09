@@ -5,45 +5,50 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCountryRequest;
 use App\Http\Requests\UpdateCountryRequest;
-use App\Models\Country;
+use App\Services\CountryService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AdminCountryController extends Controller
 {
+    protected $countryService;
+
+    public function __construct(CountryService $countryService)
+    {
+        $this->countryService = $countryService;
+    }
+
     public function index()
     {
-        return JsonResource::collection(Country::paginate(min((int) request('per_page', 15) ?: 15, 100)));
+        $perPage = min((int) request('per_page', 15) ?: 15, 100);
+        $countries = $this->countryService->getAdminList($perPage);
+
+        return JsonResource::collection($countries);
     }
 
     public function store(StoreCountryRequest $request)
     {
-        $validated = $request->validated();
-
-        $country = Country::create($validated);
+        $country = $this->countryService->store($request->validated());
 
         return new JsonResource($country);
     }
 
     public function show($id)
     {
-        return new JsonResource(Country::findOrFail($id));
+        $country = $this->countryService->showAdmin($id);
+
+        return new JsonResource($country);
     }
 
     public function update(UpdateCountryRequest $request, $id)
     {
-        $country = Country::findOrFail($id);
-
-        $validated = $request->validated();
-
-        $country->update($validated);
+        $country = $this->countryService->update($id, $request->validated());
 
         return new JsonResource($country);
     }
 
     public function destroy($id)
     {
-        $country = Country::findOrFail($id);
-        $country->delete();
+        $this->countryService->destroy($id);
 
         return response()->json(['success' => true]);
     }
