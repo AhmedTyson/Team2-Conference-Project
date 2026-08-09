@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Booking;
-use App\Models\BookingItem;
-use App\Models\Commission;
+use App\Models\Commerce\Booking;
+use App\Models\Commerce\BookingItem;
+use App\Models\Commerce\Commission;
 use Illuminate\Database\Seeder;
 
 class CommissionSeeder extends Seeder

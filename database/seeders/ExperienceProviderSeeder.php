@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Account\User;
-use App\Models\ExperienceProvider;
+use App\Models\Catalog\ExperienceProvider;
 use Illuminate\Database\Seeder;
 
 class ExperienceProviderSeeder extends Seeder

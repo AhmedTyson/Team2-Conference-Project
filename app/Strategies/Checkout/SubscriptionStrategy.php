@@ -2,7 +2,7 @@
 
 namespace App\Strategies\Checkout;
 
-use App\Models\Plan;
+use App\Models\Commerce\Plan;
 use Illuminate\Database\Eloquent\Model;
 
 class SubscriptionStrategy implements CheckoutStrategyInterface

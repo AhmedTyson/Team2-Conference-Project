@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Booking;
-use App\Models\BookingItem;
-use App\Models\Experience;
+use App\Models\Catalog\Experience;
+use App\Models\Commerce\Booking;
+use App\Models\Commerce\BookingItem;
 use Illuminate\Database\Seeder;
 
 class BookingItemSeeder extends Seeder

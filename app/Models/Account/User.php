@@ -2,9 +2,9 @@
 
 namespace App\Models\Account;
 
-use App\Models\Notification;
-use App\Models\Subscription;
-use App\Models\Survey;
+use App\Models\Commerce\Subscription;
+use App\Models\System\Notification;
+use App\Models\System\Survey;
 use App\Models\Trips\Favourite;
 use App\Models\Trips\Trip;
 use App\Models\Trips\Trips\Review;

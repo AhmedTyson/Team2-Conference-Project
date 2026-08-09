@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Account\User;
-use App\Models\Address;
-use App\Models\Experience;
+use App\Models\Catalog\Experience;
+use App\Models\Commerce\Address;
 use Illuminate\Database\Seeder;
 
 class AddressSeeder extends Seeder

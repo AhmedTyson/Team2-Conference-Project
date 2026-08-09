@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Catalog\Destination;
-use App\Models\Experience;
-use App\Models\ExperienceProvider;
+use App\Models\Catalog\Experience;
+use App\Models\Catalog\ExperienceProvider;
 use Illuminate\Database\Seeder;
 
 class ExperienceSeeder extends Seeder

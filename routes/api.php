@@ -3,8 +3,6 @@
 use App\Http\Controllers\Account\AdminUserController;
 use App\Http\Controllers\Account\AuthController;
 // Public Controllers
-use App\Http\Controllers\Admin\AdminAnalyticsController;
-use App\Http\Controllers\Admin\AdminNotificationController;
 use App\Http\Controllers\Catalog\AdminAttractionController;
 use App\Http\Controllers\Catalog\AdminCategoryController;
 use App\Http\Controllers\Catalog\AdminCountryController;
@@ -17,19 +15,21 @@ use App\Http\Controllers\Catalog\CategoryController;
 use App\Http\Controllers\Catalog\DestinationController;
 use App\Http\Controllers\Catalog\FlightController;
 use App\Http\Controllers\Catalog\HotelController;
-// Admin Controllers
 use App\Http\Controllers\Catalog\RestaurantController;
-use App\Http\Controllers\CheckoutController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\PaymobWebhookController;
-use App\Http\Controllers\PlanController;
-use App\Http\Controllers\SurveyController;
+use App\Http\Controllers\Commerce\AdminAnalyticsController;
+// Admin Controllers
+use App\Http\Controllers\Commerce\CheckoutController;
+use App\Http\Controllers\Commerce\PaymobWebhookController;
+use App\Http\Controllers\Commerce\PlanController;
+use App\Http\Controllers\System\AdminNotificationController;
 use App\Http\Controllers\System\ContactController;
 use App\Http\Controllers\System\ContactMessageController;
+use App\Http\Controllers\System\DashboardController;
+use App\Http\Controllers\System\NotificationController;
 use App\Http\Controllers\System\ReportController;
 use App\Http\Controllers\System\SettingController;
 use App\Http\Controllers\System\SiteSettingsController;
+use App\Http\Controllers\System\SurveyController;
 use App\Http\Controllers\System\WeatherController;
 use App\Http\Controllers\Trips\AdminReviewController;
 use App\Http\Controllers\Trips\AdminTripController;

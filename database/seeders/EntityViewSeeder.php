@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\Account\User;
-use App\Models\EntityView;
-use App\Models\Experience;
+use App\Models\Catalog\EntityView;
+use App\Models\Catalog\Experience;
 use Illuminate\Database\Seeder;
 
 class EntityViewSeeder extends Seeder

@@ -7,9 +7,9 @@ use App\Mail\TripForkedMail;
 use App\Mail\WelcomeMail;
 use App\Models\Account\User;
 use App\Models\Catalog\Destination;
-use App\Models\Order;
-use App\Models\Plan;
-use App\Models\Subscription;
+use App\Models\Commerce\Order;
+use App\Models\Commerce\Plan;
+use App\Models\Commerce\Subscription;
 use App\Models\Trips\Trip;
 use Illuminate\Support\Facades\Route;
 

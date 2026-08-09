@@ -3,7 +3,7 @@
 namespace App\Mail;
 
 use App\Models\Account\User;
-use App\Models\Order;
+use App\Models\Commerce\Order;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;

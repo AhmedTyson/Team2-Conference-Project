@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Account\User;
-use App\Models\Company;
+use App\Models\Commerce\Company;
 use Illuminate\Database\Seeder;
 
 class CompanySeeder extends Seeder

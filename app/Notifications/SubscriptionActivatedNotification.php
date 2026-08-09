@@ -3,7 +3,7 @@
 namespace App\Notifications;
 
 use App\Mail\SubscriptionActivatedMail;
-use App\Models\Subscription;
+use App\Models\Commerce\Subscription;
 
 class SubscriptionActivatedNotification extends AppNotification
 {

@@ -3,7 +3,7 @@
 namespace App\Notifications;
 
 use App\Mail\PaymentFailedMail;
-use App\Models\Order;
+use App\Models\Commerce\Order;
 
 class PaymentFailedNotification extends AppNotification
 {

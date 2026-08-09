@@ -3,9 +3,9 @@
 namespace App\Queries;
 
 use App\Models\Account\User;
-use App\Models\Booking;
 use App\Models\Catalog\Hotel;
 use App\Models\Catalog\Restaurant;
+use App\Models\Commerce\Booking;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Carbon;
