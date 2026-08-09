@@ -4,35 +4,35 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTripRequest;
 use App\Http\Resources\TripResource;
-use App\Models\Destination;
 use App\Models\Trip;
+use App\Services\TripService;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class TripController extends Controller
 {
+    protected $tripService;
+
+    public function __construct(TripService $tripService)
+    {
+        $this->tripService = $tripService;
+    }
+
     public function create(Request $request)
     {
-        $destinations = Destination::query()
-            ->select('id', 'name', 'city_name', 'image')
-            ->orderBy('name')
-            ->get();
+        $data = $this->tripService->getCreationData();
 
         return response()->json([
             'success' => true,
             'message' => 'Trip creation data retrieved successfully.',
-            'data' => [
-                'destinations' => $destinations,
-                'travel_styles' => ['solo', 'couple', 'family', 'friends', 'business'],
-                'budget_levels' => ['low', 'medium', 'high'],
-            ],
+            'data' => $data,
         ]);
     }
 
     public function store(StoreTripRequest $request)
     {
-        $trip = Trip::create($request->validated() + [
+        $trip = $this->tripService->store($request->validated() + [
             'user_id' => $request->user()->id,
             'status' => 'pending',
         ]);

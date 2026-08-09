@@ -6,22 +6,29 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTripRequest;
 use App\Http\Requests\UpdateTripRequest;
 use App\Http\Resources\TripResource;
-use App\Models\Trip;
+use App\Services\TripService;
 use Illuminate\Http\JsonResponse;
 
 class AdminTripController extends Controller
 {
-    // View all trips
+    protected $tripService;
+
+    public function __construct(TripService $tripService)
+    {
+        $this->tripService = $tripService;
+    }
+
     public function index()
     {
-        $trips = Trip::with(['user', 'destinations'])->latest()->paginate(min((int) request('per_page', 15) ?: 15, 100));
+        $perPage = min((int) request('per_page', 15) ?: 15, 100);
+        $trips = $this->tripService->getAdminList($perPage);
 
         return TripResource::collection($trips);
     }
 
     public function store(StoreTripRequest $request): JsonResponse
     {
-        $trip = Trip::create($request->validated());
+        $trip = $this->tripService->store($request->validated());
 
         return response()->json([
             'success' => true,
@@ -30,11 +37,9 @@ class AdminTripController extends Controller
         ]);
     }
 
-    // Edit a trip
     public function update(UpdateTripRequest $request, int $id): JsonResponse
     {
-        $trip = Trip::findOrFail($id);
-        $trip->update($request->validated());
+        $trip = $this->tripService->update($id, $request->validated());
 
         return response()->json([
             'success' => true,
@@ -43,11 +48,9 @@ class AdminTripController extends Controller
         ]);
     }
 
-    // Delete a trip
     public function destroy(int $id): JsonResponse
     {
-        $trip = Trip::findOrFail($id);
-        $trip->delete();
+        $this->tripService->destroy($id);
 
         return response()->json([
             'success' => true,
