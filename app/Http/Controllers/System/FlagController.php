@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\System;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\System\StoreFlagRequest;
+use App\Http\Requests\StoreFlagRequest as RequestsStoreFlagRequest;
+// use App\Http\Requests\System\StoreFlagRequest;
 use App\Models\System\Flag;
 use App\Services\System\FlagService;
 use Illuminate\Http\Request;
-
 class FlagController extends Controller
 {
     /**
@@ -22,7 +22,7 @@ class FlagController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreFlagRequest $request)
+    public function store(RequestsStoreFlagRequest $request)
     {
         $flag = FlagService::create($request->validated());
 

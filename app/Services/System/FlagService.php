@@ -3,7 +3,8 @@
 namespace App\Services\System;
 
 use App\Models\System\Flag;
-// use App\Services\System\FlagSta
+use App\Enums\FlagStatus;
+use Illuminate\Support\Facades\Auth;
 // assigned to someone in frontend : Hana - 7
 class FlagService
 {
@@ -29,7 +30,7 @@ class FlagService
             // if approved: cancel the agency_assignment
             // if approved: flag the agency user for admin review on future assignments
 
-            ['status' => FlagStatus::APPROVED, 'reviewed_at' => now(), 'reviewed_by' => auth()->id()]
+            ['status' => FlagStatus::APPROVED, 'reviewed_at' => now(), 'reviewed_by' => Auth::id()]
             // if rejected: cancel the agency_assignment
             // if rejected: do not flag the agency user for admin review on future assignments
         ]);
@@ -40,6 +41,6 @@ class FlagService
 
     public function decline(Flag $flag)
     {
-        return $flag->update(['status' => FlagStatus::REJECTED, 'reviewed_at' => now(), 'reviewed_by' => auth()->id()]);
+        return $flag->update(['status' => FlagStatus::DECLINED, 'reviewed_at' => now(), 'reviewed_by' => Auth::id()]);
     }
 }

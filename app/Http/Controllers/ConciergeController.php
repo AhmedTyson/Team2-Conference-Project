@@ -15,6 +15,7 @@ class ConciergeController extends Controller
 
     public function ask(Request $request, Trip $trip)
     {
+
         // Trip ownership
         if ($trip->user_id !== $request->user()->id) {
             return response()->json([
