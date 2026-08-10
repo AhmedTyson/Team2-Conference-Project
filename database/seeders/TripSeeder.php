@@ -11,10 +11,13 @@ use App\Models\Catalog\Restaurant;
 use App\Models\Trips\ItineraryItem;
 use App\Models\Trips\Trip;
 use App\Models\Trips\AiRecommendation;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Seeder;
 
 class TripSeeder extends Seeder
 {
+
+    use HasFactory;
     public function run(): void
     {
         if (Trip::exists()) {

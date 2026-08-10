@@ -23,14 +23,25 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Trip extends Model
 {
-    // use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
-        'user_id', 'title', 'travel_style', 'interests', 'no_of_travelers',
-        'budget', 'no_of_days', 'start_date', 'end_date', 'status',
-        'estimated_cost', 'parent_trip_id', 'original_trip_id', 'is_fork',
-        'source_version_id',
-    ];
+            'user_id',
+            'title',
+            'travel_style',
+            'interests',
+            'no_of_travelers',
+            'budget',
+            'no_of_days',
+            'start_date',
+            'end_date',
+            'status',
+            'estimated_cost',
+            'parent_trip_id',
+            'original_trip_id',
+            'is_fork',
+            'source_version_id',
+            ];
 
     protected function casts(): array
     {

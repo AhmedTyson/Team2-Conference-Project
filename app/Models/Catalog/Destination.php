@@ -14,9 +14,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
+use App\Models\Trips\Review;
+use App\Models\Trips\Favourite;
+use App\Models\Trips\Trip;
+use App\Models\Trips\TripDestination;
+
 class Destination extends Model
 {
-    // use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
         'country_id',  'name', 'city_name', 'description',
