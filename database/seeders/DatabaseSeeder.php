@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
+use App\Models\Account\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Schema;
@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
                 'password' => bcrypt('password'),
             ]
         );
-        if (!$admin->hasRole('super_admin')) {
+        if (! $admin->hasRole('super_admin')) {
             $admin->assignRole('super_admin');
         }
 
@@ -52,7 +52,6 @@ class DatabaseSeeder extends Seeder
             RestaurantSeeder::class,
             AttractionSeeder::class,
             FlightSeeder::class,
-            NotificationSeeder::class,
             ReviewSeeder::class,
             FavouriteSeeder::class,
             TripSeeder::class,
@@ -71,6 +70,7 @@ class DatabaseSeeder extends Seeder
             UserPointSeeder::class,
             TripContributionSeeder::class,
             PlanSeeder::class,
+            SettingsSeeder::class,
         ]);
 
         // 5. Re-enable FK constraints

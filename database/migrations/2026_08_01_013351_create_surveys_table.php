@@ -22,6 +22,7 @@ return new class extends Migration
 
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
 
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -34,5 +35,3 @@ return new class extends Migration
         Schema::dropIfExists('surveys');
     }
 };
-
-

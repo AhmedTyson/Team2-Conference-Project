@@ -1,123 +1,146 @@
-# Task List: Site Settings Public Cache (WebsiteSettingsCache-SPEC)
+# Tasks: Reorganize routes/api.php + Update Postman Collection
 
-Spec: `Team2-Docs/06-Specs/WebsiteSettingsCache-SPEC.md`
-Branch: `CoLeader` | Guard: `auth:api` | Cache: `rememberForever` + `forget`-on-write
+> Supersedes the completed 5-domain migration list (committed). Tracks the routes-reorg spec.
 
----
+## Phase 0: Baselines (read-only)
 
-## Task 0: Baseline check [DONE on branch]
-- [x] `git status --short` clean on `CoLeader`
-- [x] `php artisan test` full suite green before starting
-- [x] `php artisan route:list --name=admin` shows settings GET/PUT
+### Task 1: Route Baseline Snapshot
+**Description:** Capture exact route state before edits, to diff against after reorg.
+**Acceptance criteria:**
+- [x] `php artisan route:list --json` saved to `tasks/routes/snapshot.before.json`
+- [x] Canonical extract: `method | uri | controller | sorted-middleware | name` — 165 records, 0 duplicates, 0 name conflicts
+- [x] `php artisan test` green: 105 passed (340 assertions)
+**Verification:** Snapshot shows 165 routes
+**Files:** `tasks/routes/snapshot.before.json`
+**Size:** XS
 
----
-
-## Task 1: Add constants + helpers to `Setting` model
-**Size:** S | **Dependencies:** None
-
-- [ ] Add `PUBLIC_CACHE_KEY = 'site-settings.public'` const
-- [ ] Add `SITE_KEYS` array const: `['site_name','logo_url','tagline','homepage_banner']`
-- [ ] Add `SITE_KEYS_PREFIX` array const: `['contact_','social_']`
-- [ ] Implement `isPublicKey(string $key): bool` — exact OR prefix match
-- [ ] Implement `publicData(): array` — `pluck('value','key')` filtered by `isPublicKey`, sorted by key
-- [ ] Implement `forgetPublicCache(): void` — `Cache::forget(self::PUBLIC_CACHE_KEY)`
-
-**Files:** `app/Models/Setting.php`
-**Verify:** `php -l app/Models/Setting.php`
+### Task 2: Postman Inventory
+**Description:** Enumerate collection structure for later coverage audit.
+**Acceptance criteria:**
+- [x] `tasks/postman/inventory.before.json` generated: 35 folders, request count, URL+method per request
+- [x] Note which auth endpoints exist (register/login/forgot/reset/verify/logout/refresh)
+**Verification:** Collection parses via `ConvertFrom-Json`
+**Files:** `postman_collection.json`, `tasks/postman/inventory.before.json`
+**Size:** XS
 
 ---
 
-## Task 2: Write failing tests (RED)
-**Size:** M | **Dependencies:** Task 1
+## Phase 1: api.php imports
 
-- [ ] Create `tests/Feature/SiteSettingsPublicTest.php`
-- [ ] A1a: whitelisted rows → 200, data has only whitelisted keys
-- [ ] A1b: non-whitelisted key absent from data
-- [ ] A1c: empty table → 200 `{"success":true,"data":{}}`
-- [ ] A2: two GETs → same JSON, 1 DB query (`DB::enableQueryLog`)
-- [ ] A3a: admin PUT → `Cache::has` false
-- [ ] A3b: GET after admin PUT → returns new value
-- [ ] A4a: unauthenticated PUT → 401
-- [ ] A4b: non-admin PUT → 403
-- [ ] A4c: GET without token → 200
-
-**Files:** `tests/Feature/SiteSettingsPublicTest.php`
-**Verify:** `php artisan test --filter=SiteSettingsPublicTest` → all RED
+### Task 3: Clean Import Block
+**Description:** Group `use` statements by domain (Account, Catalog, Trips, Commerce, System), alphabetical within domain; drop stray `// Public Controllers` / `// Admin Controllers` comment lines.
+**Acceptance criteria:**
+- [x] All 35 imports present, domain-grouped, alpha-sorted
+- [x] No route lines touched in this task
+**Verification:** `php -l routes/api.php`
+**Files:** `routes/api.php`
+**Size:** XS
 
 ---
 
-## Task 3: Create `SiteSettingsController` + wire route
-**Size:** S | **Dependencies:** Task 1
+## Phase 2: Route reorganization (pure moves — no URI/method/middleware/name changes)
 
-- [ ] Create `app/Http/Controllers/SiteSettingsController.php`
-  - `index()`: `Cache::rememberForever(Setting::PUBLIC_CACHE_KEY, fn() => Setting::publicData())`
-  - Return `response()->json(['success' => true, 'data' => $data])`
-- [ ] Add `use App\Http\Controllers\SiteSettingsController;` to routes/api.php
-- [ ] Add route in public v1 group: `Route::get('/site-settings', [SiteSettingsController::class, 'index'])->name('site-settings.public');`
-- [ ] NO middleware on this route
+### Task 4: Account Section
+**Description:** Group auth + profile + admin-users routes into the file's first section. Auth public: register, login, forgot-password, reset-password, email verify. Auth'd: me/user, logout, refresh, verify-notice, resend, update profile. Admin: users index/show/store/update/active/block.
+**Acceptance criteria:**
+- [x] All 13 auth + 6 admin-user routes contiguous, section commented `// ==== Account ====`
+- [x] Identity diff (Task 9) eventually zero
+**Files:** `routes/api.php`
+**Size:** S
 
-**Files:** `app/Http/Controllers/SiteSettingsController.php`, `routes/api.php`
-**Verify:**
-- `php artisan route:list --name=site-settings` → no middleware
-- A1 + A4c tests GREEN
+### Task 5: Catalog Section
+**Description:** Group public explorer (categories, destinations, hotels, flights, restaurants, attractions, site-settings) then admin CRUD (categories, countries, destinations, flights, hotels, attractions, restaurants) into a `// ==== Catalog ====` section. Also fold the top-level categories routes (public + admin) here from their current standalone position.
+**Acceptance criteria:**
+- [x] All 31 Catalog routes in one section (public first, then admin)
+**Files:** `routes/api.php`
+**Size:** M
 
----
+### Task 6: Trips Section
+**Description:** Group trips (create, store, show, attach, detach, fork), interactions (favourites, reviews), maps (destination, trip), AI (POST `/review` → `GroqService::class`, GET `/review/{id}`), admin trips + reviews into single section.
+**Acceptance criteria:**
+- [x] All 15 Trips routes contiguous; `POST /review` binding untouched
+- [x] `AiFeatureTest` green (existing coverage proves behavior preserved)
+**Files:** `routes/api.php`
+**Size:** M
 
-## Task 4: Hook cache invalidation into admin write
-**Size:** XS | **Dependencies:** Task 1, Task 3
+### Task 7: Commerce Section
+**Description:** Group plans (6 routes), checkout idetial (1), paymob webhooks (2) into `// ==== Commerce ====` section.
+**Acceptance criteria:**
+- [x] All 9 Commerce routes contiguous
+**Files:** `routes/api.php`
+**Size:** S
 
-- [ ] In `app/Http/Controllers/Admin/SettingController.php` `update()`, after `updateOrCreate` loop:
-  ```php
-  Setting::forgetPublicCache();
-  ```
-- [ ] Unconditional call (before return statement)
-
-**Files:** `app/Http/Controllers/Admin/SettingController.php`
-**Verify:**
-- `php artisan test --filter=SiteSettingsPublicTest` → ALL GREEN
-- `php artisan test --filter=ContactAndSettingsTest` → still GREEN
-
----
-
-## Checkpoint: After Tasks 1-4
-- [ ] `php artisan test` full suite green
-- [ ] `php artisan route:list --name=site-settings` — no middleware shown
-- [ ] Manual smoke: PUT as admin → `Cache::has` false → GET returns new value
-- [ ] `php artisan test --filter=SiteSettingsPublicTest` → all 9 pass
-
----
-
-## Task 5: Regression pass
-**Size:** XS | **Dependencies:** Task 4
-
-- [ ] `php artisan test` — full suite green
-- [ ] `php artisan route:list` — no stray routes
-- [ ] `composer dump-autoload -o` — zero PSR-4 warnings
+### Task 8: System Section
+**Description:** Group surveys, contacts (public store + admin inbox), weather, dashboard, notifications, admin notifications, reports, admin settings into final `// ==== System` section (goes last; survey resource + weather currently mid-file).
+**Acceptance criteria:**
+- [x] All 23 System routes contiguous, last in file
+**Files:** `routes/api.php`
+**Size:** M
 
 ---
 
-## Task 6 (OPTIONAL — go/no-go): Banner upload endpoint
-> Default: NO-GO. Requires AWS S3 creds + Storage::fake setup. Skip unless approved.
+## Phase 3: Consistency sweep
 
-- [ ] `POST /api/v1/admin/settings/banner` (auth:api + permission:manage settings)
-- [ ] `StoreSettingBannerRequest` — validates image (mimes:jpg,png,webp; max:5120)
-- [ ] `Storage::disk('s3')->putFile('settings/banners', $file)` → `updateOrCreate('homepage_banner', $url)`
-- [ ] `Setting::forgetPublicCache()` after upsert
-- [ ] Test A5: Storage::fake + valid image → 200; invalid → 422; non-admin → 403
+### Task 9: Path Normalization + Section Headers
+**Description:** Standardize leading slashes on group-relative paths missing them (`flights`, `hotels`, `restaurants`, `countries`, `analytics`); ensure `// ==== <Domain> ====` header above each section; add `// ---- Admin ----` sub-comments where useful. URI contract unchanged (Laravel tolerates optional leading `/`; verify).
+**Acceptance criteria:**
+- [x] No path without leading slash; sections headers everywhere
+- [x] No `->name()` renames added; no middleware added/removed
+**Verification:** Identity diff (Task 10) zero
+**Files:** `routes/api.php`
+**Size:** S
 
 ---
 
-## Acceptance Matrix
+## Phase 4: Gate
 
-| ID  | Scenario                          | Expected                         | Task |
-|-----|-----------------------------------|----------------------------------|------|
-| A1a | GET with whitelisted rows seeded  | 200, data = whitelisted keys only | T3   |
-| A1b | Non-whitelisted key in DB         | Absent from data                 | T3   |
-| A1c | Empty settings table              | 200 {success:true,data:{}}       | T3   |
-| A2  | Two sequential GETs               | Same JSON, 1 DB query            | T3   |
-| A3a | Admin PUT                         | Cache::has = false               | T4   |
-| A3b | GET after admin PUT               | Returns new value                | T4   |
-| A4a | Unauthenticated PUT               | 401                              | existing |
-| A4b | Non-admin PUT                     | 403                              | existing |
-| A4c | Unauthenticated GET               | 200                              | T3   |
-| B   | Full suite                        | All green                        | T5   |
+### Task 10: Identity Verification
+**Description:** Regenerate `route:list --json`, diff canonical (method+uri+controller+middleware+name) vs `snapshot.before.json`.
+**Acceptance criteria:**
+- [x] After == Before (order-insensitive; name set identical)
+- [x] `php -l routes/api.php`; full suite green
+- [x] Sampled `route('login')`, `route('plans.subscription')`, `route('paymob-v1.webhook')` resolve
+**Verification:** Diff script exit 0; `php artisan test` 105 passed
+**Files:** `tasks/routes/snapshot.after.json`
+**Size:** S
+
+> **GATE: if diff ≠ 0 → abort Postman work, fix drift first.**
+
+---
+
+## Phase 5: Postman collection
+
+### Task 11: Mirror Domain Structure
+**Description:** Restructure `postman_collection.json` folders into domain tree matching api.php: `Account` (Auth, Admin-Users), `Catalog` (Explorer, Admin-*), `Trips`, `Commerce` (Plans, Checkout, Paymob), `System` (Contacts, Weather, Dashboard, Surveys, Notifications, Reports, Admin-*). Relocate existing 35 folders under parents; **do not edit requests** (URL, body, headers, variables).
+**Acceptance criteria:**
+- [x] Collection parses (`ConvertFrom-Json`), request count unchanged
+- [x] 5 sampled requests byte-identical inside item after move
+- [x] Folder tree mirrors domain sections (print tree in diff)
+**Files:** `postman_collection.json`
+**Size:** M
+
+### Task 12: Coverage Audit
+**Description:** Programmatically compare 165 route endpoints (Task 1 snapshot) against collection request (method+URL after `{{base_url}}` substitution).
+**Acceptance criteria:**
+- [x] `tasks/postman/coverage.diff.json`: per-route matched/missing list
+- [x] Write-up lists missing endpoints (report only — additions decided with user) and surplus (no route) requests
+**Verification:** Report generated
+**Files:** `tasks/postman/coverage.diff.json`
+**Size:** S
+
+### Task 13: Validate + Commit
+**Description:** Final validation and commit.
+**Acceptance criteria:**
+- [x] Collection parses; schema `2.1.0`; `jq empty` ok
+- [x] `php artisan test` green; `git status` shows only intended files
+- [x] Two commits: (1) `refactor(routes)` prefix (2) `chore(postman)`
+**Verification:** Commits pushed? (only if user asks)
+**Size:** XS
+
+---
+
+## Checkpoints
+1. After Tasks 1-2 — human confirms baselines
+2. After Task 10 — HARD GATE zero-diff before touching Postman
+3. After Task 11 — human reviews folder tree + coverage report
+4. After Task 13 — done

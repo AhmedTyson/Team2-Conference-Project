@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Booking;
-use App\Models\Payment;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Commerce\Booking;
+use App\Models\Commerce\Payment;
 use Illuminate\Database\Seeder;
 
 class PaymentSeeder extends Seeder
@@ -23,7 +22,7 @@ class PaymentSeeder extends Seeder
                 'currency' => $booking->currency,
                 'card_type' => fake()->randomElement(['credit', 'debit']),
                 'card_subtype' => fake()->randomElement(['Visa', 'MasterCard']),
-                'card_pan' => 'XXXX-XXXX-' . fake()->numerify('####'),
+                'card_pan' => 'XXXX-XXXX-'.fake()->numerify('####'),
                 'hmac_valid' => true,
                 'raw_payload' => ['order_id' => $booking->paymob_order_id, 'source' => 'seeder'],
             ]);

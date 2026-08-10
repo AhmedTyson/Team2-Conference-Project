@@ -31,6 +31,7 @@ return new class extends Migration
             $table->decimal('estimated_cost', 10, 2)->nullable();
 
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -43,5 +44,3 @@ return new class extends Migration
         Schema::dropIfExists('trips');
     }
 };
-
-

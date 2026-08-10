@@ -2,8 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Destination;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Catalog\Destination;
 use Illuminate\Database\Seeder;
 
 class DestinationSeeder extends Seeder

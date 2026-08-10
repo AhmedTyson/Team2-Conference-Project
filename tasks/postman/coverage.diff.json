@@ -1,0 +1,675 @@
+{
+  "generated": "2026-08-09 11:44",
+  "totals": {
+    "routes": 165,
+    "requests": 114,
+    "matched": 114,
+    "missing": 51,
+    "surplus": 0
+  },
+  "matchedEndpoints": [
+    {
+      "route": "POST api/email/resend",
+      "request": "POST /api/email/resend"
+    },
+    {
+      "route": "GET|HEAD api/email/verify-notice",
+      "request": "GET /api/email/verify-notice"
+    },
+    {
+      "route": "GET|HEAD api/email/verify/{id}/{hash}",
+      "request": "GET /api/email/verify/:id/:hash"
+    },
+    {
+      "route": "POST api/forgot-password",
+      "request": "POST /api/forgot-password"
+    },
+    {
+      "route": "POST api/login",
+      "request": "POST /api/login"
+    },
+    {
+      "route": "POST api/logout",
+      "request": "POST /api/logout"
+    },
+    {
+      "route": "GET|HEAD api/me/reports",
+      "request": "GET /api/me/reports"
+    },
+    {
+      "route": "POST api/refresh",
+      "request": "POST /api/refresh"
+    },
+    {
+      "route": "POST api/register",
+      "request": "POST /api/register"
+    },
+    {
+      "route": "POST api/reset-password",
+      "request": "POST /api/reset-password"
+    },
+    {
+      "route": "POST api/review",
+      "request": "POST /api/review (generate AI)"
+    },
+    {
+      "route": "GET|HEAD api/review/{id}",
+      "request": "GET /api/review/:reaId"
+    },
+    {
+      "route": "GET|HEAD api/surveys",
+      "request": "GET /api/surveys"
+    },
+    {
+      "route": "POST api/surveys",
+      "request": "POST /api/surveys"
+    },
+    {
+      "route": "GET|HEAD api/surveys/{survey}",
+      "request": "GET /api/surveys/:survey"
+    },
+    {
+      "route": "PUT|PATCH api/surveys/{survey}",
+      "request": "PUT /api/surveys/:survey"
+    },
+    {
+      "route": "DELETE api/surveys/{survey}",
+      "request": "DELETE /api/surveys/:survey"
+    },
+    {
+      "route": "POST api/trips/{trip}/fork",
+      "request": "POST /api/trips/{trip_id}/fork"
+    },
+    {
+      "route": "GET|HEAD api/user",
+      "request": "GET /api/user (me)"
+    },
+    {
+      "route": "GET|HEAD api/v1/admin/analytics",
+      "request": "[GET] api/v1/admin/analytics"
+    },
+    {
+      "route": "GET|HEAD api/v1/admin/analytics/revenue",
+      "request": "[GET] api/v1/admin/analytics/revenue"
+    },
+    {
+      "route": "GET|HEAD api/v1/admin/attractions",
+      "request": "[GET] api/v1/admin/attractions"
+    },
+    {
+      "route": "POST api/v1/admin/attractions",
+      "request": "[POST] api/v1/admin/attractions"
+    },
+    {
+      "route": "PUT api/v1/admin/attractions/{id}",
+      "request": "[PUT] api/v1/admin/attractions/{id}"
+    },
+    {
+      "route": "DELETE api/v1/admin/attractions/{id}",
+      "request": "[DELETE] api/v1/admin/attractions/{id}"
+    },
+    {
+      "route": "GET|HEAD api/v1/admin/categories",
+      "request": "[GET] api/v1/admin/categories"
+    },
+    {
+      "route": "POST api/v1/admin/categories",
+      "request": "[POST] api/v1/admin/categories"
+    },
+    {
+      "route": "PUT api/v1/admin/categories/{category}",
+      "request": "[PUT] api/v1/admin/categories/{category}"
+    },
+    {
+      "route": "DELETE api/v1/admin/categories/{category}",
+      "request": "[DELETE] api/v1/admin/categories/{category}"
+    },
+    {
+      "route": "GET|HEAD api/v1/admin/contacts",
+      "request": "[GET] api/v1/admin/contacts"
+    },
+    {
+      "route": "PATCH api/v1/admin/contacts/{id}/read",
+      "request": "[PATCH] api/v1/admin/contacts/{id}/read"
+    },
+    {
+      "route": "PATCH api/v1/admin/contacts/{id}/resolve",
+      "request": "[PATCH] api/v1/admin/contacts/{id}/resolve"
+    },
+    {
+      "route": "GET|HEAD api/v1/admin/countries",
+      "request": "[GET] api/v1/admin/countries"
+    },
+    {
+      "route": "POST api/v1/admin/countries",
+      "request": "[POST] api/v1/admin/countries"
+    },
+    {
+      "route": "PUT api/v1/admin/countries/{id}",
+      "request": "[PUT] api/v1/admin/countries/{id}"
+    },
+    {
+      "route": "DELETE api/v1/admin/countries/{id}",
+      "request": "[DELETE] api/v1/admin/countries/{id}"
+    },
+    {
+      "route": "GET|HEAD api/v1/admin/destinations",
+      "request": "[GET] api/v1/admin/destinations"
+    },
+    {
+      "route": "POST api/v1/admin/destinations",
+      "request": "[POST] api/v1/admin/destinations"
+    },
+    {
+      "route": "PUT api/v1/admin/destinations/{id}",
+      "request": "[PUT] api/v1/admin/destinations/{id}"
+    },
+    {
+      "route": "DELETE api/v1/admin/destinations/{id}",
+      "request": "[DELETE] api/v1/admin/destinations/{id}"
+    },
+    {
+      "route": "GET|HEAD api/v1/admin/flights",
+      "request": "[GET] api/v1/admin/flights"
+    },
+    {
+      "route": "POST api/v1/admin/flights",
+      "request": "[POST] api/v1/admin/flights"
+    },
+    {
+      "route": "PUT api/v1/admin/flights/{id}",
+      "request": "[PUT] api/v1/admin/flights/{id}"
+    },
+    {
+      "route": "DELETE api/v1/admin/flights/{id}",
+      "request": "[DELETE] api/v1/admin/flights/{id}"
+    },
+    {
+      "route": "GET|HEAD api/v1/admin/hotels",
+      "request": "[GET] api/v1/admin/hotels"
+    },
+    {
+      "route": "POST api/v1/admin/hotels",
+      "request": "[POST] api/v1/admin/hotels"
+    },
+    {
+      "route": "PUT api/v1/admin/hotels/{id}",
+      "request": "[PUT] api/v1/admin/hotels/{id}"
+    },
+    {
+      "route": "DELETE api/v1/admin/hotels/{id}",
+      "request": "[DELETE] api/v1/admin/hotels/{id}"
+    },
+    {
+      "route": "GET|HEAD api/v1/admin/notifications",
+      "request": "[GET] api/v1/admin/notifications"
+    },
+    {
+      "route": "GET|HEAD api/v1/admin/reports",
+      "request": "[GET] api/v1/admin/reports"
+    },
+    {
+      "route": "POST api/v1/admin/reports/generate",
+      "request": "[POST] api/v1/admin/reports/generate"
+    },
+    {
+      "route": "GET|HEAD api/v1/admin/reports/{id}/download",
+      "request": "[GET] api/v1/admin/reports/{id}/download"
+    },
+    {
+      "route": "GET|HEAD api/v1/admin/restaurants",
+      "request": "[GET] api/v1/admin/restaurants"
+    },
+    {
+      "route": "POST api/v1/admin/restaurants",
+      "request": "[POST] api/v1/admin/restaurants"
+    },
+    {
+      "route": "PUT api/v1/admin/restaurants/{id}",
+      "request": "[PUT] api/v1/admin/restaurants/{id}"
+    },
+    {
+      "route": "DELETE api/v1/admin/restaurants/{id}",
+      "request": "[DELETE] api/v1/admin/restaurants/{id}"
+    },
+    {
+      "route": "GET|HEAD api/v1/admin/reviews",
+      "request": "[GET] api/v1/admin/reviews"
+    },
+    {
+      "route": "DELETE api/v1/admin/reviews/{id}",
+      "request": "[DELETE] api/v1/admin/reviews/{id}"
+    },
+    {
+      "route": "PATCH api/v1/admin/reviews/{id}/approve",
+      "request": "[PATCH] api/v1/admin/reviews/{id}/approve"
+    },
+    {
+      "route": "PATCH api/v1/admin/reviews/{id}/reject",
+      "request": "[PATCH] api/v1/admin/reviews/{id}/reject"
+    },
+    {
+      "route": "POST api/v1/admin/set-plans",
+      "request": "[POST] api/v1/admin/set-plans"
+    },
+    {
+      "route": "GET|HEAD api/v1/admin/settings",
+      "request": "[GET] api/v1/admin/settings"
+    },
+    {
+      "route": "PUT api/v1/admin/settings",
+      "request": "[PUT] api/v1/admin/settings"
+    },
+    {
+      "route": "PATCH api/v1/admin/settings/{key}",
+      "request": "[PATCH] api/v1/admin/settings/{key}"
+    },
+    {
+      "route": "GET|HEAD api/v1/admin/trips",
+      "request": "[GET] api/v1/admin/trips"
+    },
+    {
+      "route": "POST api/v1/admin/trips",
+      "request": "[POST] api/v1/admin/trips"
+    },
+    {
+      "route": "PUT api/v1/admin/trips/{id}",
+      "request": "[PUT] api/v1/admin/trips/{id}"
+    },
+    {
+      "route": "DELETE api/v1/admin/trips/{id}",
+      "request": "[DELETE] api/v1/admin/trips/{id}"
+    },
+    {
+      "route": "GET|HEAD api/v1/admin/users",
+      "request": "[GET] api/v1/admin/users"
+    },
+    {
+      "route": "POST api/v1/admin/users",
+      "request": "[POST] api/v1/admin/users"
+    },
+    {
+      "route": "GET|HEAD api/v1/admin/users/{user}",
+      "request": "[GET] api/v1/admin/users/{user}"
+    },
+    {
+      "route": "PUT api/v1/admin/users/{user}",
+      "request": "[PUT] api/v1/admin/users/{user}"
+    },
+    {
+      "route": "PATCH api/v1/admin/users/{user}/active",
+      "request": "[PATCH] api/v1/admin/users/{user}/active"
+    },
+    {
+      "route": "PATCH api/v1/admin/users/{user}/block",
+      "request": "[PATCH] api/v1/admin/users/{user}/block"
+    },
+    {
+      "route": "GET|HEAD api/v1/attractions",
+      "request": "[GET] api/v1/attractions"
+    },
+    {
+      "route": "GET|HEAD api/v1/attractions/{id}",
+      "request": "[GET] api/v1/attractions/{id}"
+    },
+    {
+      "route": "GET|HEAD api/v1/categories",
+      "request": "[GET] api/v1/categories"
+    },
+    {
+      "route": "GET|HEAD api/v1/categories/{category}",
+      "request": "[GET] api/v1/categories/{category}"
+    },
+    {
+      "route": "POST api/v1/checkout/initiate",
+      "request": "[POST] api/v1/checkout/initiate"
+    },
+    {
+      "route": "POST api/v1/contacts",
+      "request": "[POST] api/v1/contacts"
+    },
+    {
+      "route": "GET|HEAD api/v1/dashboard",
+      "request": "[GET] api/v1/dashboard"
+    },
+    {
+      "route": "GET|HEAD api/v1/dashboard/favourites",
+      "request": "[GET] api/v1/dashboard/favourites"
+    },
+    {
+      "route": "GET|HEAD api/v1/dashboard/trips",
+      "request": "[GET] api/v1/dashboard/trips"
+    },
+    {
+      "route": "GET|HEAD api/v1/destinations",
+      "request": "[GET] api/v1/destinations"
+    },
+    {
+      "route": "GET|HEAD api/v1/destinations/{id}",
+      "request": "[GET] api/v1/destinations/{id}"
+    },
+    {
+      "route": "POST api/v1/favourites/{type}/{id}",
+      "request": "[POST] api/v1/favourites/{type}/{id}"
+    },
+    {
+      "route": "GET|HEAD api/v1/flights",
+      "request": "[GET] api/v1/flights"
+    },
+    {
+      "route": "GET|HEAD api/v1/flights/{id}",
+      "request": "[GET] api/v1/flights/{id}"
+    },
+    {
+      "route": "GET|HEAD api/v1/hotels",
+      "request": "[GET] api/v1/hotels"
+    },
+    {
+      "route": "GET|HEAD api/v1/hotels/{id}",
+      "request": "[GET] api/v1/hotels/{id}"
+    },
+    {
+      "route": "GET|HEAD api/v1/maps/destination/{destination}",
+      "request": "[GET] api/v1/maps/destination/{destination}"
+    },
+    {
+      "route": "GET|HEAD api/v1/maps/trip/{trip}",
+      "request": "[GET] api/v1/maps/trip/{trip}"
+    },
+    {
+      "route": "POST api/v1/me/subscribe",
+      "request": "[POST] api/v1/me/subscribe"
+    },
+    {
+      "route": "GET|HEAD api/v1/me/subscription",
+      "request": "[GET] api/v1/me/subscription"
+    },
+    {
+      "route": "POST api/v1/me/subscription/cancel",
+      "request": "[POST] api/v1/me/subscription/cancel"
+    },
+    {
+      "route": "POST api/v1/me/upgrade",
+      "request": "[POST] api/v1/me/upgrade"
+    },
+    {
+      "route": "GET|HEAD api/v1/notifications",
+      "request": "[GET] api/v1/notifications"
+    },
+    {
+      "route": "PATCH api/v1/notifications/read-all",
+      "request": "[PATCH] api/v1/notifications/read-all"
+    },
+    {
+      "route": "PATCH api/v1/notifications/{notification}/read",
+      "request": "[PATCH] api/v1/notifications/{notification}/read"
+    },
+    {
+      "route": "GET|HEAD api/v1/paymob/callback",
+      "request": "[GET] api/v1/paymob/callback"
+    },
+    {
+      "route": "POST api/v1/paymob/webhook",
+      "request": "[POST] api/v1/paymob/webhook"
+    },
+    {
+      "route": "GET|HEAD api/v1/plans",
+      "request": "[GET] api/v1/plans"
+    },
+    {
+      "route": "PATCH api/v1/profile",
+      "request": "[PATCH] api/v1/profile"
+    },
+    {
+      "route": "GET|HEAD api/v1/restaurants",
+      "request": "[GET] api/v1/restaurants"
+    },
+    {
+      "route": "GET|HEAD api/v1/restaurants/{id}",
+      "request": "[GET] api/v1/restaurants/{id}"
+    },
+    {
+      "route": "DELETE api/v1/reviews/{id}",
+      "request": "[DELETE] api/v1/reviews/{id}"
+    },
+    {
+      "route": "POST api/v1/reviews/{type}/{id}",
+      "request": "[POST] api/v1/reviews/{type}/{id}"
+    },
+    {
+      "route": "GET|HEAD api/v1/site-settings",
+      "request": "[GET] api/v1/site-settings"
+    },
+    {
+      "route": "POST api/v1/trips",
+      "request": "[POST] api/v1/trips"
+    },
+    {
+      "route": "GET|HEAD api/v1/trips/create",
+      "request": "[GET] api/v1/trips/create"
+    },
+    {
+      "route": "GET|HEAD api/v1/trips/{trip}",
+      "request": "[GET] api/v1/trips/{trip}"
+    },
+    {
+      "route": "POST api/v1/trips/{trip}/attach/{type}",
+      "request": "[POST] api/v1/trips/{trip}/attach/{type}"
+    },
+    {
+      "route": "DELETE api/v1/trips/{trip}/detach/{id}",
+      "request": "[DELETE] api/v1/trips/{trip}/detach/{id}"
+    },
+    {
+      "route": "GET|HEAD api/weather",
+      "request": "GET /api/weather"
+    }
+  ],
+  "missingEndpoints": [
+    {
+      "route": "GET|HEAD /",
+      "controller": "Closure"
+    },
+    {
+      "route": "GET|HEAD docs/api",
+      "controller": "Closure"
+    },
+    {
+      "route": "GET|HEAD docs/api.json",
+      "controller": "Closure"
+    },
+    {
+      "route": "GET|HEAD mail-preview/{type}",
+      "controller": "Closure"
+    },
+    {
+      "route": "GET|HEAD storage/{path}",
+      "controller": "Closure"
+    },
+    {
+      "route": "PUT storage/{path}",
+      "controller": "Closure"
+    },
+    {
+      "route": "POST telescope/telescope-api/batches",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\QueueBatchesController@index"
+    },
+    {
+      "route": "GET|HEAD telescope/telescope-api/batches/{telescopeEntryId}",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\QueueBatchesController@show"
+    },
+    {
+      "route": "POST telescope/telescope-api/cache",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\CacheController@index"
+    },
+    {
+      "route": "GET|HEAD telescope/telescope-api/cache/{telescopeEntryId}",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\CacheController@show"
+    },
+    {
+      "route": "POST telescope/telescope-api/client-requests",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\ClientRequestController@index"
+    },
+    {
+      "route": "GET|HEAD telescope/telescope-api/client-requests/{telescopeEntryId}",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\ClientRequestController@show"
+    },
+    {
+      "route": "POST telescope/telescope-api/commands",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\CommandsController@index"
+    },
+    {
+      "route": "GET|HEAD telescope/telescope-api/commands/{telescopeEntryId}",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\CommandsController@show"
+    },
+    {
+      "route": "POST telescope/telescope-api/dumps",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\DumpController@index"
+    },
+    {
+      "route": "DELETE telescope/telescope-api/entries",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\EntriesController@destroy"
+    },
+    {
+      "route": "POST telescope/telescope-api/events",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\EventsController@index"
+    },
+    {
+      "route": "GET|HEAD telescope/telescope-api/events/{telescopeEntryId}",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\EventsController@show"
+    },
+    {
+      "route": "POST telescope/telescope-api/exceptions",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\ExceptionController@index"
+    },
+    {
+      "route": "GET|HEAD telescope/telescope-api/exceptions/{telescopeEntryId}",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\ExceptionController@show"
+    },
+    {
+      "route": "PUT telescope/telescope-api/exceptions/{telescopeEntryId}",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\ExceptionController@update"
+    },
+    {
+      "route": "POST telescope/telescope-api/gates",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\GatesController@index"
+    },
+    {
+      "route": "GET|HEAD telescope/telescope-api/gates/{telescopeEntryId}",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\GatesController@show"
+    },
+    {
+      "route": "POST telescope/telescope-api/jobs",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\QueueController@index"
+    },
+    {
+      "route": "GET|HEAD telescope/telescope-api/jobs/{telescopeEntryId}",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\QueueController@show"
+    },
+    {
+      "route": "POST telescope/telescope-api/logs",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\LogController@index"
+    },
+    {
+      "route": "GET|HEAD telescope/telescope-api/logs/{telescopeEntryId}",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\LogController@show"
+    },
+    {
+      "route": "POST telescope/telescope-api/mail",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\MailController@index"
+    },
+    {
+      "route": "GET|HEAD telescope/telescope-api/mail/{telescopeEntryId}",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\MailController@show"
+    },
+    {
+      "route": "GET|HEAD telescope/telescope-api/mail/{telescopeEntryId}/download",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\MailEmlController@show"
+    },
+    {
+      "route": "GET|HEAD telescope/telescope-api/mail/{telescopeEntryId}/preview",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\MailHtmlController@show"
+    },
+    {
+      "route": "POST telescope/telescope-api/models",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\ModelsController@index"
+    },
+    {
+      "route": "GET|HEAD telescope/telescope-api/models/{telescopeEntryId}",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\ModelsController@show"
+    },
+    {
+      "route": "GET|HEAD telescope/telescope-api/monitored-tags",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\MonitoredTagController@index"
+    },
+    {
+      "route": "POST telescope/telescope-api/monitored-tags",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\MonitoredTagController@store"
+    },
+    {
+      "route": "POST telescope/telescope-api/monitored-tags/delete",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\MonitoredTagController@destroy"
+    },
+    {
+      "route": "POST telescope/telescope-api/notifications",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\NotificationsController@index"
+    },
+    {
+      "route": "GET|HEAD telescope/telescope-api/notifications/{telescopeEntryId}",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\NotificationsController@show"
+    },
+    {
+      "route": "POST telescope/telescope-api/queries",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\QueriesController@index"
+    },
+    {
+      "route": "GET|HEAD telescope/telescope-api/queries/{telescopeEntryId}",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\QueriesController@show"
+    },
+    {
+      "route": "POST telescope/telescope-api/redis",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\RedisController@index"
+    },
+    {
+      "route": "GET|HEAD telescope/telescope-api/redis/{telescopeEntryId}",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\RedisController@show"
+    },
+    {
+      "route": "POST telescope/telescope-api/requests",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\RequestsController@index"
+    },
+    {
+      "route": "GET|HEAD telescope/telescope-api/requests/{telescopeEntryId}",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\RequestsController@show"
+    },
+    {
+      "route": "POST telescope/telescope-api/schedule",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\ScheduleController@index"
+    },
+    {
+      "route": "GET|HEAD telescope/telescope-api/schedule/{telescopeEntryId}",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\ScheduleController@show"
+    },
+    {
+      "route": "POST telescope/telescope-api/toggle-recording",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\RecordingController@toggle"
+    },
+    {
+      "route": "POST telescope/telescope-api/views",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\ViewsController@index"
+    },
+    {
+      "route": "GET|HEAD telescope/telescope-api/views/{telescopeEntryId}",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\ViewsController@show"
+    },
+    {
+      "route": "GET|HEAD telescope/{view?}",
+      "controller": "Laravel\\Telescope\\Http\\Controllers\\HomeController@index"
+    },
+    {
+      "route": "GET|HEAD up",
+      "controller": "Closure"
+    }
+  ],
+  "surplusRequests": []
+}

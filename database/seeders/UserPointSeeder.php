@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use App\Models\UserPoint;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Account\User;
+use App\Models\Account\UserPoint;
 use Illuminate\Database\Seeder;
 
 class UserPointSeeder extends Seeder
@@ -15,11 +14,11 @@ class UserPointSeeder extends Seeder
     public function run(): void
     {
         $actions = ['review_approved', 'booking_paid', 'referral'];
- 
+
         User::inRandomOrder()->take(10)->get()->each(function (User $user) use ($actions) {
             foreach (range(1, rand(1, 4)) as $i) {
                 $action = $actions[array_rand($actions)];
- 
+
                 UserPoint::create([
                     'user_id' => $user->id,
                     'action' => $action,

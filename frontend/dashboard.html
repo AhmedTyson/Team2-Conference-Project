@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard · Itinari</title>
+  <link rel="stylesheet" href="assets/css/dashboard.css" />
+</head>
+<body data-page="dashboard">
+  <header class="topbar">
+    <div class="topbar-inner">
+      <span class="brand">Itinari</span>
+      <div class="topbar-right">
+        <span id="user-chip" class="chip" hidden>
+          <span id="chip-name"></span>
+          <span id="chip-role" class="chip-role"></span>
+        </span>
+        <button type="button" id="logout-btn" class="btn-ghost">Log out</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="greet">
+      <h1 id="greet">Loading your dashboard…</h1>
+      <p class="sub" id="greet-sub"></p>
+    </section>
+
+    <section class="stats" aria-label="Trip statistics">
+      <div class="stat-card skeleton" id="stat-total">
+        <span class="stat-label">Total trips</span>
+        <span class="stat-value">–</span>
+      </div>
+      <div class="stat-card" id="stat-pending">
+        <span class="stat-label">Pending</span>
+        <span class="stat-value">–</span>
+      </div>
+      <div class="stat-card" id="stat-planning">
+        <span class="stat-label">Planning</span>
+        <span class="stat-value">–</span>
+      </div>
+      <div class="stat-card" id="stat-booked">
+        <span class="stat-label">Booked</span>
+        <span class="stat-value">–</span>
+      </div>
+      <div class="stat-card" id="stat-completed">
+        <span class="stat-label">Completed</span>
+        <span class="stat-value">–</span>
+      </div>
+      <div class="stat-card" id="stat-cancelled">
+        <span class="stat-label">Cancelled</span>
+        <span class="stat-value">–</span>
+      </div>
+      <div class="stat-card" id="stat-favs">
+        <span class="stat-label">Favourites</span>
+        <span class="stat-value">–</span>
+      </div>
+    </section>
+
+    <section class="columns">
+      <div class="panel">
+        <h2>My trips</h2>
+        <div id="trips-list" class="feed" aria-live="polite">
+          <div class="skeleton"></div>
+          <div class="skeleton"></div>
+          <div class="skeleton"></div>
+        </div>
+      </div>
+      <div class="panel">
+        <h2>Favourite places</h2>
+        <div id="favs-list" class="feed" aria-live="polite">
+          <div class="skeleton"></div>
+          <div class="skeleton"></div>
+          <div class="skeleton"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-banner" role="status">
+    <span id="site-banner-msg"></span><span id="site-banner-drain" aria-hidden="true"></span>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="assets/js/config.js?v=1786177601"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/animations.js"></script>
+  <script src="assets/js/session.js"></script>
+  <script src="assets/js/dashboard.js"></script>
+</body>
+</html>

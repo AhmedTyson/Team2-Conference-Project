@@ -4,10 +4,10 @@
  * Configuration settings for the GROQ API integration.
  *
  * @return array
- *   An array of GROQ API configuration settings.
- *   - api_key: The API key to authenticate with the GROQ API.
- *   - api_base: The base URL for the GROQ API endpoint.
- *   - options: Additional options to pass to the GROQ API client.
+ *               An array of GROQ API configuration settings.
+ *               - api_key: The API key to authenticate with the GROQ API.
+ *               - api_base: The base URL for the GROQ API endpoint.
+ *               - options: Additional options to pass to the GROQ API client.
  */
 return [
     /*
@@ -26,7 +26,7 @@ return [
     | Modelo Padrão
     |--------------------------------------------------------------------------
     |
-    | Aqui você pode especificar o modelo padrão a ser usado nas solicitações 
+    | Aqui você pode especificar o modelo padrão a ser usado nas solicitações
     | da API Groq. Esse modelo será usado se nenhum for especificado na requisição.
     |
     */
@@ -104,14 +104,14 @@ return [
             'application/jsonl',
             'application/x-ndjson',
             'application/x-ndjason',
-            'text/jsonl'
+            'text/jsonl',
         ],
         'validate_content' => env('GROQ_BATCH_VALIDATE_CONTENT', true), // Validar conteúdo do arquivo
         'endpoints' => [ // Endpoints suportados para processamento em lote
             '/v1/chat/completions',
             '/v1/audio/transcriptions',
-            '/v1/audio/translations'
-        ]
+            '/v1/audio/translations',
+        ],
     ],
 
     /*

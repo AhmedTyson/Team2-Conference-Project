@@ -1,8 +1,9 @@
 <?php
+
 namespace App\Exceptions;
 
-use Illuminate\Auth\AuthenticationException;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
@@ -22,7 +23,7 @@ class ApiExceptionHandler
      */
     public static array $handlers = [
         AuthenticationException::class => 'handleAuthenticationException',
-        AccessDeniedHttpException::class => 'handleAuthenticationException',
+        AccessDeniedHttpException::class => 'handleAuthorizationException',
         AuthorizationException::class => 'handleAuthorizationException',
         ValidationException::class => 'handleValidationException',
         ModelNotFoundException::class => 'handleNotFoundException',
@@ -33,10 +34,38 @@ class ApiExceptionHandler
     ];
 
     /**
+     * Main entry point: routes any Throwable to its dedicated handler.
+     * Registered as the single renderable for the whole API.
+     */
+    public function render(Throwable $e, Request $request): JsonResponse
+    {
+        foreach (self::$handlers as $exceptionClass => $handlerMethod) {
+            if ($e instanceof $exceptionClass) {
+                return $this->{$handlerMethod}($e, $request);
+            }
+        }
+
+        $this->logException($e, 'Unhandled exception');
+
+        $status = $e instanceof HttpException
+            ? $e->getStatusCode()
+            : 500;
+
+        return response()->json([
+            'error' => [
+                'type' => $this->getExceptionType($e),
+                'status' => $status,
+                'message' => 'An unexpected error occurred.',
+                'timestamp' => now()->toISOString(),
+            ],
+        ], $status);
+    }
+
+    /**
      * Handle authentication exceptions
      */
     public function handleAuthenticationException(
-        AuthenticationException|AccessDeniedHttpException $e, 
+        AuthenticationException|AccessDeniedHttpException $e,
         Request $request
     ): JsonResponse {
         $this->logException($e, 'Authentication failed');
@@ -47,7 +76,7 @@ class ApiExceptionHandler
                 'status' => 401,
                 'message' => 'Authentication required. Please provide valid credentials.',
                 'timestamp' => now()->toISOString(),
-            ]
+            ],
         ], 401);
     }
 
@@ -55,7 +84,7 @@ class ApiExceptionHandler
      * Handle authorization exceptions
      */
     public function handleAuthorizationException(
-        AuthorizationException $e, 
+        AuthorizationException $e,
         Request $request
     ): JsonResponse {
         $this->logException($e, 'Authorization failed');
@@ -66,7 +95,7 @@ class ApiExceptionHandler
                 'status' => 403,
                 'message' => 'You do not have permission to perform this action.',
                 'timestamp' => now()->toISOString(),
-            ]
+            ],
         ], 403);
     }
 
@@ -74,11 +103,11 @@ class ApiExceptionHandler
      * Handle validation exceptions
      */
     public function handleValidationException(
-        ValidationException $e, 
+        ValidationException $e,
         Request $request
     ): JsonResponse {
         $errors = [];
-        
+
         foreach ($e->errors() as $field => $messages) {
             foreach ($messages as $message) {
                 $errors[] = [
@@ -97,7 +126,7 @@ class ApiExceptionHandler
                 'message' => 'The provided data is invalid.',
                 'timestamp' => now()->toISOString(),
                 'validation_errors' => $errors,
-            ]
+            ],
         ], 422);
     }
 
@@ -105,12 +134,12 @@ class ApiExceptionHandler
      * Handle not found exceptions
      */
     public function handleNotFoundException(
-        ModelNotFoundException|NotFoundHttpException $e, 
+        ModelNotFoundException|NotFoundHttpException $e,
         Request $request
     ): JsonResponse {
         $this->logException($e, 'Resource not found');
 
-        $message = $e instanceof ModelNotFoundException 
+        $message = $e instanceof ModelNotFoundException
             ? 'The requested resource was not found.'
             : "The requested endpoint '{$request->getRequestUri()}' was not found.";
 
@@ -120,7 +149,7 @@ class ApiExceptionHandler
                 'status' => 404,
                 'message' => $message,
                 'timestamp' => now()->toISOString(),
-            ]
+            ],
         ], 404);
     }
 
@@ -128,7 +157,7 @@ class ApiExceptionHandler
      * Handle method not allowed exceptions
      */
     public function handleMethodNotAllowedException(
-        MethodNotAllowedHttpException $e, 
+        MethodNotAllowedHttpException $e,
         Request $request
     ): JsonResponse {
         $this->logException($e, 'Method not allowed');
@@ -140,7 +169,7 @@ class ApiExceptionHandler
                 'message' => "The {$request->method()} method is not allowed for this endpoint.",
                 'timestamp' => now()->toISOString(),
                 'allowed_methods' => $e->getHeaders()['Allow'] ?? 'Unknown',
-            ]
+            ],
         ], 405);
     }
 
@@ -157,7 +186,7 @@ class ApiExceptionHandler
                 'status' => $e->getStatusCode(),
                 'message' => $e->getMessage() ?: 'An HTTP error occurred.',
                 'timestamp' => now()->toISOString(),
-            ]
+            ],
         ], $e->getStatusCode());
     }
 
@@ -170,7 +199,7 @@ class ApiExceptionHandler
 
         // Handle specific database constraint violations
         $errorCode = $e->errorInfo[1] ?? null;
-        
+
         switch ($errorCode) {
             case 1451: // Foreign key constraint violation
                 return response()->json([
@@ -179,9 +208,9 @@ class ApiExceptionHandler
                         'status' => 409,
                         'message' => 'Cannot delete this resource because it is referenced by other records.',
                         'timestamp' => now()->toISOString(),
-                    ]
+                    ],
                 ], 409);
-                
+
             case 1062: // Duplicate entry
                 return response()->json([
                     'error' => [
@@ -189,9 +218,9 @@ class ApiExceptionHandler
                         'status' => 409,
                         'message' => 'A record with this information already exists.',
                         'timestamp' => now()->toISOString(),
-                    ]
+                    ],
                 ], 409);
-                
+
             default:
                 return response()->json([
                     'error' => [
@@ -199,7 +228,7 @@ class ApiExceptionHandler
                         'status' => 500,
                         'message' => 'A database error occurred. Please try again later.',
                         'timestamp' => now()->toISOString(),
-                    ]
+                    ],
                 ], 500);
         }
     }
@@ -210,6 +239,7 @@ class ApiExceptionHandler
     private function getExceptionType(Throwable $e): string
     {
         $className = basename(str_replace('\\', '/', get_class($e)));
+
         return $className;
     }
 

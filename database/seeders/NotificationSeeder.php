@@ -1,9 +1,11 @@
 <?php
+
 namespace Database\Seeders;
 
+use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Faker\Factory as Faker;
+use Illuminate\Support\Str;
 
 class NotificationSeeder extends Seeder
 {
@@ -11,11 +13,12 @@ class NotificationSeeder extends Seeder
     {
         $faker = Faker::create();
         $notifications = [];
-        
+
         // Assume users 1 to 10 exist
         for ($userId = 1; $userId <= 10; $userId++) {
             for ($i = 0; $i < 3; $i++) {
                 $notifications[] = [
+                    'id' => Str::uuid()->toString(),
                     'user_id' => $userId,
                     'title' => $faker->sentence(3),
                     'type' => $faker->randomElement(['system', 'alert', 'itinerary_ready']),
@@ -27,7 +30,7 @@ class NotificationSeeder extends Seeder
                 ];
             }
         }
-        
+
         DB::table('notifications')->insert($notifications);
     }
 }

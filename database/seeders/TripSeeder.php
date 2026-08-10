@@ -2,16 +2,15 @@
 
 namespace Database\Seeders;
 
-use App\Models\AiRecommendation;
-use App\Models\Attraction;
-use App\Models\Destination;
-use App\Models\Flight;
-use App\Models\Hotel;
-use App\Models\ItineraryItem;
-use App\Models\Restaurant;
-use App\Models\Trip;
-use App\Models\TripItem;
-use App\Models\User;
+use App\Models\Account\User;
+use App\Models\Catalog\Attraction;
+use App\Models\Catalog\Destination;
+use App\Models\Catalog\Flight;
+use App\Models\Catalog\Hotel;
+use App\Models\Catalog\Restaurant;
+use App\Models\Trips\ItineraryItem;
+use App\Models\Trips\Trip;
+use App\Models\Trips\AiRecommendation;
 use Illuminate\Database\Seeder;
 
 class TripSeeder extends Seeder
@@ -51,7 +50,7 @@ class TripSeeder extends Seeder
                     'day_number' => $index + 1,
                     'visit_order' => $index + 1,
                     'estimated_date' => $trip->start_date->addDays($index),
-                    'notes' => 'Day ' . ($index + 1) . ' stop',
+                    'notes' => 'Day '.($index + 1).' stop',
                 ]);
             });
 
@@ -130,7 +129,7 @@ class TripSeeder extends Seeder
                 'day_number' => 1,
                 'item_order' => $order++,
                 'type' => 'flight',
-                'title' => $flight->airline . ' ' . $flight->flight_number,
+                'title' => $flight->airline.' '.$flight->flight_number,
                 'estimated_cost' => $flight->price ?? 0,
             ]);
         }

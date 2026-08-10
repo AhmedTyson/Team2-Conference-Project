@@ -14,9 +14,8 @@ return new class extends Migration
         Schema::create('ai_recommendations', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('trip_id')->constrained()->onDelete('cascade');
+            $table->foreignId('trip_id')->constrained()->cascadeOnDelete();
 
-                
             $table->string('prompt_text');
             $table->string('response_text');
             $table->string('generated_at');
@@ -34,4 +33,3 @@ return new class extends Migration
         Schema::dropIfExists('ai_recommendations');
     }
 };
-

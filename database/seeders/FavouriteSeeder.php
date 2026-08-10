@@ -1,25 +1,26 @@
 <?php
+
 namespace Database\Seeders;
 
+use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Faker\Factory as Faker;
 
 class FavouriteSeeder extends Seeder
 {
     public function run()
     {
         $faker = Faker::create();
-        
+
         $morphTargets = [
-            'App\Models\Destination', 
-            'App\Models\Hotel', 
-            'App\Models\Restaurant', 
-            'App\Models\Attraction'
+            'App\Models\Catalog\Destination',
+            'App\Models\Catalog\Hotel',
+            'App\Models\Catalog\Restaurant',
+            'App\Models\Catalog\Attraction',
         ];
-        
+
         $favourites = [];
-        
+
         for ($i = 0; $i < 30; $i++) {
             $favourites[] = [
                 'user_id' => rand(1, 10),
@@ -30,7 +31,7 @@ class FavouriteSeeder extends Seeder
                 'updated_at' => now(),
             ];
         }
-        
+
         DB::table('favourites')->insert($favourites);
     }
 }

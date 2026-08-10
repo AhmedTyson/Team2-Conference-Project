@@ -1,0 +1,606 @@
+{
+  "folders": [
+    "Admin (Analytics)",
+    "Admin (Attractions)",
+    "Admin (Categories)",
+    "Admin (Contacts)",
+    "Admin (Countries)",
+    "Admin (Destinations)",
+    "Admin (Flights)",
+    "Admin (Hotels)",
+    "Admin (Notifications)",
+    "Admin (Reports)",
+    "Admin (Restaurants)",
+    "Admin (Reviews)",
+    "Admin (Set-plans)",
+    "Admin (Settings)",
+    "Admin (Trips)",
+    "Admin (Users)",
+    "Attractions",
+    "Categories",
+    "Checkout",
+    "Contacts",
+    "Dashboard",
+    "Destinations",
+    "Favourites",
+    "Flights",
+    "Hotels",
+    "Maps",
+    "Notifications",
+    "Paymob",
+    "Plans",
+    "Profile",
+    "Restaurants",
+    "Reviews",
+    "Site-settings",
+    "Trips",
+    "User Profile"
+  ],
+  "requests": [
+    {
+      "path": "/Admin (Analytics)",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/admin/analytics/revenue"
+    },
+    {
+      "path": "/Admin (Analytics)",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/admin/analytics"
+    },
+    {
+      "path": "/Admin (Attractions)",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/admin/attractions"
+    },
+    {
+      "path": "/Admin (Attractions)",
+      "folder": "",
+      "method": "POST",
+      "url": "{{base_url}}/api/v1/admin/attractions"
+    },
+    {
+      "path": "/Admin (Attractions)",
+      "folder": "",
+      "method": "PUT",
+      "url": "{{base_url}}/api/v1/admin/attractions/:id"
+    },
+    {
+      "path": "/Admin (Attractions)",
+      "folder": "",
+      "method": "DELETE",
+      "url": "{{base_url}}/api/v1/admin/attractions/:id"
+    },
+    {
+      "path": "/Admin (Categories)",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/admin/categories"
+    },
+    {
+      "path": "/Admin (Categories)",
+      "folder": "",
+      "method": "POST",
+      "url": "{{base_url}}/api/v1/admin/categories"
+    },
+    {
+      "path": "/Admin (Categories)",
+      "folder": "",
+      "method": "PUT",
+      "url": "{{base_url}}/api/v1/admin/categories/:category"
+    },
+    {
+      "path": "/Admin (Categories)",
+      "folder": "",
+      "method": "DELETE",
+      "url": "{{base_url}}/api/v1/admin/categories/:category"
+    },
+    {
+      "path": "/Admin (Contacts)",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/admin/contacts"
+    },
+    {
+      "path": "/Admin (Contacts)",
+      "folder": "",
+      "method": "PATCH",
+      "url": "{{base_url}}/api/v1/admin/contacts/:id/read"
+    },
+    {
+      "path": "/Admin (Contacts)",
+      "folder": "",
+      "method": "PATCH",
+      "url": "{{base_url}}/api/v1/admin/contacts/:id/resolve"
+    },
+    {
+      "path": "/Admin (Countries)",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/admin/countries"
+    },
+    {
+      "path": "/Admin (Countries)",
+      "folder": "",
+      "method": "POST",
+      "url": "{{base_url}}/api/v1/admin/countries"
+    },
+    {
+      "path": "/Admin (Countries)",
+      "folder": "",
+      "method": "PUT",
+      "url": "{{base_url}}/api/v1/admin/countries/:id"
+    },
+    {
+      "path": "/Admin (Countries)",
+      "folder": "",
+      "method": "DELETE",
+      "url": "{{base_url}}/api/v1/admin/countries/:id"
+    },
+    {
+      "path": "/Admin (Destinations)",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/admin/destinations"
+    },
+    {
+      "path": "/Admin (Destinations)",
+      "folder": "",
+      "method": "POST",
+      "url": "{{base_url}}/api/v1/admin/destinations"
+    },
+    {
+      "path": "/Admin (Destinations)",
+      "folder": "",
+      "method": "PUT",
+      "url": "{{base_url}}/api/v1/admin/destinations/:id"
+    },
+    {
+      "path": "/Admin (Destinations)",
+      "folder": "",
+      "method": "DELETE",
+      "url": "{{base_url}}/api/v1/admin/destinations/:id"
+    },
+    {
+      "path": "/Admin (Flights)",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/admin/flights"
+    },
+    {
+      "path": "/Admin (Flights)",
+      "folder": "",
+      "method": "POST",
+      "url": "{{base_url}}/api/v1/admin/flights"
+    },
+    {
+      "path": "/Admin (Flights)",
+      "folder": "",
+      "method": "PUT",
+      "url": "{{base_url}}/api/v1/admin/flights/:id"
+    },
+    {
+      "path": "/Admin (Flights)",
+      "folder": "",
+      "method": "DELETE",
+      "url": "{{base_url}}/api/v1/admin/flights/:id"
+    },
+    {
+      "path": "/Admin (Hotels)",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/admin/hotels"
+    },
+    {
+      "path": "/Admin (Hotels)",
+      "folder": "",
+      "method": "POST",
+      "url": "{{base_url}}/api/v1/admin/hotels"
+    },
+    {
+      "path": "/Admin (Hotels)",
+      "folder": "",
+      "method": "PUT",
+      "url": "{{base_url}}/api/v1/admin/hotels/:id"
+    },
+    {
+      "path": "/Admin (Hotels)",
+      "folder": "",
+      "method": "DELETE",
+      "url": "{{base_url}}/api/v1/admin/hotels/:id"
+    },
+    {
+      "path": "/Admin (Notifications)",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/admin/notifications"
+    },
+    {
+      "path": "/Admin (Reports)",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/admin/reports"
+    },
+    {
+      "path": "/Admin (Reports)",
+      "folder": "",
+      "method": "POST",
+      "url": "{{base_url}}/api/v1/admin/reports/generate"
+    },
+    {
+      "path": "/Admin (Reports)",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/admin/reports/:id/download"
+    },
+    {
+      "path": "/Admin (Restaurants)",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/admin/restaurants"
+    },
+    {
+      "path": "/Admin (Restaurants)",
+      "folder": "",
+      "method": "POST",
+      "url": "{{base_url}}/api/v1/admin/restaurants"
+    },
+    {
+      "path": "/Admin (Restaurants)",
+      "folder": "",
+      "method": "PUT",
+      "url": "{{base_url}}/api/v1/admin/restaurants/:id"
+    },
+    {
+      "path": "/Admin (Restaurants)",
+      "folder": "",
+      "method": "DELETE",
+      "url": "{{base_url}}/api/v1/admin/restaurants/:id"
+    },
+    {
+      "path": "/Admin (Reviews)",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/admin/reviews"
+    },
+    {
+      "path": "/Admin (Reviews)",
+      "folder": "",
+      "method": "PATCH",
+      "url": "{{base_url}}/api/v1/admin/reviews/:id/approve"
+    },
+    {
+      "path": "/Admin (Reviews)",
+      "folder": "",
+      "method": "PATCH",
+      "url": "{{base_url}}/api/v1/admin/reviews/:id/reject"
+    },
+    {
+      "path": "/Admin (Reviews)",
+      "folder": "",
+      "method": "DELETE",
+      "url": "{{base_url}}/api/v1/admin/reviews/:id"
+    },
+    {
+      "path": "/Admin (Set-plans)",
+      "folder": "",
+      "method": "POST",
+      "url": "{{base_url}}/api/v1/admin/set-plans"
+    },
+    {
+      "path": "/Admin (Settings)",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/admin/settings"
+    },
+    {
+      "path": "/Admin (Settings)",
+      "folder": "",
+      "method": "PUT",
+      "url": "{{base_url}}/api/v1/admin/settings"
+    },
+    {
+      "path": "/Admin (Settings)",
+      "folder": "",
+      "method": "PATCH",
+      "url": "{{base_url}}/api/v1/admin/settings/:key"
+    },
+    {
+      "path": "/Admin (Trips)",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/admin/trips"
+    },
+    {
+      "path": "/Admin (Trips)",
+      "folder": "",
+      "method": "POST",
+      "url": "{{base_url}}/api/v1/admin/trips"
+    },
+    {
+      "path": "/Admin (Trips)",
+      "folder": "",
+      "method": "PUT",
+      "url": "{{base_url}}/api/v1/admin/trips/:id"
+    },
+    {
+      "path": "/Admin (Trips)",
+      "folder": "",
+      "method": "DELETE",
+      "url": "{{base_url}}/api/v1/admin/trips/:id"
+    },
+    {
+      "path": "/Admin (Users)",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/admin/users"
+    },
+    {
+      "path": "/Admin (Users)",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/admin/users/:user"
+    },
+    {
+      "path": "/Admin (Users)",
+      "folder": "",
+      "method": "POST",
+      "url": "{{base_url}}/api/v1/admin/users"
+    },
+    {
+      "path": "/Admin (Users)",
+      "folder": "",
+      "method": "PUT",
+      "url": "{{base_url}}/api/v1/admin/users/:user"
+    },
+    {
+      "path": "/Admin (Users)",
+      "folder": "",
+      "method": "PATCH",
+      "url": "{{base_url}}/api/v1/admin/users/:user/active"
+    },
+    {
+      "path": "/Admin (Users)",
+      "folder": "",
+      "method": "PATCH",
+      "url": "{{base_url}}/api/v1/admin/users/:user/block"
+    },
+    {
+      "path": "/Attractions",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/attractions"
+    },
+    {
+      "path": "/Attractions",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/attractions/:id"
+    },
+    {
+      "path": "/Categories",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/categories"
+    },
+    {
+      "path": "/Categories",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/categories/:category"
+    },
+    {
+      "path": "/Checkout",
+      "folder": "",
+      "method": "POST",
+      "url": "{{base_url}}/api/v1/checkout/initiate"
+    },
+    {
+      "path": "/Contacts",
+      "folder": "",
+      "method": "POST",
+      "url": "{{base_url}}/api/v1/contacts"
+    },
+    {
+      "path": "/Dashboard",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/dashboard"
+    },
+    {
+      "path": "/Dashboard",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/dashboard/trips"
+    },
+    {
+      "path": "/Dashboard",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/dashboard/favourites"
+    },
+    {
+      "path": "/Destinations",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/destinations"
+    },
+    {
+      "path": "/Destinations",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/destinations/:id"
+    },
+    {
+      "path": "/Favourites",
+      "folder": "",
+      "method": "POST",
+      "url": "{{base_url}}/api/v1/favourites/:type/:id"
+    },
+    {
+      "path": "/Flights",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/flights"
+    },
+    {
+      "path": "/Flights",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/flights/:id"
+    },
+    {
+      "path": "/Hotels",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/hotels"
+    },
+    {
+      "path": "/Hotels",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/hotels/:id"
+    },
+    {
+      "path": "/Maps",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/maps/destination/:destination"
+    },
+    {
+      "path": "/Maps",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/maps/trip/:trip"
+    },
+    {
+      "path": "/Notifications",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/notifications"
+    },
+    {
+      "path": "/Notifications",
+      "folder": "",
+      "method": "PATCH",
+      "url": "{{base_url}}/api/v1/notifications/read-all"
+    },
+    {
+      "path": "/Notifications",
+      "folder": "",
+      "method": "PATCH",
+      "url": "{{base_url}}/api/v1/notifications/:notification/read"
+    },
+    {
+      "path": "/Paymob",
+      "folder": "",
+      "method": "POST",
+      "url": "{{base_url}}/api/v1/paymob/webhook"
+    },
+    {
+      "path": "/Paymob",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/paymob/callback"
+    },
+    {
+      "path": "/Plans",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/plans"
+    },
+    {
+      "path": "/Profile",
+      "folder": "",
+      "method": "PATCH",
+      "url": "{{base_url}}/api/v1/profile"
+    },
+    {
+      "path": "/Restaurants",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/restaurants"
+    },
+    {
+      "path": "/Restaurants",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/restaurants/:id"
+    },
+    {
+      "path": "/Reviews",
+      "folder": "",
+      "method": "POST",
+      "url": "{{base_url}}/api/v1/reviews/:type/:id"
+    },
+    {
+      "path": "/Reviews",
+      "folder": "",
+      "method": "DELETE",
+      "url": "{{base_url}}/api/v1/reviews/:id"
+    },
+    {
+      "path": "/Site-settings",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/site-settings"
+    },
+    {
+      "path": "/Trips",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/trips/create"
+    },
+    {
+      "path": "/Trips",
+      "folder": "",
+      "method": "POST",
+      "url": "{{base_url}}/api/v1/trips"
+    },
+    {
+      "path": "/Trips",
+      "folder": "",
+      "method": "POST",
+      "url": "{{base_url}}/api/v1/trips/:trip/attach/:type"
+    },
+    {
+      "path": "/Trips",
+      "folder": "",
+      "method": "DELETE",
+      "url": "{{base_url}}/api/v1/trips/:trip/detach/:id"
+    },
+    {
+      "path": "/Trips",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/trips/:trip"
+    },
+    {
+      "path": "/User Profile",
+      "folder": "",
+      "method": "POST",
+      "url": "{{base_url}}/api/v1/me/subscribe"
+    },
+    {
+      "path": "/User Profile",
+      "folder": "",
+      "method": "POST",
+      "url": "{{base_url}}/api/v1/me/upgrade"
+    },
+    {
+      "path": "/User Profile",
+      "folder": "",
+      "method": "POST",
+      "url": "{{base_url}}/api/v1/me/subscription/cancel"
+    },
+    {
+      "path": "/User Profile",
+      "folder": "",
+      "method": "GET",
+      "url": "{{base_url}}/api/v1/me/subscription"
+    }
+  ],
+  "collection": "ThreeDOS API - Fully Organized"
+}

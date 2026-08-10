@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Booking;
-use App\Models\BookingItem;
-use App\Models\Experience;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Catalog\Experience;
+use App\Models\Commerce\Booking;
+use App\Models\Commerce\BookingItem;
 use Illuminate\Database\Seeder;
 
 class BookingItemSeeder extends Seeder
@@ -17,17 +16,18 @@ class BookingItemSeeder extends Seeder
     {
         $itemables = [Experience::class];
         $experiences = Experience::all();
- 
+
         if ($experiences->isEmpty()) {
             $this->command?->warn('Skipping BookingItemSeeder: no experiences found.');
+
             return;
         }
- 
+
         Booking::all()->each(function (Booking $booking) use ($itemables, $experiences) {
             foreach (range(1, rand(1, 3)) as $i) {
                 $itemableType = $itemables[array_rand($itemables)];
                 $item = $experiences->random();
- 
+
                 BookingItem::create([
                     'booking_id' => $booking->id,
                     'itemable_type' => $itemableType,

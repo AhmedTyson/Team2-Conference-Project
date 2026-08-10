@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Models\Trip;
+use App\Models\Trips\Trip;
 use Illuminate\Support\Facades\Log;
 use LucianoTonet\GroqLaravel\Facades\Groq;
 

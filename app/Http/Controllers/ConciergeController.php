@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Trip;
+use App\Models\Trips\Trip;
 use App\Services\ConciergeService;
 use Illuminate\Http\Request;
 

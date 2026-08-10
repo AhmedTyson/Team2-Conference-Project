@@ -2,10 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Address;
-use App\Models\Experience;
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Account\User;
+use App\Models\Catalog\Experience;
+use App\Models\Commerce\Address;
 use Illuminate\Database\Seeder;
 
 class AddressSeeder extends Seeder
@@ -29,7 +28,7 @@ class AddressSeeder extends Seeder
                 'lng' => fake()->longitude(),
             ]);
         });
- 
+
         Experience::inRandomOrder()->take(10)->get()->each(function (Experience $experience) {
             Address::create([
                 'addressable_type' => Experience::class,
