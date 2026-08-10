@@ -12,12 +12,13 @@ use Illuminate\Http\Request;
 
 class AIController extends Controller
 {
-    public function enhance(AiTripRequest $request)
+    public function enhance(Request $request)
     {
+        $request->validate(['content' => 'required|string']);
 
         $groq = new GroqService(app(AiUsageService::class));
 
-        $enhancedContent = $groq->enhance($request);
+        $enhancedContent = $groq->enhance($request->input('content'));
 
         return response()->json([
             'success' => true,

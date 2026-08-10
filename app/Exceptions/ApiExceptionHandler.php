@@ -65,7 +65,7 @@ class ApiExceptionHandler
      * Handle authentication exceptions
      */
     public function handleAuthenticationException(
-        AuthenticationException|AccessDeniedHttpException $e,
+        AuthenticationException $e,
         Request $request
     ): JsonResponse {
         $this->logException($e, 'Authentication failed');
