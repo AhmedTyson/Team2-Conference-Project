@@ -23,7 +23,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Trip extends Model
 {
-    // use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
         'user_id', 'title', 'travel_style', 'interests', 'no_of_travelers',

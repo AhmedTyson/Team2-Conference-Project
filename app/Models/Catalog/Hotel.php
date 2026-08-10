@@ -23,7 +23,7 @@ use App\Models\Trips\Favourite;
 
 class Hotel extends Model
 {
-    // use HasFactory, SoftDeletes;
+    use HasFactory;
 
     protected $fillable = [
         'destination_id', 'name', 'address', 'price_per_night',
