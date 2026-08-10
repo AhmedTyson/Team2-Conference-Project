@@ -219,6 +219,7 @@ Route::middleware(['auth:api'])->group(function () {
 });
 
 // ---- AI trip assistant
+Route::post('/enhance', [AIController::class, 'enhance'])->middleware('auth:api');
 Route::post('/review', [GroqService::class, 'generateAi'])
     ->middleware(['auth:api', 'permission:generate ai itineraries']);
 Route::get('/review/{id}', [AIController::class, 'review'])
