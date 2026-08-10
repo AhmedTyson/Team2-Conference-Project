@@ -138,6 +138,10 @@
         global.location.replace(It.CONFIG.role.admin);
         return;
       }
+      if (role === "agency") {
+        global.location.replace(It.CONFIG.role.agency);
+        return;
+      }
       load(user);
     });
   }

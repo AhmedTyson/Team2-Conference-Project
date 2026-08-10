@@ -55,18 +55,11 @@ class DatabaseSeeder extends Seeder
             ReviewSeeder::class,
             FavouriteSeeder::class,
             TripSeeder::class,
-            ExperienceProviderSeeder::class,
-            ExperienceSeeder::class,
             AddressSeeder::class,
-            CompanySeeder::class,
-            BookingSeeder::class,
-            BookingItemSeeder::class,
+            AgencyAssignmentSeeder::class,
             PaymentSeeder::class,
-            TransactionSeeder::class,
-            CommissionSeeder::class,
             BudgetSnapshotSeeder::class,
             NotificationSeeder::class,
-            EntityViewSeeder::class,
             UserPointSeeder::class,
             TripContributionSeeder::class,
             PlanSeeder::class,
@@ -77,3 +70,8 @@ class DatabaseSeeder extends Seeder
         Schema::enableForeignKeyConstraints();
     }
 }
+
+
+
+
+

@@ -40,6 +40,7 @@ use App\Http\Controllers\System\SiteSettingsController;
 use App\Http\Controllers\System\SurveyController;
 use App\Http\Controllers\System\WeatherController;
 use App\Http\Controllers\System\FlagController;
+use App\Http\Controllers\System\AdminFlagController;
 // Trips
 use App\Http\Controllers\Trips\AdminReviewController;
 use App\Http\Controllers\Trips\AdminTripController;

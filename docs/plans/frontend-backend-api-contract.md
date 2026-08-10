@@ -65,3 +65,20 @@ return UserResource::collection(User::paginate(15));
 const data = res.body.data;
 const meta = res.body.meta; // pagination details
 ```
+---
+
+## Agency Assignment API (Phase 7)
+
+All routes: `auth:api`, prefix `/api/v1`. Success envelope `{ "data": {...} }`. Errors: 401 unauthenticated, 403 `{ "error": { "status": 403, ... } }` (ApiExceptionHandler), 422 validation.
+
+| Method | Path | Role | Body | Response |
+|---|---|---|---|---|
+| POST | `/agency-requests` | any authenticated | `{ budget_level?: "low"\|"medium"\|"high"\|"luxury" }` | 201 `AgencyAssignment` (status `requested`) |
+| POST | `/admin/agency-requests/{id}/approve` | `admin`/`super_admin` | `{ agency_user_id: int }` | 200 (status `admin_approved`, sets `admin_id`, `agency_user_id`, `admin_approved_at`) |
+| POST | `/agency/assignments/{id}/approve` | `agency` (must own) | — | 200 (status `agency_approved`, sets `agency_responded_at`) |
+| POST | `/agency/assignments/{id}/decline` | `agency` (must own) | — | 200 (status `agency_declined`) |
+| POST | `/agency/assignments/{id}/trips` | `agency` (view policy) | `{ title: string, items?: [{ type: "App\Models\Catalog\Hotel"\|"hotel"\|"restaurant"\|"flight"\|"attraction"\|"destination", id: int }] }` | 201 `Trip` (status `pending`, `user_id` = assignment customer, defaults: `travel_style=custom`, `no_of_travelers=1`, budget by level, dates now+7/+14) |
+| GET | `/agency/assignments` | `agency` | — | 200 array of own assignments with `customer` + `trips` |
+
+`AgencyAssignment` shape: `{ id, customer_id, agency_user_id, admin_id, budget_level, status, admin_approved_at, agency_responded_at, created_at, updated_at }`.
+Status flow: `requested → admin_approved → agency_approved | agency_declined`, plus terminal `completed`, `cancelled`.
