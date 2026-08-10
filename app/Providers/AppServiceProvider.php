@@ -12,8 +12,10 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use App\Interfaces\SurveyRepositoryInterface;
 use App\Repositories\SurveyRepository;
-use App\Interfaces\PlanRepositoryInterface;
+use App\Repositories\CountryRepository;
+use App\Interfaces\CountryRepositoryInterface;
 use App\Repositories\PlanRepository;
+use App\Interfaces\PlanRepositoryInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,6 +32,11 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             CountryRepositoryInterface::class,
             CountryRepository::class
+        );
+
+        $this->app->bind(
+            PlanRepositoryInterface::class,
+            PlanRepository::class
         );
     }
 

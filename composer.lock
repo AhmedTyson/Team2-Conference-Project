@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a1695192381c36f04e8db931efbc1acc",
+    "content-hash": "08c2239dc22eeb9d96784c24211c3692",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -214,18 +214,6 @@
         },
         {
             "name": "dedoc/scramble",
-<<<<<<<<< Temporary merge branch 1
-            "version": "v0.13.38",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/dedoc/scramble.git",
-                "reference": "9ed00087795d026da56037f9ff6ff29f32d710e0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/dedoc/scramble/zipball/9ed00087795d026da56037f9ff6ff29f32d710e0",
-                "reference": "9ed00087795d026da56037f9ff6ff29f32d710e0",
-=========
             "version": "v0.13.39",
             "source": {
                 "type": "git",
@@ -236,7 +224,6 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/dedoc/scramble/zipball/7fcc4758d62f22d326637a578168bd5eb67a8625",
                 "reference": "7fcc4758d62f22d326637a578168bd5eb67a8625",
->>>>>>>>> Temporary merge branch 2
                 "shasum": ""
             },
             "require": {
@@ -296,11 +283,7 @@
             ],
             "support": {
                 "issues": "https://github.com/dedoc/scramble/issues",
-<<<<<<<<< Temporary merge branch 1
-                "source": "https://github.com/dedoc/scramble/tree/v0.13.38"
-=========
                 "source": "https://github.com/dedoc/scramble/tree/v0.13.39"
->>>>>>>>> Temporary merge branch 2
             },
             "funding": [
                 {
@@ -308,11 +291,7 @@
                     "type": "github"
                 }
             ],
-<<<<<<<<< Temporary merge branch 1
-            "time": "2026-08-04T19:22:40+00:00"
-=========
             "time": "2026-08-06T06:42:48+00:00"
->>>>>>>>> Temporary merge branch 2
         },
         {
             "name": "dflydev/dot-access-data",
@@ -977,21 +956,21 @@
         },
         {
             "name": "guzzlehttp/guzzle",
-            "version": "7.15.2",
+            "version": "7.15.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "744101956d78b7c1384d0cbf379db13e859167bf"
+                "reference": "ae311b8f045ea93ce7b1c9cdb7cec06c53f944bc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/744101956d78b7c1384d0cbf379db13e859167bf",
-                "reference": "744101956d78b7c1384d0cbf379db13e859167bf",
+                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/ae311b8f045ea93ce7b1c9cdb7cec06c53f944bc",
+                "reference": "ae311b8f045ea93ce7b1c9cdb7cec06c53f944bc",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "guzzlehttp/promises": "^2.5.1",
+                "guzzlehttp/promises": "^2.5.2",
                 "guzzlehttp/psr7": "^2.13",
                 "php": "^7.2.5 || ^8.0",
                 "psr/http-client": "^1.0",
@@ -1085,7 +1064,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
-                "source": "https://github.com/guzzle/guzzle/tree/7.15.2"
+                "source": "https://github.com/guzzle/guzzle/tree/7.15.3"
             },
             "funding": [
                 {
@@ -1101,20 +1080,20 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-07-26T23:23:20+00:00"
+            "time": "2026-08-05T19:48:21+00:00"
         },
         {
             "name": "guzzlehttp/promises",
-            "version": "2.5.1",
+            "version": "2.5.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/guzzle/promises.git",
-                "reference": "9ad1e4fc607446a055b95870c7f668e93b5cff29"
+                "reference": "2823687acff28b2dbe67b2508a6b300e2c3fa4ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/promises/zipball/9ad1e4fc607446a055b95870c7f668e93b5cff29",
-                "reference": "9ad1e4fc607446a055b95870c7f668e93b5cff29",
+                "url": "https://api.github.com/repos/guzzle/promises/zipball/2823687acff28b2dbe67b2508a6b300e2c3fa4ce",
+                "reference": "2823687acff28b2dbe67b2508a6b300e2c3fa4ce",
                 "shasum": ""
             },
             "require": {
@@ -1169,7 +1148,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/promises/issues",
-                "source": "https://github.com/guzzle/promises/tree/2.5.1"
+                "source": "https://github.com/guzzle/promises/tree/2.5.2"
             },
             "funding": [
                 {
@@ -1185,7 +1164,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-07-08T15:48:39+00:00"
+            "time": "2026-08-05T19:30:54+00:00"
         },
         {
             "name": "guzzlehttp/psr7",
@@ -1394,16 +1373,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v12.64.0",
+            "version": "v12.65.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "727a8ea2949c23ca8b5316b86a00984b6017b7a0"
+                "reference": "99a8fb3153f962a323377d6742be08da86bcccb8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/727a8ea2949c23ca8b5316b86a00984b6017b7a0",
-                "reference": "727a8ea2949c23ca8b5316b86a00984b6017b7a0",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/99a8fb3153f962a323377d6742be08da86bcccb8",
+                "reference": "99a8fb3153f962a323377d6742be08da86bcccb8",
                 "shasum": ""
             },
             "require": {
@@ -1612,7 +1591,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2026-07-14T14:25:37+00:00"
+            "time": "2026-08-05T15:33:16+00:00"
         },
         {
             "name": "laravel/prompts",
@@ -3327,113 +3306,6 @@
                 }
             ],
             "time": "2025-09-03T16:03:54+00:00"
-<<<<<<<<< Temporary merge branch 1
-=========
-        },
-        {
-            "name": "paymob/laravel-package",
-            "version": "1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://gitlab.com/paymob-integrations/laravel-package.git",
-                "reference": "64bd6fe225297f376e3517a608a942bd0dc6955c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://gitlab.com/api/v4/projects/paymob-integrations%2Flaravel-package/repository/archive.zip?sha=64bd6fe225297f376e3517a608a942bd0dc6955c",
-                "reference": "64bd6fe225297f376e3517a608a942bd0dc6955c",
-                "shasum": ""
-            },
-            "require": {
-                "paymob/php-library": "1.0.*"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Paymob\\LaravelPackage\\PaymobServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Paymob\\LaravelPackage\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0-only"
-            ],
-            "authors": [
-                {
-                    "name": "Paymob Technical Team"
-                }
-            ],
-            "description": "Paymob Payment for Laravel.",
-            "homepage": "https://paymob.com/",
-            "keywords": [
-                "laravel",
-                "payment",
-                "paymob"
-            ],
-            "support": {
-                "issues": "https://gitlab.com/paymob-integrations/laravel-package/-/issues",
-                "source": "https://gitlab.com/paymob-integrations/laravel-package/-/tree/1.0.0"
-            },
-            "time": "2024-05-14T11:56:02+00:00"
-        },
-        {
-            "name": "paymob/php-library",
-            "version": "1.0.4",
-            "source": {
-                "type": "git",
-                "url": "https://gitlab.com/paymob-integrations/php-lib.git",
-                "reference": "deaef01d8380b481f46a766ba380eab28bdb9a4e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://gitlab.com/api/v4/projects/paymob-integrations%2Fphp-lib/repository/archive.zip?sha=deaef01d8380b481f46a766ba380eab28bdb9a4e",
-                "reference": "deaef01d8380b481f46a766ba380eab28bdb9a4e",
-                "shasum": ""
-            },
-            "require": {
-                "ext-curl": "*",
-                "php": ">=7"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "src/Paymob.php"
-                ],
-                "psr-4": {
-                    "Paymob\\Library\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-3.0-only"
-            ],
-            "authors": [
-                {
-                    "name": "Paymob Team"
-                }
-            ],
-            "description": "Paymob PHP Library",
-            "homepage": "https://paymob.com",
-            "keywords": [
-                "api integration",
-                "e-commerce",
-                "gateway",
-                "library",
-                "payment",
-                "paymob"
-            ],
-            "support": {
-                "issues": "https://gitlab.com/paymob-integrations/php-lib/-/issues",
-                "source": "https://gitlab.com/paymob-integrations/php-lib/-/tree/1.0.4"
-            },
-            "time": "2024-11-13T12:34:10+00:00"
->>>>>>>>> Temporary merge branch 2
         },
         {
             "name": "phpoption/phpoption",
@@ -4537,7 +4409,6 @@
         {
             "name": "stella-maris/clock",
             "version": "0.1.7",
-<<<<<<<<< Temporary merge branch 1
             "source": {
                 "type": "git",
                 "url": "https://github.com/stella-maris-solutions/clock.git",
@@ -4585,55 +4456,6 @@
         {
             "name": "symfony/clock",
             "version": "v7.4.8",
-=========
->>>>>>>>> Temporary merge branch 2
-            "source": {
-                "type": "git",
-                "url": "https://github.com/stella-maris-solutions/clock.git",
-                "reference": "fa23ce16019289a18bb3446fdecd45befcdd94f8"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/stella-maris-solutions/clock/zipball/fa23ce16019289a18bb3446fdecd45befcdd94f8",
-                "reference": "fa23ce16019289a18bb3446fdecd45befcdd94f8",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.0|^8.0",
-                "psr/clock": "^1.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "StellaMaris\\Clock\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Andreas Heigl",
-                    "role": "Maintainer"
-                }
-            ],
-            "description": "A pre-release of the proposed PSR-20 Clock-Interface",
-            "homepage": "https://gitlab.com/stella-maris/clock",
-            "keywords": [
-                "clock",
-                "datetime",
-                "point in time",
-                "psr20"
-            ],
-            "support": {
-                "source": "https://github.com/stella-maris-solutions/clock/tree/0.1.7"
-            },
-            "time": "2022-11-25T16:15:06+00:00"
-        },
-        {
-            "name": "symfony/clock",
-            "version": "v8.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/clock.git",
@@ -7843,16 +7665,16 @@
         },
         {
             "name": "laravel/pint",
-            "version": "v1.30.3",
+            "version": "v1.30.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/pint.git",
-                "reference": "19ca6de4ce07869f61f09863e37e81562ebc0a9b"
+                "reference": "a96cb6eee2961905d2fce7207aefb80945bf6b28"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/pint/zipball/19ca6de4ce07869f61f09863e37e81562ebc0a9b",
-                "reference": "19ca6de4ce07869f61f09863e37e81562ebc0a9b",
+                "url": "https://api.github.com/repos/laravel/pint/zipball/a96cb6eee2961905d2fce7207aefb80945bf6b28",
+                "reference": "a96cb6eee2961905d2fce7207aefb80945bf6b28",
                 "shasum": ""
             },
             "require": {
@@ -7865,11 +7687,11 @@
             "require-dev": {
                 "composer/semver": "^3.4.4",
                 "friendsofphp/php-cs-fixer": "^3.95.18",
-                "illuminate/view": "^12.64.0",
+                "illuminate/view": "^12.65.0",
                 "larastan/larastan": "^3.10.0",
                 "laravel-zero/framework": "^12.1.0",
                 "laravel/agent-detector": "^2.0.2",
-                "laravel/prompts": "^0.3.21",
+                "laravel/prompts": "^0.3.22",
                 "mockery/mockery": "^1.6.12",
                 "nunomaduro/termwind": "^2.4.0",
                 "pestphp/pest": "^3.8.7"
@@ -7909,7 +7731,7 @@
                 "issues": "https://github.com/laravel/pint/issues",
                 "source": "https://github.com/laravel/pint"
             },
-            "time": "2026-08-02T01:28:21+00:00"
+            "time": "2026-08-05T16:47:22+00:00"
         },
         {
             "name": "laravel/sail",

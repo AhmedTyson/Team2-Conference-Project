@@ -18,6 +18,7 @@ use App\Http\Controllers\InteractionController;
 use App\Http\Controllers\SurveyController;
 use App\Http\Controllers\WeatherController;
 use App\Http\Controllers\AIController;
+use App\Http\Controllers\ConciergeController;
 // Admin Controllers
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminReviewController;
@@ -205,6 +206,13 @@ Route::middleware(['auth:api'])->prefix('v1')->name('plans.')->group(function ()
         ->middleware('permission:cancel subscription');
     Route::get('/me/subscription', [PlanController::class, 'subscription'])
         ->middleware('permission:view my subscription');
+});
+
+
+Route::middleware(['auth:api'])->group(function () {
+
+    Route::post('/v1/trips/{trip}/concierge',[ConciergeController::class, 'ask']);
+    // Route::get('/v1/trips/{trip}/concierge/messages',[ConciergeController::class, ''])
 });
 
 
