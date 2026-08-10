@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "08c2239dc22eeb9d96784c24211c3692",
+    "content-hash": "a1695192381c36f04e8db931efbc1acc",
     "packages": [
         {
             "name": "barryvdh/laravel-dompdf",
@@ -214,6 +214,7 @@
         },
         {
             "name": "dedoc/scramble",
+<<<<<<<<< Temporary merge branch 1
             "version": "v0.13.38",
             "source": {
                 "type": "git",
@@ -224,6 +225,18 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/dedoc/scramble/zipball/9ed00087795d026da56037f9ff6ff29f32d710e0",
                 "reference": "9ed00087795d026da56037f9ff6ff29f32d710e0",
+=========
+            "version": "v0.13.39",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dedoc/scramble.git",
+                "reference": "7fcc4758d62f22d326637a578168bd5eb67a8625"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dedoc/scramble/zipball/7fcc4758d62f22d326637a578168bd5eb67a8625",
+                "reference": "7fcc4758d62f22d326637a578168bd5eb67a8625",
+>>>>>>>>> Temporary merge branch 2
                 "shasum": ""
             },
             "require": {
@@ -283,7 +296,11 @@
             ],
             "support": {
                 "issues": "https://github.com/dedoc/scramble/issues",
+<<<<<<<<< Temporary merge branch 1
                 "source": "https://github.com/dedoc/scramble/tree/v0.13.38"
+=========
+                "source": "https://github.com/dedoc/scramble/tree/v0.13.39"
+>>>>>>>>> Temporary merge branch 2
             },
             "funding": [
                 {
@@ -291,7 +308,11 @@
                     "type": "github"
                 }
             ],
+<<<<<<<<< Temporary merge branch 1
             "time": "2026-08-04T19:22:40+00:00"
+=========
+            "time": "2026-08-06T06:42:48+00:00"
+>>>>>>>>> Temporary merge branch 2
         },
         {
             "name": "dflydev/dot-access-data",
@@ -3306,6 +3327,113 @@
                 }
             ],
             "time": "2025-09-03T16:03:54+00:00"
+<<<<<<<<< Temporary merge branch 1
+=========
+        },
+        {
+            "name": "paymob/laravel-package",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://gitlab.com/paymob-integrations/laravel-package.git",
+                "reference": "64bd6fe225297f376e3517a608a942bd0dc6955c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://gitlab.com/api/v4/projects/paymob-integrations%2Flaravel-package/repository/archive.zip?sha=64bd6fe225297f376e3517a608a942bd0dc6955c",
+                "reference": "64bd6fe225297f376e3517a608a942bd0dc6955c",
+                "shasum": ""
+            },
+            "require": {
+                "paymob/php-library": "1.0.*"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Paymob\\LaravelPackage\\PaymobServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Paymob\\LaravelPackage\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Paymob Technical Team"
+                }
+            ],
+            "description": "Paymob Payment for Laravel.",
+            "homepage": "https://paymob.com/",
+            "keywords": [
+                "laravel",
+                "payment",
+                "paymob"
+            ],
+            "support": {
+                "issues": "https://gitlab.com/paymob-integrations/laravel-package/-/issues",
+                "source": "https://gitlab.com/paymob-integrations/laravel-package/-/tree/1.0.0"
+            },
+            "time": "2024-05-14T11:56:02+00:00"
+        },
+        {
+            "name": "paymob/php-library",
+            "version": "1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://gitlab.com/paymob-integrations/php-lib.git",
+                "reference": "deaef01d8380b481f46a766ba380eab28bdb9a4e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://gitlab.com/api/v4/projects/paymob-integrations%2Fphp-lib/repository/archive.zip?sha=deaef01d8380b481f46a766ba380eab28bdb9a4e",
+                "reference": "deaef01d8380b481f46a766ba380eab28bdb9a4e",
+                "shasum": ""
+            },
+            "require": {
+                "ext-curl": "*",
+                "php": ">=7"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/Paymob.php"
+                ],
+                "psr-4": {
+                    "Paymob\\Library\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-only"
+            ],
+            "authors": [
+                {
+                    "name": "Paymob Team"
+                }
+            ],
+            "description": "Paymob PHP Library",
+            "homepage": "https://paymob.com",
+            "keywords": [
+                "api integration",
+                "e-commerce",
+                "gateway",
+                "library",
+                "payment",
+                "paymob"
+            ],
+            "support": {
+                "issues": "https://gitlab.com/paymob-integrations/php-lib/-/issues",
+                "source": "https://gitlab.com/paymob-integrations/php-lib/-/tree/1.0.4"
+            },
+            "time": "2024-11-13T12:34:10+00:00"
+>>>>>>>>> Temporary merge branch 2
         },
         {
             "name": "phpoption/phpoption",
@@ -4409,6 +4537,7 @@
         {
             "name": "stella-maris/clock",
             "version": "0.1.7",
+<<<<<<<<< Temporary merge branch 1
             "source": {
                 "type": "git",
                 "url": "https://github.com/stella-maris-solutions/clock.git",
@@ -4456,6 +4585,55 @@
         {
             "name": "symfony/clock",
             "version": "v7.4.8",
+=========
+>>>>>>>>> Temporary merge branch 2
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stella-maris-solutions/clock.git",
+                "reference": "fa23ce16019289a18bb3446fdecd45befcdd94f8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/stella-maris-solutions/clock/zipball/fa23ce16019289a18bb3446fdecd45befcdd94f8",
+                "reference": "fa23ce16019289a18bb3446fdecd45befcdd94f8",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.0|^8.0",
+                "psr/clock": "^1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "StellaMaris\\Clock\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Andreas Heigl",
+                    "role": "Maintainer"
+                }
+            ],
+            "description": "A pre-release of the proposed PSR-20 Clock-Interface",
+            "homepage": "https://gitlab.com/stella-maris/clock",
+            "keywords": [
+                "clock",
+                "datetime",
+                "point in time",
+                "psr20"
+            ],
+            "support": {
+                "source": "https://github.com/stella-maris-solutions/clock/tree/0.1.7"
+            },
+            "time": "2022-11-25T16:15:06+00:00"
+        },
+        {
+            "name": "symfony/clock",
+            "version": "v8.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/clock.git",

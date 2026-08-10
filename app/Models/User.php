@@ -32,6 +32,8 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'profile_image',
         'is_active',
+        'ai_generations_count',
+        'ai_reset_at',
     ];
 
     /**
@@ -54,6 +56,9 @@ class User extends Authenticatable implements JWTSubject
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean',
+            'ai_generations_count' => 'integer',
+            'ai_reset_at' => 'datetime',
         ];
     }
 
@@ -107,6 +112,12 @@ class User extends Authenticatable implements JWTSubject
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class);
+    }
+
+    // 1:M - has Subscription (plans)
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(Subscription::class);
     }
 }
 
