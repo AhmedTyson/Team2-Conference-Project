@@ -260,10 +260,12 @@ onSuccess: function (body, form) {
 
     form.addEventListener("submit", async function (e) {
       e.preventDefault(); // spec #1
-      if (form.dataset.busy === "1") return;
+      global.__bootlog && global.__bootlog.push("HANDLER entered, prevented=" + e.defaultPrevented);
+      if (form.dataset.busy === "1") { global.__bootlog && global.__bootlog.push("HANDLER busy-skip"); return; }
 
       // local inline validation before hitting the server (spec #5)
-      const bad = validateAll(fields, true);
+const bad = validateAll(fields, true);
+      global.__bootlog && global.__bootlog.push("HANDLER bad=" + (bad ? bad.name : "none"));
       if (bad) { bad.input.focus(); return; }
 
       const btn = form.querySelector('button[type="submit"]');
@@ -271,7 +273,9 @@ onSuccess: function (body, form) {
       form.dataset.busy = "1";
 
       try {
+        global.__bootlog && global.__bootlog.push("HANDLER posting via " + (It.CONFIG.routes[cfg.route] || cfg.route));
         const res = await It.apiPost(It.CONFIG.routes[cfg.route] || cfg.route, collectPayload(fields));
+        global.__bootlog && global.__bootlog.push("HANDLER res ok=" + res.ok + " status=" + res.status);
         if (res.ok) {
           fb.successPulse(form); // spec #3
           cfg.onSuccess(res.body, form);
