@@ -2,61 +2,38 @@
 
 namespace App\Policies\System;
 
+use App\Enums\AgencyAssignmentStatus;
 use App\Models\Account\User;
-use App\Models\Commerce\Flag;
-use Illuminate\Auth\Access\Response;
+use App\Models\Commerce\AgencyAssignment;
+use App\Models\System\Flag;
 
 class FlagPolicy
 {
-    /**
-     * Determine whether the user can view the model.
-     */
     public function view(User $user, Flag $flag): bool
     {
-        return $user->id === $flag->customer_id || 
-            $user->id === $flag->agency_user_id || 
-            $user->hasRole('admin') || 
+        return $user->id === $flag->reporter_id ||
+            $user->id === $flag->reviewed_by ||
+            $user->hasRole('admin') ||
             $user->hasRole('super_admin');
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
+    public function createForAssignment(User $user, AgencyAssignment $assignment): bool
     {
-        if ($user->isCustomer()) {
-            return $user->agencyAssignment()->status === 'agency_approved';
-        }
+        return $user->id === $assignment->customer_id &&
+            $assignment->status === AgencyAssignmentStatus::AGENCY_APPROVED;
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
+    public function review(User $user): bool
+    {
+        return $user->hasRole('admin') || $user->hasRole('super_admin');
+    }
+
     public function update(User $user, Flag $flag): bool
     {
         return false;
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
     public function delete(User $user, Flag $flag): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Flag $flag): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Flag $flag): bool
     {
         return false;
     }

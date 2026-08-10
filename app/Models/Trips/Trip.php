@@ -30,6 +30,7 @@ class Trip extends Model
         'budget', 'no_of_days', 'start_date', 'end_date', 'status',
         'estimated_cost', 'parent_trip_id', 'original_trip_id', 'is_fork',
         'source_version_id',
+          'agency_assignment_id',
     ];
 
     protected function casts(): array
@@ -105,3 +106,4 @@ class Trip extends Model
         return $this->morphedByMany(Restaurant::class, 'item', 'trip_items')->withTimestamps();
     }
 }
+

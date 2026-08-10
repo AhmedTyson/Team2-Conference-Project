@@ -2,45 +2,50 @@
 
 namespace App\Services\System;
 
-use App\Models\System\Flag;
 use App\Enums\FlagStatus;
-use Illuminate\Support\Facades\Auth;
-// assigned to someone in frontend : Hana - 7
+use App\Interfaces\System\FlagRepositoryInterface;
+use App\Models\Account\User;
+use App\Models\Commerce\AgencyAssignment;
+use App\Models\System\Flag;
+
 class FlagService
 {
-    /**
-     * Create a new class instance.
-     */
-    public function __construct()
+    public function __construct(
+        private FlagRepositoryInterface $repository
+    ) {}
+
+    public function fileComplaint(User $reporter, AgencyAssignment $assignment, string $reason, ?string $details = null): Flag
     {
-        //
-    }
-
-    public function fileComplaint(){}
-
-
-
-    public function approve(Flag $flag)
-    {
-        return $flag->update([
-            // todo: does approve() have any automatic side effect 
-            // (e.g. cancel the agency_assignment, flag the agency user for admin review on future assignments),
-            // or is it purely a logged record for manual admin follow-up? 
-            // Implement as a no-op beyond status + reviewed_by/reviewed_at until you confirm — do not guess at automatic consequences.
-            // if approved: cancel the agency_assignment
-            // if approved: flag the agency user for admin review on future assignments
-
-            ['status' => FlagStatus::APPROVED, 'reviewed_at' => now(), 'reviewed_by' => Auth::id()]
-            // if rejected: cancel the agency_assignment
-            // if rejected: do not flag the agency user for admin review on future assignments
+        return $this->repository->create([
+            'reporter_id' => $reporter->id,
+            'flaggable_type' => User::class,
+            'flaggable_id' => $assignment->agency_user_id,
+            'agency_assignment_id' => $assignment->id,
+            'reason' => $reason,
+            'details' => $details,
+            'status' => FlagStatus::PENDING,
         ]);
     }
 
-
-
-
-    public function decline(Flag $flag)
+    public function approve(Flag $flag, User $reviewer): Flag
     {
-        return $flag->update(['status' => FlagStatus::DECLINED, 'reviewed_at' => now(), 'reviewed_by' => Auth::id()]);
+        $this->repository->update($flag, [
+            'status' => FlagStatus::APPROVED,
+            'reviewed_by' => $reviewer->id,
+            'reviewed_at' => now(),
+        ]);
+
+        return $flag->fresh() ?? $flag;
+    }
+
+    public function decline(Flag $flag, User $reviewer): Flag
+    {
+        $this->repository->update($flag, [
+            'status' => FlagStatus::DECLINED,
+            'reviewed_by' => $reviewer->id,
+            'reviewed_at' => now(),
+        ]);
+
+        return $flag->fresh() ?? $flag;
     }
 }

@@ -3,57 +3,33 @@
 namespace App\Http\Controllers\System;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreFlagRequest as RequestsStoreFlagRequest;
-// use App\Http\Requests\System\StoreFlagRequest;
-use App\Models\System\Flag;
+use App\Models\Commerce\AgencyAssignment;
 use App\Services\System\FlagService;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+
 class FlagController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-        
-    }
+    use AuthorizesRequests;
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(RequestsStoreFlagRequest $request)
-    {
-        $flag = FlagService::create($request->validated());
+    public function __construct(private FlagService $service) {}
 
-        return response()->json([
-            'message' => 'Flag submitted successfully',
-            'flag' => $flag,
+    public function store(Request $request, AgencyAssignment $assignment)
+    {
+        $this->authorize('createForAssignment', [\App\Models\System\Flag::class, $assignment]);
+
+        $validated = $request->validate([
+            'reason' => 'required|string|max:500',
+            'details' => 'nullable|string|max:5000',
         ]);
-    }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Flag $flag)
-    {
+        $flag = $this->service->fileComplaint(
+            $request->user(),
+            $assignment,
+            $validated['reason'],
+            $validated['details'] ?? null
+        );
 
-        
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Flag $flag)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Flag $flag)
-    {
-        //
+        return response()->json(['message' => 'Flag submitted successfully', 'data' => $flag], 201);
     }
 }

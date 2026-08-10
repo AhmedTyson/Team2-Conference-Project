@@ -27,6 +27,7 @@
       dashboard: "/dashboard.html",
       admin: "/admin/index.html",
       super_admin: "/admin/index.html",
+      agency: "/agency/index.html",
     },
   };
 
