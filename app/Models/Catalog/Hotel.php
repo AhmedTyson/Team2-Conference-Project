@@ -4,7 +4,7 @@ namespace App\Models\Catalog;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
+// use Illuminate\Database\Eloquent\SoftDeletes;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -12,9 +12,18 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
+use App\Models\Trips\Review;
+
+use App\Models\Trips\ItineraryItem;
+
+use App\Models\Trips\Trip;
+
+use App\Models\Trips\Favourite;
+
+
 class Hotel extends Model
 {
-    use HasFactory, SoftDeletes;
+    // use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'destination_id', 'name', 'address', 'price_per_night',
