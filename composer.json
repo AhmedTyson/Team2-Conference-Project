@@ -11,6 +11,7 @@
         "dedoc/scramble": "^0.13.36",
         "laravel/framework": "^13.0",
         "laravel/tinker": "^3.0",
+        "ext-zip": "*",
         "lucianotonet/groq-laravel": "^1.0",
         "openspout/openspout": "^5.10",
         "paymob/php-library": "^1.0",

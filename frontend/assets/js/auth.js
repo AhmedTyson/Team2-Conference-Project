@@ -258,14 +258,12 @@ onSuccess: function (body, form) {
       wireEmailAvailability(form.elements.email, document.getElementById("avail-email"));
     }
 
-    form.addEventListener("submit", async function (e) {
+form.addEventListener("submit", async function (e) {
       e.preventDefault(); // spec #1
-      global.__bootlog && global.__bootlog.push("HANDLER entered, prevented=" + e.defaultPrevented);
-      if (form.dataset.busy === "1") { global.__bootlog && global.__bootlog.push("HANDLER busy-skip"); return; }
+      if (form.dataset.busy === "1") return;
 
       // local inline validation before hitting the server (spec #5)
-const bad = validateAll(fields, true);
-      global.__bootlog && global.__bootlog.push("HANDLER bad=" + (bad ? bad.name : "none"));
+      const bad = validateAll(fields, true);
       if (bad) { bad.input.focus(); return; }
 
       const btn = form.querySelector('button[type="submit"]');
@@ -273,9 +271,7 @@ const bad = validateAll(fields, true);
       form.dataset.busy = "1";
 
       try {
-        global.__bootlog && global.__bootlog.push("HANDLER posting via " + (It.CONFIG.routes[cfg.route] || cfg.route));
         const res = await It.apiPost(It.CONFIG.routes[cfg.route] || cfg.route, collectPayload(fields));
-        global.__bootlog && global.__bootlog.push("HANDLER res ok=" + res.ok + " status=" + res.status);
         if (res.ok) {
           fb.successPulse(form); // spec #3
           cfg.onSuccess(res.body, form);
