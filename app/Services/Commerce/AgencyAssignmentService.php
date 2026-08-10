@@ -8,6 +8,7 @@ use App\Events\Commerce\AgencyAssignmentAdminApproved;
 use App\Events\Commerce\AgencyAssignmentApproved;
 use App\Events\Commerce\AgencyAssignmentDeclined;
 use App\Interfaces\Commerce\AgencyAssignmentRepositoryInterface;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Models\Commerce\AgencyAssignment;
 use App\Models\Trips\Trip;
 use Illuminate\Support\Facades\DB;
@@ -72,6 +73,12 @@ class AgencyAssignmentService
                 'user_id' => $assignment->customer_id,
                 'agency_assignment_id' => $assignment->id,
                 'title' => $title,
+                'travel_style' => 'custom',
+                'no_of_travelers' => 1,
+                'no_of_days' => 7,
+                'budget' => $this->budgetForLevel($assignment->budget_level),
+                'start_date' => now()->addDays(7)->toDateString(),
+                'end_date' => now()->addDays(14)->toDateString(),
                 'status' => TripStatus::PENDING,
             ]);
 
@@ -88,8 +95,21 @@ class AgencyAssignmentService
         });
     }
 
+    private function budgetForLevel(?string $level): float
+    {
+        return match ($level) {
+            'low' => 5000,
+            'medium' => 10000,
+            'high' => 20000,
+            'luxury' => 50000,
+            default => 10000,
+        };
+    }
+
     private function getRelationName(string $class): string
     {
+        $class = Relation::getMorphedModel($class) ?? $class;
+
         return match($class) {
             \App\Models\Catalog\Hotel::class => 'hotels',
             \App\Models\Catalog\Flight::class => 'flights',
@@ -100,3 +120,8 @@ class AgencyAssignmentService
         };
     }
 }
+
+
+
+
+

@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Commerce\Booking;
+use App\Models\Commerce\Order;
 use App\Models\Commerce\Payment;
 use Illuminate\Database\Seeder;
 
@@ -13,18 +13,18 @@ class PaymentSeeder extends Seeder
      */
     public function run(): void
     {
-        Booking::whereIn('status', ['paid', 'failed', 'refunded'])->get()->each(function (Booking $booking) {
+        Order::query()->get()->each(function (Order $order) {
             Payment::create([
-                'booking_id' => $booking->id,
+                'order_id' => $order->id,
                 'paymob_transaction_id' => (string) fake()->unique()->numberBetween(10000000, 99999999),
-                'status' => $booking->status === 'paid' ? 'paid' : ($booking->status === 'refunded' ? 'refunded' : 'failed'),
-                'amount_cents' => $booking->amount_cents,
-                'currency' => $booking->currency,
+                'status' => $order->status->value === 'paid' ? 'paid' : ($order->status->value === 'refunded' ? 'refunded' : 'failed'),
+                'amount_cents' => $order->total_cents,
+                'currency' => $order->currency ?? 'USD',
                 'card_type' => fake()->randomElement(['credit', 'debit']),
                 'card_subtype' => fake()->randomElement(['Visa', 'MasterCard']),
                 'card_pan' => 'XXXX-XXXX-'.fake()->numerify('####'),
                 'hmac_valid' => true,
-                'raw_payload' => ['order_id' => $booking->paymob_order_id, 'source' => 'seeder'],
+                'raw_payload' => ['order_id' => $order->id, 'source' => 'seeder'],
             ]);
         });
     }

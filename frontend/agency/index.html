@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agency Desk · Itinari</title>
+  <link rel="stylesheet" href="../assets/css/admin.css?v=14" />
+</head>
+<body data-page="agency">
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="sidebar-brand"><span class="brand-mark" aria-hidden="true">AG</span><div class="sidebar-brand-inner"><span class="brand-gate">ITINARI · AGN</span><span class="brand">Concierge Desk</span></div><button type="button" id="sidebar-collapse" class="icon-btn collapse-btn" aria-label="Collapse sidebar" aria-expanded="true" aria-keyshortcuts="Control+B Meta+B"><span class="icon-panel-left"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="9" y1="4" x2="9" y2="20"/></svg></span><span class="icon-panel-right"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="15" y1="4" x2="15" y2="20"/></svg></span></button></div>
+      <nav class="nav" aria-label="Agency">
+        <a href="index.html" class="nav-item is-active" aria-current="page"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></span><span class="nav-label">Dashboard</span></a>
+        <a href="#assignments" class="nav-item"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12h6"/><path d="M9 16h4"/></svg></span><span class="nav-label">Assignments</span></a>
+      </nav>
+      <div class="sidebar-foot">
+        <button type="button" id="logout-btn" class="btn-ghost btn-block sidebar-logout"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg><span class="nav-label">Log out</span></button>
+      </div>
+    </aside>
+
+    <main id="main" class="content">
+      <div class="topbar">
+        <div class="topbar-right">
+          <button type="button" id="theme-toggle" class="icon-btn" aria-pressed="false" aria-label="Toggle theme"><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.9" y1="4.9" x2="6.3" y2="6.3"/><line x1="17.7" y1="17.7" x2="19.1" y2="19.1"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.9" y1="19.1" x2="6.3" y2="17.7"/><line x1="17.7" y1="6.3" x2="19.1" y2="4.9"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
+        </div>
+      </div>
+      <header class="content-head">
+        <div class="right">
+          <p class="label-eyebrow" style="margin: 0 0 0.35rem;">CONCIERGE DESK · GATE AG-01</p>
+          <h1>Agency operations</h1>
+          <p class="view-sub">Assignments, approvals, and build-outs</p>
+        </div>
+        <span id="user-chip" class="chip" hidden>
+          <span id="chip-name"></span>
+          <span id="chip-role" class="chip-role"></span>
+        </span>
+      </header>
+
+      <section class="kpi-grid" id="kpi-row" aria-label="Assignment metrics">
+        <article class="ticket kpi-ticket skeleton" id="kpi-total">
+          <p class="label-eyebrow">TOTAL ASSIGNMENTS</p>
+          <div class="kpi-value">&ndash;</div>
+          <span class="ticket-edge" aria-hidden="true"></span>
+          <div class="ticket-stub">
+            <span class="sil" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></span>
+            <span class="label-eyebrow">AGN-01</span>
+          </div>
+        </article>
+        <article class="ticket kpi-ticket skeleton" id="kpi-awaiting">
+          <p class="label-eyebrow">AWAITING RESPONSE</p>
+          <div class="kpi-value">&ndash;</div>
+          <span class="ticket-edge" aria-hidden="true"></span>
+          <div class="ticket-stub">
+            <span class="sil" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></span>
+            <span class="label-eyebrow">AGN-02</span>
+          </div>
+        </article>
+        <article class="ticket kpi-ticket skeleton" id="kpi-active">
+          <p class="label-eyebrow">IN PROGRESS</p>
+          <div class="kpi-value">&ndash;</div>
+          <span class="ticket-edge" aria-hidden="true"></span>
+          <div class="ticket-stub">
+            <span class="sil" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></span>
+            <span class="label-eyebrow">AGN-03</span>
+          </div>
+        </article>
+        <article class="ticket kpi-ticket skeleton" id="kpi-completed">
+          <p class="label-eyebrow">COMPLETED</p>
+          <div class="kpi-value">&ndash;</div>
+          <span class="ticket-edge" aria-hidden="true"></span>
+          <div class="ticket-stub">
+            <span class="sil" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></span>
+            <span class="label-eyebrow">AGN-04</span>
+          </div>
+        </article>
+      </section>
+
+      <section id="assignments" class="ticket ticket-panel" aria-label="Assignments">
+        <div class="panel-head">
+          <p class="label-eyebrow" style="margin: 0 0 0.25rem;">ASSIGNMENT BOARD · LIVE</p>
+          <h2 style="margin: 0;">Assignments</h2>
+        </div>
+        <div id="assignment-host" class="panel-body"><div class="kit-grid-skeleton"><div class="box skeleton"></div><div class="box skeleton"></div><div class="box skeleton"></div></div></div>
+        <span class="ticket-edge" aria-hidden="true"></span>
+      </section>
+    </main>
+  </div>
+
+  <div id="site-banner" role="status">
+    <span id="site-banner-msg"></span><span id="site-banner-drain" aria-hidden="true"></span>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="../assets/js/config.js?v=1786177601"></script>
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/animations.js?v=3"></script>
+  <script src="../assets/js/session.js"></script>
+  <script src="../assets/js/admin-chrome.js?v=12"></script>
+  <script src="../assets/js/agency.js?v=1"></script>
+</body>
+</html>

@@ -32,7 +32,7 @@ onSuccess: function (body, form) {
           // role-aware landing: admin → admin shell, everyone else → user dashboard
           const user = (body && body.user) || It._cachedUser;
           const role = It.session.roleOf(user);
-          global.location.href = It.session.isAdminRole(role) ? It.CONFIG.adminUrl : It.CONFIG.dashboardUrl;
+          global.location.href = It.session.isAdminRole(role) ? It.CONFIG.adminUrl : (role === "agency" ? It.CONFIG.role.agency : It.CONFIG.dashboardUrl);
         }, 900);
       },
     },

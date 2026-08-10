@@ -4,7 +4,7 @@ namespace App\Enums;
 
 enum FlagStatus: string
 {
-   public const PENDING = 'pending';
-   public const APPROVED = 'approved';
-   public const DECLINED = 'declined';
+    case PENDING = 'pending';
+    case APPROVED = 'approved';
+    case DECLINED = 'declined';
 }

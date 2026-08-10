@@ -40,6 +40,7 @@ use App\Http\Controllers\System\SiteSettingsController;
 use App\Http\Controllers\System\SurveyController;
 use App\Http\Controllers\System\WeatherController;
 use App\Http\Controllers\System\FlagController;
+use App\Http\Controllers\System\AdminFlagController;
 // Trips
 use App\Http\Controllers\Trips\AdminReviewController;
 use App\Http\Controllers\Trips\AdminTripController;
@@ -354,5 +355,8 @@ Route::middleware(['auth:api'])->prefix('v1')->group(function () {
 
     // Plans
     Route::post('/agency-assignments/{assignment}/report', [FlagController::class, 'store'])->middleware('auth:api');
+    Route::get('/admin/flags', [AdminFlagController::class, 'index'])->middleware('role:admin|super_admin');
+    Route::post('/admin/flags/{flag}/approve', [AdminFlagController::class, 'approve'])->middleware('role:admin|super_admin');
+    Route::post('/admin/flags/{flag}/decline', [AdminFlagController::class, 'decline'])->middleware('role:admin|super_admin');
 });
 

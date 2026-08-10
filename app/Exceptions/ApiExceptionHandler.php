@@ -84,7 +84,7 @@ class ApiExceptionHandler
      * Handle authorization exceptions
      */
     public function handleAuthorizationException(
-        AuthorizationException $e,
+        AuthorizationException|AccessDeniedHttpException $e,
         Request $request
     ): JsonResponse {
         $this->logException($e, 'Authorization failed');
@@ -261,3 +261,4 @@ class ApiExceptionHandler
         Log::warning($message, $logContext);
     }
 }
+
