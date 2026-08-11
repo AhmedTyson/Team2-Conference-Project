@@ -14,13 +14,29 @@ class AgencyAssignmentController extends Controller
 
     public function __construct(private AgencyAssignmentService $service) {}
 
-    public function index(Request $request)
+public function index(Request $request)
     {
         $assignments = AgencyAssignment::where('agency_user_id', $request->user()->id)
             ->with(['customer', 'trips'])
             ->get();
             
         return response()->json(['data' => $assignments]);
+    }
+
+    public function myAssignments(Request $request)
+    {
+        $assignments = $this->service->listForCustomer($request->user()->id);
+
+        return response()->json(['data' => $assignments]);
+    }
+
+    public function cancel(Request $request, AgencyAssignment $assignment)
+    {
+        $this->authorize('cancel', $assignment);
+
+        $assignment = $this->service->cancel($assignment, $request->user()->id);
+
+        return response()->json(['data' => $assignment]);
     }
 
     public function approve(Request $request, AgencyAssignment $assignment)

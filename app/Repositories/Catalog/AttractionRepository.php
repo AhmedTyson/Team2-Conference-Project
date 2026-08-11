@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Collection;
 
 class AttractionRepository implements AttractionRepositoryInterface
 {
-    public function getForAdmin(): Collection
+    public function getForAdmin(bool $trashed = false): Collection
     {
-        return Attraction::all();
+        return Attraction::query()->when($trashed, fn ($q) => $q->onlyTrashed())->get();
     }
 
     public function getForPublic(): Collection

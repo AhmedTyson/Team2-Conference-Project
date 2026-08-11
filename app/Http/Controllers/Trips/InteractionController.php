@@ -7,7 +7,7 @@ use App\Enums\ReviewStatus;
 use App\Http\Requests\Trips\StoreReviewRequest;
 use App\Http\Resources\FavouriteResource;
 use App\Http\Resources\ReviewResource;
-use App\Models\Trips\Trips\Review;
+use App\Models\Trips\Review;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface FlightRepositoryInterface
 {
-    public function getForAdmin(): Collection;
+    public function getForAdmin(bool $trashed = false): Collection;
 
     public function getForPublic(): Collection;
 

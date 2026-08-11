@@ -124,4 +124,30 @@ class HotelTest extends TestCase
             'destination_id' => 1,
         ])->assertStatus(403);
     }
+
+    public function test_hotel_creation_validation_rejects_invalid_types(): void
+    {
+        $admin = User::factory()->create();
+        $admin->assignRole('admin');
+
+        $payload = [
+            'name' => '',
+            'stars' => 10,
+            'price_per_night' => -50,
+            'availability' => 'yes',
+            'rating' => 6,
+            'destination_id' => 99999,
+        ];
+
+        $response = $this->actingAs($admin, 'api')->postJson('/api/v1/admin/hotels', $payload);
+        
+        $response->assertStatus(422);
+        
+        $errorFields = collect($response->json('error.validation_errors'))->pluck('field')->toArray();
+        $this->assertContains('name', $errorFields);
+        $this->assertContains('stars', $errorFields);
+        $this->assertContains('price_per_night', $errorFields);
+        $this->assertContains('availability', $errorFields);
+        $this->assertContains('destination_id', $errorFields);
+    }
 }

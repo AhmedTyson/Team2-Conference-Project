@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Collection;
 
 class FlightRepository implements FlightRepositoryInterface
 {
-    public function getForAdmin(): Collection
+    public function getForAdmin(bool $trashed = false): Collection
     {
-        return Flight::latest()->get();
+        return Flight::query()->when($trashed, fn ($q) => $q->onlyTrashed())->latest()->get();
     }
 
     public function getForPublic(): Collection

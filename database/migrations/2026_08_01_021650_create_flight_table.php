@@ -22,7 +22,6 @@ return new class extends Migration
             $table->dateTime('arrival_date');
             $table->decimal('price')->nullable();
             $table->string('booking_status')->nullable();
-            $table->softDeletes();
             $table->timestamps();
 
         });

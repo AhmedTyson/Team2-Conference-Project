@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Collection;
 
 class CountryRepository implements CountryRepositoryInterface
 {
-    public function getForAdmin(): Collection
+    public function getForAdmin(bool $trashed = false): Collection
     {
-        return Country::all();
+        return Country::query()->when($trashed, fn ($q) => $q->onlyTrashed())->get();
     }
 
     public function findById($id): Country

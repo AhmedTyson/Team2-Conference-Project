@@ -15,9 +15,9 @@ class RestaurantService
         $this->restaurantRepository = $restaurantRepository;
     }
 
-    public function getAdminList()
+    public function getAdminList(bool $trashed = false)
     {
-        return $this->restaurantRepository->getForAdmin();
+        return $this->restaurantRepository->getForAdmin($trashed);
     }
 
     public function getPublicList()

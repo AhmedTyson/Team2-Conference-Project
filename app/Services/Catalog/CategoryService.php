@@ -15,9 +15,9 @@ class CategoryService
         $this->categoryRepository = $categoryRepository;
     }
 
-    public function index()
+    public function index(bool $trashed = false)
     {
-        return $this->categoryRepository->getAll();
+        return $this->categoryRepository->getAll($trashed);
     }
 
     public function store(array $data)

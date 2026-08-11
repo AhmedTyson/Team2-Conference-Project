@@ -17,11 +17,14 @@ class StoreHotelRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'stars' => ['required', 'integer', 'min:1', 'max:5'],
-            'price_per_night' => ['required', 'integer', 'min:0'],
-            'availability' => ['required', 'string'],
             'destination_id' => ['required', 'exists:destinations,id'],
+            'name' => ['required', 'string', 'max:255'],
+            'address' => ['nullable', 'string', 'max:500'],
+            'price_per_night' => ['required', 'numeric', 'min:0'],
+            'rating' => ['nullable', 'numeric', 'min:0', 'max:5'],
+            'stars' => ['required', 'integer', 'min:1', 'max:5'],
+            'availability' => ['required', 'boolean'],
+            'image' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

@@ -12,7 +12,14 @@ class AdminAgencyController extends Controller
 {
     use AuthorizesRequests;
 
-    public function __construct(private AgencyAssignmentService $service) {}
+public function __construct(private AgencyAssignmentService $service) {}
+
+    public function adminIndex()
+    {
+        $pending = $this->service->listPendingForAdmin();
+
+        return response()->json(['data' => $pending]);
+    }
 
     public function approve(Request $request, AgencyAssignment $assignment)
     {

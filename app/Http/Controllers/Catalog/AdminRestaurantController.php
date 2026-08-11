@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Catalog;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Catalog\StoreRestaurantRequest;
 use App\Http\Requests\Catalog\UpdateRestaurantRequest;
+use App\Models\Catalog\Restaurant;
 use App\Services\Catalog\RestaurantService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -19,7 +20,7 @@ class AdminRestaurantController extends Controller
 
     public function index()
     {
-        $restaurants = $this->restaurantService->getAdminList();
+        $restaurants = $this->restaurantService->getAdminList(request('trashed') === '1');
         return JsonResource::collection($restaurants);
     }
 
@@ -45,5 +46,15 @@ class AdminRestaurantController extends Controller
     {
         $this->restaurantService->destroy($id);
         return response()->json(['success' => true]);
+    }
+
+    public function restore($id)
+    {
+        Restaurant::onlyTrashed()->findOrFail($id)->restore();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Restaurant restored successfully.',
+        ]);
     }
 }

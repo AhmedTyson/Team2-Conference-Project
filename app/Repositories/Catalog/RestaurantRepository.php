@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Collection;
 
 class RestaurantRepository implements RestaurantRepositoryInterface
 {
-    public function getForAdmin(): Collection
+    public function getForAdmin(bool $trashed = false): Collection
     {
-        return Restaurant::all();
+        return Restaurant::query()->when($trashed, fn ($q) => $q->onlyTrashed())->get();
     }
 
     public function getForPublic(): Collection

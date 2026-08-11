@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Trips\StoreTripRequest;
 use App\Http\Requests\Trips\UpdateTripRequest;
 use App\Http\Resources\TripResource;
+use App\Models\Trips\Trip;
 use App\Services\Trips\TripService;
 use Illuminate\Http\JsonResponse;
 
@@ -20,7 +21,7 @@ class AdminTripController extends Controller
 
     public function index()
     {
-        $trips = $this->tripService->getAdminList();
+        $trips = $this->tripService->getAdminList(request('trashed') === '1');
         return TripResource::collection($trips);
     }
 
@@ -50,6 +51,16 @@ class AdminTripController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Trip deleted successfully.',
+        ]);
+    }
+
+    public function restore(int $id): JsonResponse
+    {
+        Trip::onlyTrashed()->findOrFail($id)->restore();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Trip restored successfully.',
         ]);
     }
 }

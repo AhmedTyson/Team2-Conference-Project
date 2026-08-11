@@ -8,6 +8,7 @@ use App\Http\Requests\Catalog\UpdateCategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Catalog\Category;
 use App\Services\Catalog\CategoryService;
+use Illuminate\Http\JsonResponse;
 
 class AdminCategoryController extends Controller
 {
@@ -20,7 +21,7 @@ class AdminCategoryController extends Controller
 
     public function index()
     {
-        return CategoryResource::collection($this->categoryService->index());
+        return CategoryResource::collection($this->categoryService->index(request('trashed') === '1'));
     }
 
     public function show(Category $category)
@@ -48,6 +49,16 @@ class AdminCategoryController extends Controller
 
         return response()->json([
             'message' => 'Category deleted successfully',
+        ]);
+    }
+
+    public function restore(int $id): JsonResponse
+    {
+        Category::onlyTrashed()->findOrFail($id)->restore();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Category restored successfully.',
         ]);
     }
 }

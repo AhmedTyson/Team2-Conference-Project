@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\System;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\System\StoreSurveyRequest;
+use App\Http\Requests\System\UpdateSurveyRequest;
 use App\Services\System\SurveyService;
 use Illuminate\Http\Request;
 
@@ -28,9 +30,9 @@ class SurveyController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreSurveyRequest $request)
     {
-        $data = $request->all();
+        $data = $request->validated();
         $data['user_id'] = auth()->id();
 
         $survey = $this->surveyService->createSurvey($data);
@@ -57,10 +59,9 @@ class SurveyController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateSurveyRequest $request, string $id)
     {
-        $data = $request->all();
-        unset($data['user_id']);
+        $data = $request->validated();
 
         $this->surveyService->updateSurvey($id, $data, auth()->id());
 

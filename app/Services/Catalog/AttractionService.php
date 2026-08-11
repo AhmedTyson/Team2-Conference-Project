@@ -15,9 +15,9 @@ class AttractionService
         $this->attractionRepository = $attractionRepository;
     }
 
-    public function getAdminList()
+    public function getAdminList(bool $trashed = false)
     {
-        return $this->attractionRepository->getForAdmin();
+        return $this->attractionRepository->getForAdmin($trashed);
     }
 
     public function getPublicList()

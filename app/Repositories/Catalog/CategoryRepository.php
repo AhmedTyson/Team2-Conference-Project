@@ -7,9 +7,9 @@ use App\Models\Catalog\Category;
 
 class CategoryRepository implements CategoryRepositoryInterface
 {
-    public function getAll()
+    public function getAll(bool $trashed = false)
     {
-        return Category::all();
+        return Category::query()->when($trashed, fn ($q) => $q->onlyTrashed())->get();
     }
 
     public function create(array $data)

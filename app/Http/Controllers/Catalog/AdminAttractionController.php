@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Catalog;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Catalog\StoreAttractionRequest;
 use App\Http\Requests\Catalog\UpdateAttractionRequest;
+use App\Models\Catalog\Attraction;
 use App\Services\Catalog\AttractionService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -20,7 +21,7 @@ class AdminAttractionController extends Controller
 
     public function index()
     {
-        $attractions = $this->attractionService->getAdminList();
+        $attractions = $this->attractionService->getAdminList(request('trashed') === '1');
         return JsonResource::collection($attractions);
     }
 
@@ -46,5 +47,15 @@ class AdminAttractionController extends Controller
     {
         $this->attractionService->destroy($id);
         return response()->json(['success' => true]);
+    }
+
+    public function restore($id)
+    {
+        Attraction::onlyTrashed()->findOrFail($id)->restore();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Attraction restored successfully.',
+        ]);
     }
 }

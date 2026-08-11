@@ -15,9 +15,9 @@ class FlightService
         $this->flightRepository = $flightRepository;
     }
 
-    public function getAdminList()
+    public function getAdminList(bool $trashed = false)
     {
-        return $this->flightRepository->getForAdmin();
+        return $this->flightRepository->getForAdmin($trashed);
     }
 
     public function getPublicList()

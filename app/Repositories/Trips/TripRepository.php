@@ -8,9 +8,12 @@ use Illuminate\Database\Eloquent\Collection;
 
 class TripRepository implements TripRepositoryInterface
 {
-    public function getForAdmin(): Collection
+    public function getForAdmin(bool $trashed = false): Collection
     {
-        return Trip::with(['user', 'destinations'])->latest()->get();
+        return Trip::with(['user', 'destinations'])
+            ->when($trashed, fn ($q) => $q->onlyTrashed())
+            ->latest()
+            ->get();
     }
 
     public function findById($id): Trip

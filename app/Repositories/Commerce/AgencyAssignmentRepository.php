@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Commerce;
 
+use App\Enums\AgencyAssignmentStatus;
 use App\Interfaces\Commerce\AgencyAssignmentRepositoryInterface;
 use App\Models\Commerce\AgencyAssignment;
 use Illuminate\Database\Eloquent\Collection;
@@ -23,8 +24,24 @@ class AgencyAssignmentRepository implements AgencyAssignmentRepositoryInterface
         return AgencyAssignment::find($id);
     }
 
-    public function getForAgency(int $agencyId): Collection
+public function getForAgency(int $agencyId): Collection
     {
         return AgencyAssignment::where('agency_user_id', $agencyId)->get();
+    }
+
+    public function getPending(): Collection
+    {
+        return AgencyAssignment::where('status', AgencyAssignmentStatus::REQUESTED)
+            ->with(['customer', 'agency'])
+            ->latest()
+            ->get();
+    }
+
+    public function getForCustomer(int $customerId): Collection
+    {
+        return AgencyAssignment::where('customer_id', $customerId)
+            ->with(['agency', 'admin', 'trips'])
+            ->latest()
+            ->get();
     }
 }

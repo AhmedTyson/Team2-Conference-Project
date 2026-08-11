@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface CategoryRepositoryInterface
 {
-    public function getAll();
+    public function getAll(bool $trashed = false);
 
     public function create(array $data);
 

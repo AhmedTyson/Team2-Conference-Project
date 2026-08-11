@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Trips;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ReviewResource;
+use App\Models\Trips\Review;
 use App\Services\Trips\ReviewService;
 use Illuminate\Http\JsonResponse;
 
@@ -18,7 +19,7 @@ class AdminReviewController extends Controller
 
     public function index()
     {
-        $reviews = $this->reviewService->getAdminList();
+        $reviews = $this->reviewService->getAdminList(request('trashed') === '1');
         return ReviewResource::collection($reviews);
     }
 
@@ -48,6 +49,16 @@ class AdminReviewController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Review deleted successfully.',
+        ]);
+    }
+
+    public function restore(int $id): JsonResponse
+    {
+        Review::onlyTrashed()->findOrFail($id)->restore();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Review restored successfully.',
         ]);
     }
 }

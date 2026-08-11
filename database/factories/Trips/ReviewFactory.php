@@ -3,7 +3,7 @@
 namespace Database\Factories\Trips;
 
 use App\Models\Account\User;
-use App\Models\Trips\Trips\Review;
+use App\Models\Trips\Review;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

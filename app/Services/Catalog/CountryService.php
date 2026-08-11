@@ -14,9 +14,9 @@ class CountryService
         $this->countryRepository = $countryRepository;
     }
 
-    public function getAdminList()
+    public function getAdminList(bool $trashed = false)
     {
-        return $this->countryRepository->getForAdmin();
+        return $this->countryRepository->getForAdmin($trashed);
     }
 
     public function showAdmin($id)

@@ -7,7 +7,7 @@ use App\Models\System\Notification;
 use App\Models\System\Survey;
 use App\Models\Trips\Favourite;
 use App\Models\Trips\Trip;
-use App\Models\Trips\Trips\Review;
+use App\Models\Trips\Review;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Database\Factories\Account\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;

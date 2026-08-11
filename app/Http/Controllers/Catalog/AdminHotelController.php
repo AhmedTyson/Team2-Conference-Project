@@ -12,7 +12,13 @@ class AdminHotelController extends Controller
 {
     public function index()
     {
-        return JsonResource::collection(Hotel::paginate(min((int) request('per_page', 15) ?: 15, 100)));
+        $query = Hotel::query();
+
+        if (request('trashed') === '1') {
+            $query->onlyTrashed();
+        }
+
+        return JsonResource::collection($query->paginate(min((int) request('per_page', 15) ?: 15, 100)));
     }
 
     public function store(StoreHotelRequest $request)
@@ -46,5 +52,15 @@ class AdminHotelController extends Controller
         $hotel->delete();
 
         return response()->json(['success' => true]);
+    }
+
+    public function restore($id)
+    {
+        Hotel::onlyTrashed()->findOrFail($id)->restore();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Hotel restored successfully.',
+        ]);
     }
 }

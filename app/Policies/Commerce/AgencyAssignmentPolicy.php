@@ -2,7 +2,6 @@
 
 namespace App\Policies\Commerce;
 
-use App\Enums\AgencyAssignmentStatus;
 use App\Models\Account\User;
 use App\Models\Commerce\AgencyAssignment;
 
@@ -18,14 +17,12 @@ class AgencyAssignmentPolicy
 
     public function approve(User $user, AgencyAssignment $assignment): bool
     {
-        return ($user->hasRole('admin') || $user->hasRole('super_admin')) && 
-               $assignment->status === AgencyAssignmentStatus::REQUESTED;
+        return $user->hasRole('admin') || $user->hasRole('super_admin');
     }
 
     public function respondAsAgency(User $user, AgencyAssignment $assignment): bool
     {
-        return $user->id === $assignment->agency_user_id && 
-               $assignment->status === AgencyAssignmentStatus::ADMIN_APPROVED;
+        return $user->id === $assignment->agency_user_id;
     }
 
     public function cancel(User $user, AgencyAssignment $assignment): bool

@@ -11,6 +11,7 @@ use App\Interfaces\Commerce\AgencyAssignmentRepositoryInterface;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Models\Commerce\AgencyAssignment;
 use App\Models\Trips\Trip;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 class AgencyAssignmentService
@@ -28,8 +29,31 @@ class AgencyAssignmentService
         ]);
     }
 
+    public function listPendingForAdmin(): Collection
+    {
+        return $this->repository->getPending();
+    }
+
+    public function listForCustomer(int $customerId): Collection
+    {
+        return $this->repository->getForCustomer($customerId);
+    }
+
+    public function cancel(AgencyAssignment $assignment, int $customerId): AgencyAssignment
+    {
+        $this->assertStatus($assignment, AgencyAssignmentStatus::REQUESTED, AgencyAssignmentStatus::ADMIN_APPROVED);
+
+        $this->repository->update($assignment, [
+            'status' => AgencyAssignmentStatus::CANCELLED,
+        ]);
+
+        return $assignment;
+    }
+
     public function adminApprove(AgencyAssignment $assignment, int $adminId, int $agencyUserId): AgencyAssignment
     {
+        $this->assertStatus($assignment, AgencyAssignmentStatus::REQUESTED);
+
         $this->repository->update($assignment, [
             'status' => AgencyAssignmentStatus::ADMIN_APPROVED,
             'admin_id' => $adminId,
@@ -44,6 +68,8 @@ class AgencyAssignmentService
 
     public function agencyApprove(AgencyAssignment $assignment): AgencyAssignment
     {
+        $this->assertStatus($assignment, AgencyAssignmentStatus::ADMIN_APPROVED);
+
         $this->repository->update($assignment, [
             'status' => AgencyAssignmentStatus::AGENCY_APPROVED,
             'agency_responded_at' => now(),
@@ -56,6 +82,8 @@ class AgencyAssignmentService
 
     public function agencyDecline(AgencyAssignment $assignment): AgencyAssignment
     {
+        $this->assertStatus($assignment, AgencyAssignmentStatus::ADMIN_APPROVED);
+
         $this->repository->update($assignment, [
             'status' => AgencyAssignmentStatus::AGENCY_DECLINED,
             'agency_responded_at' => now(),
@@ -68,6 +96,8 @@ class AgencyAssignmentService
 
     public function buildTripForCustomer(AgencyAssignment $assignment, string $title, array $items = []): Trip
     {
+        $this->assertStatus($assignment, AgencyAssignmentStatus::AGENCY_APPROVED);
+
         return DB::transaction(function () use ($assignment, $title, $items) {
             $trip = Trip::create([
                 'user_id' => $assignment->customer_id,
@@ -104,6 +134,13 @@ class AgencyAssignmentService
             'luxury' => 50000,
             default => 10000,
         };
+    }
+
+    private function assertStatus(AgencyAssignment $assignment, AgencyAssignmentStatus ...$expectedStatuses): void
+    {
+        if (!in_array($assignment->status, $expectedStatuses)) {
+            abort(409, 'Invalid assignment state transition. Current state: ' . ($assignment->status->value ?? 'unknown'));
+        }
     }
 
     private function getRelationName(string $class): string

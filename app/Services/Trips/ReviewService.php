@@ -15,9 +15,9 @@ class ReviewService
         $this->reviewRepository = $reviewRepository;
     }
 
-    public function getAdminList()
+    public function getAdminList(bool $trashed = false)
     {
-        return $this->reviewRepository->getForAdmin();
+        return $this->reviewRepository->getForAdmin($trashed);
     }
 
     public function approve($id)

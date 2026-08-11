@@ -93,6 +93,12 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(5)->by($request->ip());
         });
 
+        RateLimiter::for('ai', function (Request $request) {
+            $key = $request->user()?->id ?? $request->ip();
+
+            return Limit::perDay(config('ai.rate_limit_per_day'))->by($key);
+        });
+
         Relation::enforceMorphMap([
             'user' => User::class,
             'hotel' => Hotel::class,

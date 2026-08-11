@@ -2,12 +2,12 @@
 
 namespace App\Interfaces\Trips;
 
-use App\Models\Trips\Trips\Review;
+use App\Models\Trips\Review;
 use Illuminate\Database\Eloquent\Collection;
 
 interface ReviewRepositoryInterface
 {
-    public function getForAdmin(): Collection;
+    public function getForAdmin(bool $trashed = false): Collection;
 
     public function findById($id): Review;
 

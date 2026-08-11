@@ -23,7 +23,13 @@ class AdminDestinationController extends Controller
 
     public function index()
     {
-        $destinations = Destination::with('country')->paginate(min((int) request('per_page', 15) ?: 15, 100));
+        $query = Destination::query()->with('country');
+
+        if (request('trashed') === '1') {
+            $query->onlyTrashed();
+        }
+
+        $destinations = $query->paginate(min((int) request('per_page', 15) ?: 15, 100));
 
         return DestinationResource::collection($destinations);
     }
@@ -104,6 +110,17 @@ class AdminDestinationController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Destination deleted successfully.',
+        ]);
+    }
+
+    public function restore(int $id): JsonResponse
+    {
+        $destination = Destination::onlyTrashed()->findOrFail($id);
+        $destination->restore();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Destination restored successfully.',
         ]);
     }
 }

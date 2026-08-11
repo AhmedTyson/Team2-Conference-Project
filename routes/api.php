@@ -136,12 +136,15 @@ Route::middleware(['auth:api'])->prefix('v1/admin')->name('admin.')->group(funct
         ->middleware('permission:manage categories')->name('categories.update');
     Route::delete('/categories/{category}', [AdminCategoryController::class, 'destroy'])
         ->middleware('permission:manage categories')->name('categories.destroy');
+    Route::patch('/categories/{id}/restore', [AdminCategoryController::class, 'restore'])
+        ->middleware('permission:manage categories')->name('categories.restore');
 
     // Countries
     Route::get('/countries', [AdminCountryController::class, 'index'])->middleware('permission:manage countries');
     Route::post('/countries', [AdminCountryController::class, 'store'])->middleware('permission:manage countries');
     Route::put('/countries/{id}', [AdminCountryController::class, 'update'])->middleware('permission:manage countries');
     Route::delete('/countries/{id}', [AdminCountryController::class, 'destroy'])->middleware('permission:manage countries');
+    Route::patch('/countries/{id}/restore', [AdminCountryController::class, 'restore'])->middleware('permission:manage countries');
 
     // Destinations
     Route::get('/destinations', [AdminDestinationController::class, 'index'])
@@ -152,6 +155,8 @@ Route::middleware(['auth:api'])->prefix('v1/admin')->name('admin.')->group(funct
         ->middleware('permission:manage destinations')->name('destinations.update');
     Route::delete('/destinations/{id}', [AdminDestinationController::class, 'destroy'])
         ->middleware('permission:manage destinations')->name('destinations.destroy');
+    Route::patch('/destinations/{id}/restore', [AdminDestinationController::class, 'restore'])
+        ->middleware('permission:manage destinations')->name('destinations.restore');
 
     // Flights
     Route::get('/flights', [AdminFlightController::class, 'index'])
@@ -162,24 +167,29 @@ Route::middleware(['auth:api'])->prefix('v1/admin')->name('admin.')->group(funct
         ->middleware('permission:manage flights');
     Route::delete('/flights/{id}', [AdminFlightController::class, 'destroy'])
         ->middleware('permission:manage flights');
+    Route::patch('/flights/{id}/restore', [AdminFlightController::class, 'restore'])
+        ->middleware('permission:manage flights');
 
     // Hotels
     Route::get('/hotels', [AdminHotelController::class, 'index'])->middleware('permission:manage hotels');
     Route::post('/hotels', [AdminHotelController::class, 'store'])->middleware('permission:manage hotels');
     Route::put('/hotels/{id}', [AdminHotelController::class, 'update'])->middleware('permission:manage hotels');
     Route::delete('/hotels/{id}', [AdminHotelController::class, 'destroy'])->middleware('permission:manage hotels');
+    Route::patch('/hotels/{id}/restore', [AdminHotelController::class, 'restore'])->middleware('permission:manage hotels');
 
     // Attractions
     Route::get('/attractions', [AdminAttractionController::class, 'index'])->middleware('permission:manage attractions');
     Route::post('/attractions', [AdminAttractionController::class, 'store'])->middleware('permission:manage attractions');
     Route::put('/attractions/{id}', [AdminAttractionController::class, 'update'])->middleware('permission:manage attractions');
     Route::delete('/attractions/{id}', [AdminAttractionController::class, 'destroy'])->middleware('permission:manage attractions');
+    Route::patch('/attractions/{id}/restore', [AdminAttractionController::class, 'restore'])->middleware('permission:manage attractions');
 
     // Restaurants
     Route::get('/restaurants', [AdminRestaurantController::class, 'index'])->middleware('permission:manage restaurants');
     Route::post('/restaurants', [AdminRestaurantController::class, 'store'])->middleware('permission:manage restaurants');
     Route::put('/restaurants/{id}', [AdminRestaurantController::class, 'update'])->middleware('permission:manage restaurants');
     Route::delete('/restaurants/{id}', [AdminRestaurantController::class, 'destroy'])->middleware('permission:manage restaurants');
+    Route::patch('/restaurants/{id}/restore', [AdminRestaurantController::class, 'restore'])->middleware('permission:manage restaurants');
 });
 
 // ============================================================
@@ -196,18 +206,18 @@ Route::prefix('v1')->group(function () {
 Route::middleware(['auth:api'])->prefix('v1/trips')->group(function () {
     Route::get('/create', [TripController::class, 'create']);
     Route::post('/', [TripController::class, 'store']);
-    Route::post('/{trip}/attach/{type}', [TripController::class, 'attach'])->middleware('auth:api');
-    Route::delete('/{trip}/detach/{id}', [TripController::class, 'detach'])->middleware('auth:api');
+    Route::post('/{trip}/attach/{type}', [TripController::class, 'attach']);
+    Route::delete('/{trip}/detach/{id}', [TripController::class, 'detach']);
+    
+    // Deprecated shim: direct forking is disabled. Use /v1/checkout/initiate instead.
+    Route::post('/{trip}/fork', [TripController::class, 'fork']);
 });
-
-// Trip forking (original route lived outside the v1 prefix)
-Route::post('/trips/{trip}/fork', [TripController::class, 'fork'])->middleware(['auth:api']);
 
 // Owner trip view (registered after literal /create so the literal wins)
 Route::get('/v1/trips/{trip}', [TripController::class, 'show'])->middleware(['auth:api']);
 
 // ---- Concierge (AI trip assistant chat)
-Route::middleware(['auth:api'])->group(function () {
+Route::middleware(['auth:api', 'throttle:ai'])->group(function () {
     Route::post('/v1/trips/{trip}/concierge', [ConciergeController::class, 'ask']);
 });
 
@@ -219,11 +229,11 @@ Route::middleware(['auth:api'])->group(function () {
 });
 
 // ---- AI trip assistant
-Route::post('/enhance', [AIController::class, 'enhance'])->middleware('auth:api');
+Route::post('/enhance', [AIController::class, 'enhance'])->middleware(['auth:api', 'throttle:ai']);
 Route::post('/review', [GroqService::class, 'generateAi'])
-    ->middleware(['auth:api', 'permission:generate ai itineraries']);
+    ->middleware(['auth:api', 'permission:generate ai itineraries', 'throttle:ai']);
 Route::get('/review/{id}', [AIController::class, 'review'])
-    ->middleware('auth:api');
+    ->middleware(['auth:api', 'throttle:ai']);
 
 // ---- Admin: trips & reviews moderation
 Route::middleware(['auth:api'])->prefix('v1/admin')->name('admin.')->group(function () {
@@ -232,12 +242,14 @@ Route::middleware(['auth:api'])->prefix('v1/admin')->name('admin.')->group(funct
     Route::post('/trips', [AdminTripController::class, 'store'])->middleware('permission:manage trips');
     Route::put('/trips/{id}', [AdminTripController::class, 'update'])->middleware('permission:manage trips');
     Route::delete('/trips/{id}', [AdminTripController::class, 'destroy'])->middleware('permission:manage trips');
+    Route::patch('/trips/{id}/restore', [AdminTripController::class, 'restore'])->middleware('permission:manage trips');
 
     // Reviews
     Route::get('/reviews', [AdminReviewController::class, 'index'])->middleware('permission:manage reviews');
     Route::patch('/reviews/{id}/approve', [AdminReviewController::class, 'approve'])->middleware('permission:manage reviews');
     Route::patch('/reviews/{id}/reject', [AdminReviewController::class, 'reject'])->middleware('permission:manage reviews');
     Route::delete('/reviews/{id}', [AdminReviewController::class, 'destroy'])->middleware('permission:manage reviews');
+    Route::patch('/reviews/{id}/restore', [AdminReviewController::class, 'restore'])->middleware('permission:manage reviews');
 });
 
 // ============================================================
@@ -347,11 +359,14 @@ Route::middleware(['auth:api', 'role:admin|super_admin'])
 
 Route::middleware(['auth:api'])->prefix('v1')->group(function () {
     Route::post('/agency-requests', [AgencyRequestController::class, 'store']);
+    Route::get('/admin/agency-requests', [AdminAgencyController::class, 'adminIndex'])->middleware('role:admin|super_admin');
     Route::post('/admin/agency-requests/{assignment}/approve', [AdminAgencyController::class, 'approve'])->middleware('role:admin|super_admin');
     Route::post('/agency/assignments/{assignment}/approve', [AgencyAssignmentController::class, 'approve'])->middleware('role:agency');
     Route::post('/agency/assignments/{assignment}/decline', [AgencyAssignmentController::class, 'decline'])->middleware('role:agency');
     Route::post('/agency/assignments/{assignment}/trips', [AgencyAssignmentController::class, 'createTrip'])->middleware('role:agency');
     Route::get('/agency/assignments', [AgencyAssignmentController::class, 'index'])->middleware('role:agency');
+    Route::get('/agency-assignments', [AgencyAssignmentController::class, 'myAssignments']);
+    Route::post('/agency-assignments/{assignment}/cancel', [AgencyAssignmentController::class, 'cancel']);
 
 
    // Plans

@@ -17,9 +17,9 @@ class TripService
         $this->destinationRepository = $destinationRepository;
     }
 
-    public function getAdminList()
+    public function getAdminList(bool $trashed = false)
     {
-        return $this->tripRepository->getForAdmin();
+        return $this->tripRepository->getForAdmin($trashed);
     }
 
     public function getCreationData()

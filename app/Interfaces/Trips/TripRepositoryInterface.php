@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface TripRepositoryInterface
 {
-    public function getForAdmin(): Collection;
+    public function getForAdmin(bool $trashed = false): Collection;
 
     public function findById($id): Trip;
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Catalog;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Catalog\StoreFlightRequest;
 use App\Http\Requests\Catalog\UpdateFlightRequest;
+use App\Models\Catalog\Flight;
 use App\Services\Catalog\FlightService;
 use Illuminate\Http\JsonResponse;
 
@@ -19,7 +20,7 @@ class AdminFlightController extends Controller
 
     public function index(): JsonResponse
     {
-        $flights = $this->flightService->getAdminList();
+        $flights = $this->flightService->getAdminList(request('trashed') === '1');
 
         return response()->json([
             'success' => true,
@@ -56,6 +57,16 @@ class AdminFlightController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Flight deleted successfully.',
+        ]);
+    }
+
+    public function restore(int $id): JsonResponse
+    {
+        Flight::onlyTrashed()->findOrFail($id)->restore();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Flight restored successfully.',
         ]);
     }
 }
