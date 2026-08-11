@@ -73,22 +73,43 @@
     const tbody = document.createElement("tbody");
     rows.forEach(function (a) {
       const tr = document.createElement("tr");
-      const actions = document.createElement("td");
-      if (a.status === "admin_approved") {
-        actions.appendChild(actionButton("Approve", "btn btn-primary btn-sm", function () { respond(a.id, "approve"); }));
-        actions.appendChild(actionButton("Decline", "btn btn-ghost btn-sm", function () { respond(a.id, "decline"); }));
-      } else {
-        actions.textContent = "\u2014";
-      }
-      tr.innerHTML =
-        "<td>" + (a.id || "") + "</td>" +
-        "<td>" + (a.customer ? (a.customer.name || a.customer.email || "Customer #" + a.customer_id) : "Customer #" + a.customer_id) + "</td>" +
-        "<td>" + (a.budget_level || "\u2014") + "</td>";
+
+      const idTd = document.createElement("td");
+      idTd.dataset.label = "ID";
+      idTd.textContent = a.id || "";
+
+      const customerTd = document.createElement("td");
+      customerTd.dataset.label = "Customer";
+      customerTd.textContent = a.customer ? (a.customer.name || a.customer.email || "Customer #" + a.customer_id) : "Customer #" + a.customer_id;
+
+      const budgetTd = document.createElement("td");
+      budgetTd.dataset.label = "Budget";
+      budgetTd.textContent = a.budget_level || "\u2014";
+
       const statusTd = document.createElement("td");
+      statusTd.dataset.label = "Status";
       statusTd.appendChild(statusBadge(a.status));
+
+      const assignedTd = document.createElement("td");
+      assignedTd.dataset.label = "Assigned";
+      assignedTd.textContent = a.admin_approved_at ? new Date(a.admin_approved_at).toLocaleDateString() : "\u2014";
+
+      const actionsTd = document.createElement("td");
+      actionsTd.dataset.label = "Actions";
+      actionsTd.className = "td-actions";
+      if (a.status === "admin_approved") {
+        actionsTd.appendChild(actionButton("Approve", "btn btn-primary btn-sm", function () { respond(a.id, "approve"); }));
+        actionsTd.appendChild(actionButton("Decline", "btn btn-ghost btn-sm", function () { respond(a.id, "decline"); }));
+      } else {
+        actionsTd.textContent = "\u2014";
+      }
+
+      tr.appendChild(idTd);
+      tr.appendChild(customerTd);
+      tr.appendChild(budgetTd);
       tr.appendChild(statusTd);
-      tr.innerHTML += "<td>" + (a.admin_approved_at ? new Date(a.admin_approved_at).toLocaleDateString() : "\u2014") + "</td>";
-      tr.appendChild(actions);
+      tr.appendChild(assignedTd);
+      tr.appendChild(actionsTd);
       tbody.appendChild(tr);
     });
     table.appendChild(tbody);
