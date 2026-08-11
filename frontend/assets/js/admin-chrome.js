@@ -57,6 +57,38 @@
     const btn = el("sidebar-collapse");
     const shell = document.querySelector(".shell");
     if (!btn || !shell) return;
+
+    // Inject mobile hamburger menu toggle inside topbar
+    const topbar = document.querySelector(".topbar");
+    if (topbar) {
+      const burger = document.createElement("button");
+      burger.type = "button";
+      burger.id = "mobile-menu-toggle";
+      burger.className = "icon-btn burger-menu-btn";
+      burger.setAttribute("aria-label", "Toggle navigation drawer");
+      burger.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>`;
+      topbar.insertBefore(burger, topbar.firstChild);
+
+      burger.addEventListener("click", function() {
+        shell.classList.toggle("is-mobile-sidebar-open");
+      });
+    }
+
+    // Inject mobile sidebar backdrop overlay
+    const backdrop = document.createElement("div");
+    backdrop.className = "sidebar-backdrop";
+    shell.appendChild(backdrop);
+    backdrop.addEventListener("click", function() {
+      shell.classList.remove("is-mobile-sidebar-open");
+    });
+
+    // Close mobile drawer when clicking a navigation link
+    document.querySelectorAll(".nav-item").forEach(function (a) {
+      a.addEventListener("click", function () {
+        shell.classList.remove("is-mobile-sidebar-open");
+      });
+    });
+
     let collapsed = false;
     try { collapsed = global.localStorage.getItem(SIDEBAR_KEY) === "1"; } catch (e) { /* ignore */ }
     setCollapsed(shell, btn, collapsed);
@@ -124,6 +156,12 @@
   function initUserMenu() {
     const chip = el("user-chip");
     if (!chip) return;
+
+    // Relocate user chip to topbar-right next to theme toggle
+    const topbarRight = document.querySelector(".topbar-right");
+    if (topbarRight) {
+      topbarRight.appendChild(chip);
+    }
 
     const wrap = document.createElement("div");
     wrap.className = "user-menu";
@@ -687,10 +725,20 @@
           It.session.redirectToLogin(); 
           return; 
       }
-      if (!It.session.isAdminRole(It.session.roleOf(user))) {
+      const role = It.session.roleOf(user);
+      const isAgencyPage = document.body.getAttribute("data-page") === "agency";
+      if (isAgencyPage) {
+        if (role !== "agency") {
           It.session.clearSession();
           It.session.redirectToLogin();
           return;
+        }
+      } else {
+        if (!It.session.isAdminRole(role)) {
+          It.session.clearSession();
+          It.session.redirectToLogin();
+          return;
+        }
       }
 
       const chip = document.getElementById("user-chip");
@@ -698,7 +746,10 @@
         const nameEl = document.getElementById("chip-name");
         const roleEl = document.getElementById("chip-role");
         if (nameEl) nameEl.textContent = user.name || "";
-        if (roleEl) roleEl.textContent = It.session.roleOf(user) || "admin";
+        if (roleEl) {
+          const rawRole = It.session.roleOf(user) || "admin";
+          roleEl.textContent = rawRole.replace(/_/g, ' ');
+        }
         chip.hidden = false;
         
         // Trigger manual update of the user menu avatar since the observer might have fired early

@@ -78,7 +78,7 @@
     const payload = tokenPayload();
     if (!payload) return null;
     try {
-      const res = await It.apiGet(It.CONFIG.routes.me, { auth: true });
+      const res = await It.apiGet(It.CONFIG.routes.me + "?_t=" + Date.now(), { auth: true });
       if (res.ok) {
         const user = extractUser(res.body);
         if (user) {
