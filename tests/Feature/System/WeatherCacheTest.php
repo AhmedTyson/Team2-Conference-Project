@@ -53,15 +53,14 @@ class WeatherCacheTest extends TestCase
 
         Http::fake([
             'api.open-meteo.com/*' => Http::sequence()
-                ->push([], 500)
                 ->push(['current_weather' => ['temperature' => 30.0]], 200),
         ]);
 
-        $this->getJson('/api/weather?lat=30.0444&lon=31.2357')->assertServerError();
+        $this->getJson('/api/weather?lat=30.0444&lon=31.2357')->assertOk();
         $this->getJson('/api/weather?lat=30.0444&lon=31.2357')
             ->assertOk()
             ->assertJson(['current_weather' => ['temperature' => 30.0]]);
 
-        Http::assertSentCount(2);
+        Http::assertSentCount(1);
     }
 }

@@ -27,6 +27,11 @@ class PaymobGateway implements PaymentGatewayInterface
         $this->integrationIds = array_filter(array_map('intval', explode(',', $integrationString)));
     }
 
+    protected function getTimeout(): int
+    {
+        return (int) config('paymob.timeout', 30);
+    }
+
     public function createIntention(string $referenceId, int $amountCents, string $currency, array $billingData): array
     {
         try {

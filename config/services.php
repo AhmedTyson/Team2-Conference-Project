@@ -46,4 +46,14 @@ return [
         'key' => env('OPENAI_API_KEY'),
     ],
 
+    'open-meteo' => [
+        'timeout' => env('OPEN_METEO_TIMEOUT', 5),
+        'connect_timeout' => env('OPEN_METEO_CONNECT_TIMEOUT', 3),
+    ],
+
+    'osrm' => [
+        'timeout' => env('OSRM_TIMEOUT', 5),
+        'connect_timeout' => env('OSRM_CONNECT_TIMEOUT', 3),
+    ],
+
 ];

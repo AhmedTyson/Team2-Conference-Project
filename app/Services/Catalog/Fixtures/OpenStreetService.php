@@ -141,6 +141,8 @@ class OpenStreetService
             function () use ($coordinates) {
 
                 $response = Http::withHeaders(['User-Agent' => $this->userAgent])
+                    ->timeout(config('services.osrm.timeout', 5))
+                    ->connectTimeout(config('services.osrm.connect_timeout', 3))
                     ->get("https://router.project-osrm.org/route/v1/driving/{$coordinates}", [
                         'overview' => 'full',
                         'geometries' => 'geojson',

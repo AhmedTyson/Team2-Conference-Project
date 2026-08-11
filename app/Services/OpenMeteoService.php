@@ -20,11 +20,13 @@ class OpenMeteoService
 
         try {
             // Open-Meteo requires latitude & longitude as query parameter names
-            $response = Http::get('https://api.open-meteo.com/v1/forecast', [
-                'latitude' => $latitude,
-                'longitude' => $longitude,
-                'current_weather' => true,
-            ]);
+            $response = Http::timeout(config('services.open-meteo.timeout', 5))
+                ->connectTimeout(config('services.open-meteo.connect_timeout', 3))
+                ->get('https://api.open-meteo.com/v1/forecast', [
+                    'latitude' => $latitude,
+                    'longitude' => $longitude,
+                    'current_weather' => true,
+                ]);
 
             if ($response->successful()) {
                 $data = $response->json();
