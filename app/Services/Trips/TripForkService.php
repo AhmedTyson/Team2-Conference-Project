@@ -4,17 +4,31 @@ namespace App\Services\Trips;
 
 use App\Models\Trips\Trip;
 use App\Notifications\TripForkedNotification;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 
 class TripForkService
 {
     /**
      * Deep clones a trip plan for a user, marking lineage to the original source.
+     *
+     * SEC-04 (D1 — Option B): fork is only allowed when trip.is_public = true
+     * OR the requesting user is the trip owner.  This check is also enforced
+     * upstream in CheckoutService; the guard here provides defense-in-depth so
+     * that even a directly-dispatched fulfillment job cannot copy a private trip.
      */
     public function fulfillFork(int $userId, int $sourceTripId): Trip
     {
         $sourceTrip = Trip::with(['tripDestinations', 'hotels', 'attractions', 'restaurants'])->findOrFail($sourceTripId);
+
+        // SEC-04 defense-in-depth: re-enforce visibility policy at fulfillment time.
+        if (! $sourceTrip->is_public && $sourceTrip->user_id !== $userId) {
+            throw new AuthorizationException(
+                "Trip {$sourceTripId} is private and cannot be forked by user {$userId}."
+            );
+        }
 
         return DB::transaction(function () use ($sourceTrip, $userId) {
             // Determine the root original_trip_id to maintain a single tree origin

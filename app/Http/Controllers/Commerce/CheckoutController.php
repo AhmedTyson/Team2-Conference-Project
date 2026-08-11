@@ -7,6 +7,7 @@ use App\Http\Requests\Commerce\InitiateCheckoutRequest;
 use App\Services\Commerce\CheckoutService;
 use App\Support\ApiResponse;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 
 class CheckoutController extends Controller
 {
@@ -34,6 +35,13 @@ class CheckoutController extends Controller
                 'data' => $data,
             ]);
 
+        } catch (AuthorizationException $e) {
+            // SEC-04: authorization guard — return 403, not 422.
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'data' => null,
+            ], 403);
         } catch (Exception $e) {
             return ApiResponse::fail(
                 $e->getMessage(),

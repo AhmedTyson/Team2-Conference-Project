@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('plan_id')->constrained()->restrictOnDelete();
-            $table->enum('status', ['active', 'cancelled', 'past_due'])->default('active');
+            $table->enum('status', ['pending', 'active', 'cancelled', 'past_due', 'expired', 'paused'])->default('active');
             $table->unsignedBigInteger('price_cents');
             $table->string('currency', 3)->default('EGP');
             $table->timestamp('started_at')->useCurrent();

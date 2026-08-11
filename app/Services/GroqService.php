@@ -139,7 +139,7 @@ class GroqService
         return $response['choices'][0]['message']['content'] ?? $request->content;
     }
 
-    public function review(Trip $trip, string $trip_title, $trip_items)
+    public function review(Trip $trip, string $trip_title, $trip_items, ?\App\Models\Account\User $user = null)
     {
 
         try {
@@ -168,23 +168,37 @@ class GroqService
 
             $cacheKey = 'trip_review_'.md5($trip->id.$trip_title.json_encode($itinerary));
 
-            $response = Cache::remember($cacheKey, now()->addMinutes(60), function () use ($prompt) {
+            // SEC-11: quota consumed INSIDE the closure so cache hits do NOT decrement quota.
+            $response = Cache::remember($cacheKey, now()->addMinutes(60), function () use ($prompt, $user) {
 
-                return Groq::chat()->completions()->create([
-                    'model' => config('groq.model'),
-                    'messages' => [
-                        [
-                            'role' => 'system',
-                            'content' => 'You are a travel reviewer AI tool.',
-                        ],
-                        [
-                            'role' => 'user',
-                            'content' => $prompt,
-                        ],
-                    ],
-                    'temperature' => 0.5,
+                // Only consume quota on actual generation (cache miss), not on cache hits.
+                if ($user) {
+                    $this->aiUsageService->consumeQuota($user);
+                }
 
-                ]);
+                try {
+                    return Groq::chat()->completions()->create([
+                        'model' => config('groq.model'),
+                        'messages' => [
+                            [
+                                'role' => 'system',
+                                'content' => 'You are a travel reviewer AI tool.',
+                            ],
+                            [
+                                'role' => 'user',
+                                'content' => $prompt,
+                            ],
+                        ],
+                        'temperature' => 0.5,
+
+                    ]);
+                } catch (\Throwable $e) {
+                    // Restore quota if the Groq call itself fails (cache-miss path only).
+                    if ($user) {
+                        $this->aiUsageService->restoreQuota($user);
+                    }
+                    throw $e;
+                }
             });
 
         } catch (\Throwable $e) {

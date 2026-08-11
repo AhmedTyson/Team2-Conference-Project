@@ -10,3 +10,6 @@ Artisan::command('inspire', function () {
 
 // SEC-09: transition stale pending orders (30-minute window exceeded) to expired.
 Schedule::command('orders:expire-stale')->everyMinute();
+
+// SEC-10 (D2): expire fixed-term subscriptions whose renews_at has passed.
+Schedule::command('subscriptions:expire-stale')->everyMinute();

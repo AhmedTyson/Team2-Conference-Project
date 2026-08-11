@@ -42,19 +42,14 @@ class AIController extends Controller
         $this->authorize('view', $trip);
 
         $aiUsage = app(AiUsageService::class);
-        $aiUsage->consumeQuota($request->user());
-
         $groq = new GroqService($aiUsage);
 
         $trip_items = $trip->itineraryItems;
         $trip_title = $trip->title;
 
-        try {
-            $reviewedContent = $groq->review($trip, $trip_title, $trip_items);
-        } catch (\Throwable $e) {
-            $aiUsage->restoreQuota($request->user());
-            throw $e;
-        }
+        // SEC-11: quota is now consumed INSIDE GroqService::review's Cache::remember closure,
+        // so cache hits do NOT decrement the user's quota.
+        $reviewedContent = $groq->review($trip, $trip_title, $trip_items, $request->user());
 
         return response()->json([
             'success' => true,

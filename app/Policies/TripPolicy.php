@@ -16,4 +16,13 @@ class TripPolicy
     {
         return $trip->user_id === $user->id;
     }
+
+    /**
+     * SEC-04 (D1 — Option B): fork is allowed iff the trip is public OR the buyer owns it.
+     * Private trips remain owner-only even after payment is initiated.
+     */
+    public function fork(User $user, Trip $trip): bool
+    {
+        return $trip->is_public || $trip->user_id === $user->id;
+    }
 }

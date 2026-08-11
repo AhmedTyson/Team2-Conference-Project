@@ -29,7 +29,7 @@ class Trip extends Model
         'user_id', 'title', 'travel_style', 'interests', 'no_of_travelers',
         'budget', 'no_of_days', 'start_date', 'end_date', 'status',
         'estimated_cost', 'parent_trip_id', 'original_trip_id', 'is_fork',
-        'source_version_id', 'agency_assignment_id'
+        'source_version_id', 'agency_assignment_id', 'is_public',
     ];
 
     protected function casts(): array
@@ -40,6 +40,7 @@ class Trip extends Model
             'start_date' => 'date',
             'end_date' => 'date',
             'is_fork' => 'boolean',
+            'is_public' => 'boolean',
         ];
     }
 

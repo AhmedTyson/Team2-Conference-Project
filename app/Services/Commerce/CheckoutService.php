@@ -10,7 +10,9 @@ use App\Models\Account\User;
 use App\Models\Commerce\Order;
 use App\Strategies\Checkout\CheckoutStrategyFactory;
 use Exception;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 
 class CheckoutService
 {
@@ -43,6 +45,13 @@ class CheckoutService
         $strategy = CheckoutStrategyFactory::make($type);
 
         $product = $strategy->resolveProduct($productId);
+
+        // SEC-04 (D1 — Option B): fork is only allowed for public trips or the owner's own trip.
+        // This guard fires before any Order/Payment rows are created or the gateway is called.
+        if ($type === 'trip_fork' && Gate::forUser($user)->denies('fork', $product)) {
+            throw new AuthorizationException('You are not authorized to fork this trip.');
+        }
+
         $totalCents = $strategy->calculatePrice($product);
 
         if ($totalCents <= 0) {
