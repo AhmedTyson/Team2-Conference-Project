@@ -10,4 +10,5 @@ enum OrderStatus: string
     case FAILED = 'failed';
     case CANCELLED = 'cancelled';
     case REFUNDED = 'refunded';
+    case EXPIRED = 'expired';
 }

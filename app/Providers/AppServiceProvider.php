@@ -99,6 +99,17 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perDay(config('ai.rate_limit_per_day'))->by($key);
         });
 
+        // Expensive public endpoint (OpenAI + Overpass fan-out): tight per-IP cap.
+        RateLimiter::for('maps', function (Request $request) {
+            return Limit::perMinute(10)->by($request->ip());
+        });
+
+        // SEC-08: checkout initiation creates orders + external Paymob
+        // intentions — bound it per user (authenticated route).
+        RateLimiter::for('checkout', function (Request $request) {
+            return Limit::perMinute(5)->by($request->user('api')?->id ?? $request->ip());
+        });
+
         Relation::enforceMorphMap([
             'user' => User::class,
             'hotel' => Hotel::class,

@@ -7,6 +7,7 @@ use App\Interfaces\Commerce\OrderRepositoryInterface;
 use App\Interfaces\Commerce\PaymentGatewayInterface;
 use App\Interfaces\Commerce\PaymentRepositoryInterface;
 use App\Models\Account\User;
+use App\Models\Commerce\Order;
 use App\Strategies\Checkout\CheckoutStrategyFactory;
 use Exception;
 use Illuminate\Support\Facades\DB;
@@ -19,8 +20,26 @@ class CheckoutService
         protected PaymentRepositoryInterface $paymentRepository
     ) {}
 
-    public function processCheckout(User $user, string $type, int $productId, array $billingData): array
+    public function processCheckout(User $user, string $type, int $productId, array $billingData, ?string $idempotencyKey = null): array
     {
+        if ($idempotencyKey) {
+            $reusable = $this->findReusableCheckout($user->id, $idempotencyKey);
+
+            if ($reusable !== null) {
+                return $reusable;
+            }
+
+            $alreadyProcessed = Order::query()
+                ->where('user_id', $user->id)
+                ->where('idempotency_key', $idempotencyKey)
+                ->where('status', '!=', OrderStatus::PENDING)
+                ->exists();
+
+            if ($alreadyProcessed) {
+                throw new Exception('Checkout already processed.');
+            }
+        }
+
         $strategy = CheckoutStrategyFactory::make($type);
 
         $product = $strategy->resolveProduct($productId);
@@ -30,8 +49,8 @@ class CheckoutService
             throw new Exception('Invalid order amount.');
         }
 
-        $order = DB::transaction(function () use ($user, $totalCents, $strategy, $product) {
-            $order = $this->orderRepository->createOrder($user->id, $totalCents, 'EGP');
+        $order = DB::transaction(function () use ($user, $totalCents, $strategy, $product, $idempotencyKey) {
+            $order = $this->orderRepository->createOrder($user->id, $totalCents, 'EGP', $idempotencyKey);
             $this->orderRepository->createOrderItem($order, $product, $totalCents, ['purchase_type' => $strategy->getPurchaseType()]);
 
             return $order;
@@ -56,13 +75,49 @@ class CheckoutService
             $order->id,
             $referenceId,
             $totalCents,
-            $order->currency
+            $order->currency,
+            $gatewayResponse['client_secret'] ?? null,
+            $gatewayResponse['checkout_url'] ?? null,
         );
 
         return [
             'order_id' => $order->id,
             'client_secret' => $gatewayResponse['client_secret'],
             'checkout_url' => $gatewayResponse['checkout_url'],
+        ];
+    }
+
+    /**
+     * SEC-08: a repeated initiation with the same idempotency key reuses the
+     * existing pending checkout instead of creating a new order/payment and
+     * hitting the gateway again.
+     */
+    protected function findReusableCheckout(int $userId, string $idempotencyKey): ?array
+    {
+        $order = Order::query()
+            ->where('user_id', $userId)
+            ->where('idempotency_key', $idempotencyKey)
+            ->where('status', OrderStatus::PENDING)
+            ->where(function ($query) {
+                $query->whereNull('expires_at')->orWhere('expires_at', '>', now());
+            })
+            ->latest('id')
+            ->first();
+
+        if (! $order) {
+            return null;
+        }
+
+        $payment = $order->latestPayment;
+
+        if (! $payment || ! $payment->client_secret || ! $payment->checkout_url) {
+            return null;
+        }
+
+        return [
+            'order_id' => $order->id,
+            'client_secret' => $payment->client_secret,
+            'checkout_url' => $payment->checkout_url,
         ];
     }
 

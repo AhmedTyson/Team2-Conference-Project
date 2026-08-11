@@ -16,7 +16,9 @@ class OpenStreetService
             'osm:coords:'.md5($address),
             now()->addHours(24),
             function () use ($address) {
-                $response = Http::withHeaders(['User-Agent' => $this->userAgent])
+                $response = Http::retry(2, 1000)->connectTimeout(3)
+                    ->timeout(5)
+                    ->withHeaders(['User-Agent' => $this->userAgent])
                     ->get('https://nominatim.openstreetmap.org/search', [
                         'q' => $address,
                         'format' => 'json',

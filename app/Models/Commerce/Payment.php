@@ -20,6 +20,8 @@ class Payment extends Model
         'status',
         'amount_cents',
         'currency',
+        'client_secret',
+        'checkout_url',
         'card_type',
         'card_subtype',
         'card_pan',
@@ -31,7 +33,7 @@ class Payment extends Model
         'amount_cents' => 'integer',
         'status' => PaymentStatus::class,
         'hmac_valid' => 'boolean',
-        'raw_payload' => 'array',
+        'raw_payload' => 'encrypted:array',
     ];
 
     public function booking(): BelongsTo

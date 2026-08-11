@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Trips;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\GeocodeDestinationJob;
 use App\Models\Catalog\Attraction;
 use App\Models\Catalog\Destination;
 use App\Models\Catalog\Hotel;
@@ -10,6 +11,7 @@ use App\Models\Trips\Trip;
 use App\Services\Catalog\Fixtures\OpenStreetService;
 use App\Support\ApiResponse;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class MapController extends Controller
@@ -18,40 +20,34 @@ class MapController extends Controller
 
     public function destination(Destination $destination, OpenStreetService $maps)
     {
-        set_time_limit(90);
+        $missingCoordinates = ! $destination->latitude || ! $destination->longitude;
 
-        if (! $destination->latitude || ! $destination->longitude) {
-
-            $query = "{$destination->name}, {$destination->city_name}";
-            $coords = $maps->getCoordinates($query);
-
-            if ($coords) {
-                $destination->update([
-                    'latitude' => $coords['lat'],
-                    'longitude' => $coords['lng'],
-                ]);
-
-                $destination->refresh();
-            }
+        // GET stays pure: geocoding backfill moves to a background job.
+        if ($missingCoordinates) {
+            GeocodeDestinationJob::dispatch($destination);
         }
 
         $attractions = $maps->getAttractionsWithAI(
             $destination->city_name
         );
 
-        $restaurants = $maps->getNearbyPlaces(
-            $destination->latitude,
-            $destination->longitude,
-            'restaurant',
-            1000
-        );
+        $restaurants = $missingCoordinates
+            ? []
+            : $maps->getNearbyPlaces(
+                $destination->latitude,
+                $destination->longitude,
+                'restaurant',
+                1000
+            );
 
-        $hotels = $maps->getNearbyPlaces(
-            $destination->latitude,
-            $destination->longitude,
-            'lodging',
-            1000
-        );
+        $hotels = $missingCoordinates
+            ? []
+            : $maps->getNearbyPlaces(
+                $destination->latitude,
+                $destination->longitude,
+                'lodging',
+                1000
+            );
 
         return response()->json([
             'success' => true,
@@ -63,8 +59,11 @@ class MapController extends Controller
         ]);
     }
 
-    public function trip(Trip $trip, OpenStreetService $osm)
+    public function trip(Request $request, Trip $trip, OpenStreetService $osm)
     {
+        // Authorization happens BEFORE trip data is read or sent externally.
+        $this->authorize('view', $trip);
+
         $items = $trip->itineraryItems()
             ->with('itemable')
             ->orderBy('day_number')

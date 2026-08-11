@@ -198,7 +198,7 @@ Route::middleware(['auth:api'])->prefix('v1/admin')->name('admin.')->group(funct
 
 // ---- Maps
 Route::prefix('v1')->group(function () {
-    Route::get('/maps/destination/{destination}', [MapController::class, 'destination']);
+    Route::get('/maps/destination/{destination}', [MapController::class, 'destination'])->middleware('throttle:maps');
     Route::get('/maps/trip/{trip}', [MapController::class, 'trip'])->middleware('auth:api');
 });
 
@@ -275,7 +275,8 @@ Route::middleware(['auth:api'])->prefix('v1')->name('plans.')->group(function ()
 
 // ---- Checkout
 Route::middleware(['auth:api'])->prefix('v1/checkout')->name('checkout.')->group(function () {
-    Route::post('/initiate', [CheckoutController::class, 'initiate'])->name('initiate');
+    Route::post('/initiate', [CheckoutController::class, 'initiate'])
+        ->middleware('throttle:checkout')->name('initiate');
 });
 
 // ---- Paymob webhooks (no auth — provider signature verified in controller)

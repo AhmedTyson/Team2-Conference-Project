@@ -59,6 +59,22 @@ class WebhookService
 
             $success = filter_var($obj['success'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
+            // D5: a success webhook may only fulfill an order within the
+            // 24-hour grace period. After that the payment is accepted at the
+            // gateway but never fulfilled — no entitlements may be granted.
+            $order = $payment->order;
+            $graceDeadline = $order?->created_at?->copy()->addHours(24);
+
+            if ($success && $order && $graceDeadline && now()->greaterThan($graceDeadline)) {
+                Log::warning('Paymob payment webhook arrived after the 24-hour grace period; order will not be fulfilled', [
+                    'order_id' => $order->id,
+                    'payment_id' => $payment->id,
+                    'order_age_hours' => round(now()->diffInHours($order->created_at), 2),
+                ]);
+
+                return ['success' => false, 'message' => 'Order expired beyond grace period', 'status' => 200];
+            }
+
             $cardType = $obj['source_data']['type'] ?? null;
             $cardSubType = $obj['source_data']['sub_type'] ?? null;
             $cardPan = $obj['source_data']['pan'] ?? null;

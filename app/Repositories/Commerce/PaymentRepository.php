@@ -8,7 +8,7 @@ use App\Models\Commerce\Payment;
 
 class PaymentRepository implements PaymentRepositoryInterface
 {
-    public function createPendingPayment(int $orderId, string $transactionId, int $amountCents, string $currency): Payment
+    public function createPendingPayment(int $orderId, string $transactionId, int $amountCents, string $currency, ?string $clientSecret = null, ?string $checkoutUrl = null): Payment
     {
         return Payment::create([
             'order_id' => $orderId,
@@ -17,6 +17,8 @@ class PaymentRepository implements PaymentRepositoryInterface
             'status' => PaymentStatus::PENDING,
             'amount_cents' => $amountCents,
             'currency' => $currency,
+            'client_secret' => $clientSecret,
+            'checkout_url' => $checkoutUrl,
             'hmac_valid' => false,
             'raw_payload' => [],
         ]);
@@ -35,7 +37,21 @@ class PaymentRepository implements PaymentRepositoryInterface
             'raw_payload' => $payload,
             'card_type' => $cardType,
             'card_subtype' => $cardSubType,
-            'card_pan' => $cardPan,
+            'card_pan' => $this->maskPan($cardPan),
         ]);
+    }
+
+    /**
+     * D4 policy: never persist a full PAN. Keep only the last four digits.
+     */
+    protected function maskPan(?string $pan): ?string
+    {
+        if ($pan === null) {
+            return null;
+        }
+
+        $digits = preg_replace('/[^0-9]/', '', $pan);
+
+        return $digits !== '' ? substr($digits, -4) : null;
     }
 }

@@ -25,7 +25,8 @@ class CheckoutController extends Controller
                 $request->user(),
                 $validated['type'],
                 $productId,
-                $validated['billing'] ?? []
+                $validated['billing'] ?? [],
+                $validated['idempotency_key'] ?? null,
             );
 
             return response()->json([

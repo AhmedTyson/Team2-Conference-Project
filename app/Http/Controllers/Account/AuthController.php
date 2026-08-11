@@ -58,6 +58,15 @@ class AuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
         $user = User::where('email', $request->email)->first();
+
+        if ($user && ! $user->is_active) {
+            return ApiResponse::fail(
+                'Invalid email or password',
+                'invalid_credentials',
+                401
+            );
+        }
+
         $token = $user
             ? auth('api')->claims(['roles' => $user->getRoleNames()->toArray()])->attempt($credentials)
             : null;

@@ -8,11 +8,12 @@ use App\Models\Trips\Trip;
 use App\Services\Trips\AiUsageService;
 use App\Services\GroqService;
 use App\Support\ApiResponse;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
 class AIController extends Controller
 {
-    public function enhance(Request $request)
+    use AuthorizesRequests;    public function enhance(Request $request)
     {
         $request->validate(['content' => 'required|string']);
 
@@ -31,30 +32,25 @@ class AIController extends Controller
 
     public function review(Request $request, string $id)
     {
+        $trip = Trip::with(['itineraryItems.itemable', 'destinations'])->find($id);
+
+        if (! $trip) {
+            return ApiResponse::fail('Trip not found', 'not_found', 404);
+        }
+
+        // Authorization happens BEFORE any quota consumption or external AI call.
+        $this->authorize('view', $trip);
 
         $aiUsage = app(AiUsageService::class);
         $aiUsage->consumeQuota($request->user());
 
         $groq = new GroqService($aiUsage);
 
-        $trip = Trip::find($id);
-
-        if (! $trip) {
-            $aiUsage->restoreQuota($request->user());
-
-            return ApiResponse::fail('Trip not found', 'not_found', 404);
-        }
-
-        $trip = Trip::where('id', $id)->with(['itineraryItems.itemable', 'destinations'])->first();
-
-        $trip_id = Trip::find($trip->id);
-
         $trip_items = $trip->itineraryItems;
-
         $trip_title = $trip->title;
 
         try {
-            $reviewedContent = $groq->review($trip_id, $trip_title, $trip_items);
+            $reviewedContent = $groq->review($trip, $trip_title, $trip_items);
         } catch (\Throwable $e) {
             $aiUsage->restoreQuota($request->user());
             throw $e;

@@ -6,7 +6,7 @@ use App\Models\Commerce\Payment;
 
 interface PaymentRepositoryInterface
 {
-    public function createPendingPayment(int $orderId, string $transactionId, int $amountCents, string $currency): Payment;
+    public function createPendingPayment(int $orderId, string $transactionId, int $amountCents, string $currency, ?string $clientSecret = null, ?string $checkoutUrl = null): Payment;
 
     public function findByTransactionId(string $transactionId): ?Payment;
 
