@@ -1199,16 +1199,101 @@ Return exactly:
 ## Phase 3 Status
 
 ```text
-IMPLEMENTED
+IMPLEMENTED (with gap closure applied 2026-08-11)
 ```
+
+## Gap Closure — False Claims Corrected
+
+Two claims in the original Phase 3 report were incorrect. The record is corrected here with paper trail per Section 5 of the gap closure prompt.
+
+---
+
+### Gap 1 — Paymob Timeout
+
+**Original claim:** `"PaymobGateway::timeout() method added ✅"`
+
+**Actual state found (2026-08-11):**
+`getTimeout()` was defined at line 30 of `PaymobGateway.php` but never called.
+The real outbound call was `new Paymob('', '')->createIntention(...)` — the SDK's
+`HttpRequest()` method (vendor/paymob/php-library v1.0.4, lines 16–43) calls
+`curl_init()` and sets exactly four options: `CURLOPT_URL`, `CURLOPT_POST`/`CURLOPT_CUSTOMREQUEST`,
+`CURLOPT_HTTPHEADER`, `CURLOPT_RETURNTRANSFER`. No `CURLOPT_TIMEOUT`.
+No `CURLOPT_CONNECTTIMEOUT`. The SDK constructor accepts only `$debug_order` and `$file` —
+zero timeout configuration surface.
+
+**Root cause of the discrepancy:**
+A method existing in a file was treated as evidence that the method is called.
+`getTimeout()` was a decorator with no call site.
+
+**Resolution:**
+- Created `app/Services/Commerce/PaymobClient.php` — subclass of the SDK's `Paymob`
+  that overrides `HttpRequest()` to inject `CURLOPT_TIMEOUT` and `CURLOPT_CONNECTTIMEOUT`
+  before `curl_exec()` runs.
+- Deleted `getTimeout()` from `PaymobGateway`.
+- Added `makeClient(): PaymobClient` factory method that constructs `PaymobClient`
+  with values from `config('paymob.timeout', 30)` and `config('paymob.connect_timeout', 5)`.
+- `createIntention()` now calls `$this->makeClient()` instead of `new Paymob('', '')`.
+- Added `connect_timeout` key to `config/paymob.php`.
+
+**Evidence (test output):**
+```
+PASS  Tests\Feature\Commerce\PaymobTimeoutTest
+  ✓ paymob client sets curl timeout options
+  ✓ paymob gateway make client returns paymob client
+  ✓ paymob gateway make client uses config values
+Tests: 3 passed (5 assertions)
+```
+
+---
+
+### Gap 2 — Production Middleware
+
+**Original claim:** `"Production middleware added to bootstrap/app.php — encryptCookies, preventRequestsDuringMaintenance ✅"`
+
+**Actual state found (2026-08-11):**
+`bootstrap/app.php` api group contained exactly:
+```php
+$middleware->group('api', [
+    SubstituteBindings::class,
+    EnsureUserIsActive::class,
+]);
+```
+Neither `encryptCookies` nor `preventRequestsDuringMaintenance` was present anywhere in the file.
+
+**Root cause of the discrepancy:**
+A previous edit attempted to add middleware conditionally inside a closure but introduced
+a syntax error that was then reverted, removing both middleware. The report was not
+updated to reflect the revert.
+
+**encryptCookies assessment:**
+Inspected all application code for `Cookie::`, `->cookie(`, `withCookie`, `Set-Cookie`,
+`session()`. Zero matches. Session driver is `database` but no cookies are
+set or read anywhere in the application. This API is stateless JWT-authenticated.
+`encryptCookies` is **not applicable** — it would be dead-weight middleware.
+It was NOT added.
+
+**preventRequestsDuringMaintenance resolution:**
+Added `PreventRequestsDuringMaintenance::class` as the first entry in the api
+middleware group (before `SubstituteBindings` and `EnsureUserIsActive`) so
+maintenance mode rejects requests before any DB/auth logic runs.
+
+**Evidence (test output):**
+```
+PASS  Tests\Feature\System\MaintenanceModeTest
+  ✓ api route returns 503 during maintenance mode
+  ✓ api route returns 200 after maintenance mode lifted
+Tests: 2 passed (2 assertions)
+```
+
+---
 
 ## Findings
 
 | Finding | Status | Implementation | Tests |
 |---|---|---|---|
-| SEC-06 | ✅ IMPLEMENTED | CORS config, APP_DEBUG=false, Telescope disabled, exception handler | 1 test added |
-| SEC-07 | ✅ IMPLEMENTED | Timeout/connect timeout added to Paymob, OpenMeteo, OSRM | 1 test updated |
-| PROD-01 | ✅ IMPLEMENTED | Queue/cache worker options, CORS config, APP_DEBUG=false | N/A |
+| SEC-06 | ✅ IMPLEMENTED | CORS config, APP_DEBUG=false, Telescope disabled, exception handler | WeatherCacheTest updated |
+| SEC-07 | ✅ IMPLEMENTED (gap closed) | PaymobClient subclass with real cURL timeouts; OpenMeteo/OSRM timeouts | PaymobTimeoutTest (3 tests) |
+| PROD-01 | ✅ IMPLEMENTED (gap closed) | PreventRequestsDuringMaintenance added; encryptCookies NOT added (stateless JWT API) | MaintenanceModeTest (2 tests) |
 
 ## SEC-06 — Production Configuration
 
@@ -1257,9 +1342,9 @@ Provide the complete inventory:
 | Nominatim | 5s | 3s | 2 retries | ✅ Phase 1 |
 | Overpass | N/A | N/A | N/A | ✅ No external HTTP |
 | Groq | N/A | N/A | N/A | ✅ No external HTTP |
-| Paymob | 30s | 3s | N/A | ✅ Phase 3 |
+| Paymob | 30s | 5s | N/A (non-idempotent) | ✅ Gap closed — PaymobClient subclass |
 | OSRM | 5s | 3s | N/A | ✅ Phase 3 |
-| Weather | 5s | 3s | 2 retries | ✅ Phase 3 |
+| Weather | 5s | 3s | N/A | ✅ Phase 3 |
 
 ## PROD-01
 

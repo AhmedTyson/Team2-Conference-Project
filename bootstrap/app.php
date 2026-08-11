@@ -5,6 +5,7 @@ use App\Http\Middleware\EnsureUserIsActive;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Spatie\Permission\Middleware\PermissionMiddleware;
@@ -26,6 +27,10 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
 
         $middleware->group('api', [
+            // Must run first: reject all requests while app is in maintenance mode
+            // (php artisan down / up). This prevents DB/auth calls against an
+            // intentionally-offline application.
+            PreventRequestsDuringMaintenance::class,
             SubstituteBindings::class,
             EnsureUserIsActive::class,
         ]);

@@ -27,9 +27,20 @@ class PaymobGateway implements PaymentGatewayInterface
         $this->integrationIds = array_filter(array_map('intval', explode(',', $integrationString)));
     }
 
-    protected function getTimeout(): int
+    /**
+     * Build a PaymobClient with bounded cURL timeouts.
+     *
+     * The SDK (paymob/php-library v1.0.4) sets no CURLOPT_TIMEOUT or
+     * CURLOPT_CONNECTTIMEOUT. PaymobClient overrides HttpRequest() to
+     * inject these. Values are driven by config so they can be tuned
+     * per environment without code changes.
+     */
+    protected function makeClient(): PaymobClient
     {
-        return (int) config('paymob.timeout', 30);
+        return new PaymobClient(
+            timeoutSeconds: (int) config('paymob.timeout', 30),
+            connectTimeoutSeconds: (int) config('paymob.connect_timeout', 5),
+        );
     }
 
     public function createIntention(string $referenceId, int $amountCents, string $currency, array $billingData): array
@@ -68,7 +79,7 @@ class PaymobGateway implements PaymentGatewayInterface
                 'return_url' => route('paymob-v1.callback'), // for frontend redirect
             ];
 
-            $paymobReq = new Paymob('', '');
+            $paymobReq = $this->makeClient();
             $status = $paymobReq->createIntention($this->secretKey, $data, $referenceId);
 
             if (! $status['success']) {

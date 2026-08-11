@@ -8,4 +8,7 @@ return [
 
     // HTTP timeout in seconds (default: 30)
     'timeout' => env('PAYMOB_TIMEOUT', 30),
+
+    // cURL connect timeout in seconds (default: 5)
+    'connect_timeout' => env('PAYMOB_CONNECT_TIMEOUT', 5),
 ];
