@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Itinera · Travel Experiences</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome 6 (free) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <!-- Shared styles -->
+  <link rel="stylesheet" href="css/app.css" />
+  <link rel="stylesheet" href="css/components/navbar.css" />
+  <link rel="stylesheet" href="css/components/buttons.css" />
+  <link rel="stylesheet" href="css/components/modal.css" />
+  <link rel="stylesheet" href="css/components/toast.css" />
+
+  
+  <script>window.APP_URL = ".";</script>
+  <script src="assets/js/config.js?v=1786177601"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/session.js"></script>
+  <script>window.Itinari && (window.Itinari.CONFIG.publicPage = true);</script>
+</head>
+<body>
+
+  <div class="toast" id="toast">
+  <i class="fas fa-check-circle text-green-400" aria-hidden="true"></i>
+  <span id="toastMessage">Success</span>
+</div>
+  <div class="modal-overlay" id="authModal">
+  <div class="modal-box">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-xl font-bold" id="authTitle">Welcome to Itinera</h3>
+      <button type="button" class="text-white/50 hover:text-white text-xl cursor-pointer" id="authCloseBtn" title="Close modal" aria-label="Close modal">
+        <i class="fas fa-times" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="auth-tabs flex border border-white/10 rounded-full overflow-hidden mb-4">
+      <button type="button" id="tabLogin" class="on">Log in</button>
+      <button type="button" id="tabRegister">Sign up</button>
+    </div>
+
+    <form id="loginForm" novalidate>
+      <label for="loginEmail"><i class="fas fa-envelope mr-1" aria-hidden="true"></i>Email</label>
+      <input type="email" id="loginEmail" placeholder="you@example.com" required />
+      <label for="loginPassword"><i class="fas fa-lock mr-1" aria-hidden="true"></i>Password</label>
+      <input type="password" id="loginPassword" placeholder="••••••••" required />
+      <button type="submit" class="btn-white w-full mt-4 flex items-center justify-center gap-2">
+        <i class="fas fa-arrow-right" aria-hidden="true"></i>Log in
+      </button>
+      <p class="text-sm mt-2 text-white/40" id="loginStatus" role="status"></p>
+      <p class="text-xs text-white/30 mt-3 pt-3 border-t border-white/10">
+        <i class="fas fa-info-circle mr-1" aria-hidden="true"></i>Demo: <span class="text-white/60">admin@example.com</span> / <span class="text-white/60">password</span>
+      </p>
+    </form>
+
+    <form id="registerForm" style="display:none;" novalidate>
+      <label for="regName"><i class="fas fa-user mr-1" aria-hidden="true"></i>Full name</label>
+      <input type="text" id="regName" placeholder="Jane Doe" required />
+      <label for="regEmail"><i class="fas fa-envelope mr-1" aria-hidden="true"></i>Email</label>
+      <input type="email" id="regEmail" placeholder="you@example.com" required />
+      <label for="regPhone"><i class="fas fa-phone mr-1" aria-hidden="true"></i>Phone</label>
+      <input type="tel" id="regPhone" placeholder="+1 555 000 0000" />
+      <label for="regPassword"><i class="fas fa-lock mr-1" aria-hidden="true"></i>Password</label>
+      <input type="password" id="regPassword" placeholder="Min. 8 characters" required minlength="8" />
+      <button type="submit" class="btn-white w-full mt-4 flex items-center justify-center gap-2">
+        <i class="fas fa-user-plus" aria-hidden="true"></i>Create account
+      </button>
+      <p class="text-sm mt-2 text-white/40" id="registerStatus" role="status"></p>
+    </form>
+  </div>
+</div>
+
+    <!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
+  <div class="hero-wrapper" id="heroWrapper" style="background-image: url('https://images.pexels.com/photos/1486222/pexels-photo-1486222.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+    <div class="giant-text">
+      <h1 id="hero-title">NEW YORK</h1>
+    </div>
+
+    <div class="content-layer">
+      <nav class="flex flex-col lg:flex-row justify-between items-center gap-4 w-full" id="nav-bar">
+  <a href="index.html" class="flex items-center gap-2 text-white no-underline">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" class="text-red-500 flex-shrink-0" aria-hidden="true">
+      <path d="M12 2C12 2 13 8 18 12C13 16 12 22 12 22C12 22 11 16 6 12C11 8 12 2 12 2Z" fill="currentColor" />
+    </svg>
+    <span class="text-xl font-semibold tracking-wide">Itinera</span>
+  </a>
+
+  <div class="flex items-center justify-center flex-wrap gap-x-2 gap-y-1 px-4 py-2 rounded-full nav-pill text-sm font-medium">
+    <a href="index.html" class="nav-link active">
+      <i class="fas fa-home" aria-hidden="true"></i><span class="nav-text">Home</span>
+    </a>
+    <a href="about.html" class="nav-link ">
+      <i class="fas fa-info-circle" aria-hidden="true"></i><span class="nav-text">About</span>
+    </a>
+    <a href="explore.html" class="nav-link ">
+      <i class="fas fa-compass" aria-hidden="true"></i><span class="nav-text">Explore</span>
+    </a>
+    <a href="destinations.html" class="nav-link ">
+      <i class="fas fa-map-marked-alt" aria-hidden="true"></i><span class="nav-text">Destinations</span>
+    </a>
+    <a href="contact.html" class="nav-link ">
+      <i class="fas fa-envelope" aria-hidden="true"></i><span class="nav-text">Contact</span>
+    </a>
+    <a href="#pricing" class="nav-link ">
+      <i class="fas fa-tags" aria-hidden="true"></i><span class="nav-text">Pricing</span>
+    </a>
+    <a href="booking.html" class="nav-link ">
+      <i class="fas fa-plane" aria-hidden="true"></i><span class="nav-text">Booking</span>
+    </a>
+    <a href="surveys.html" class="nav-link ">
+      <i class="fas fa-clipboard-list" aria-hidden="true"></i><span class="nav-text">Surveys</span>
+    </a>
+    <a href="chat.html" class="nav-link ">
+      <i class="fas fa-robot" aria-hidden="true"></i><span class="nav-text">AI</span>
+    </a>
+    <button type="button" class="guest-actions btn-login">
+      <i class="fas fa-sign-in-alt" aria-hidden="true"></i>Log in
+    </button>
+  </div>
+
+  <div class="flex items-center gap-4 text-sm font-medium">
+    <div class="user-chip-area hidden">
+      <div class="flex items-center gap-3 bg-white/10 border border-white/20 rounded-full pl-1.5 pr-2 py-1">
+        <span class="user-avatar w-8 h-8 rounded-full bg-white text-black flex items-center justify-center font-bold text-sm">?</span>
+        <span class="user-name text-sm font-medium">—</span>
+        <button type="button" class="btn-logout text-white/60 hover:text-white text-xs px-1" title="Log out" aria-label="Log out">
+          <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+      <!-- Hero bottom -->
+      <div class="flex flex-col md:flex-row justify-between items-end w-full gap-6 pb-1">
+        <div class="flex flex-col gap-6 max-w-3xl">
+          <div class="flex flex-wrap gap-8 md:gap-14">
+            <div class="stat-item">
+              <div class="stat-number">20K+</div>
+              <div class="text-[13px] text-white/60 mt-2 font-medium tracking-wide uppercase flex items-center gap-1.5">
+                <i class="fas fa-smile text-white/40" aria-hidden="true"></i>Happy Travellers
+              </div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">2K+</div>
+              <div class="text-[13px] text-white/60 mt-2 font-medium tracking-wide uppercase flex items-center gap-1.5">
+                <i class="fas fa-route text-white/40" aria-hidden="true"></i>Custom Tours
+              </div>
+            </div>
+            <div class="stat-item">
+              <div class="stat-number">+5</div>
+              <div class="text-[13px] text-white/60 mt-2 font-medium tracking-wide uppercase flex items-center gap-1.5">
+                <i class="fas fa-globe-americas text-white/40" aria-hidden="true"></i>Destinations
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center gap-4 flex-wrap">
+            <a href="booking.html" class="btn-primary" id="bookNowBtn">
+              <i class="fas fa-calendar-check" aria-hidden="true"></i>Book Now
+            </a>
+            <a href="chat.html" class="btn-outline" id="chatAiBtn">
+              <i class="fas fa-robot" aria-hidden="true"></i>Ask the AI
+            </a>
+            <a href="explore.html" class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-black hover:bg-gray-100 transition shrink-0 group" id="arrowBtn" title="Start planning" aria-label="Start planning">
+              <i class="fas fa-arrow-up-right group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition" aria-hidden="true"></i>
+            </a>
+            <p class="text-xs text-white/60 max-w-[220px] leading-relaxed ml-1 font-normal">
+              <i class="fas fa-heart text-red-400/60 mr-1" aria-hidden="true"></i>Book unique stays that bring travelers and locals together.
+            </p>
+          </div>
+        </div>
+
+        <!-- Carousel -->
+        <div class="carousel-card group" id="carousel-card">
+          <div class="relative overflow-hidden rounded-xl mb-3">
+            <img id="carousel-img" src="https://images.pexels.com/photos/1486222/pexels-photo-1486222.jpeg?auto=compress&cs=tinysrgb&w=600" alt="New York" class="w-full h-[200px] object-cover transition duration-700" />
+            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+              <h4 id="carousel-name" class="text-xl font-bold text-white">New York</h4>
+              <p id="carousel-location" class="text-sm text-white/80 flex items-center gap-1">
+                <i class="fas fa-map-pin" aria-hidden="true"></i>USA
+              </p>
+            </div>
+          </div>
+          <div class="flex items-center gap-4 px-1 pb-0.5">
+            <span id="carousel-text" class="text-xs font-semibold text-white/80 w-10">01/05</span>
+            <div class="flex-1 h-[3px] bg-white/20 rounded-full overflow-hidden">
+              <div id="carousel-progress" class="h-full bg-white w-[20%] transition-all duration-500 ease-out rounded-full"></div>
+            </div>
+          </div>
+          <p id="carousel-desc" class="text-xs text-white/60 px-1 mt-2 leading-relaxed">The city that never sleeps — iconic skyline, endless energy, and world-class culture.</p>
+          <div class="flex justify-between items-center mt-3 px-1">
+            <button type="button" id="carousel-prev" class="text-white/60 hover:text-white transition w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10" title="Previous destination" aria-label="Previous destination">
+              <i class="fas fa-chevron-left" aria-hidden="true"></i>
+            </button>
+            <div class="flex gap-1.5" id="carousel-dots"></div>
+            <button type="button" id="carousel-next" class="text-white/60 hover:text-white transition w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10" title="Next destination" aria-label="Next destination">
+              <i class="fas fa-chevron-right" aria-hidden="true"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ SECTIONS ═══════════════════════════════ -->
+  <div class="sections-wrapper">
+
+    <!-- Why Choose Us -->
+    <section class="rounded-2xl p-8 mb-24 relative" style="background-color: #0f0f0f;">
+      <div class="flex flex-col md:flex-row gap-12">
+        <div class="flex-1">
+          <h2 class="section-title">Why travelers choose <br />Itinera for their adventures</h2>
+          <p class="section-sub">From iconic cities to hidden gems, we make exploring safer, simpler, and more exciting with expert-crafted itineraries and 24/7 support.</p>
+          <div class="flex gap-8 mt-8">
+            <div class="flex flex-col items-center">
+              <div class="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-xl font-bold border border-white/5">
+                <i class="fas fa-user-check text-white/60 text-2xl" aria-hidden="true"></i>
+              </div>
+              <span class="text-[10px] text-white/40 mt-2 text-center">12k Happy<br />Travellers</span>
+            </div>
+            <div class="flex flex-col items-center">
+              <div class="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-xl font-bold border border-white/5">
+                <i class="fas fa-award text-white/60 text-2xl" aria-hidden="true"></i>
+              </div>
+              <span class="text-[10px] text-white/40 mt-2 text-center">10yrs Industry<br />Expertise</span>
+            </div>
+            <div class="flex flex-col items-center">
+              <div class="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-xl font-bold border border-white/5">
+                <i class="fas fa-headset text-white/60 text-2xl" aria-hidden="true"></i>
+              </div>
+              <span class="text-[10px] text-white/40 mt-2 text-center">24/7 Support<br />Always Here</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex-1 flex flex-col gap-4">
+          <div class="glass-card p-5 flex gap-4 items-start">
+            <i class="fas fa-map-marked-alt text-2xl text-white/60 mt-1" aria-hidden="true"></i>
+            <div>
+              <h4 class="font-semibold">Hand-picked destinations</h4>
+              <p class="text-sm text-white/50 mt-1">Every route is vetted by local experts, so you skip the tourist traps and find the real soul of each city.</p>
+            </div>
+          </div>
+          <div class="glass-card p-5 flex gap-4 items-start">
+            <i class="fas fa-wallet text-2xl text-white/60 mt-1" aria-hidden="true"></i>
+            <div>
+              <h4 class="font-semibold">Transparent pricing</h4>
+              <p class="text-sm text-white/50 mt-1">No hidden fees, no surprises. One clear price for flights, stays, and experiences.</p>
+            </div>
+          </div>
+          <div class="glass-card p-5 flex gap-4 items-start">
+            <i class="fas fa-shield-alt text-2xl text-white/60 mt-1" aria-hidden="true"></i>
+            <div>
+              <h4 class="font-semibold">Safe &amp; flexible</h4>
+              <p class="text-sm text-white/50 mt-1">Free cancellation on most bookings and full support from real humans whenever you need us.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trending Destinations -->
+    <section class="mb-24">
+      <div class="flex justify-between items-end gap-6 mb-8">
+        <div>
+          <h2 class="section-title">Trending destinations</h2>
+          <p class="section-sub">The places everyone is talking about this season.</p>
+        </div>
+        <a href="destinations.html" class="btn-outline hidden sm:inline-flex">
+          <i class="fas fa-map-marked-alt" aria-hidden="true"></i>Explore all
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="homeDestGrid">
+        <div class="dest-card" data-city="New York" title="Check weather for New York" style="cursor:pointer;">
+          <img src="https://images.pexels.com/photos/1486222/pexels-photo-1486222.jpeg?auto=compress&cs=tinysrgb&w=600" alt="New York" loading="lazy" />
+          <div class="dest-name">New York <i class="fas fa-star text-yellow-400 text-xs" aria-hidden="true"></i></div>
+          <div class="dest-location mt-1"><i class="fas fa-map-pin" aria-hidden="true"></i>USA</div>
+          <p class="dest-desc">The city that never sleeps — skyline, energy, and culture around every corner.</p>
+        </div>
+        <div class="dest-card" data-city="Dubai" title="Check weather for Dubai" style="cursor:pointer;">
+          <img src="https://images.pexels.com/photos/2064827/pexels-photo-2064827.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Dubai" loading="lazy" />
+          <div class="dest-name">Dubai <i class="fas fa-star text-yellow-400 text-xs" aria-hidden="true"></i></div>
+          <div class="dest-location mt-1"><i class="fas fa-map-pin" aria-hidden="true"></i>UAE</div>
+          <p class="dest-desc">Futuristic skylines, desert safaris, and record-breaking landmarks.</p>
+        </div>
+        <div class="dest-card" data-city="Cairo" title="Check weather for Cairo" style="cursor:pointer;">
+          <img src="https://images.pexels.com/photos/460672/pexels-photo-460672.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Cairo" loading="lazy" />
+          <div class="dest-name">Cairo <i class="fas fa-star text-yellow-400 text-xs" aria-hidden="true"></i></div>
+          <div class="dest-location mt-1"><i class="fas fa-map-pin" aria-hidden="true"></i>Egypt</div>
+          <p class="dest-desc">Pharaohs, pyramids, and the eternal pulse of the Nile.</p>
+        </div>
+        <div class="dest-card" data-city="Paris" title="Check weather for Paris" style="cursor:pointer;">
+          <img src="https://images.pexels.com/photos/338515/pexels-photo-338515.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Paris" loading="lazy" />
+          <div class="dest-name">Paris <i class="fas fa-star text-yellow-400 text-xs" aria-hidden="true"></i></div>
+          <div class="dest-location mt-1"><i class="fas fa-map-pin" aria-hidden="true"></i>France</div>
+          <p class="dest-desc">Cafés, art, and romance along the Seine.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="mb-24">
+      <div class="text-center mb-12">
+        <h2 class="section-title">Plan a trip in 3 easy steps</h2>
+        <p class="section-sub mx-auto">Tell us where you're going — we handle the rest.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="glass-card p-8 text-center">
+          <div class="step-circle">1</div>
+          <h4 class="font-semibold text-lg">Pick a destination</h4>
+          <p class="text-sm text-white/50 mt-2">Browse curated cities or search by mood, budget, and season.</p>
+        </div>
+        <div class="glass-card p-8 text-center">
+          <div class="step-circle">2</div>
+          <h4 class="font-semibold text-lg">Customize your trip</h4>
+          <p class="text-sm text-white/50 mt-2">Choose flights, stays, and experiences — all in one itinerary.</p>
+        </div>
+        <div class="glass-card p-8 text-center">
+          <div class="step-circle">3</div>
+          <h4 class="font-semibold text-lg">Travel with confidence</h4>
+          <p class="text-sm text-white/50 mt-2">Get live updates, weather, and 24/7 support on the road.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing -->
+    <section class="mb-24" id="pricing">
+      <div class="text-center mb-12">
+        <h2 class="section-title">Plans that fit your journey</h2>
+        <p class="section-sub mx-auto">Start free. Upgrade for unlimited trips, bigger AI quota, and priority support.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="pricingGrid">
+        <div class="glass-card p-8 flex flex-col">
+          <h4 class="font-semibold text-lg">Starter</h4>
+          <p class="text-sm text-white/50 mt-1">For a first adventure</p>
+          <div class="stat-number text-4xl my-5">$0<span class="text-sm text-white/40 font-normal">/mo</span></div>
+          <ul class="text-sm text-white/50 space-y-2 flex-1">
+            <li><i class="fas fa-check text-white/30 mr-2" aria-hidden="true"></i>3 trips</li>
+            <li><i class="fas fa-check text-white/30 mr-2" aria-hidden="true"></i>5 AI generations / month</li>
+          </ul>
+          <button type="button" class="btn-outline w-full justify-center mt-6" data-plan-name="Starter" data-plan-price="0"><i class="fas fa-gem" aria-hidden="true"></i>Choose</button>
+        </div>
+        <div class="glass-card p-8 flex flex-col" style="border-color: rgba(255,255,255,0.25);">
+          <h4 class="font-semibold text-lg">Pro</h4>
+          <p class="text-sm text-white/50 mt-1">Most popular</p>
+          <div class="stat-number text-4xl my-5">$1.99<span class="text-sm text-white/40 font-normal">/mo</span></div>
+          <ul class="text-sm text-white/50 space-y-2 flex-1">
+            <li><i class="fas fa-check text-white/30 mr-2" aria-hidden="true"></i>Unlimited trips</li>
+            <li><i class="fas fa-check text-white/30 mr-2" aria-hidden="true"></i>50 AI generations / month</li>
+            <li><i class="fas fa-check text-white/30 mr-2" aria-hidden="true"></i>Priority support</li>
+          </ul>
+          <button type="button" class="btn-primary w-full justify-center mt-6" data-plan-name="Pro" data-plan-price="199"><i class="fas fa-gem" aria-hidden="true"></i>Choose</button>
+        </div>
+        <div class="glass-card p-8 flex flex-col">
+          <h4 class="font-semibold text-lg">Business</h4>
+          <p class="text-sm text-white/50 mt-1">For teams &amp; agencies</p>
+          <div class="stat-number text-4xl my-5">$4.99<span class="text-sm text-white/40 font-normal">/mo</span></div>
+          <ul class="text-sm text-white/50 space-y-2 flex-1">
+            <li><i class="fas fa-check text-white/30 mr-2" aria-hidden="true"></i>Unlimited trips</li>
+            <li><i class="fas fa-check text-white/30 mr-2" aria-hidden="true"></i>200 AI generations / month</li>
+            <li><i class="fas fa-check text-white/30 mr-2" aria-hidden="true"></i>API access</li>
+          </ul>
+          <button type="button" class="btn-outline w-full justify-center mt-6" data-plan-name="Business" data-plan-price="499"><i class="fas fa-gem" aria-hidden="true"></i>Choose</button>
+        </div>
+      </div>
+      <p class="text-center text-white/35 text-xs mt-6 flex items-center justify-center gap-1.5">
+        <i class="fas fa-info-circle" aria-hidden="true"></i>Pricing shown as EGP from live plans · full compare table on the <a href="plans.html" class="text-white/60 underline">Plans page</a>.
+      </p>
+    </section>
+
+    <!-- CTA -->
+    <section class="rounded-2xl p-10 md:p-16 text-center relative overflow-hidden" style="background-color: #0f0f0f;">
+      <h2 class="section-title">Ready for your next adventure?</h2>
+      <p class="section-sub mx-auto mb-8">Join thousands of travelers who planned smarter with Itinera.</p>
+      <div class="flex items-center justify-center gap-4 flex-wrap">
+        <a href="booking.html" class="btn-primary">
+          <i class="fas fa-plane" aria-hidden="true"></i>Start planning
+        </a>
+        <a href="contact.html" class="btn-outline">
+          <i class="fas fa-envelope" aria-hidden="true"></i>Talk to us
+        </a>
+      </div>
+    </section>
+  </div>
+
+  <footer class="footer relative z-10 mt-12">
+  <div class="max-w-6xl mx-auto px-6 py-10">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div class="md:col-span-2">
+        <a href="index.html" class="flex items-center gap-2 no-underline text-white">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="text-red-500 flex-shrink-0" aria-hidden="true">
+            <path d="M12 2C12 2 13 8 18 12C13 16 12 22 12 22C12 22 11 16 6 12C11 8 12 2 12 2Z" fill="currentColor" />
+          </svg>
+          <span class="text-lg font-semibold tracking-wide">Itinera</span>
+        </a>
+        <p class="text-white/45 text-sm leading-relaxed mt-3 max-w-sm">
+          Plan it. Live it. From iconic cities to hidden gems — expert-crafted journeys with 24/7 support.
+        </p>
+      </div>
+      <div>
+        <h5 class="font-semibold text-sm mb-3 flex items-center gap-2"><i class="fas fa-compass text-white/30" aria-hidden="true"></i>Explore</h5>
+        <ul class="space-y-2 text-sm text-white/50">
+          <li><a href="about.html" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]" aria-hidden="true"></i>About Us</a></li>
+          <li><a href="explore.html" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]" aria-hidden="true"></i>Explore</a></li>
+          <li><a href="plans.html" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]" aria-hidden="true"></i>Pricing</a></li>
+          <li><a href="booking.html" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]" aria-hidden="true"></i>Booking</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5 class="font-semibold text-sm mb-3 flex items-center gap-2"><i class="fas fa-phone text-white/30" aria-hidden="true"></i>Contact</h5>
+        <ul class="space-y-2 text-sm text-white/50">
+          <li class="flex items-center gap-2"><i class="fas fa-envelope w-4 text-white/30" aria-hidden="true"></i>help@itinera.travel</li>
+          <li class="flex items-center gap-2"><i class="fas fa-phone w-4 text-white/30" aria-hidden="true"></i>+1 (555) 123-4567</li>
+          <li class="flex items-center gap-2"><i class="fas fa-map-marker-alt w-4 text-white/30" aria-hidden="true"></i>Cairo, Egypt</li>
+        </ul>
+        <div class="flex gap-3 mt-4">
+          <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition" title="X" aria-label="X"><i class="fab fa-x-twitter text-white/60" aria-hidden="true"></i></a>
+          <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition" title="Instagram" aria-label="Instagram"><i class="fab fa-instagram text-white/60" aria-hidden="true"></i></a>
+          <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition" title="Facebook" aria-label="Facebook"><i class="fab fa-facebook-f text-white/60" aria-hidden="true"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-2 mt-8 pt-6 border-t border-white/10 text-xs text-white/35">
+      <span>&copy; <span id="footerYear"></span> Itinera · Team 2 Conference Project</span>
+      <span class="flex items-center gap-1.5">Made with <i class="fas fa-heart text-red-400" aria-hidden="true"></i> in Egypt</span>
+    </div>
+  </div>
+</footer>
+
+  <!-- Shared application bootstrap (session restore, auth modal wiring, session UI) -->
+  <script type="module" src="js/app.js"></script>
+  <script>
+  (function () {
+    const destinations = [
+      { name: 'New York', location: 'USA', img: 'https://images.pexels.com/photos/1486222/pexels-photo-1486222.jpeg?auto=compress&cs=tinysrgb&w=600', desc: 'The city that never sleeps — iconic skyline, endless energy, and world-class culture.' },
+      { name: 'Dubai', location: 'UAE', img: 'https://images.pexels.com/photos/2064827/pexels-photo-2064827.jpeg?auto=compress&cs=tinysrgb&w=600', desc: 'Futuristic skylines, desert safaris, and record-breaking landmarks.' },
+      { name: 'Cairo', location: 'Egypt', img: 'https://images.pexels.com/photos/460672/pexels-photo-460672.jpeg?auto=compress&cs=tinysrgb&w=600', desc: 'Pharaohs, pyramids, and the eternal pulse of the Nile.' },
+      { name: 'Paris', location: 'France', img: 'https://images.pexels.com/photos/338515/pexels-photo-338515.jpeg?auto=compress&cs=tinysrgb&w=600', desc: 'Cafés, art, and romance along the Seine.' },
+      { name: 'Tokyo', location: 'Japan', img: 'https://images.pexels.com/photos/2506923/pexels-photo-2506923.jpeg?auto=compress&cs=tinysrgb&w=600', desc: 'Neon nights, quiet temples, and the best food in the world.' }
+    ];
+
+    let current = 0;
+    let timer = null;
+
+    const img = document.getElementById('carousel-img');
+    const name = document.getElementById('carousel-name');
+    const location = document.getElementById('carousel-location');
+    const desc = document.getElementById('carousel-desc');
+    const text = document.getElementById('carousel-text');
+    const progress = document.getElementById('carousel-progress');
+    const dots = document.getElementById('carousel-dots');
+    const heroTitle = document.getElementById('hero-title');
+    const heroWrapper = document.getElementById('heroWrapper');
+
+    dots.innerHTML = destinations.map((d, i) =>
+      '<button type="button" class="w-2 h-2 rounded-full transition-all duration-300 ' + (i === 0 ? 'bg-white' : 'bg-white/30 hover:bg-white/60') + '" data-i="' + i + '" aria-label="Show ' + d.name + '"></button>'
+    ).join('');
+
+    function show(i, initial) {
+      current = (i + destinations.length) % destinations.length;
+      const d = destinations[current];
+      img.src = d.img;
+      img.alt = d.name;
+      name.textContent = d.name;
+      location.textContent = d.location;
+      desc.textContent = d.desc;
+      text.textContent = String(current + 1).padStart(2, '0') + '/' + String(destinations.length).padStart(2, '0');
+      progress.style.width = ((current + 1) / destinations.length * 100) + '%';
+      heroWrapper.style.backgroundImage = "url('" + d.img.replace('w=600', 'w=1920') + "')";
+      dots.querySelectorAll('button').forEach((b, bi) => {
+        b.className = 'w-2 h-2 rounded-full transition-all duration-300 ' + (bi === current ? 'bg-white' : 'bg-white/30 hover:bg-white/60');
+      });
+      if (!initial) heroTitle.textContent = d.name.toUpperCase();
+    }
+
+    function startAuto() {
+      clearInterval(timer);
+      timer = setInterval(() => show(current + 1), 4500);
+    }
+
+    document.getElementById('carousel-next').addEventListener('click', () => { show(current + 1); startAuto(); });
+    document.getElementById('carousel-prev').addEventListener('click', () => { show(current - 1); startAuto(); });
+    dots.addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-i]');
+      if (btn) { show(parseInt(btn.dataset.i, 10)); startAuto(); }
+    });
+
+    show(0, true);
+    startAuto();
+  })();
+
+  (function () {
+    document.querySelectorAll('#homeDestGrid .dest-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const city = card.dataset.city;
+        sessionStorage.setItem('itinera_weather_city', city);
+        window.location.href = window.APP_URL + '/weather';
+      });
+    });
+  })();
+
+  (function () {
+    document.querySelectorAll('#pricingGrid [data-plan-name]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const plan = btn.dataset.planName;
+        if (!window.isLoggedIn) {
+          openAuthModal('login', '🔑 Sign in to subscribe to the ' + plan + ' plan.');
+          return;
+        }
+        window.location.href = window.APP_URL + '/plans.html?choose=' + encodeURIComponent(plan);
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Itinari — Travel Discovery Dashboard</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Manrope', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        },
+        colors: {
+          gold: { DEFAULT: '#EAB308', soft: '#FEF3C7', deep: '#CA8A04' },
+          ink: '#1A1A1A',
+          paper: '#FAFAF8',
+        },
+        boxShadow: {
+          soft: '0 18px 40px -18px rgba(26,26,26,0.18)',
+          lift: '0 26px 60px -20px rgba(26,26,26,0.30)',
+        },
+        borderRadius: {
+          card: '28px',
+          chip: '16px',
+        },
+      },
+    },
+  };
+</script>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Manrope', sans-serif; }
+
+  .carousel::-webkit-scrollbar { height: 6px; }
+  .carousel::-webkit-scrollbar-track { background: transparent; }
+  .carousel::-webkit-scrollbar-thumb { background: #E4E4E7; border-radius: 999px; }
+  .carousel { scrollbar-width: thin; scrollbar-color: #E4E4E7 transparent; scroll-snap-type: x mandatory; }
+  .carousel > * { scroll-snap-align: start; }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+  .anim-in { animation: fadeUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  @keyframes modalIn { from { opacity: 0; transform: translateY(18px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  .anim-modal { animation: modalIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  @keyframes drawerIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+  .anim-drawer { animation: drawerIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) both; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .anim-fade { animation: fadeIn 0.25s ease both; }
+
+  .card-hover { transition: transform 0.35s cubic-bezier(0.16,1,0.3,1), box-shadow 0.35s ease; }
+  .card-hover:hover { transform: translateY(-6px); box-shadow: 0 30px 70px -24px rgba(26,26,26,0.35); }
+
+  .featured-img { transition: transform 0.9s cubic-bezier(0.16,1,0.3,1); }
+  .featured-card:hover .featured-img { transform: scale(1.05); }
+
+  .thumb-ring { transition: all 0.25s ease; cursor: pointer; }
+  .thumb-ring.active { outline: 3px solid #EAB308; outline-offset: 3px; transform: scale(1.06); }
+
+  .gold-marker {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: #EAB308;
+    border: 3px solid #fff;
+    box-shadow: 0 4px 12px rgba(202, 138, 4, 0.55);
+  }
+  .leaflet-popup-content-wrapper { border-radius: 16px; box-shadow: 0 18px 40px -18px rgba(26,26,26,0.3); }
+  .leaflet-popup-content { margin: 12px 14px; font-family: 'Manrope', sans-serif; }
+
+  .heart-btn { transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), background 0.2s ease, color 0.2s ease; }
+  .heart-btn:hover { transform: scale(1.12); }
+  .heart-btn.active { color: #E11D48; background: #fff; }
+  .heart-btn.active svg { fill: #E11D48; }
+
+  .skeleton { background: linear-gradient(100deg, #F1F1F3 40%, #FBFBFD 50%, #F1F1F3 60%); background-size: 200% 100%; animation: shimmer 1.3s linear infinite; }
+  @keyframes shimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+  select, input[type="search"] { outline: none; }
+  .gold-focus:focus { border-color: #EAB308 !important; box-shadow: 0 0 0 3px rgba(234,179,8,0.18) !important; }
+
+  .filter-btn.active { background: #EAB308; color: #fff; border-color: #EAB308; }
+
+  .page-btn { transition: all 0.2s ease; }
+  .page-btn.active { background: #1A1A1A; color: #fff; border-color: #1A1A1A; }
+
+  .country-chip.active { border-color: #EAB308; background: #FEF3C7; }
+
+  .nav-link { position: relative; }
+  .nav-link::after { content: ""; position: absolute; left: 0; right: 100%; bottom: -4px; height: 2px; background: #EAB308; border-radius: 2px; transition: right 0.3s ease; }
+  .nav-link:hover::after { right: 0; }
+
+  body.no-scroll { overflow: hidden; }
+
+  .toast { animation: modalIn 0.3s cubic-bezier(0.16,1,0.3,1) both; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    html { scroll-behavior: auto; }
+  }
+</style>
+</head>
+
+<body class="bg-paper text-ink antialiased" id="top">
+
+  <!-- ================= HEADER ================= -->
+  <header class="sticky top-0 z-40 bg-white/85 backdrop-blur-md border-b border-neutral-200/70">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 h-[68px] flex items-center justify-between gap-4">
+      <a href="#top" class="flex items-center gap-2.5">
+        <span class="w-9 h-9 rounded-full bg-ink text-white grid place-items-center">
+          <i data-lucide="compass" class="w-5 h-5 text-gold"></i>
+        </span>
+        <span class="text-xl font-extrabold tracking-tight">Itinari</span>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-8 text-sm font-semibold text-neutral-600">
+        <a href="#top" class="nav-link">Explore</a>
+        <a href="#discover" class="nav-link">Destinations</a>
+        <a href="#map" class="nav-link">Map</a>
+        <button type="button" data-action="toggle-favs" class="nav-link flex items-center gap-1.5 hover:text-ink transition-colors">
+          <i data-lucide="heart" class="w-4 h-4"></i>Favorites
+        </button>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <button type="button" data-action="open-filters" class="hidden sm:inline-flex items-center gap-2 text-sm font-semibold px-4 py-2 rounded-full border border-neutral-200 bg-white hover:border-gold transition-colors">
+          <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>Filters
+        </button>
+        <div class="w-10 h-10 rounded-full bg-gold-soft text-gold-deep grid place-items-center font-extrabold text-sm border border-gold/30">A</div>
+        <button type="button" id="menu-btn" class="md:hidden w-10 h-10 grid place-items-center rounded-full border border-neutral-200 bg-white" aria-label="Menu">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+
+    <div id="mobile-menu" class="hidden md:hidden border-t border-neutral-100 bg-white px-6 py-4 space-y-3 text-sm font-semibold text-neutral-600">
+      <a href="#top" class="block">Explore</a>
+      <a href="#discover" class="block">Destinations</a>
+      <a href="#map" class="block">Map</a>
+      <button type="button" data-action="toggle-favs" class="block flex items-center gap-2"><i data-lucide="heart" class="w-4 h-4"></i>Favorites</button>
+      <button type="button" data-action="open-filters" class="block flex items-center gap-2"><i data-lucide="sliders-horizontal" class="w-4 h-4"></i>Filters</button>
+    </div>
+  </header>
+
+  <main class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+
+    <!-- ================= STATS ================= -->
+    <section class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 py-6" aria-label="Statistics">
+      <div class="bg-white border border-neutral-200/60 rounded-card p-5 shadow-soft">
+        <p class="text-[11px] uppercase tracking-[0.18em] text-neutral-400 font-semibold">Destinations</p>
+        <p id="stat-destinations" class="mt-2 text-3xl font-extrabold tracking-tight">–</p>
+      </div>
+      <div class="bg-white border border-neutral-200/60 rounded-card p-5 shadow-soft">
+        <p class="text-[11px] uppercase tracking-[0.18em] text-neutral-400 font-semibold">Countries</p>
+        <p id="stat-countries" class="mt-2 text-3xl font-extrabold tracking-tight">–</p>
+      </div>
+      <div class="bg-white border border-neutral-200/60 rounded-card p-5 shadow-soft">
+        <p class="text-[11px] uppercase tracking-[0.18em] text-neutral-400 font-semibold">Languages</p>
+        <p id="stat-languages" class="mt-2 text-3xl font-extrabold tracking-tight">–</p>
+      </div>
+      <div class="bg-white border border-neutral-200/60 rounded-card p-5 shadow-soft">
+        <p class="text-[11px] uppercase tracking-[0.18em] text-neutral-400 font-semibold">Currencies</p>
+        <p id="stat-currencies" class="mt-2 text-3xl font-extrabold tracking-tight">–</p>
+      </div>
+    </section>
+
+    <!-- ================= ROW A: FEATURED + MAP ================= -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6">
+      <div class="lg:col-span-7 order-1">
+        <article class="featured-card relative bg-white border border-neutral-200/60 rounded-card overflow-hidden shadow-soft h-full flex flex-col">
+          <div class="relative h-[300px] sm:h-[360px] lg:h-[420px] overflow-hidden bg-neutral-200" id="featured-media">
+            <div class="skeleton absolute inset-0" id="featured-skel"></div>
+            <img id="featured-img" class="featured-img absolute inset-0 w-full h-full object-cover hidden" alt="" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+            <button type="button" data-action="fav-toggle" data-id="" id="featured-heart" class="heart-btn absolute top-4 right-4 w-10 h-10 grid place-items-center rounded-full bg-white/90 text-neutral-500 shadow-soft" aria-label="Toggle favorite">
+              <i data-lucide="heart" class="w-5 h-5"></i>
+            </button>
+            <span class="absolute top-4 left-4 text-[11px] uppercase tracking-[0.2em] font-bold text-gold bg-ink/60 backdrop-blur px-3 py-1.5 rounded-full">Featured</span>
+            <div class="absolute bottom-0 inset-x-0 p-6 text-white">
+              <p class="text-xs font-semibold flex items-center gap-1.5 opacity-90" id="featured-place"></p>
+              <h2 id="featured-name" class="mt-1 text-2xl sm:text-3xl font-extrabold tracking-tight">–</h2>
+              <p id="featured-desc" class="mt-2 text-sm leading-relaxed opacity-90 line-clamp-3 max-w-xl hidden"></p>
+            </div>
+          </div>
+          <div class="p-4 sm:p-5 flex items-center justify-between gap-4">
+            <div class="flex items-center" id="featured-thumbs"></div>
+            <button type="button" data-action="open-detail" data-id="" id="featured-open" class="inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-full bg-ink text-white hover:bg-neutral-800 transition-colors">
+              View details <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </article>
+      </div>
+
+      <div class="lg:col-span-5 order-4">
+        <div class="bg-white border border-neutral-200/60 rounded-card overflow-hidden shadow-soft h-full flex flex-col" id="map">
+          <div class="flex items-center justify-between px-5 py-4 border-b border-neutral-100">
+            <div>
+              <h3 class="font-extrabold tracking-tight">Explore the map</h3>
+              <p class="text-xs text-neutral-500 mt-0.5" id="map-count">Loading markers…</p>
+            </div>
+            <span class="w-9 h-9 rounded-full bg-gold-soft text-gold-deep grid place-items-center"><i data-lucide="map-pin" class="w-5 h-5"></i></span>
+          </div>
+          <div id="map-canvas" class="flex-1 min-h-[320px] lg:min-h-[380px]"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ROW B: SEARCH/COUNTRIES + DISCOVER ================= -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6 mt-5 lg:mt-6">
+      <div class="lg:col-span-5 space-y-5 order-2">
+        <div class="bg-white border border-neutral-200/60 rounded-card p-5 shadow-soft">
+          <label class="text-[11px] uppercase tracking-[0.18em] text-neutral-400 font-semibold" for="search-input">Search</label>
+          <div class="mt-2.5 relative">
+            <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400"></i>
+            <input id="search-input" type="search" placeholder="Search destinations, cities, countries…" class="w-full pl-12 pr-4 py-3 rounded-full border border-neutral-200 bg-paper text-sm font-medium gold-focus transition-shadow" />
+          </div>
+        </div>
+
+        <div class="bg-white border border-neutral-200/60 rounded-card p-5 shadow-soft">
+          <div class="flex items-center justify-between">
+            <label class="text-[11px] uppercase tracking-[0.18em] text-neutral-400 font-semibold">Top Countries</label>
+            <span id="countries-count" class="text-[11px] font-bold text-gold-deep"></span>
+          </div>
+          <div class="carousel mt-3 flex gap-2.5 overflow-x-auto pb-2" id="country-chips"></div>
+        </div>
+      </div>
+
+      <div class="lg:col-span-7 order-5" id="discover">
+        <div class="flex items-end justify-between gap-4 mb-4">
+          <div>
+            <p class="text-[11px] uppercase tracking-[0.2em] font-bold text-gold">Destinations</p>
+            <h2 class="mt-1 text-2xl font-extrabold tracking-tight">Discover</h2>
+            <p class="text-xs text-neutral-500 mt-1" id="result-count">–</p>
+          </div>
+          <label class="flex items-center gap-2 text-xs font-semibold text-neutral-500">
+            Sort
+            <select id="sort-select" class="bg-white border border-neutral-200 rounded-full px-3.5 py-2 text-sm font-semibold text-ink gold-focus">
+              <option value="recommended">Recommended</option>
+              <option value="name-asc">Name A–Z</option>
+              <option value="name-desc">Name Z–A</option>
+              <option value="country-asc">Country A–Z</option>
+            </select>
+          </label>
+        </div>
+
+        <div id="discover-grid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4"></div>
+        <div id="discover-empty" class="hidden text-center py-16">
+          <div class="w-16 h-16 mx-auto rounded-full bg-gold-soft grid place-items-center"><i data-lucide="search-x" class="w-7 h-7 text-gold-deep"></i></div>
+          <h3 class="mt-4 font-extrabold text-lg">No destinations found</h3>
+          <p class="mt-1 text-sm text-neutral-500">Try changing your search or filters.</p>
+          <button type="button" data-action="clear-filters" class="mt-4 inline-flex items-center gap-2 text-sm font-bold px-5 py-2.5 rounded-full bg-ink text-white hover:bg-neutral-800 transition-colors">
+            Clear filters <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <div id="pagination" class="flex flex-wrap items-center justify-between gap-3 mt-6"></div>
+      </div>
+    </section>
+
+    <!-- ================= PLACES CAROUSEL ================= -->
+    <section class="mt-12" id="places">
+      <div class="flex items-end justify-between gap-4">
+        <div>
+          <p class="text-[11px] uppercase tracking-[0.2em] font-bold text-gold">Handpicked selection</p>
+          <h2 class="mt-1 text-2xl font-extrabold tracking-tight">Places</h2>
+          <p class="text-xs text-neutral-500 mt-1">Different angle on the same atlas — ordered by city.</p>
+        </div>
+        <div class="hidden sm:flex gap-2">
+          <button type="button" data-action="carousel-prev" class="w-10 h-10 grid place-items-center rounded-full border border-neutral-200 bg-white hover:border-gold transition-colors" aria-label="Scroll left"><i data-lucide="chevron-left" class="w-5 h-5"></i></button>
+          <button type="button" data-action="carousel-next" class="w-10 h-10 grid place-items-center rounded-full border border-neutral-200 bg-white hover:border-gold transition-colors" aria-label="Scroll right"><i data-lucide="chevron-right" class="w-5 h-5"></i></button>
+        </div>
+      </div>
+      <div id="places-track" class="carousel mt-5 flex gap-5 overflow-x-auto pb-3"></div>
+    </section>
+
+  </main>
+
+  <footer class="border-t border-neutral-200/70 py-8 text-center text-xs text-neutral-500">
+    <p id="footer-note">Powered by the Itinari destinations API.</p>
+  </footer>
+
+  <!-- ================= FILTERS DRAWER ================= -->
+  <div id="drawer-backdrop" class="fixed inset-0 bg-black/40 z-50 hidden anim-fade"></div>
+  <aside id="filters-drawer" class="fixed top-0 right-0 h-full w-full max-w-sm bg-white z-50 hidden shadow-2xl flex-col" aria-label="Filters">
+    <div class="flex items-center justify-between px-6 py-5 border-b border-neutral-100">
+      <h3 class="font-extrabold tracking-tight text-lg">Filters</h3>
+      <button type="button" data-action="close-filters" class="w-9 h-9 grid place-items-center rounded-full border border-neutral-200 hover:border-gold transition-colors" aria-label="Close filters"><i data-lucide="x" class="w-4 h-4"></i></button>
+    </div>
+    <div class="flex-1 overflow-y-auto px-6 py-5 space-y-6">
+      <div>
+        <label class="text-[11px] uppercase tracking-[0.18em] text-neutral-400 font-semibold block mb-2" for="filter-country">Country</label>
+        <select id="filter-country" class="w-full border border-neutral-200 rounded-2xl px-4 py-3 text-sm font-semibold gold-focus"></select>
+      </div>
+      <div>
+        <label class="text-[11px] uppercase tracking-[0.18em] text-neutral-400 font-semibold block mb-2" for="filter-currency">Currency</label>
+        <select id="filter-currency" class="w-full border border-neutral-200 rounded-2xl px-4 py-3 text-sm font-semibold gold-focus"></select>
+      </div>
+      <div>
+        <label class="text-[11px] uppercase tracking-[0.18em] text-neutral-400 font-semibold block mb-2" for="filter-language">Language</label>
+        <select id="filter-language" class="w-full border border-neutral-200 rounded-2xl px-4 py-3 text-sm font-semibold gold-focus"></select>
+      </div>
+      <label class="flex items-center justify-between cursor-pointer">
+        <span class="text-sm font-semibold">Favorites only</span>
+        <input id="filter-favs" type="checkbox" class="w-5 h-5 accent-rose-500" />
+      </label>
+      <div>
+        <label class="text-[11px] uppercase tracking-[0.18em] text-neutral-400 font-semibold block mb-2" for="filter-sort">Sort</label>
+        <select id="filter-sort" class="w-full border border-neutral-200 rounded-2xl px-4 py-3 text-sm font-semibold gold-focus">
+          <option value="recommended">Recommended</option>
+          <option value="name-asc">Name A–Z</option>
+          <option value="name-desc">Name Z–A</option>
+          <option value="country-asc">Country A–Z</option>
+        </select>
+      </div>
+    </div>
+    <div class="px-6 py-5 border-t border-neutral-100 flex gap-3">
+      <button type="button" data-action="clear-filters" class="flex-1 py-3 rounded-full border border-neutral-200 text-sm font-bold hover:border-gold transition-colors">Clear all</button>
+      <button type="button" data-action="close-filters" class="flex-1 py-3 rounded-full bg-ink text-white text-sm font-bold hover:bg-neutral-800 transition-colors">Apply</button>
+    </div>
+  </aside>
+
+  <!-- ================= DETAILS MODAL ================= -->
+  <div id="modal-backdrop" class="fixed inset-0 bg-black/50 z-[60] hidden anim-fade"></div>
+  <div id="details-modal" class="fixed inset-0 z-[70] hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-label="Destination details">
+    <div class="anim-modal bg-white rounded-card max-w-2xl w-full max-h-[92vh] overflow-y-auto shadow-lift">
+      <div class="relative h-56 sm:h-64 bg-neutral-200">
+        <div class="skeleton absolute inset-0" id="modal-skel"></div>
+        <img id="modal-img" class="absolute inset-0 w-full h-full object-cover hidden" alt="" />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent"></div>
+        <button type="button" data-action="close-modal" class="absolute top-4 right-4 w-10 h-10 grid place-items-center rounded-full bg-white/90 text-neutral-700 hover:bg-white transition-colors" aria-label="Close"><i data-lucide="x" class="w-5 h-5"></i></button>
+        <span id="modal-country-chip" class="absolute bottom-4 left-5 inline-flex items-center gap-2 text-xs font-bold text-white bg-ink/55 backdrop-blur px-3 py-1.5 rounded-full"></span>
+      </div>
+      <div class="p-6 sm:p-7">
+        <h2 id="modal-name" class="text-2xl font-extrabold tracking-tight">–</h2>
+        <p id="modal-place" class="mt-1 text-sm font-semibold text-neutral-500 flex items-center gap-1.5"></p>
+        <p id="modal-desc" class="mt-3 text-sm leading-relaxed text-neutral-600"></p>
+        <div class="mt-5 grid grid-cols-2 gap-3">
+          <div class="bg-paper rounded-chip px-4 py-3">
+            <p class="text-[10px] uppercase tracking-[0.16em] text-neutral-400 font-semibold">Capital</p>
+            <p id="modal-capital" class="mt-1 text-sm font-bold">–</p>
+          </div>
+          <div class="bg-paper rounded-chip px-4 py-3">
+            <p class="text-[10px] uppercase tracking-[0.16em] text-neutral-400 font-semibold">Currency</p>
+            <p id="modal-currency" class="mt-1 text-sm font-bold">–</p>
+          </div>
+          <div class="bg-paper rounded-chip px-4 py-3">
+            <p class="text-[10px] uppercase tracking-[0.16em] text-neutral-400 font-semibold">Languages</p>
+            <p id="modal-languages" class="mt-1 text-sm font-bold">–</p>
+          </div>
+          <div class="bg-paper rounded-chip px-4 py-3">
+            <p class="text-[10px] uppercase tracking-[0.16em] text-neutral-400 font-semibold">Coordinates</p>
+            <p id="modal-coords" class="mt-1 text-sm font-bold break-all">–</p>
+          </div>
+        </div>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <button type="button" data-action="view-map" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gold text-white text-sm font-bold hover:bg-gold-deep transition-colors">
+            <i data-lucide="map-pin" class="w-4 h-4"></i><span id="modal-map-label">View on map</span>
+          </button>
+          <button type="button" data-action="modal-fav" class="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-neutral-200 text-sm font-bold hover:border-rose-300 transition-colors">
+            <i data-lucide="heart" class="w-4 h-4" id="modal-heart-icon"></i><span id="modal-fav-label">Add to favorites</span>
+          </button>
+          <button type="button" data-action="close-modal" class="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-neutral-200 text-sm font-bold hover:border-neutral-400 transition-colors">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= ERROR STATE ================= -->
+  <div id="error-state" class="hidden fixed inset-0 z-[80] bg-paper grid place-items-center p-6">
+    <div class="text-center max-w-sm">
+      <div class="w-16 h-16 mx-auto rounded-full bg-red-50 grid place-items-center"><i data-lucide="wifi-off" class="w-7 h-7 text-red-500"></i></div>
+      <h2 class="mt-5 text-xl font-extrabold tracking-tight">Unable to load destinations</h2>
+      <p class="mt-2 text-sm text-neutral-500">Please check that the Laravel API is running at <span class="font-mono text-xs">127.0.0.1:8000</span>.</p>
+      <button type="button" data-action="try-again" class="mt-6 inline-flex items-center gap-2 px-6 py-3 rounded-full bg-ink text-white text-sm font-bold hover:bg-neutral-800 transition-colors">
+        <i data-lucide="refresh-cw" class="w-4 h-4"></i>Try Again
+      </button>
+    </div>
+  </div>
+
+  <!-- toast -->
+  <div id="toast" class="toast hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[90] bg-ink text-white text-sm font-semibold px-5 py-3 rounded-full shadow-lift"></div>
+
+  <script>
+    "use strict";
+
+  /* ---------- config ---------- */
+  const API_BASE = "http://127.0.0.1:8000";
+  const API_URL = API_BASE + "/api/v1/destinations";
+  const ITEMS_PER_PAGE = 12;
+  const FAV_KEY = "itinari_favorites";
+
+  const state = {
+    destinations: [],
+    filteredDestinations: [],
+    currentPage: 1,
+    itemsPerPage: ITEMS_PER_PAGE,
+    search: "",
+    country: "all",
+    currency: "all",
+    language: "all",
+    sort: "recommended",
+    favoritesOnly: false,
+    featuredIndex: 0,
+  };
+
+  const $ = function (id) { return document.getElementById(id); };
+  const $$ = function (sel) { return document.querySelectorAll(sel); };
+
+  let map = null;
+  let markerLayer = null;
+  const markersByDest = new Map();
+
+  /* ---------- escaping ---------- */
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/"/g, "&quot;")
+      .replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  /* ---------- image helpers ---------- */
+  function resolveImageUrl(image) {
+    if (!image) return "";
+    if (/^(https?:)?\/\//.test(image)) return image;
+    return API_BASE + "/" + image.replace(/^\/+/, "");
+  }
+
+  function fallbackImage(initial) {
+    const letter = String(initial || "?").toUpperCase().charAt(0);
+    const svg = "<svg xmlns='http://www.w3.org/2000/svg' width='600' height='400'>"
+      + "<defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>"
+      + "<stop offset='0' stop-color='#1A1A1A'/><stop offset='1' stop-color='#52525B'/>"
+      + "</linearGradient></defs><rect width='600' height='400' fill='url(#g)'/>"
+      + "<text x='50%' y='52%' font-family='sans-serif' font-size='140' font-weight='700' fill='#EAB308'"
+      + " text-anchor='middle' dominant-baseline='middle'>" + letter + "</text></svg>";
+    return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+  }
+
+  function imgSrc(d) {
+    return resolveImageUrl(d.image) || fallbackImage(d.name);
+  }
+
+  /* ---------- favorites (localStorage) ---------- */
+  function getFavorites() {
+    try { return JSON.parse(localStorage.getItem(FAV_KEY) || "[]"); } catch (e) { return []; }
+  }
+  function isFavorite(id) { return getFavorites().indexOf(Number(id)) !== -1; }
+  function toggleFavorite(id) {
+    id = Number(id);
+    const favs = getFavorites();
+    const i = favs.indexOf(id);
+    let added = false;
+    if (i === -1) { favs.push(id); added = true; } else { favs.splice(i, 1); }
+    try { localStorage.setItem(FAV_KEY, JSON.stringify(favs)); } catch (e) {}
+    return added;
+  }
+  function refreshHearts() {
+    $$(".heart-btn").forEach(function (btn) {
+      const id = btn.getAttribute("data-id");
+      btn.classList.toggle("active", isFavorite(id));
+    });
+    syncModalFavButton();
+  }
+
+  /* ---------- toast ---------- */
+  let toastTimer = null;
+  function toast(msg) {
+    const t = $("toast");
+    t.textContent = msg;
+    t.classList.remove("hidden");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.add("hidden"); }, 2400);
+  }
+
+  /* ---------- count-up ---------- */
+  function animateNumber(el, to) {
+    if (!el) return;
+    const dur = 900;
+    const t0 = performance.now();
+    function step(now) {
+      const p = Math.min(1, (now - t0) / dur);
+      el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3)));
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* ---------- misc ---------- */
+  function debounce(fn, ms) {
+    let t;
+    return function () {
+      const args = arguments;
+      clearTimeout(t);
+      t = setTimeout(function () { fn.apply(null, args); }, ms);
+    };
+  }
+  function icons() { if (window.lucide) lucide.createIcons(); }
+
+  /* ---------- statistics (calculated from all data) ---------- */
+  function renderStats() {
+    const countries = new Set();
+    const languages = new Set();
+    const currencies = new Set();
+    state.destinations.forEach(function (d) {
+      if (!d.country) return;
+      if (d.country.name) countries.add(d.country.name);
+      if (d.country.currency) currencies.add(d.country.currency);
+      (d.country.languages || []).forEach(function (l) { languages.add(l); });
+    });
+    animateNumber($("stat-destinations"), state.destinations.length);
+    animateNumber($("stat-countries"), countries.size);
+    animateNumber($("stat-languages"), languages.size);
+    animateNumber($("stat-currencies"), currencies.size);
+  }
+
+  /* ---------- sorting ---------- */
+  function sortDestinations(list) {
+    const s = state.sort;
+    const key = function (d) {
+      if (s === "country-asc") {
+        return String((d.country && d.country.name) || "").toLowerCase() + " " + String(d.name || "").toLowerCase();
+      }
+      return String(d.name || "").toLowerCase();
+    };
+    const dir = s === "name-desc" ? -1 : 1;
+    list.sort(function (a, b) {
+      if (s === "recommended") return a._idx - b._idx;
+      const ka = key(a), kb = key(b);
+      if (ka < kb) return -dir;
+      if (ka > kb) return dir;
+      return a._idx - b._idx;
+    });
+    return list;
+  }
+
+  /* ---------- filtering ---------- */
+  function applyFilters() {
+    let list = state.destinations.slice();
+    const q = state.search.trim().toLowerCase();
+    if (q) {
+      list = list.filter(function (d) {
+        const hay = [d.name, d.city_name, d.country && d.country.name, d.country && d.country.iso_code]
+          .filter(Boolean).join(" ").toLowerCase();
+        return hay.indexOf(q) !== -1;
+      });
+    }
+    if (state.country !== "all") list = list.filter(function (d) { return d.country && d.country.name === state.country; });
+    if (state.currency !== "all") list = list.filter(function (d) { return d.country && d.country.currency === state.currency; });
+    if (state.language !== "all") list = list.filter(function (d) {
+      return d.country && (d.country.languages || []).indexOf(state.language) !== -1;
+    });
+    if (state.favoritesOnly) list = list.filter(function (d) { return isFavorite(d.id); });
+    state.filteredDestinations = sortDestinations(list);
+    state.currentPage = 1;
+    state.featuredIndex = 0;
+    renderAll();
+  }
+
+  /* ---------- discover grid ---------- */
+  function discoverCard(d, i) {
+    const fav = isFavorite(d.id);
+    const flag = d.country && d.country.flag_url;
+    const countryName = (d.country && d.country.name) || "";
+    return '<article class="card-hover bg-white border border-neutral-200/60 rounded-card overflow-hidden shadow-soft anim-in" style="animation-delay:' + (i * 45) + 'ms">'
+      + '<div class="relative h-44 overflow-hidden cursor-pointer group" data-action="open-detail" data-id="' + d.id + '">'
+      + '<img src="' + imgSrc(d) + '" alt="' + esc(d.name) + '" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onerror="this.onerror=null;this.src=fallbackImage(\'' + esc((d.name || "").charAt(0)) + '\')" />'
+      + '<div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none"></div>'
+      + '<button type="button" data-action="fav-toggle" data-id="' + d.id + '" class="heart-btn absolute top-3 right-3 w-9 h-9 grid place-items-center rounded-full bg-white/90 text-neutral-500 shadow-soft' + (fav ? " active" : "") + '" aria-label="Toggle favorite"><i data-lucide="heart" class="w-5 h-5"></i></button>'
+      + (flag
+        ? '<span class="absolute bottom-3 left-3 inline-flex items-center gap-1.5 text-white text-[11px] font-bold bg-black/45 backdrop-blur px-2.5 py-1 rounded-full"><img src="' + flag + '" class="w-3.5 h-3.5 rounded-[2px]" alt="" />' + esc(countryName) + '</span>'
+        : "")
+      + '</div>'
+      + '<div class="p-4 cursor-pointer" data-action="open-detail" data-id="' + d.id + '">'
+      + '<h3 class="font-extrabold text-[15px] truncate">' + esc(d.name) + '</h3>'
+      + '<p class="text-[13px] text-neutral-500 mt-0.5 flex items-center gap-1"><i data-lucide="map-pin" class="w-3.5 h-3.5"></i>' + esc(d.city_name || "—") + '</p>'
+      + '<p class="text-xs text-neutral-400 mt-2 line-clamp-2">' + esc(d.description || "") + '</p>'
+      + '</div></article>';
+  }
+
+  function totalPages() {
+    return Math.max(1, Math.ceil(state.filteredDestinations.length / state.itemsPerPage));
+  }
+
+  function renderDiscover() {
+    const grid = $("discover-grid");
+    const list = state.filteredDestinations;
+    const start = (state.currentPage - 1) * state.itemsPerPage;
+    const page = list.slice(start, start + state.itemsPerPage);
+    $("result-count").textContent = list.length + " destination" + (list.length === 1 ? "" : "s") + " · page " + state.currentPage + " of " + totalPages();
+    if (!list.length) {
+      grid.innerHTML = "";
+      $("discover-empty").classList.remove("hidden");
+      $("pagination").innerHTML = "";
+      return;
+    }
+    $("discover-empty").classList.add("hidden");
+    grid.innerHTML = page.map(discoverCard).join("");
+    icons();
+    renderPagination();
+  }
+
+  function renderPagination() {
+    const el = $("pagination");
+    const tp = totalPages();
+    if (tp <= 1) { el.innerHTML = ""; return; }
+    const cur = state.currentPage;
+    const pages = [];
+    for (let i = 1; i <= tp; i++) {
+      if (i === 1 || i === tp || Math.abs(i - cur) <= 1) pages.push(i);
+    }
+    const btn = function (label, page, active, disabled, aria) {
+      return '<button type="button" data-action="page" data-page="' + page + '" class="page-btn min-w-[40px] h-10 px-3 rounded-full border border-neutral-200 bg-white text-sm font-bold' + (active ? " active" : "") + '"' + (disabled ? " disabled" : "") + ' aria-label="' + aria + '">' + label + '</button>';
+    };
+    const parts = ['<span class="text-xs font-semibold text-neutral-500">' + state.itemsPerPage + ' destinations per page</span>'];
+    parts.push('<div class="flex items-center gap-2">');
+    parts.push(btn("‹", cur - 1, false, cur <= 1, "Previous page"));
+    let prev = 0;
+    pages.forEach(function (p) {
+      if (prev && p - prev > 1) parts.push('<span class="text-neutral-400 font-bold px-1">…</span>');
+      parts.push(btn(p, p, p === cur, false, "Page " + p));
+      prev = p;
+    });
+    parts.push(btn("›", cur + 1, false, cur >= tp, "Next page"));
+    parts.push("</div>");
+    el.innerHTML = parts.join("");
+  }
+
+  /* ---------- loading / error ---------- */
+  function showLoading() {
+    $("error-state").classList.add("hidden");
+    $("featured-skel").classList.remove("hidden");
+    $("result-count").textContent = "Loading destinations…";
+    const grid = $("discover-grid");
+    grid.innerHTML = Array.from({ length: 6 }).map(function (_, i) {
+      return '<div class="skeleton h-[320px] rounded-card anim-in" style="animation-delay:' + (i * 60) + 'ms"></div>';
+    }).join("");
+  }
+
+  function showError() {
+    $("error-state").classList.remove("hidden");
+  }
+
+  /* ---------- featured destination ---------- */
+  function renderFeatured() {
+    const list = state.filteredDestinations;
+    const img = $("featured-img");
+    const heart = $("featured-heart");
+    const d = list[state.featuredIndex] || null;
+    $("featured-skel").classList.add("hidden");
+    if (!d) {
+      img.classList.add("hidden");
+      $("featured-name").textContent = "No destinations";
+      $("featured-place").textContent = "—";
+      $("featured-desc").classList.add("hidden");
+      heart.setAttribute("data-id", "");
+      $("featured-open").setAttribute("data-id", "");
+      $("featured-thumbs").innerHTML = "";
+      return;
+    }
+    img.classList.remove("hidden");
+    img.src = imgSrc(d);
+    img.onerror = function () { img.onerror = null; img.src = fallbackImage(d.name); };
+    $("featured-name").textContent = d.name;
+    $("featured-place").textContent = (d.city_name || "") + (d.country && d.country.name ? ", " + d.country.name : "");
+    const desc = $("featured-desc");
+    desc.textContent = d.description || "";
+    desc.classList.toggle("hidden", !d.description);
+    heart.setAttribute("data-id", d.id);
+    heart.classList.toggle("active", isFavorite(d.id));
+    $("featured-open").setAttribute("data-id", d.id);
+    renderThumbs();
+  }
+
+  function renderThumbs() {
+    const wrap = $("featured-thumbs");
+    const list = state.filteredDestinations.slice(0, 8);
+    if (!list.length) { wrap.innerHTML = ""; return; }
+    wrap.innerHTML = list.map(function (d, i) {
+      return '<img data-action="set-featured" data-id="' + d.id + '" src="' + imgSrc(d) + '" alt="' + esc(d.name) + '" class="thumb-ring w-11 h-11 rounded-full object-cover border-2 border-white shadow-soft' + (i === state.featuredIndex ? " active" : "") + '" onerror="this.onerror=null;this.src=fallbackImage(\'' + esc((d.name || "").charAt(0)) + '\')" />';
+    }).join("");
+    icons();
+  }
+
+  /* ---------- top countries ---------- */
+  function countryList() {
+    const m = new Map();
+    state.destinations.forEach(function (d) {
+      const c = d.country;
+      if (!c || !c.name) return;
+      if (!m.has(c.name)) m.set(c.name, { name: c.name, iso_code: c.iso_code, flag_url: c.flag_url, count: 0 });
+      m.get(c.name).count++;
+    });
+    return Array.from(m.values()).sort(function (a, b) { return b.count - a.count; });
+  }
+
+  function renderCountryChips() {
+    const wrap = $("country-chips");
+    const all = countryList();
+    const top = all.slice(0, 8);
+    $("countries-count").textContent = all.length + " total";
+    wrap.innerHTML = top.map(function (c) {
+      return '<button type="button" data-action="set-country" data-country="' + esc(c.name) + '" class="country-chip flex-none w-[110px] flex flex-col items-center gap-1.5 bg-white border border-neutral-200 rounded-chip py-3 px-2 hover:border-gold transition-colors' + (state.country === c.name ? " active" : "") + '">'
+        + (c.flag_url
+          ? '<img src="' + c.flag_url + '" class="w-7 h-7 rounded-full object-cover" alt="" />'
+          : '<span class="w-7 h-7 rounded-full bg-gold-soft grid place-items-center text-[10px] font-bold text-gold-deep">' + esc(c.iso_code || c.name.charAt(0)) + '</span>')
+        + '<span class="text-[11px] font-bold truncate w-full text-center">' + esc(c.name) + '</span>'
+        + '<span class="text-[9px] font-mono text-neutral-400">' + esc(c.iso_code || "—") + " · " + c.count + '</span>'
+        + '</button>';
+    }).join("");
+    icons();
+  }
+
+  /* ---------- places carousel (different sort: by city) ---------- */
+  function renderPlaces() {
+    const wrap = $("places-track");
+    const list = state.filteredDestinations.slice().sort(function (a, b) {
+      const ca = String(a.city_name || "").toLowerCase();
+      const cb = String(b.city_name || "").toLowerCase();
+      if (ca < cb) return -1;
+      if (ca > cb) return 1;
+      return a._idx - b._idx;
+    });
+    if (!list.length) { wrap.innerHTML = ""; return; }
+    wrap.innerHTML = list.map(function (d, i) {
+      const flag = d.country && d.country.flag_url;
+      return '<article class="card-hover flex-none w-[300px] bg-white border border-neutral-200/60 rounded-card overflow-hidden shadow-soft anim-in" style="animation-delay:' + (i * 25) + 'ms">'
+        + '<div class="relative h-44 overflow-hidden cursor-pointer group" data-action="open-detail" data-id="' + d.id + '">'
+        + '<img src="' + imgSrc(d) + '" alt="' + esc(d.name) + '" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" onerror="this.onerror=null;this.src=fallbackImage(\'' + esc((d.name || "").charAt(0)) + '\')" />'
+        + '<div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none"></div>'
+        + '<span class="absolute bottom-3 left-3 inline-flex items-center gap-1.5 text-white text-[11px] font-bold bg-black/45 backdrop-blur px-2.5 py-1 rounded-full">'
+        + (flag ? '<img src="' + flag + '" class="w-3.5 h-3.5 rounded-[2px]" alt="" />' : "")
+        + esc(d.city_name || "—") + '</span>'
+        + '</div>'
+        + '<div class="p-4 cursor-pointer" data-action="open-detail" data-id="' + d.id + '">'
+        + '<h3 class="font-extrabold text-[15px] truncate">' + esc(d.name) + '</h3>'
+        + '<p class="text-[13px] text-neutral-500 mt-0.5">' + esc((d.country && d.country.name) || "") + '</p>'
+        + '<p class="text-xs text-neutral-400 mt-2 line-clamp-2">' + esc(d.description || "") + '</p>'
+        + '</div></article>';
+    }).join("");
+    icons();
+  }
+
+  /* ---------- leaflet map ---------- */
+  function initMap() {
+    if (map) return;
+    map = L.map("map-canvas", { zoomControl: true, minZoom: 2 }).setView([20, 0], 2);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 18,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    }).addTo(map);
+    markerLayer = L.layerGroup().addTo(map);
+  }
+
+  function renderMapMarkers() {
+    if (!map) return;
+    markerLayer.clearLayers();
+    markersByDest.clear();
+    const list = state.filteredDestinations;
+    $("map-count").textContent = list.length + " destination" + (list.length === 1 ? "" : "s") + " on the map";
+    list.forEach(function (d) {
+      if (d.latitude == null || d.longitude == null) return;
+      const icon = L.divIcon({ className: "", html: '<div class="gold-marker"></div>', iconSize: [18, 18], iconAnchor: [9, 9] });
+      const popupHtml = '<div class="min-w-[180px]">'
+        + '<p class="font-extrabold text-[15px]">' + esc(d.name) + '</p>'
+        + '<p class="text-xs text-neutral-500 mt-0.5">' + esc(d.city_name || "") + (d.country && d.country.name ? ", " + esc(d.country.name) : "") + '</p>'
+        + '<button type="button" data-action="popup-detail" data-id="' + d.id + '" class="mt-2.5 w-full py-2 rounded-full bg-ink text-white text-xs font-bold hover:bg-neutral-800 transition-colors">View details</button>'
+        + '</div>';
+      const marker = L.marker([d.latitude, d.longitude], { icon: icon })
+        .addTo(markerLayer)
+        .bindPopup(popupHtml, { closeButton: false });
+      markersByDest.set(Number(d.id), marker);
+    });
+  }
+
+  /* ---------- details modal ---------- */
+  let currentDetail = null;
+
+  function openDetailsModal(id) {
+    id = Number(id);
+    const d = state.destinations.find(function (x) { return x.id === id; });
+    if (!d) return;
+    currentDetail = d;
+    const c = d.country || {};
+    $("modal-skel").classList.add("hidden");
+    const img = $("modal-img");
+    img.classList.remove("hidden");
+    img.src = imgSrc(d);
+    img.onerror = function () { img.onerror = null; img.src = fallbackImage(d.name); };
+    $("modal-name").textContent = d.name;
+    $("modal-place").innerHTML = '<i data-lucide="map-pin" class="w-3.5 h-3.5"></i>' + esc(d.city_name || "") + (c.name ? ", " + esc(c.name) : "");
+    $("modal-country-chip").innerHTML = (c.flag_url ? '<img src="' + c.flag_url + '" class="w-4 h-4 rounded-[3px]" alt="" />' : "")
+      + esc(c.name || "—") + (c.iso_code ? " · " + esc(c.iso_code) : "");
+    $("modal-desc").textContent = d.description || "No description available.";
+    $("modal-capital").textContent = c.capital || "—";
+    $("modal-currency").textContent = c.currency || "—";
+    $("modal-languages").textContent = Array.isArray(c.languages) && c.languages.length ? c.languages.join(", ") : "—";
+    $("modal-coords").textContent = (d.latitude != null && d.longitude != null) ? d.latitude.toFixed(3) + ", " + d.longitude.toFixed(3) : "—";
+    $("modal-map-label").textContent = (d.latitude != null && d.longitude != null) ? "View on map" : "No map data";
+    syncModalFavButton();
+    icons();
+    $("modal-backdrop").classList.remove("hidden");
+    const modal = $("details-modal");
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    document.body.classList.add("no-scroll");
+  }
+
+  function closeDetailsModal() {
+    $("modal-backdrop").classList.add("hidden");
+    const modal = $("details-modal");
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    if (!$("filters-drawer").classList.contains("flex")) document.body.classList.remove("no-scroll");
+    currentDetail = null;
+  }
+
+  function syncModalFavButton() {
+    if (!currentDetail) return;
+    const on = isFavorite(currentDetail.id);
+    $("modal-fav-label").textContent = on ? "Remove from favorites" : "Add to favorites";
+    const icon = $("modal-heart-icon");
+    icon.style.color = on ? "#E11D48" : "";
+    icon.classList.toggle("fill-rose-500", on);
+  }
+
+  function viewOnMap(d) {
+    if (!map || d.latitude == null || d.longitude == null) {
+      toast("No map coordinates for this destination.");
+      return;
+    }
+    closeDetailsModal();
+    map.flyTo([d.latitude, d.longitude], 6, { duration: 1.2 });
+    const m = markersByDest.get(Number(d.id));
+    if (m) setTimeout(function () { m.openPopup(); }, 1300);
+  }
+
+  /* ---------- filters drawer ---------- */
+  function openFilters() {
+    syncDrawerFromState();
+    $("drawer-backdrop").classList.remove("hidden");
+    const drawer = $("filters-drawer");
+    drawer.classList.remove("hidden");
+    drawer.classList.add("flex");
+    document.body.classList.add("no-scroll");
+  }
+
+  function closeFilters() {
+    $("drawer-backdrop").classList.add("hidden");
+    const drawer = $("filters-drawer");
+    drawer.classList.add("hidden");
+    drawer.classList.remove("flex");
+    if (!$("details-modal").classList.contains("flex")) document.body.classList.remove("no-scroll");
+  }
+
+  function populateFilterSelects() {
+    const countries = new Set();
+    const currencies = new Set();
+    const languages = new Set();
+    state.destinations.forEach(function (d) {
+      const c = d.country;
+      if (!c) return;
+      if (c.name) countries.add(c.name);
+      if (c.currency) currencies.add(c.currency);
+      (c.languages || []).forEach(function (l) { languages.add(l); });
+    });
+    const opt = function (v, label) { return '<option value="' + esc(v) + '">' + esc(label) + '</option>'; };
+    $("filter-country").innerHTML = opt("all", "All countries") + Array.from(countries).sort().map(function (c) { return opt(c, c); }).join("");
+    $("filter-currency").innerHTML = opt("all", "All currencies") + Array.from(currencies).sort().map(function (c) { return opt(c, c); }).join("");
+    $("filter-language").innerHTML = opt("all", "All languages") + Array.from(languages).sort().map(function (l) { return opt(l, l); }).join("");
+  }
+
+  function syncDrawerFromState() {
+    $("filter-country").value = state.country;
+    $("filter-currency").value = state.currency;
+    $("filter-language").value = state.language;
+    $("filter-favs").checked = state.favoritesOnly;
+    $("filter-sort").value = state.sort;
+    $("sort-select").value = state.sort;
+  }
+
+  function readDrawerToState() {
+    state.country = $("filter-country").value;
+    state.currency = $("filter-currency").value;
+    state.language = $("filter-language").value;
+    state.favoritesOnly = $("filter-favs").checked;
+    state.sort = $("filter-sort").value;
+    $("sort-select").value = state.sort;
+  }
+
+  function clearFilters() {
+    state.search = "";
+    state.country = "all";
+    state.currency = "all";
+    state.language = "all";
+    state.favoritesOnly = false;
+    state.sort = "recommended";
+    $("search-input").value = "";
+    syncDrawerFromState();
+    applyFilters();
+  }
+
+  /* ---------- render orchestration ---------- */
+  function renderAll() {
+    renderStats();
+    renderFeatured();
+    renderCountryChips();
+    renderDiscover();
+    renderPlaces();
+    renderMapMarkers();
+    refreshHearts();
+    $("footer-note").textContent = "Powered by the Itinari destinations API · " + state.destinations.length + " destinations.";
+  }
+
+  /* ---------- fetch ---------- */
+  async function fetchDestinations() {
+    showLoading();
+    try {
+      const res = await fetch(API_URL);
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const json = await res.json();
+      state.destinations = (json.data || []).map(function (d, i) {
+        return Object.assign({}, d, { _idx: i });
+      });
+      state.filteredDestinations = state.destinations.slice();
+      $("error-state").classList.add("hidden");
+      initMap();
+      populateFilterSelects();
+      renderAll();
+      setTimeout(function () { if (map) map.invalidateSize(); }, 120);
+    } catch (err) {
+      showError();
+    }
+  }
+
+  /* ---------- event delegation ---------- */
+  document.addEventListener("click", function (e) {
+    const btn = e.target.closest("[data-action]");
+    if (!btn) return;
+    const act = btn.getAttribute("data-action");
+    const id = btn.getAttribute("data-id");
+
+    if (act === "open-detail" || act === "popup-detail") {
+      openDetailsModal(id);
+    } else if (act === "fav-toggle") {
+      const added = toggleFavorite(id);
+      toast(added ? "Added to favorites" : "Removed from favorites");
+      refreshHearts();
+      if (state.favoritesOnly) { applyFilters(); } else { renderDiscover(); renderPlaces(); }
+    } else if (act === "set-featured") {
+      const idx = state.filteredDestinations.findIndex(function (d) { return String(d.id) === id; });
+      if (idx !== -1) { state.featuredIndex = idx; renderFeatured(); }
+    } else if (act === "set-country") {
+      const name = btn.getAttribute("data-country");
+      state.country = state.country === name ? "all" : name;
+      renderCountryChips();
+      applyFilters();
+    } else if (act === "page") {
+      const p = Number(btn.getAttribute("data-page"));
+      if (!btn.disabled && p >= 1) { state.currentPage = p; renderDiscover(); }
+    } else if (act === "open-filters") {
+      openFilters();
+    } else if (act === "close-filters") {
+      readDrawerToState();
+      closeFilters();
+    } else if (act === "clear-filters") {
+      clearFilters();
+      closeFilters();
+    } else if (act === "toggle-favs") {
+      state.favoritesOnly = !state.favoritesOnly;
+      syncDrawerFromState();
+      applyFilters();
+      toast(state.favoritesOnly ? "Showing favorites only" : "Showing all destinations");
+      $("mobile-menu").classList.add("hidden");
+      $("discover").scrollIntoView({ behavior: "smooth", block: "start" });
+    } else if (act === "view-map") {
+      if (currentDetail) viewOnMap(currentDetail);
+    } else if (act === "modal-fav") {
+      if (currentDetail) {
+        const added = toggleFavorite(currentDetail.id);
+        toast(added ? "Added to favorites" : "Removed from favorites");
+        refreshHearts();
+      }
+    } else if (act === "close-modal") {
+      closeDetailsModal();
+    } else if (act === "carousel-prev") {
+      $("places-track").scrollBy({ left: -340, behavior: "smooth" });
+    } else if (act === "carousel-next") {
+      $("places-track").scrollBy({ left: 340, behavior: "smooth" });
+    } else if (act === "try-again") {
+      fetchDestinations();
+    }
+  });
+
+  /* ---------- events ---------- */
+  const searchInput = $("search-input");
+  searchInput.addEventListener("input", debounce(function () {
+    state.search = searchInput.value;
+    applyFilters();
+  }, 200));
+
+  $("sort-select").addEventListener("change", function () {
+    state.sort = this.value;
+    $("filter-sort").value = state.sort;
+    applyFilters();
+  });
+
+  $("filter-sort").addEventListener("change", function () {
+    state.sort = this.value;
+    $("sort-select").value = state.sort;
+    applyFilters();
+  });
+
+  $("filter-country").addEventListener("change", function () { state.country = this.value; applyFilters(); });
+  $("filter-currency").addEventListener("change", function () { state.currency = this.value; applyFilters(); });
+  $("filter-language").addEventListener("change", function () { state.language = this.value; applyFilters(); });
+  $("filter-favs").addEventListener("change", function () { state.favoritesOnly = this.checked; applyFilters(); });
+
+  $("menu-btn").addEventListener("click", function () {
+    $("mobile-menu").classList.toggle("hidden");
+  });
+
+  $("modal-backdrop").addEventListener("click", closeDetailsModal);
+  $("drawer-backdrop").addEventListener("click", closeFilters);
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") { closeDetailsModal(); closeFilters(); }
+  });
+
+  window.addEventListener("resize", debounce(function () { if (map) map.invalidateSize(); }, 200));
+
+  document.addEventListener("DOMContentLoaded", fetchDestinations);
+  </script>
+</body>
+</html>
+

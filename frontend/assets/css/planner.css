@@ -2,10 +2,11 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, system-ui, sans-serif;
 }
 body {
-    background: #f4f7fc;
+    background: #0a0a0a;
+    color: #ffffff;
     display: flex;
     justify-content: center;
     padding: 2rem 1rem;
@@ -14,9 +15,10 @@ body {
 .app-container {
     max-width: 1200px;
     width: 100%;
-    background: white;
+    background: #101010;
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 32px;
-    box-shadow: 0 20px 40px rgba(0,20,40,0.08);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
     overflow: hidden;
     padding: 1.5rem 2rem 2.5rem;
     align-self: flex-start;
@@ -33,7 +35,7 @@ body {
 .app-header h1 {
     font-weight: 600;
     font-size: 1.8rem;
-    color: #0b1a33;
+    color: #ffffff;
     letter-spacing: -0.5px;
 }
 .app-header h1 i {
@@ -41,11 +43,12 @@ body {
     margin-right: 10px;
 }
 .user-badge {
-    background: #eef3fa;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     padding: 0.5rem 1.2rem;
-    border-radius: 40px;
+    border-radius: 9999px;
     font-weight: 500;
-    color: #1f3a6b;
+    color: #dbe6ff;
     font-size: 0.95rem;
     display: inline-flex;
     align-items: center;
@@ -61,17 +64,17 @@ body {
     flex-wrap: wrap;
     gap: 0.5rem 0.8rem;
     margin-bottom: 2.2rem;
-    border-bottom: 1px solid #e6edf5;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
     padding-bottom: 0.8rem;
 }
 .nav-pills button {
     background: transparent;
     border: none;
     padding: 0.5rem 1.2rem;
-    border-radius: 40px;
+    border-radius: 9999px;
     font-weight: 500;
     font-size: 0.95rem;
-    color: #3e5a7a;
+    color: rgba(255, 255, 255, 0.6);
     transition: 0.2s;
     cursor: pointer;
     display: flex;
@@ -80,18 +83,18 @@ body {
 }
 .nav-pills button i {
     font-size: 1rem;
-    color: #6f8db0;
+    color: rgba(255, 255, 255, 0.4);
 }
 .nav-pills button.active {
-    background: #1e3f70;
-    color: white;
-    box-shadow: 0 6px 12px rgba(27, 67, 150, 0.15);
+    background: #ffffff;
+    color: #0a0a0a;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 .nav-pills button.active i {
-    color: white;
+    color: #0a0a0a;
 }
 .nav-pills button:hover:not(.active) {
-    background: #e9f0f8;
+    background: rgba(255, 255, 255, 0.07);
 }
 
 /* page content */
@@ -116,24 +119,24 @@ body {
     margin-top: 0.8rem;
 }
 .trip-card {
-    background: #fafcff;
-    border: 1px solid #e2ecf7;
+    background: #141414;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 20px;
     padding: 1.3rem 1.2rem 1.2rem;
     transition: 0.2s;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.02);
     cursor: pointer;
 }
 .trip-card:hover {
-    border-color: #b6d0e8;
-    box-shadow: 0 8px 18px rgba(27, 67, 150, 0.06);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 .trip-card h3 {
     font-weight: 600;
-    color: #0b1a33;
+    color: #ffffff;
 }
 .trip-card .meta {
-    color: #51718c;
+    color: rgba(255, 255, 255, 0.55);
     font-size: 0.9rem;
     margin: 8px 0 12px;
     display: flex;
@@ -148,13 +151,13 @@ body {
     display: flex;
     gap: 12px;
     margin-top: 12px;
-    border-top: 1px solid #e3edf6;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
     padding-top: 12px;
 }
 .trip-card .actions button {
     background: none;
     border: none;
-    color: #2f5a87;
+    color: #9db9e8;
     font-weight: 500;
     font-size: 0.85rem;
     display: flex;
@@ -162,19 +165,19 @@ body {
     gap: 6px;
     cursor: pointer;
     padding: 4px 8px;
-    border-radius: 30px;
+    border-radius: 9999px;
     transition: 0.1s;
 }
 .trip-card .actions button:hover {
-    background: #e3edf8;
+    background: rgba(255, 255, 255, 0.1);
 }
 .btn-primary {
-    background: #1d3f70;
+    background: #ffffff;
     border: none;
     padding: 0.6rem 1.6rem;
-    border-radius: 40px;
-    color: white;
-    font-weight: 500;
+    border-radius: 9999px;
+    color: #0a0a0a;
+    font-weight: 600;
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -182,31 +185,31 @@ body {
     transition: 0.2s;
     border: 1px solid transparent;
 }
-.btn-primary i { color: white; }
+.btn-primary i { color: inherit; }
 .btn-primary:hover {
-    background: #12315a;
-    box-shadow: 0 6px 14px rgba(23, 55, 120, 0.2);
+    background: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
 }
 .btn-outline {
     background: transparent;
-    border: 1px solid #c4d5e8;
+    border: 1px solid rgba(255, 255, 255, 0.25);
     padding: 0.6rem 1.6rem;
-    border-radius: 40px;
-    font-weight: 500;
-    color: #1f3a6b;
+    border-radius: 9999px;
+    font-weight: 600;
+    color: #ffffff;
     cursor: pointer;
     transition: 0.15s;
 }
 .btn-outline:hover {
-    background: #eaf2fb;
+    background: rgba(255, 255, 255, 0.09);
 }
 
 /* create trip form */
 .create-form {
-    background: #f9fcff;
+    background: #141414;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 28px;
     padding: 2rem 1.8rem;
-    border: 1px solid #e3edf7;
     max-width: 700px;
 }
 .form-group {
@@ -214,19 +217,22 @@ body {
 }
 .form-group label {
     font-weight: 500;
-    color: #1f3a5c;
+    color: rgba(255, 255, 255, 0.75);
     display: block;
     margin-bottom: 6px;
 }
 .form-group input, .form-group select {
     width: 100%;
     padding: 0.8rem 1rem;
-    border-radius: 40px;
-    border: 1px solid #d5e2f0;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
     font-size: 1rem;
-    background: white;
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
     outline: none;
+    transition: border-color 0.15s;
 }
+.form-group select option { background: #141414; color: #ffffff; }
 .form-group input:focus, .form-group select:focus {
     border-color: #3b7cff;
 }
@@ -245,7 +251,7 @@ body {
     flex-wrap: wrap;
     margin-bottom: 1.8rem;
 }
-.detail-header h2 { color: #0b1a33; }
+.detail-header h2 { color: #ffffff; }
 .timeline-map {
     display: grid;
     grid-template-columns: 1.2fr 0.8fr;
@@ -254,7 +260,7 @@ body {
 @media (max-width: 700px) { .timeline-map { grid-template-columns: 1fr; } }
 
 .timeline-item {
-    background: #f8fafd;
+    background: #141414;
     border-left: 4px solid #3b7cff;
     padding: 0.8rem 1.2rem;
     margin-bottom: 1rem;
@@ -264,25 +270,25 @@ body {
     align-items: center;
     flex-wrap: wrap;
 }
-.timeline-item .time { font-weight: 600; color: #14305a; }
-.timeline-item .desc { color: #2a4b70; }
+.timeline-item .time { font-weight: 600; color: #cfe0ff; }
+.timeline-item .desc { color: rgba(255, 255, 255, 0.6); }
 .map-placeholder {
-    background: #e4eefa;
+    background: rgba(255, 255, 255, 0.04);
     border-radius: 20px;
     height: 180px;
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #1f4880;
+    color: rgba(255, 255, 255, 0.5);
     font-weight: 500;
-    border: 2px dashed #b8cfe5;
+    border: 1px dashed rgba(255, 255, 255, 0.2);
     overflow: hidden;
     position: relative;
 }
 
 .map-node {
     fill: #3b7cff;
-    stroke: #ffffff;
+    stroke: #0a0a0a;
     stroke-width: 2;
     cursor: pointer;
     transition: 0.2s;
@@ -296,30 +302,35 @@ body {
 
 /* modal simulation (attach/detach) */
 .modal-card {
-    background: white;
+    background: #141414;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 28px;
     padding: 1.8rem;
-    border: 1px solid #d7e3f0;
     margin-top: 2rem;
-    box-shadow: 0 6px 14px rgba(0,0,0,0.02);
 }
-.modal-card h4 { margin-bottom: 0.8rem; color: #0b1a33; }
+.modal-card h4 { margin-bottom: 0.8rem; color: #ffffff; }
+.modal-card select {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+}
+.modal-card select option { background: #141414; color: #ffffff; }
 .item-row {
     display: flex;
     justify-content: space-between;
     padding: 0.6rem 0.2rem;
-    border-bottom: 1px solid #e9f0f7;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     align-items: center;
     font-size: 0.9rem;
 }
 .item-row button {
     background: none;
     border: none;
-    color: #b02b3a;
+    color: #ff6b5e;
     cursor: pointer;
     font-weight: 500;
 }
-.item-row button.attach { color: #1f6b3b; }
+.item-row button.attach { color: #4ade80; }
 
 /* schedule (calendar style) */
 .calendar-grid {
@@ -329,21 +340,21 @@ body {
     margin: 1rem 0 1.5rem;
 }
 .cal-day {
-    background: #fafcff;
+    background: #141414;
     border-radius: 16px;
     padding: 0.7rem 0.2rem;
     text-align: center;
-    border: 1px solid #e3edf6;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     font-weight: 500;
-    color: #1f3a5c;
+    color: rgba(255, 255, 255, 0.7);
     cursor: pointer;
     transition: 0.15s;
 }
 .cal-day:hover {
-    background: #e9f2fb;
+    background: rgba(255, 255, 255, 0.08);
 }
-.cal-day.active { background: #1d3f70; color: white; border-color: #1d3f70; }
-.cal-day.today { background: #3b7cff; color: white; border-color: #3b7cff; }
+.cal-day.active { background: #ffffff; color: #0a0a0a; border-color: #ffffff; }
+.cal-day.today { background: #3b7cff; color: #ffffff; border-color: #3b7cff; }
 .cal-day .event-dot {
     display: block;
     background: #3b7cff;
@@ -353,48 +364,51 @@ body {
     margin: 6px auto 0;
 }
 .cal-day.active .event-dot {
-    background: white;
+    background: #0a0a0a;
+}
+.cal-day.today .event-dot {
+    background: #ffffff;
 }
 .schedule-list {
     margin-top: 1.2rem;
 }
 .schedule-item {
-    background: #f6faff;
+    background: #141414;
     padding: 0.8rem 1.2rem;
-    border-radius: 40px;
+    border-radius: 9999px;
     margin-bottom: 8px;
     display: flex;
     justify-content: space-between;
-    border: 1px solid #e2edf8;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     font-size: 0.95rem;
 }
 
 /* checkout */
 .checkout-summary {
-    background: #f9fcff;
+    background: #141414;
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 28px;
     padding: 2rem;
-    border: 1px solid #deeaf6;
     max-width: 600px;
 }
 .price-row {
     display: flex;
     justify-content: space-between;
     padding: 0.8rem 0;
-    border-bottom: 1px solid #deeaf6;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     font-size: 0.95rem;
 }
 .total {
     font-weight: 700;
     font-size: 1.3rem;
-    color: #0b1a33;
+    color: #ffffff;
 }
 
 /* skeleton loader */
 .skeleton {
   min-height: 2rem;
   border-radius: 20px;
-  background: linear-gradient(100deg, #f1f2f5 40%, #eef2f6 50%, #f1f2f5 60%);
+  background: linear-gradient(100deg, rgba(255,255,255,0.06) 40%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.06) 60%);
   background-size: 200% 100%;
   animation: shimmer 1.4s ease infinite;
 }
@@ -412,11 +426,11 @@ body {
   max-width: min(560px, calc(100% - 2rem));
   padding: 0.75rem 1rem;
   font-size: 0.88rem;
-  border-radius: 40px;
-  background: white;
-  color: #0b1a33;
-  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.15);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 9999px;
+  background: #1c1c1c;
+  color: #ffffff;
+  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   opacity: 0;
   pointer-events: none;
   transition: transform 0.3s ease, opacity 0.3s ease;
@@ -434,370 +448,4 @@ body {
 .mt-2 { margin-top: 1.5rem; }
 .mb-1 { margin-bottom: 0.8rem; }
 .gap-1 { gap: 0.8rem; }
-.text-muted { color: #617e9e; }
-
-/* =====================================================================
-   Premium Design Polish & Palette Overrides
-   ===================================================================== */
-:root {
-  --primary: 218 70% 20%;              /* Navy (#0F2854) */
-  --primary-foreground: 194 77% 96%;   /* Soft Ice Blue text */
-  --secondary: 194 77% 85%;            /* Ice Blue (#BDE8F5) */
-  --secondary-foreground: 218 70% 20%; /* Navy on Ice Blue */
-  --accent: 194 77% 93%;               /* Ice Blue hover tint */
-  --accent-foreground: 214 67% 33%;    /* Royal Blue on hover */
-  --border: 210 30% 88%;               /* Soft slate-blue tinted border */
-  --input: 210 30% 88%;
-  --muted-foreground: 210 20% 45%;     /* Muted slate blue text */
-  --ring: 214 67% 33%;                 /* Royal Blue (#1C4D8D) */
-  --card: 0 0% 100%;
-}
-
-body {
-  background: #f3f6fa !important;
-}
-
-/* App Container shadows and depth */
-.app-container {
-  border: 1px solid rgba(15, 40, 84, 0.08);
-  box-shadow: 0 4px 12px -2px rgba(15, 40, 84, 0.03), 0 12px 24px -4px rgba(15, 40, 84, 0.05);
-}
-
-/* Header Headings */
-.app-header h1, .page h2, .detail-header h2, .modal-card h4, .calendar-grid h4 {
-  color: hsl(var(--primary)) !important;
-  font-weight: 700 !important;
-}
-
-.app-header h1 i {
-  color: hsl(var(--ring)) !important;
-}
-
-/* User Badge Pill */
-.user-badge {
-  background: hsl(var(--primary) / 0.08) !important;
-  color: hsl(var(--primary)) !important;
-  border: 1px solid hsl(var(--primary) / 0.12);
-  font-weight: 600;
-}
-
-.user-badge i {
-  color: hsl(var(--ring)) !important;
-}
-
-/* Navigation Tab Pills */
-.nav-pills button {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.nav-pills button.active {
-  background: hsl(var(--primary)) !important;
-  color: white !important;
-  box-shadow: 0 6px 14px rgba(15, 40, 84, 0.2) !important;
-}
-
-.nav-pills button:hover:not(.active) {
-  background: hsl(var(--accent)) !important;
-  color: hsl(var(--accent-foreground)) !important;
-}
-
-/* Trip Cards elevation and branded shadows */
-.trip-card {
-  border: 1px solid hsl(var(--border) / 0.5) !important;
-  box-shadow: 0 4px 12px -2px rgba(15, 40, 84, 0.02), 0 8px 16px -4px rgba(15, 40, 84, 0.04) !important;
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s ease;
-  background-color: #ffffff;
-}
-
-.trip-card:hover {
-  transform: translateY(-3px);
-  border-color: hsl(var(--secondary)) !important;
-  box-shadow: 0 10px 25px -5px rgba(15, 40, 84, 0.08), 0 20px 40px -10px rgba(15, 40, 84, 0.06) !important;
-}
-
-.trip-card h3 {
-  color: hsl(var(--primary)) !important;
-}
-
-/* Primary Button customization */
-.btn-primary {
-  background: hsl(var(--primary)) !important;
-  color: hsl(var(--primary-foreground)) !important;
-  transition: all 0.25s ease;
-}
-.btn-primary i {
-  color: hsl(var(--primary-foreground)) !important;
-}
-
-.btn-primary:hover {
-  background: #12315a !important;
-  box-shadow: 0 6px 14px rgba(15, 40, 84, 0.25) !important;
-  transform: translateY(-1px);
-}
-
-/* Outline Button customization */
-.btn-outline {
-  border: 1px solid hsl(var(--border)) !important;
-  color: hsl(var(--primary)) !important;
-  transition: all 0.2s ease;
-}
-
-.btn-outline:hover {
-  background: hsl(var(--accent)) !important;
-  border-color: hsl(var(--secondary)) !important;
-}
-
-/* Form panel styling */
-.create-form, .modal-card, .checkout-summary {
-  background: #ffffff !important;
-  border: 1px solid hsl(var(--border) / 0.6) !important;
-  box-shadow: 0 4px 12px -2px rgba(15, 40, 84, 0.03), 0 12px 24px -4px rgba(15, 40, 84, 0.05) !important;
-  border-radius: var(--radius-xl) !important;
-}
-
-/* Inputs & focus outlines */
-.form-group input, .form-group select {
-  border: 1px solid hsl(var(--border)) !important;
-  transition: all 0.25s ease;
-}
-
-.form-group input:focus, .form-group select:focus {
-  border-color: hsl(var(--ring) / 0.6) !important;
-  box-shadow: 0 0 0 3px hsl(var(--ring) / 0.15) !important;
-}
-
-/* Timeline Item coloring */
-.timeline-item {
-  background: hsl(var(--accent) / 0.3) !important;
-  border-left: 4px solid hsl(var(--ring)) !important;
-}
-
-/* Calendar Days */
-.cal-day {
-  transition: all 0.2s ease;
-  border: 1px solid hsl(var(--border) / 0.8) !important;
-}
-
-.cal-day:hover {
-  background: hsl(var(--accent)) !important;
-}
-
-.cal-day.active {
-  background: hsl(var(--primary)) !important;
-  border-color: hsl(var(--primary)) !important;
-  color: white !important;
-}
-
-.cal-day.today {
-  background: hsl(var(--secondary)) !important;
-  border-color: hsl(var(--secondary)) !important;
-  color: hsl(var(--primary)) !important;
-}
-
-.cal-day .event-dot {
-  background: hsl(var(--ring)) !important;
-}
-
-/* Zebra shading and hovers for lists in Trip Planner */
-#attached-items-list .item-row {
-  padding: 0.75rem 1rem !important;
-  border-radius: var(--radius-lg);
-  transition: background-color 0.2s ease;
-}
-
-#attached-items-list .item-row:nth-child(even) {
-  background-color: hsl(var(--secondary) / 0.12);
-}
-
-#attached-items-list .item-row:hover {
-  background-color: hsl(var(--secondary) / 0.3) !important;
-}
-
-/* Schedule items list slide on hover */
-.schedule-item {
-  border-radius: var(--radius-full) !important;
-  transition: background-color 0.2s ease, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-.schedule-item:nth-child(even) {
-  background-color: hsl(var(--secondary) / 0.12) !important;
-}
-
-.schedule-item:hover {
-  background-color: hsl(var(--secondary) / 0.3) !important;
-  transform: translateX(4px);
-}
-
-/* Checkout invoice rows */
-.price-row {
-  padding: 0.9rem 1rem !important;
-  transition: background-color 0.2s ease;
-  border-radius: var(--radius-md);
-}
-
-.price-row:nth-child(even) {
-  background-color: hsl(var(--secondary) / 0.12);
-}
-
-.price-row:hover {
-  background-color: hsl(var(--secondary) / 0.3);
-}
-
-/* Tab Pills click feedback */
-.nav-pills button:hover {
-  transform: translateY(-1px);
-}
-
-.nav-pills button:active {
-  transform: translateY(0);
-}
-
-/* Dark Mode Overrides for Trip Planner */
-html.dark {
-  --background: 220 40% 6%;            /* Deep space navy background */
-  --foreground: 210 20% 98%;
-  --card: 220 35% 10%;                 /* Dark navy cards */
-  --card-foreground: 194 77% 95%;      /* Ice Blue tinted white */
-  --primary: 194 77% 85%;              /* Ice Blue main accent (#BDE8F5) */
-  --primary-foreground: 218 70% 15%;   /* Navy text on Ice Blue background */
-  --secondary: 214 67% 20%;            /* Dark Royal Blue */
-  --secondary-foreground: 194 77% 95%;
-  --accent: 214 67% 18%;
-  --accent-foreground: 194 77% 85%;
-  --border: 218 35% 18%;               /* Deep blue border lines */
-  --input: 218 35% 18%;
-  --muted: 218 30% 14%;
-  --muted-foreground: 210 20% 65%;
-  --ring: 194 77% 85%;
-}
-
-html.dark body {
-  background-color: hsl(var(--background)) !important;
-  color: hsl(var(--foreground)) !important;
-}
-
-html.dark .app-container {
-  background-color: hsl(var(--card)) !important;
-  border-color: hsl(var(--border)) !important;
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3), 0 2px 8px -1px rgba(0, 0, 0, 0.2) !important;
-}
-
-html.dark .trip-card {
-  background-color: hsl(var(--card)) !important;
-  border-color: hsl(var(--border)) !important;
-}
-
-html.dark .trip-card h3 {
-  color: hsl(var(--foreground)) !important;
-}
-
-html.dark .trip-card .meta {
-  color: hsl(var(--muted-foreground)) !important;
-}
-
-html.dark .trip-card .actions button {
-  color: hsl(var(--primary)) !important;
-}
-
-html.dark .trip-card .actions button:hover {
-  background: hsl(var(--accent)) !important;
-}
-
-html.dark .create-form, html.dark .modal-card, html.dark .checkout-summary {
-  background-color: hsl(var(--card)) !important;
-  border-color: hsl(var(--border)) !important;
-}
-
-html.dark .form-group label {
-  color: hsl(var(--foreground)) !important;
-}
-
-html.dark .form-group input, html.dark .form-group select {
-  background-color: hsl(var(--card)) !important;
-  color: hsl(var(--foreground)) !important;
-  border-color: hsl(var(--border)) !important;
-}
-
-html.dark .cal-day {
-  background-color: hsl(var(--card)) !important;
-  color: hsl(var(--foreground)) !important;
-  border-color: hsl(var(--border)) !important;
-}
-
-html.dark .cal-day:hover {
-  background-color: hsl(var(--accent)) !important;
-}
-
-html.dark .cal-day.active {
-  background-color: hsl(var(--primary)) !important;
-  color: hsl(var(--primary-foreground)) !important;
-  border-color: hsl(var(--primary)) !important;
-}
-
-html.dark .cal-day.today {
-  background-color: hsl(var(--secondary)) !important;
-  color: hsl(var(--secondary-foreground)) !important;
-  border-color: hsl(var(--secondary)) !important;
-}
-
-html.dark .timeline-item, html.dark .schedule-item {
-  background-color: hsl(var(--accent) / 0.4) !important;
-  color: hsl(var(--foreground)) !important;
-  border-color: hsl(var(--border)) !important;
-}
-
-html.dark .item-row {
-  border-bottom: 1px solid hsl(var(--border)) !important;
-  color: hsl(var(--foreground)) !important;
-}
-
-html.dark .app-header h1, 
-html.dark .page h2, 
-html.dark .detail-header h2, 
-html.dark .modal-card h4, 
-html.dark .calendar-grid h4 {
-  color: hsl(var(--foreground)) !important;
-}
-
-html.dark .nav-pills button {
-  color: hsl(var(--muted-foreground)) !important;
-}
-
-html.dark .nav-pills button i {
-  color: hsl(var(--muted-foreground)) !important;
-}
-
-html.dark .nav-pills button.active {
-  background: hsl(var(--primary)) !important;
-  color: hsl(var(--primary-foreground)) !important;
-}
-
-html.dark .btn-outline {
-  border-color: hsl(var(--border)) !important;
-  color: hsl(var(--foreground)) !important;
-}
-
-html.dark .btn-outline:hover {
-  background: hsl(var(--accent)) !important;
-}
-
-/* Inline styles overrides for Trip Planner layout contrast */
-#tab-planner h2, #tab-planner h4, #tab-planner label {
-  color: hsl(var(--primary)) !important;
-}
-
-html.dark #tab-planner h2, 
-html.dark #tab-planner h4, 
-html.dark #tab-planner label {
-  color: hsl(var(--foreground)) !important;
-}
-
-html.dark #map-canvas-container {
-  background-color: hsl(var(--accent) / 0.3) !important;
-  color: hsl(var(--foreground)) !important;
-  border-color: hsl(var(--border)) !important;
-}
-
-html.dark #trips-count-meta {
-  color: hsl(var(--muted-foreground)) !important;
-}
+.text-muted { color: rgba(255, 255, 255, 0.5); }

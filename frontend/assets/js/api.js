@@ -17,15 +17,12 @@
   async function request(method, path, data, opts) {
     opts = opts || {};
     const headers = Object.assign(
-      { 
-        Accept: "application/json",
-        "Cache-Control": "no-cache, no-store, must-revalidate",
-        "Pragma": "no-cache",
-        "Expires": "0"
-      },
+      { Accept: "application/json" },
       (opts.headers || {})
     );
-    if (data !== undefined) headers["Content-Type"] = "application/json";
+    // FormData (multipart uploads) sets its own boundary — never force JSON.
+    const isForm = typeof FormData !== "undefined" && data instanceof FormData;
+    if (data !== undefined && !isForm) headers["Content-Type"] = "application/json";
     
     // Auto-attach token for any apiBase request
     const token = It.readToken();
@@ -38,7 +35,7 @@
       res = await fetch(It.CONFIG.apiBase + path, {
         method: method,
         headers: headers,
-        body: data !== undefined ? JSON.stringify(data) : undefined,
+        body: data !== undefined ? (isForm ? data : JSON.stringify(data)) : undefined,
       });
     } catch (e) {
       const err = new Error("Could not reach the server. Please try again.");
@@ -54,7 +51,14 @@
     if (res.status === 401 && It.session && typeof It.session.logout === "function") {
       if (path !== It.CONFIG.routes.logout) {
         It.session.clearSession();
-        It.session.redirectToLogin();
+        if (It.CONFIG.publicPage) {
+          // Public pages: keep the visitor on the page — the app listens for
+          // this event and shows a "Session expired" toast + guest nav.
+          const evt = new CustomEvent("itinera:session-expired", { detail: { path } });
+          document.dispatchEvent(evt);
+        } else {
+          It.session.redirectToLogin();
+        }
       }
     }
 

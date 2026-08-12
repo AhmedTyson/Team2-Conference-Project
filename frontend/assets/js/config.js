@@ -6,13 +6,17 @@
   "use strict";
 
   var CONFIG = {
-    apiBase: "http://127.0.0.1:8001/api",
+    apiBase: "http://127.0.0.1:8000/api",
     // frontend static pages (served from this site's root, e.g. :8080)
     dashboardUrl: "/dashboard.html",
     adminUrl: "/admin/index.html",
     tokenKey: "itinari_token",
     // token persistence: "localStorage" | "memory"
     tokenStorage: "localStorage",
+    // public pages (landing, weather, booking, discovery…): a 401 must NOT
+    // hard-redirect to /login.html — it clears the session and lets the page
+    // show the auth modal / "Session expired" toast instead.
+    publicPage: false,
     routes: {
       login: "/login",
       register: "/register",

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Bookings · Itinari</title>
+  <link rel="stylesheet" href="css/app.css" />
+  <link rel="stylesheet" href="css/components/navbar.css" />
+  <link rel="stylesheet" href="css/components/buttons.css" />
+  <link rel="stylesheet" href="css/components/modal.css" />
+  <link rel="stylesheet" href="css/components/toast.css" />
+  <link rel="stylesheet" href="assets/css/dashboard.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    .booking-layout { display: grid; grid-template-columns: 1fr 320px; gap: 1.6rem; margin-top: 1rem; align-items: start; }
+    @media (max-width: 900px) { .booking-layout { grid-template-columns: 1fr; } }
+    .panel { overflow: hidden; }
+    .booking-row { display: flex; align-items: center; gap: 1rem; padding: 1.1rem 1.3rem; border-bottom: 1px solid rgba(255,255,255,0.08); transition: background .15s; }
+    .booking-row:last-child { border-bottom: none; }
+    .booking-row:hover { background: rgba(255,255,255,0.04); }
+    .booking-icon { width: 44px; height: 44px; border-radius: 12px; background: rgba(59,124,255,0.12); color: #7aa5ff; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+    .booking-main { flex: 1; min-width: 0; }
+    .booking-main h3 { margin: 0; font-size: .98rem; color: #ffffff; font-family: 'Outfit', sans-serif; }
+    .booking-main p { margin: .22rem 0 0; font-size: .78rem; color: rgba(255,255,255,0.55); }
+    .booking-side { text-align: right; flex-shrink: 0; }
+    .booking-side .amount { font-weight: 700; color: #ffffff; font-size: .95rem; }
+    .booking-side .dates { font-size: .76rem; color: rgba(255,255,255,0.55); margin-top: 2px; }
+    .chip { display: inline-block; border-radius: 40px; padding: .22rem .7rem; font-size: .72rem; font-weight: 700; letter-spacing: .03em; }
+    .chip.is-pending { background: rgba(245,158,11,0.15); color: #fbbf24; }
+    .chip.is-planning { background: rgba(59,124,255,0.15); color: #7aa5ff; }
+    .chip.is-booked { background: rgba(16,185,129,0.15); color: #34d399; }
+    .chip.is-completed { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); }
+    .chip.is-cancelled { background: rgba(239,68,68,0.15); color: #f87171; }
+    .booking-actions { display: flex; gap: .5rem; margin-top: .5rem; }
+    .booking-actions .btn { padding: 5px 12px; font-size: 12px; border-radius: 40px; }
+    .mem-card { background: #141414; border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; padding: 1.4rem; }
+    .mem-card .mem-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: .8rem; }
+    .mem-card .mem-plan { font-size: 1.05rem; font-weight: 700; color: #ffffff; font-family: 'Outfit', sans-serif; }
+    .mem-card .mem-row { display: flex; justify-content: space-between; font-size: .82rem; color: rgba(255,255,255,0.55); padding: .35rem 0; }
+    .mem-card .mem-row b { color: rgba(255,255,255,0.85); font-weight: 600; }
+    .mem-card .mem-note { font-size: .78rem; color: rgba(255,255,255,0.5); background: rgba(255,255,255,0.05); border-radius: 12px; padding: .6rem .8rem; margin-top: .6rem; }
+    .btn-primary { background: #ffffff; color: #0a0a0a; border: none; padding: .6rem 1.5rem; border-radius: 40px; font-weight: 600; font-size: .88rem; cursor: pointer; transition: background .15s; }
+    .btn-primary:hover { background: rgba(255,255,255,0.85); }
+    .btn-danger-outline { background: transparent; border: 1px solid #f87171; color: #f87171; padding: .55rem 1.4rem; border-radius: 40px; font-weight: 600; font-size: .85rem; cursor: pointer; width: 100%; margin-top: 1rem; }
+    .btn-danger-outline:hover { background: rgba(239,68,68,0.12); }
+    .btn-outline { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.8); padding: .55rem 1.4rem; border-radius: 40px; font-weight: 600; font-size: .85rem; cursor: pointer; }
+    .btn-outline:hover { background: rgba(255,255,255,0.08); }
+    .is-loading { opacity: .6; pointer-events: none; }
+    .trip-filter { display: flex; gap: .5rem; flex-wrap: wrap; margin: 1rem 0 .4rem; }
+    .trip-filter button { background: transparent; border: 1px solid rgba(255,255,255,0.18); color: rgba(255,255,255,0.6); padding: .4rem 1rem; border-radius: 40px; font-size: .8rem; font-weight: 600; cursor: pointer; transition: all .15s; }
+    .trip-filter button.is-active { background: #ffffff; border-color: #ffffff; color: #0a0a0a; }
+    .skeleton { border-radius: 14px; }
+  </style>
+</head>
+<body data-page="bookings">
+
+  <div class="app-container">
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="logo-section">
+        <span class="logo-icon"></span>
+        <span>Itinari</span>
+      </div>
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a class="nav-link" href="dashboard.html">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right:14px; width:20px; height:20px; stroke-width:2.2;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z"></path></svg>
+            Dashboard
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="bookings.html">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right:14px; width:20px; height:20px; stroke-width:2.2;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+            My Bookings
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="favourites.html">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right:14px; width:20px; height:20px; stroke-width:2.2;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+            Favourites
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="profile.html">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right:14px; width:20px; height:20px; stroke-width:2.2;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+            Profile
+          </a>
+        </li>
+      </ul>
+      <div class="user-profile">
+        <div class="avatar" id="avatar-letters">U</div>
+        <div class="user-info">
+          <h4 id="user-display-name">Loading...</h4>
+          <p id="user-display-role">User</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <header class="top-bar">
+        <h2 id="page-title">My Bookings</h2>
+        <div>
+          <button type="button" id="logout-btn" class="btn-outline" style="padding: 6px 14px; font-size: 12px; border-radius: 40px;">Log out</button>
+        </div>
+      </header>
+
+      <div class="greet">
+        <h1>My Previous Bookings</h1>
+        <p class="sub">Saved trips and booking history with live status, plus your membership.</p>
+      </div>
+
+      <div class="booking-layout">
+        <!-- Trips / booking history -->
+        <section>
+          <div class="trip-filter" id="trip-filter" aria-label="Filter trips by status">
+            <button type="button" class="is-active" data-filter="all">All</button>
+            <button type="button" data-filter="pending">Pending</button>
+            <button type="button" data-filter="planning">Planning</button>
+            <button type="button" data-filter="booked">Booked</button>
+            <button type="button" data-filter="completed">Completed</button>
+            <button type="button" data-filter="cancelled">Cancelled</button>
+          </div>
+
+          <div class="panel">
+            <div id="bookings-list" aria-live="polite">
+              <div class="skeleton" style="height: 78px; margin: 1rem;"></div>
+              <div class="skeleton" style="height: 78px; margin: 1rem;"></div>
+              <div class="skeleton" style="height: 78px; margin: 1rem;"></div>
+            </div>
+            <div id="bookings-empty" class="empty" hidden>
+              <p><i class="fas fa-suitcase-rolling" style="color:#c4d6ea;"></i></p>
+              <p>No trips yet. Create your first trip from the dashboard's Trip Planner.</p>
+              <p><a href="dashboard.html" class="btn-primary" style="text-decoration:none; display:inline-block;">Go to Trip Planner</a></p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Membership -->
+        <section>
+          <div class="mem-card" id="membership-card">
+            <div class="mem-head">
+              <span class="mem-plan"><i class="fas fa-crown" style="color:#d4a017;"></i> Membership</span>
+              <span class="chip" id="mem-status">Checking…</span>
+            </div>
+            <div id="mem-body">
+              <div class="skeleton" style="height: 110px;"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast banners -->
+  <div id="site-banner" role="status">
+    <span id="site-banner-msg"></span><span id="site-banner-drain" aria-hidden="true"></span>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/animations.js"></script>
+  <script src="assets/js/session.js"></script>
+  <script src="assets/js/bookings.js"></script>
+</body>
+</html>

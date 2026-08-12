@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Explore · Itinera</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome 6 (free) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <!-- Shared styles -->
+  <link rel="stylesheet" href="css/app.css" />
+  <link rel="stylesheet" href="css/components/navbar.css" />
+  <link rel="stylesheet" href="css/components/buttons.css" />
+  <link rel="stylesheet" href="css/components/modal.css" />
+  <link rel="stylesheet" href="css/components/toast.css" />
+
+  
+  <script>window.APP_URL = ".";</script>
+  <script src="assets/js/config.js?v=1786177601"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/session.js"></script>
+  <script>window.Itinari && (window.Itinari.CONFIG.publicPage = true);</script>
+</head>
+<body>
+
+  <div class="toast" id="toast">
+  <i class="fas fa-check-circle text-green-400" aria-hidden="true"></i>
+  <span id="toastMessage">Success</span>
+</div>
+  <div class="modal-overlay" id="authModal">
+  <div class="modal-box">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-xl font-bold" id="authTitle">Welcome to Itinera</h3>
+      <button type="button" class="text-white/50 hover:text-white text-xl cursor-pointer" id="authCloseBtn" title="Close modal" aria-label="Close modal">
+        <i class="fas fa-times" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="auth-tabs flex border border-white/10 rounded-full overflow-hidden mb-4">
+      <button type="button" id="tabLogin" class="on">Log in</button>
+      <button type="button" id="tabRegister">Sign up</button>
+    </div>
+
+    <form id="loginForm" novalidate>
+      <label for="loginEmail"><i class="fas fa-envelope mr-1" aria-hidden="true"></i>Email</label>
+      <input type="email" id="loginEmail" placeholder="you@example.com" required />
+      <label for="loginPassword"><i class="fas fa-lock mr-1" aria-hidden="true"></i>Password</label>
+      <input type="password" id="loginPassword" placeholder="••••••••" required />
+      <button type="submit" class="btn-white w-full mt-4 flex items-center justify-center gap-2">
+        <i class="fas fa-arrow-right" aria-hidden="true"></i>Log in
+      </button>
+      <p class="text-sm mt-2 text-white/40" id="loginStatus" role="status"></p>
+      <p class="text-xs text-white/30 mt-3 pt-3 border-t border-white/10">
+        <i class="fas fa-info-circle mr-1" aria-hidden="true"></i>Demo: <span class="text-white/60">admin@example.com</span> / <span class="text-white/60">password</span>
+      </p>
+    </form>
+
+    <form id="registerForm" style="display:none;" novalidate>
+      <label for="regName"><i class="fas fa-user mr-1" aria-hidden="true"></i>Full name</label>
+      <input type="text" id="regName" placeholder="Jane Doe" required />
+      <label for="regEmail"><i class="fas fa-envelope mr-1" aria-hidden="true"></i>Email</label>
+      <input type="email" id="regEmail" placeholder="you@example.com" required />
+      <label for="regPhone"><i class="fas fa-phone mr-1" aria-hidden="true"></i>Phone</label>
+      <input type="tel" id="regPhone" placeholder="+1 555 000 0000" />
+      <label for="regPassword"><i class="fas fa-lock mr-1" aria-hidden="true"></i>Password</label>
+      <input type="password" id="regPassword" placeholder="Min. 8 characters" required minlength="8" />
+      <button type="submit" class="btn-white w-full mt-4 flex items-center justify-center gap-2">
+        <i class="fas fa-user-plus" aria-hidden="true"></i>Create account
+      </button>
+      <p class="text-sm mt-2 text-white/40" id="registerStatus" role="status"></p>
+    </form>
+  </div>
+</div>
+
+    <div class="page-scroll">
+    <div class="giant-text"><h1>EXPLORE</h1></div>
+    <div class="content-layer">
+
+      <nav class="flex flex-col lg:flex-row justify-between items-center gap-4 w-full">
+  <a href="index.html" class="flex items-center gap-2 text-white no-underline">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" class="text-red-500 flex-shrink-0" aria-hidden="true">
+      <path d="M12 2C12 2 13 8 18 12C13 16 12 22 12 22C12 22 11 16 6 12C11 8 12 2 12 2Z" fill="currentColor" />
+    </svg>
+    <span class="text-xl font-semibold tracking-wide">Itinera</span>
+  </a>
+
+  <div class="flex items-center justify-center flex-wrap gap-x-2 gap-y-1 px-4 py-2 rounded-full nav-pill text-sm font-medium">
+    <a href="index.html" class="nav-link ">
+      <i class="fas fa-home" aria-hidden="true"></i><span class="nav-text">Home</span>
+    </a>
+    <a href="about.html" class="nav-link ">
+      <i class="fas fa-info-circle" aria-hidden="true"></i><span class="nav-text">About</span>
+    </a>
+    <a href="explore.html" class="nav-link active">
+      <i class="fas fa-compass" aria-hidden="true"></i><span class="nav-text">Explore</span>
+    </a>
+    <a href="contact.html" class="nav-link ">
+      <i class="fas fa-envelope" aria-hidden="true"></i><span class="nav-text">Contact</span>
+    </a>
+    <a href="booking.html" class="nav-link ">
+      <i class="fas fa-plane" aria-hidden="true"></i><span class="nav-text">Booking</span>
+    </a>
+    <a href="surveys.html" class="nav-link ">
+      <i class="fas fa-clipboard-list" aria-hidden="true"></i><span class="nav-text">Surveys</span>
+    </a>
+    <a href="chat.html" class="nav-link ">
+      <i class="fas fa-robot" aria-hidden="true"></i><span class="nav-text">AI</span>
+    </a>
+    <button type="button" class="guest-actions btn-login">
+      <i class="fas fa-sign-in-alt" aria-hidden="true"></i>Log in
+    </button>
+  </div>
+
+  <div class="flex items-center gap-4 text-sm font-medium">
+    <div class="user-chip-area hidden">
+      <div class="flex items-center gap-3 bg-white/10 border border-white/20 rounded-full pl-1.5 pr-2 py-1">
+        <span class="user-avatar w-8 h-8 rounded-full bg-white text-black flex items-center justify-center font-bold text-sm">?</span>
+        <span class="user-name text-sm font-medium">—</span>
+        <button type="button" class="btn-logout text-white/60 hover:text-white text-xs px-1" title="Log out" aria-label="Log out">
+          <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+      <div class="max-w-5xl mx-auto w-full mt-8">
+        <div class="glass-card p-8 relative" style="overflow:visible;">
+          <h2 class="section-title">Plan your adventure</h2>
+          <p class="section-sub mb-6">Pick a destination, set your vibe, and we'll build the itinerary.</p>
+
+          <div class="step-indicator flex items-center gap-1 mb-6" id="stepIndicator">
+            <div class="step-dot on" id="stepDot1" data-step="1"><span class="dot">1</span>Destination</div>
+            <div class="step-line" id="stepLine1"><span class="fill"></span></div>
+            <div class="step-dot" id="stepDot2" data-step="2"><span class="dot">2</span>Trip &amp; group</div>
+            <div class="step-line" id="stepLine2"><span class="fill"></span></div>
+            <div class="step-dot" id="stepDot3" data-step="3"><span class="dot">3</span>Budget &amp; vibe</div>
+          </div>
+
+          <!-- STEP 1: destination -->
+          <div class="wizard-step active" id="wizardStep1">
+            <div class="flex justify-between items-baseline mb-4">
+              <h3 class="text-xl font-bold flex items-center gap-2"><i class="fas fa-globe-americas text-white/60" aria-hidden="true"></i>Where to?</h3>
+              <span class="text-white/40 text-xs" id="wizardDestCounter"></span>
+            </div>
+            <div class="dest-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3" id="wizardDestGrid"><!-- populated by JS --></div>
+            <div class="flex flex-wrap gap-3 mt-5">
+              <button type="button" id="wDestPrev" class="wk-btn"><i class="fas fa-chevron-left" aria-hidden="true"></i>Prev</button>
+              <button type="button" id="wDestNext" class="wk-btn">Next <i class="fas fa-chevron-right" aria-hidden="true"></i></button>
+              <button type="button" class="wk-btn on" id="wStep1Next">Continue <i class="fas fa-arrow-right" aria-hidden="true"></i></button>
+            </div>
+            <div class="mt-6">
+              <div class="flex items-baseline justify-between mb-2">
+                <h4 class="text-sm font-semibold flex items-center gap-2"><i class="fas fa-cloud-sun text-white/60" aria-hidden="true"></i>7-day forecast</h4>
+                <span class="text-xs text-white/40" id="wizardWeatherStatus">Select a destination</span>
+              </div>
+              <div class="flex gap-3 overflow-x-auto pb-1" id="wizardForecast"><!-- populated by JS --></div>
+            </div>
+          </div>
+
+          <!-- STEP 2: trip details -->
+          <div class="wizard-step" id="wizardStep2">
+            <div class="flex justify-between items-baseline mb-4">
+              <h3 class="text-xl font-bold flex items-center gap-2"><i class="fas fa-route text-white/60" aria-hidden="true"></i>Trip details</h3>
+              <span class="text-white/40 text-xs">Solo or with the crew — your call.</span>
+            </div>
+            <div class="flight-grid">
+              <div><label><i class="far fa-calendar-alt mr-1" aria-hidden="true"></i>Departure date</label><input type="date" id="wizardDate" /></div>
+              <div><label><i class="fas fa-user mr-1" aria-hidden="true"></i>Travelers</label><input type="number" id="wizardTravelers" value="1" min="1" max="12" /></div>
+            </div>
+            <div class="mt-6">
+              <h4 class="text-sm font-semibold mb-2 flex items-center gap-2"><i class="fas fa-users text-white/40" aria-hidden="true"></i>Group size</h4>
+              <div class="flex flex-wrap gap-3" id="wizardPackRow">
+                <button type="button" class="wk-btn on" data-pack="solo"><i class="fas fa-user" aria-hidden="true"></i>Solo · $850</button>
+                <button type="button" class="wk-btn" data-pack="partners"><i class="fas fa-user-plus" aria-hidden="true"></i>Solo+ · $1,450</button>
+                <button type="button" class="wk-btn" data-pack="pack4"><i class="fas fa-users" aria-hidden="true"></i>Pack of 4 · $2,600</button>
+                <button type="button" class="wk-btn" data-pack="pack7"><i class="fas fa-users" aria-hidden="true"></i>Pack of 7 · $4,600</button>
+              </div>
+              <p class="text-white/40 text-xs mt-2"><i class="fas fa-info-circle mr-1" aria-hidden="true"></i>Rough per-trip estimate — live rate on your trip card. Fully refundable.</p>
+            </div>
+            <div class="mt-6">
+              <h4 class="text-sm font-semibold mb-2 flex items-center gap-2"><i class="fas fa-bullseye text-white/40" aria-hidden="true"></i>Plan focus</h4>
+              <div class="flex flex-wrap gap-3" id="wizardFocusRow">
+                <button type="button" class="wk-btn on" data-vibe="cozy"><i class="fas fa-mug-hot" aria-hidden="true"></i>Cozy &amp; local</button>
+                <button type="button" class="wk-btn" data-vibe="outdoor"><i class="fas fa-mountain" aria-hidden="true"></i>Outdoor &amp; adventure</button>
+                <button type="button" class="wk-btn" data-vibe="cultural"><i class="fas fa-landmark" aria-hidden="true"></i>Culture &amp; history</button>
+                <button type="button" class="wk-btn" data-vibe="food"><i class="fas fa-utensils" aria-hidden="true"></i>Food &amp; markets</button>
+              </div>
+            </div>
+            <div class="mt-6">
+              <h4 class="text-sm font-semibold mb-2 flex items-center gap-2"><i class="fas fa-heart text-white/40" aria-hidden="true"></i>Interests</h4>
+              <div class="chip-row flex flex-wrap gap-2" id="wizardInterestChips">
+                <span class="chip on" data-value="food"><i class="fas fa-utensils" aria-hidden="true"></i>Food</span>
+                <span class="chip" data-value="museums"><i class="fas fa-university" aria-hidden="true"></i>Museums</span>
+                <span class="chip" data-value="nature"><i class="fas fa-tree" aria-hidden="true"></i>Nature</span>
+                <span class="chip" data-value="nightlife"><i class="fas fa-moon" aria-hidden="true"></i>Nightlife</span>
+                <span class="chip" data-value="shopping"><i class="fas fa-shopping-bag" aria-hidden="true"></i>Shopping</span>
+                <span class="chip" data-value="history"><i class="fas fa-scroll" aria-hidden="true"></i>History</span>
+                <span class="chip" data-value="beaches"><i class="fas fa-umbrella-beach" aria-hidden="true"></i>Beaches</span>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-3 mt-5">
+              <button type="button" id="wStep2Back" class="wk-btn"><i class="fas fa-arrow-left" aria-hidden="true"></i>Back</button>
+              <button type="button" class="wk-btn on" id="wStep2Next">Continue <i class="fas fa-arrow-right" aria-hidden="true"></i></button>
+            </div>
+          </div>
+
+          <!-- STEP 3: budget -->
+          <div class="wizard-step" id="wizardStep3">
+            <div class="flex justify-between items-baseline mb-4">
+              <h3 class="text-xl font-bold flex items-center gap-2"><i class="fas fa-coins text-white/60" aria-hidden="true"></i>Budget &amp; length</h3>
+              <span class="text-white/40 text-xs">We'll pack the best fit for your wallet.</span>
+            </div>
+            <div>
+              <div class="flex items-baseline justify-between">
+                <label class="text-sm font-semibold flex items-center gap-2"><i class="fas fa-dollar-sign text-white/40" aria-hidden="true"></i>Trip budget (USD)</label>
+                <span class="text-lg font-bold" id="wizardBudgetLabel">$2,400</span>
+              </div>
+              <input type="range" id="wizardBudget" min="500" max="8000" step="100" value="2400" class="w-full mt-3 accent-white" />
+              <div class="flex justify-between text-xs text-white/40 mt-1"><span><i class="fas fa-bed mr-1" aria-hidden="true"></i>$500 · hostel &amp; street food</span><span><i class="fas fa-crown mr-1" aria-hidden="true"></i>$8,000 · luxury</span></div>
+            </div>
+            <div class="mt-6">
+              <div class="flex items-baseline justify-between">
+                <label class="text-sm font-semibold flex items-center gap-2"><i class="far fa-calendar-alt text-white/40" aria-hidden="true"></i>Trip length</label>
+                <span class="text-white/45 text-sm" id="wizardDaysLabel">7 days</span>
+              </div>
+              <input type="range" id="wizardDays" min="3" max="14" step="1" value="7" class="w-full mt-1 accent-white" />
+            </div>
+            <div class="mt-6">
+              <label class="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" id="wizardExclusive" class="accent-white w-4 h-4" />
+                <span class="text-sm flex items-center gap-2"><i class="fas fa-star text-yellow-400" aria-hidden="true"></i>Include spots hidden from the maps — you'll get pins on your trip.</span>
+              </label>
+            </div>
+            <p class="text-sm text-white/40 leading-relaxed mt-4"><i class="fas fa-lightbulb text-yellow-400/60 mr-2" aria-hidden="true"></i>I'll design the packing list around your vibe, your weather window, and your budget. Prices update live as you go.</p>
+            <div class="flex flex-wrap gap-3 mt-5">
+              <button type="button" id="wStep3Back" class="wk-btn"><i class="fas fa-arrow-left" aria-hidden="true"></i>Back</button>
+              <button type="button" class="wk-btn on" id="wStep3Confirm"><i class="fas fa-check" aria-hidden="true"></i>Looks good!</button>
+            </div>
+          </div>
+        </div>
+
+        <p class="text-center text-white/35 text-xs mt-8 max-w-xl mx-auto leading-relaxed flex items-center justify-center gap-2">
+          <i class="fas fa-shield-alt" aria-hidden="true"></i>Plan your adventure, and we'll take care of the rest. All our plans are fully refundable — cancel any time before the first full day.
+        </p>
+      </div>
+
+      <button type="button" class="gen-btn" id="generateBtn" title="Generate my itinerary" aria-label="Generate my itinerary">G</button>
+
+      <footer class="footer relative z-10 mt-12">
+  <div class="max-w-6xl mx-auto px-6 py-10">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div class="md:col-span-2">
+        <a href="index.html" class="flex items-center gap-2 no-underline text-white">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="text-red-500 flex-shrink-0" aria-hidden="true">
+            <path d="M12 2C12 2 13 8 18 12C13 16 12 22 12 22C12 22 11 16 6 12C11 8 12 2 12 2Z" fill="currentColor" />
+          </svg>
+          <span class="text-lg font-semibold tracking-wide">Itinera</span>
+        </a>
+        <p class="text-white/45 text-sm leading-relaxed mt-3 max-w-sm">
+          Plan it. Live it. From iconic cities to hidden gems — expert-crafted journeys with 24/7 support.
+        </p>
+      </div>
+      <div>
+        <h5 class="font-semibold text-sm mb-3 flex items-center gap-2"><i class="fas fa-compass text-white/30" aria-hidden="true"></i>Explore</h5>
+        <ul class="space-y-2 text-sm text-white/50">
+          <li><a href="about.html" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]" aria-hidden="true"></i>About Us</a></li>
+          <li><a href="explore.html" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]" aria-hidden="true"></i>Explore</a></li>
+          <li><a href="booking.html" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]" aria-hidden="true"></i>Booking</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5 class="font-semibold text-sm mb-3 flex items-center gap-2"><i class="fas fa-phone text-white/30" aria-hidden="true"></i>Contact</h5>
+        <ul class="space-y-2 text-sm text-white/50">
+          <li class="flex items-center gap-2"><i class="fas fa-envelope w-4 text-white/30" aria-hidden="true"></i>help@itinera.travel</li>
+          <li class="flex items-center gap-2"><i class="fas fa-phone w-4 text-white/30" aria-hidden="true"></i>+1 (555) 123-4567</li>
+          <li class="flex items-center gap-2"><i class="fas fa-map-marker-alt w-4 text-white/30" aria-hidden="true"></i>Cairo, Egypt</li>
+        </ul>
+        <div class="flex gap-3 mt-4">
+          <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition" title="X" aria-label="X"><i class="fab fa-x-twitter text-white/60" aria-hidden="true"></i></a>
+          <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition" title="Instagram" aria-label="Instagram"><i class="fab fa-instagram text-white/60" aria-hidden="true"></i></a>
+          <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition" title="Facebook" aria-label="Facebook"><i class="fab fa-facebook-f text-white/60" aria-hidden="true"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-2 mt-8 pt-6 border-t border-white/10 text-xs text-white/35">
+      <span>&copy; <span id="footerYear"></span> Itinera · Team 2 Conference Project</span>
+      <span class="flex items-center gap-1.5">Made with <i class="fas fa-heart text-red-400" aria-hidden="true"></i> in Egypt</span>
+    </div>
+  </div>
+</footer>
+    </div>
+  </div>
+
+  <!-- Shared application bootstrap (session restore, auth modal wiring, session UI) -->
+  <script type="module" src="js/app.js"></script>
+  <script>
+  (function () {
+    const DESTINATIONS = [
+      { id: 1, name: 'New York', location: 'USA', img: 'https://images.pexels.com/photos/1486222/pexels-photo-1486222.jpeg?auto=compress&cs=tinysrgb&w=600', temps: [24, 26, 25, 22, 23, 27, 28] },
+      { id: 2, name: 'Dubai', location: 'UAE', img: 'https://images.pexels.com/photos/2064827/pexels-photo-2064827.jpeg?auto=compress&cs=tinysrgb&w=600', temps: [38, 39, 40, 39, 38, 41, 40] },
+      { id: 3, name: 'Cairo', location: 'Egypt', img: 'https://images.pexels.com/photos/460672/pexels-photo-460672.jpeg?auto=compress&cs=tinysrgb&w=600', temps: [34, 35, 36, 35, 34, 33, 34] },
+      { id: 4, name: 'Paris', location: 'France', img: 'https://images.pexels.com/photos/338515/pexels-photo-338515.jpeg?auto=compress&cs=tinysrgb&w=600', temps: [19, 21, 20, 18, 17, 22, 23] },
+      { id: 5, name: 'Tokyo', location: 'Japan', img: 'https://images.pexels.com/photos/2506923/pexels-photo-2506923.jpeg?auto=compress&cs=tinysrgb&w=600', temps: [26, 28, 29, 27, 26, 30, 31] },
+      { id: 6, name: 'Rome', location: 'Italy', img: 'https://images.pexels.com/photos/1797161/pexels-photo-1797161.jpeg?auto=compress&cs=tinysrgb&w=600', temps: [28, 30, 31, 29, 28, 32, 33] }
+    ];
+
+    const WIZ_BATCH = 3;
+    const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    let wizardStep = 1;
+    let wizardDest = null;
+    let wizardDestStart = 0;
+    let wizardPack = 'solo';
+    let wizardVibe = 'cozy';
+    let wizardInterests = ['food'];
+    let wizardBudget = 2400;
+    let wizardDays = 7;
+    let wizardExclusive = false;
+
+    function addDays(iso, n) {
+      const d = new Date(iso + 'T00:00:00');
+      d.setDate(d.getDate() + n);
+      return d.toISOString().slice(0, 10);
+    }
+
+    function goStep(n) {
+      wizardStep = Math.min(3, Math.max(1, n));
+      for (let i = 1; i <= 3; i++) {
+        const stepEl = document.getElementById('wizardStep' + i);
+        const dot = document.getElementById('stepDot' + i);
+        if (stepEl) stepEl.classList.toggle('active', i === wizardStep);
+        if (dot) dot.classList.toggle('on', i <= wizardStep);
+      }
+      const l1 = document.getElementById('stepLine1');
+      const l2 = document.getElementById('stepLine2');
+      if (l1) l1.classList.toggle('done', wizardStep >= 2);
+      if (l2) l2.classList.toggle('done', wizardStep >= 3);
+    }
+
+    function renderForecast() {
+      const box = document.getElementById('wizardForecast');
+      const status = document.getElementById('wizardWeatherStatus');
+      if (!wizardDest) {
+        box.innerHTML = '';
+        status.textContent = 'Select a destination';
+        return;
+      }
+      status.textContent = '7-day forecast for ' + wizardDest.name;
+      box.innerHTML = wizardDest.temps.map((t, i) =>
+        '<div class="wd-card"><div class="wd-day">' + DAY_NAMES[(new Date().getDay() + i) % 7] +
+        '</div><div class="wd-icon"><i class="fas fa-sun" aria-hidden="true"></i></div>' +
+        '<div class="wd-max">' + t + '°</div><div class="wd-min">' + (t - 5) + '°</div></div>'
+      ).join('');
+    }
+
+    function renderWizardDests() {
+      const grid = document.getElementById('wizardDestGrid');
+      const counter = document.getElementById('wizardDestCounter');
+      const total = DESTINATIONS.length;
+      counter.textContent = (wizardDestStart + 1) + '–' + Math.min(wizardDestStart + WIZ_BATCH, total) + ' of ' + total;
+      const batch = [];
+      for (let i = 0; i < WIZ_BATCH; i++) {
+        batch.push(DESTINATIONS[(wizardDestStart + i) % total]);
+      }
+      grid.innerHTML = batch.map(d => {
+        const sel = wizardDest && wizardDest.id === d.id;
+        return '<div class="opt-card' + (sel ? ' on' : '') + '" data-id="' + d.id + '">' +
+          '<span class="tick"><i class="fas fa-check" aria-hidden="true"></i></span>' +
+          '<img class="opt-thumb" src="' + d.img + '" alt="' + d.name + '" loading="lazy" />' +
+          '<div class="opt-name">' + d.name + '</div>' +
+          '<div class="opt-meta"><i class="fas fa-map-pin mr-1" aria-hidden="true"></i>' + d.location + '</div>' +
+          '</div>';
+      }).join('');
+      grid.querySelectorAll('.opt-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const d = DESTINATIONS.find(x => String(x.id) === card.dataset.id);
+          if (!d) return;
+          wizardDest = d;
+          grid.querySelectorAll('.opt-card').forEach(c => c.classList.remove('on'));
+          card.classList.add('on');
+          renderForecast();
+        });
+      });
+    }
+
+    document.getElementById('wDestPrev').addEventListener('click', () => {
+      wizardDestStart = (wizardDestStart - WIZ_BATCH + DESTINATIONS.length) % DESTINATIONS.length;
+      renderWizardDests();
+    });
+    document.getElementById('wDestNext').addEventListener('click', () => {
+      wizardDestStart = (wizardDestStart + WIZ_BATCH) % DESTINATIONS.length;
+      renderWizardDests();
+    });
+    document.getElementById('wStep1Next').addEventListener('click', () => {
+      if (!wizardDest) { toast('Pick a destination first.', true); return; }
+      goStep(2);
+    });
+    document.getElementById('wStep2Back').addEventListener('click', () => goStep(1));
+    document.getElementById('wStep2Next').addEventListener('click', () => goStep(3));
+    document.getElementById('wStep3Back').addEventListener('click', () => goStep(2));
+    document.getElementById('wStep3Confirm').addEventListener('click', () => {
+      goStep(1);
+      toast('Adventure planned — hit Generate to save it!');
+    });
+
+    document.querySelectorAll('.step-dot').forEach(dot => {
+      dot.addEventListener('click', () => { if (dot.dataset.step) goStep(Number(dot.dataset.step)); });
+    });
+
+    document.querySelectorAll('#wizardPackRow .wk-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#wizardPackRow .wk-btn').forEach(b => b.classList.remove('on'));
+        btn.classList.add('on');
+        wizardPack = btn.dataset.pack;
+        document.getElementById('wizardTravelers').value = wizardPack === 'solo' ? 1 : wizardPack === 'partners' ? 2 : wizardPack === 'pack4' ? 4 : 7;
+      });
+    });
+
+    document.querySelectorAll('#wizardFocusRow .wk-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#wizardFocusRow .wk-btn').forEach(b => b.classList.remove('on'));
+        btn.classList.add('on');
+        wizardVibe = btn.dataset.vibe;
+        const map = { food: 'food', cultural: 'history', outdoor: 'nature' };
+        const auto = map[wizardVibe];
+        if (auto && !wizardInterests.includes(auto)) wizardInterests.push(auto);
+        document.querySelectorAll('#wizardInterestChips .chip').forEach(c => {
+          c.classList.toggle('on', wizardInterests.includes(c.dataset.value));
+        });
+      });
+    });
+
+    document.querySelectorAll('#wizardInterestChips .chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        chip.classList.toggle('on');
+        const v = chip.dataset.value;
+        wizardInterests = wizardInterests.includes(v) ? wizardInterests.filter(i => i !== v) : wizardInterests.concat(v);
+      });
+    });
+
+    const budgetInput = document.getElementById('wizardBudget');
+    const daysInput = document.getElementById('wizardDays');
+
+    function syncBudgetDays() {
+      wizardBudget = Number(budgetInput.value);
+      wizardDays = Number(daysInput.value);
+      document.getElementById('wizardBudgetLabel').textContent = '$' + Number(budgetInput.value).toLocaleString('en-US');
+      document.getElementById('wizardDaysLabel').textContent = wizardDays + (wizardDays === 1 ? ' day' : ' days');
+    }
+    budgetInput.addEventListener('input', syncBudgetDays);
+    daysInput.addEventListener('input', syncBudgetDays);
+    document.getElementById('wizardExclusive').addEventListener('change', (e) => { wizardExclusive = e.target.checked; });
+    document.getElementById('wizardDate').value = addDays(new Date().toISOString().slice(0, 10), 7);
+
+    function generateItinerary() {
+      if (!wizardDest) {
+        toast('Pick a destination first — step 1 stays empty.', true);
+        if (wizardStep !== 1) goStep(1);
+        return;
+      }
+      if (!window.isLoggedIn) {
+        openAuthModal('login', '🔑 Log in to generate your personal itinerary.', generateItinerary);
+        return;
+      }
+      const btn = document.getElementById('generateBtn');
+      btn.disabled = true;
+      const avg = Math.round(wizardDest.temps.reduce((s, t) => s + t, 0) / wizardDest.temps.length);
+
+      const trip = {
+        id: Date.now(),
+        title: 'Trip to ' + wizardDest.name + ' · ' + avg + '°C avg',
+        status: 'planning',
+        start_date: addDays(new Date().toISOString().slice(0, 10), 7),
+        end_date: addDays(new Date().toISOString().slice(0, 10), 7 + wizardDays),
+        no_of_travelers: parseInt(document.getElementById('wizardTravelers').value || '1', 10),
+        no_of_days: wizardDays,
+        budget: wizardBudget,
+        interests: wizardInterests,
+        destination: wizardDest.name
+      };
+
+      setTimeout(() => {
+        try {
+          const trips = JSON.parse(localStorage.getItem('itinera_trips') || '[]');
+          trips.unshift(trip);
+          localStorage.setItem('itinera_trips', JSON.stringify(trips));
+        } catch (e) { /* storage unavailable */ }
+        btn.disabled = false;
+        btn.textContent = '✓';
+        setTimeout(() => { btn.textContent = 'G'; }, 1300);
+        toast('Itinerary generated — saved to your trips!');
+        window.location.href = 'booking.html';
+      }, 600);
+    }
+    document.getElementById('generateBtn').addEventListener('click', generateItinerary);
+
+    renderWizardDests();
+    renderForecast();
+  })();
+</script>
+
+</body>
+</html>

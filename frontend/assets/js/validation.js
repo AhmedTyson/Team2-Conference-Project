@@ -16,7 +16,22 @@
       return EMAIL_RE.test(String(v || "").trim()) ? null : "Enter a valid email address.";
     },
     password: function (v) {
-      return String(v || "").length >= 8 ? null : "Use at least 8 characters.";
+      const s = String(v || "");
+      if (s.length < 8) return "Use at least 8 characters.";
+      if (!/[A-Z]/.test(s)) return "Add at least one uppercase letter.";
+      if (!/[a-z]/.test(s)) return "Add at least one lowercase letter.";
+      if (!/\d/.test(s)) return "Add at least one number.";
+      if (!/[^A-Za-z0-9]/.test(s)) return "Add at least one special character.";
+      return null;
+    },
+    /** basic international phone format check (digits/space/+/-/()/.). Empty is left to `required`. */
+    phone: function (v) {
+      const s = String(v || "").trim();
+      if (!s) return null;
+      const digits = s.replace(/\D/g, "");
+      return digits.length >= 6 && digits.length <= 15 && /^\+?[\d\s\-().]*$/.test(s)
+        ? null
+        : "Enter a valid phone number.";
     },
     /** matches against the resolved value of another field (for password confirmation). Accepts a getter. */
     match: function (otherValueOrGetter) {

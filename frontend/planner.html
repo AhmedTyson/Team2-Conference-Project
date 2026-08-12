@@ -33,7 +33,7 @@
     <!-- 1. My Trips List -->
     <div id="page-trips" class="page active">
         <div class="flex" style="justify-content: space-between; margin-bottom: 0.5rem;">
-            <h2 style="color:#0b1a33;">✈️ My Trips</h2>
+            <h2 style="color:#ffffff;">✈️ My Trips</h2>
             <button class="btn-primary" onclick="navigateTo('page-create')"><i class="fas fa-plus"></i> New Trip</button>
         </div>
         <div class="trip-grid" id="trip-grid-container">
@@ -44,7 +44,7 @@
 
     <!-- 2. Create Trip -->
     <div id="page-create" class="page">
-        <h2 style="color:#0b1a33; margin-bottom: 1.2rem;"><i class="fas fa-pencil-alt"></i> Create new trip</h2>
+        <h2 style="color:#ffffff; margin-bottom: 1.2rem;"><i class="fas fa-pencil-alt"></i> Create new trip</h2>
         <div class="create-form">
             <div class="form-group">
                 <label>Trip name</label>
@@ -93,7 +93,7 @@
                 <div class="modal-card" style="margin-top: 1.2rem;">
                     <h4><i class="fas fa-paperclip"></i> Attach / Detach items</h4>
                     <div style="display: flex; gap: 8px; margin-bottom: 15px;">
-                        <select id="modal-item-select" style="flex-grow: 1; padding: 6px 12px; border-radius: 20px; border: 1px solid #d5e2f0; outline: none;">
+                        <select id="modal-item-select" style="flex-grow: 1; padding: 6px 12px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.05); color: #ffffff; outline: none;">
                             <!-- Option values populated dynamically -->
                         </select>
                         <button class="btn-primary" style="padding: 4px 14px; font-size: 13px;" onclick="addSelectedItemToTrip()">Attach</button>
@@ -108,7 +108,7 @@
 
     <!-- 4. Schedule (calendar-style view) -->
     <div id="page-schedule" class="page">
-        <h2 style="color:#0b1a33;" id="schedule-trip-title"><i class="fas fa-calendar-check"></i> Schedule</h2>
+        <h2 style="color:#ffffff;" id="schedule-trip-title"><i class="fas fa-calendar-check"></i> Schedule</h2>
         <div class="calendar-grid" id="calendar-days-container">
             <!-- Calendar days generated dynamically -->
         </div>
@@ -120,7 +120,7 @@
 
     <!-- 5. Checkout (booking summary → payment) -->
     <div id="page-checkout" class="page">
-        <h2 style="color:#0b1a33;"><i class="fas fa-receipt"></i> Checkout · Booking summary</h2>
+        <h2 style="color:#ffffff;"><i class="fas fa-receipt"></i> Checkout · Booking summary</h2>
         <div class="checkout-summary" id="checkout-summary-container">
             <!-- Itemized invoices injected dynamically -->
         </div>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Itinera – Create Trip</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/create-trip.css" />
+</head>
+<body data-page="create-trip" data-auth="protected">
+
+    <nav class="sidebar" id="sidebar"></nav>
+
+    <div class="main">
+        <div class="flex-between mb-16">
+            <h1 class="page-title">Create Trip <small>New trip</small></h1>
+        </div>
+
+        <div class="card create-card">
+            <form id="createTripForm" class="flex-col">
+                <div>
+                    <label class="label">Trip Name *</label>
+                    <input class="input" id="ctTitle" placeholder="e.g. Summer in Europe" />
+                    <div class="error" id="ctTitleErr">Title is required.</div>
+                </div>
+                <div>
+                    <label class="label">Destination</label>
+                    <select class="input" id="ctDestination">
+                        <option value="">Select a destination…</option>
+                    </select>
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <label class="label">Start Date *</label>
+                        <input class="input" type="date" id="ctStart" required />
+                        <div class="error" id="ctStartErr">Start date is required.</div>
+                    </div>
+                    <div>
+                        <label class="label">End Date *</label>
+                        <input class="input" type="date" id="ctEnd" required />
+                        <div class="error" id="ctEndErr">End date must be after start date.</div>
+                    </div>
+                </div>
+                <div class="grid-3">
+                    <div>
+                        <label class="label">Travelers *</label>
+                        <input class="input" type="number" id="ctTravelers" min="1" value="2" required />
+                        <div class="error" id="ctTravelersErr">At least 1 traveler.</div>
+                    </div>
+                    <div>
+                        <label class="label">Budget (USD) *</label>
+                        <input class="input" type="number" id="ctBudget" min="0" step="0.01" value="2000" required />
+                        <div class="error" id="ctBudgetErr">Budget is required.</div>
+                    </div>
+                    <div>
+                        <label class="label">Days</label>
+                        <input class="input" type="number" id="ctDays" min="1" disabled />
+                    </div>
+                </div>
+                <div>
+                    <label class="label">Travel Style *</label>
+                    <div class="month-tabs" style="margin-bottom:0; border-bottom:none; padding-bottom:0;" id="ctStyles">
+                        <span class="month active" data-style="couple">Couple</span>
+                        <span class="month" data-style="solo">Solo</span>
+                        <span class="month" data-style="family">Family</span>
+                        <span class="month" data-style="friends">Friends</span>
+                        <span class="month" data-style="business">Business</span>
+                    </div>
+                    <div class="error" id="ctStyleErr">Pick a travel style.</div>
+                </div>
+                <div>
+                    <label class="label">Notes / Interests</label>
+                    <textarea class="input" rows="3" id="ctNotes" placeholder="Trip notes, goals, or highlights…"></textarea>
+                </div>
+                <hr class="divider" />
+                <div class="flex" style="justify-content:flex-end; gap:12px;">
+                    <a class="btn" href="overview.html">Cancel</a>
+                    <button type="submit" class="btn btn-dark" id="ctSubmit">
+                        <span id="ctSubmitIcon"><i class="fas fa-check"></i> Create Trip</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/session.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/create-trip.js"></script>
+</body>
+</html>

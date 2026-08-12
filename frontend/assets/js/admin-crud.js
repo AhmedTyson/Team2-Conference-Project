@@ -511,10 +511,9 @@
     const moduleName = mod.id || document.body.dataset.module || "";
     const tr = document.createElement("tr");
     tr.dataset.rowId = String(row.id);
-    const td = function (content, label) {
+    const td = function (content) {
       const c = document.createElement("td");
-      if (label) c.dataset.label = label;
-      if (typeof content === "number") c.classList.add("text-right");
+        if (typeof content === "number") c.classList.add("text-right");
       const node = typeof content === "string" ? document.createTextNode(content)
         : (content instanceof Node ? content : document.createTextNode(String(content)));
       c.appendChild(node);
@@ -535,11 +534,10 @@
       renderBulk();
       syncSelectAll();
     });
-      if (!isColHidden("ID")) tr.appendChild(td(String(row.id), "ID"));
+      if (!isColHidden("ID")) tr.appendChild(td(String(row.id)));
       
       if (!isColHidden("Name")) {
         const nameCell = document.createElement("td");
-        nameCell.dataset.label = "Name";
         if (moduleName === "users") {
           const a = document.createElement("a");
           a.href = "user-details.html?id=" + row.id;
@@ -555,12 +553,11 @@
       
       mod.cols.slice(2, -1).forEach(function (label, i) {
       if (isColHidden(label)) return;
-      tr.appendChild(td(mod.cells[i](row), label));
+      tr.appendChild(td(mod.cells[i](row)));
     });
 
     const cell = document.createElement("td");
     cell.className = "td-actions";
-    cell.dataset.label = "Actions";
     const editBtn = document.createElement("button");
     editBtn.type = "button";
     editBtn.className = "btn-ghost btn-sm";

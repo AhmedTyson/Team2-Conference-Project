@@ -1,0 +1,3028 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Itinera · Travel Experiences</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome 6 (free) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <style>
+    /* ── Reset & base ── */
+    * {
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      scrollbar-width: none;
+    }
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0a0a0a;
+      color: #fff;
+      overflow-x: hidden;
+      color-scheme: dark;
+    }
+
+    /* ── Pages ── */
+    .page {
+      display: none;
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      width: 100%;
+      background: #0a0a0a;
+    }
+    .page.active {
+      display: block;
+    }
+
+    /* ── Hero wrapper ── */
+    .hero-wrapper {
+      position: relative;
+      z-index: 10;
+      height: 100vh;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 2rem 2.5rem;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      transition: background-image 0.8s ease;
+    }
+    .hero-wrapper::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(10, 10, 10, 0.75) 0%, transparent 50%, rgba(10, 10, 10, 0.85) 100%);
+      z-index: 1;
+      pointer-events: none;
+    }
+    .hero-wrapper>* {
+      position: relative;
+      z-index: 2;
+    }
+    @media (max-width: 640px) {
+      .hero-wrapper {
+        padding: 1rem 1.2rem;
+      }
+    }
+
+    /* ── Giant text overlay ── */
+    .giant-text {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      padding-bottom: 6rem;
+    }
+    .giant-text h1 {
+      font-size: 26vw;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      color: rgba(255, 255, 255, 0.10);
+      user-select: none;
+      mix-blend-mode: overlay;
+      text-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      line-height: 1;
+      transition: opacity 0.6s ease;
+      opacity: 0.12;
+    }
+    @media (max-width: 640px) {
+      .giant-text h1 {
+        font-size: 32vw;
+      }
+    }
+
+    /* ── Content layer ── */
+    .content-layer {
+      position: relative;
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      pointer-events: none;
+    }
+    .content-layer>* {
+      pointer-events: auto;
+    }
+
+    /* ── Nav pill ── */
+    .nav-pill {
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    /* ── UPGRADED NAV LINK HOVER (icon → icon + text) ── */
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.2rem;
+      padding: 0.3rem 0.4rem;
+      border-radius: 9999px;
+      transition: background 0.25s ease, padding 0.25s ease, gap 0.25s ease;
+      color: rgba(255, 255, 255, 0.65);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.85rem;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .nav-link i {
+      font-size: 0.95rem;
+      flex-shrink: 0;
+      transition: transform 0.2s;
+    }
+    .nav-link .nav-text {
+      overflow: hidden;
+      white-space: nowrap;
+      max-width: 0;
+      opacity: 0;
+      display: inline-block;
+      transition: max-width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.2s ease 0.05s, margin 0.2s ease;
+      margin-left: 0;
+      vertical-align: middle;
+    }
+    .nav-link:hover,
+    .nav-link:focus-visible {
+      background: rgba(255, 255, 255, 0.10);
+      padding: 0.3rem 0.8rem;
+      gap: 0.5rem;
+      color: #fff;
+    }
+    .nav-link:hover .nav-text,
+    .nav-link:focus-visible .nav-text {
+      max-width: 120px;
+      opacity: 1;
+      margin-left: 0.15rem;
+    }
+    .nav-link.active {
+      color: #fff;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 0.3rem 0.8rem;
+      gap: 0.5rem;
+    }
+    .nav-link.active .nav-text {
+      max-width: 120px;
+      opacity: 1;
+      margin-left: 0.15rem;
+    }
+
+    /* ── Log in button ── */
+    .guest-actions {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1.2rem;
+      border-radius: 9999px;
+      background: #fff;
+      color: #0a0a0a;
+      font-weight: 600;
+      transition: background 0.2s, transform 0.15s;
+      border: none;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .guest-actions:hover {
+      background: rgba(255, 255, 255, 0.85);
+      transform: scale(1.02);
+    }
+
+    /* ── Glass cards ── */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 1.25rem;
+      transition: background 0.3s, transform 0.3s;
+    }
+    .glass-card:hover {
+      background: rgba(255, 255, 255, 0.09);
+    }
+
+    /* ── Stat ── */
+    .stat-number {
+      font-size: 3.5rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+    }
+    @media (max-width: 640px) {
+      .stat-number {
+        font-size: 2.4rem;
+      }
+    }
+
+    /* ── Carousel card ── */
+    .carousel-card {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 1rem;
+      padding: 0.6rem 0.6rem 0.8rem;
+      width: 100%;
+      max-width: 380px;
+      transition: background 0.3s;
+    }
+    .carousel-card:hover {
+      background: rgba(255, 255, 255, 0.10);
+    }
+    @media (max-width: 768px) {
+      .carousel-card {
+        max-width: 100%;
+        margin-top: 1rem;
+      }
+    }
+
+    /* ── Sections wrapper ── */
+    .sections-wrapper {
+      position: relative;
+      z-index: 10;
+      padding: 2rem 2.5rem 5rem;
+      max-width: 1440px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    @media (max-width: 640px) {
+      .sections-wrapper {
+        padding: 1rem 1.2rem 3rem;
+      }
+    }
+
+    /* ── Destination cards ── */
+    .dest-card {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 1rem;
+      padding: 0.75rem;
+      transition: all 0.3s;
+      cursor: pointer;
+      overflow: hidden;
+    }
+    .dest-card:hover {
+      transform: scale(1.02);
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .dest-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+    .dest-card .dest-name {
+      font-weight: 600;
+      font-size: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .dest-card .dest-location {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.5);
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .dest-card .dest-desc {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.4);
+      margin-top: 0.3rem;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* ── Step circle ── */
+    .step-circle {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0 auto 1rem;
+    }
+
+    /* ── Scroll pages ── */
+    .page-scroll {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      padding: 2rem 2.5rem 4rem;
+      width: 100%;
+      background: #0a0a0a;
+    }
+    .page-scroll .giant-text h1 {
+      font-size: 20vw;
+      opacity: 0.10;
+    }
+    .page-scroll .content-layer {
+      max-width: 1200px;
+      margin: 0 auto;
+      min-height: 100%;
+      padding-top: 1rem;
+    }
+    @media (max-width: 640px) {
+      .page-scroll {
+        padding: 1rem 1.2rem 3rem;
+      }
+    }
+
+    /* ── Wizard steps ── */
+    .wizard-step {
+      display: none;
+      min-height: 18rem;
+    }
+    .wizard-step.active {
+      display: block;
+      animation: wFadeUp 0.45s ease both;
+    }
+    @keyframes wFadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    .step-dot {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.35);
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .step-dot .dot {
+      width: 1.5rem;
+      height: 1.5rem;
+      border-radius: 50%;
+      border: 1.5px solid rgba(255, 255, 255, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.68rem;
+      transition: all 0.3s;
+    }
+    .step-dot.on {
+      color: #fff;
+    }
+    .step-dot.on .dot {
+      background: #fff;
+      color: #0a0a0a;
+      border-color: #fff;
+    }
+    .step-line {
+      flex: 1;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.15);
+      margin: 0 0.25rem;
+      position: relative;
+      overflow: hidden;
+    }
+    .step-line .fill {
+      position: absolute;
+      inset: 0;
+      background: #fff;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+    .step-line.done .fill {
+      transform: scaleX(1);
+    }
+
+    .wk-btn {
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #fff;
+      border-radius: 2rem;
+      padding: 0.7rem 1.5rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .wk-btn:hover {
+      background: rgba(255, 255, 255, 0.10);
+    }
+    .wk-btn.on {
+      background: #fff;
+      color: #0a0a0a;
+      border-color: #fff;
+    }
+
+    .chip {
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 2rem;
+      padding: 0.4rem 0.9rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.6);
+      user-select: none;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .chip.on {
+      background: #fff;
+      border-color: #fff;
+      color: #0a0a0a;
+      font-weight: 600;
+    }
+
+    .opt-card {
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      border-radius: 0.9rem;
+      padding: 0.85rem 0.95rem;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.03);
+      transition: all 0.15s;
+      position: relative;
+      user-select: none;
+    }
+    .opt-card:hover {
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+    .opt-card.on {
+      border-color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+    .opt-card .tick {
+      position: absolute;
+      top: 0.5rem;
+      right: 0.55rem;
+      width: 1.2rem;
+      height: 1.2rem;
+      border-radius: 50%;
+      background: #fff;
+      color: #0a0a0a;
+      font-size: 0.6rem;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+    }
+    .opt-card.on .tick {
+      display: flex;
+    }
+    .opt-card .opt-thumb {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255, 255, 255, 0.15);
+      float: right;
+      margin: -0.3rem 0 0 0.5rem;
+    }
+    .opt-card.on .opt-thumb {
+      border-color: #fff;
+    }
+
+    .wd-card {
+      flex-shrink: 0;
+      min-width: 86px;
+      text-align: center;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 0.8rem;
+      padding: 0.6rem 0.3rem 0.55rem;
+      background: rgba(255, 255, 255, 0.03);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .wd-card .wd-day {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: rgba(255, 255, 255, 0.4);
+    }
+    .wd-card .wd-icon {
+      font-size: 1.05rem;
+      margin-top: 0.2rem;
+    }
+    .wd-card .wd-max {
+      font-weight: 700;
+      font-size: 0.92rem;
+      margin-top: 0.15rem;
+    }
+    .wd-card .wd-min {
+      font-size: 0.68rem;
+      color: rgba(255, 255, 255, 0.45);
+    }
+    .wd-card.on {
+      border-color: #fff;
+      background: rgba(255, 255, 255, 0.09);
+    }
+
+    /* ── Auth modal ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 300;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1.25rem;
+    }
+    .modal-overlay.open {
+      display: flex;
+    }
+    .modal-box {
+      background: rgba(20, 20, 20, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 1.5rem;
+      width: 100%;
+      max-width: 420px;
+      padding: 2rem;
+      box-shadow: 0 20px 80px rgba(0, 0, 0, 0.6);
+    }
+    .auth-tabs button {
+      flex: 1;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.6);
+      border: none;
+      padding: 0.6rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+    .auth-tabs button.on {
+      background: #fff;
+      color: #0a0a0a;
+      border-radius: 2rem;
+    }
+    .modal-box form label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 1rem;
+      margin-bottom: 0.25rem;
+    }
+    .modal-box form input {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border-radius: 0.75rem;
+      padding: 0.75rem 1rem;
+      width: 100%;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .modal-box form input:focus {
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    .modal-box form input::placeholder {
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(20, 20, 20, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #fff;
+      padding: 0.8rem 1.6rem;
+      border-radius: 2rem;
+      font-size: 0.9rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s, transform 0.25s;
+      z-index: 400;
+      box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(14px);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .toast.err {
+      border-color: rgba(255, 120, 120, 0.4);
+    }
+
+    /* ── Trip cards ── */
+    .trip-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .trip-card {
+      padding: 1.3rem 1.4rem;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 1rem;
+      transition: all 0.3s;
+    }
+    .trip-card:hover {
+      background: rgba(255, 255, 255, 0.09);
+      transform: translateY(-3px);
+    }
+    .trip-status {
+      font-size: 0.68rem;
+      padding: 0.15rem 0.7rem;
+      border-radius: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: rgba(255, 255, 255, 0.8);
+      text-transform: capitalize;
+      white-space: nowrap;
+    }
+
+    .empty-state {
+      border: 1px dashed rgba(255, 255, 255, 0.15);
+      border-radius: 1rem;
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      color: rgba(255, 255, 255, 0.45);
+      font-size: 0.9rem;
+    }
+
+    /* ── Misc ── */
+    .gen-btn {
+      position: fixed;
+      right: 2rem;
+      bottom: 1.8rem;
+      z-index: 60;
+      width: 3.6rem;
+      height: 3.6rem;
+      border-radius: 50%;
+      background: #fff;
+      color: #0a0a0a;
+      font-weight: 900;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 12px 44px rgba(0, 0, 0, 0.55);
+      transition: transform 0.15s;
+      border: none;
+    }
+    .gen-btn:hover {
+      transform: scale(1.07);
+    }
+    .gen-btn:disabled {
+      opacity: 0.35;
+      cursor: wait;
+    }
+
+    .flight-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0.8rem;
+    }
+    .flight-grid label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: rgba(255, 255, 255, 0.4);
+      display: block;
+      margin-bottom: 0.35rem;
+    }
+    .flight-grid input,
+    .flight-grid select {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 0.6rem;
+      padding: 0.6rem 0.75rem;
+      font-size: 0.85rem;
+      color: #fff;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .flight-grid input:focus,
+    .flight-grid select:focus {
+      border-color: rgba(255, 255, 255, 0.35);
+    }
+
+    .dest-strip {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      padding-bottom: 0.4rem;
+    }
+    .dest-strip .dest-card {
+      flex-shrink: 0;
+      width: 190px;
+    }
+    .dest-strip .dest-card img {
+      height: 100px;
+    }
+
+    /* ── Responsive tweaks ── */
+    @media (max-width: 768px) {
+      .hero-wrapper {
+        height: auto;
+        min-height: 100vh;
+      }
+      .carousel-card {
+        max-width: 100%;
+        margin-top: 0.5rem;
+      }
+    }
+
+    /* ── Footer ── */
+    .footer {
+      background: rgba(10, 10, 10, 0.55);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-top: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .footer a {
+      transition: color 0.2s;
+    }
+    .footer a:hover {
+      color: #fff;
+    }
+
+    /* ── Carousel image transition ── */
+    #carousel-img {
+      transition: opacity 0.5s ease;
+    }
+    #carousel-img.fade-out {
+      opacity: 0;
+    }
+    #carousel-img.fade-in {
+      opacity: 1;
+    }
+
+    /* ── Button styles ── */
+    .btn-primary {
+      background: #fff;
+      color: #0a0a0a;
+      padding: 0.75rem 2rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      border: none;
+      cursor: pointer;
+    }
+    .btn-primary:hover {
+      background: rgba(255, 255, 255, 0.85);
+      transform: scale(1.02);
+    }
+    .btn-primary i {
+      font-size: 0.9rem;
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: #fff;
+      padding: 0.75rem 2rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    /* ── Section titles ── */
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+    }
+    @media (max-width: 640px) {
+      .section-title {
+        font-size: 1.8rem;
+      }
+    }
+
+    .section-sub {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.95rem;
+      margin-top: 0.5rem;
+      max-width: 36rem;
+    }
+
+    /* ── Section background patterns (subtle SVG) ── */
+    .section-why {
+      background-color: #0f0f0f;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Ccircle cx='200' cy='200' r='180' fill='none' stroke='rgba(255,255,255,0.03)' stroke-width='1'/%3E%3Ccircle cx='200' cy='200' r='120' fill='none' stroke='rgba(255,255,255,0.03)' stroke-width='1'/%3E%3Ccircle cx='200' cy='200' r='60' fill='none' stroke='rgba(255,255,255,0.02)' stroke-width='1'/%3E%3Cpath d='M50 200 L350 200 M200 50 L200 350' stroke='rgba(255,255,255,0.02)' stroke-width='1'/%3E%3C/svg%3E");
+      background-size: 600px 600px;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .section-destinations {
+      background-color: #0a0a0a;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect width='200' height='200' fill='none'/%3E%3Ccircle cx='40' cy='40' r='2' fill='rgba(255,255,255,0.06)'/%3E%3Ccircle cx='100' cy='100' r='3' fill='rgba(255,255,255,0.04)'/%3E%3Ccircle cx='160' cy='160' r='2' fill='rgba(255,255,255,0.05)'/%3E%3Ccircle cx='20' cy='180' r='1.5' fill='rgba(255,255,255,0.04)'/%3E%3Ccircle cx='180' cy='30' r='2' fill='rgba(255,255,255,0.05)'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+    }
+
+    .section-packages {
+      background-color: #0d0d0d;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Cpath d='M30 150 L270 150 M150 30 L150 270' stroke='rgba(255,255,255,0.02)' stroke-width='1'/%3E%3Cpath d='M80 80 L220 220 M220 80 L80 220' stroke='rgba(255,255,255,0.02)' stroke-width='1'/%3E%3C/svg%3E");
+      background-size: 300px 300px;
+    }
+
+    .section-steps {
+      background-color: #0a0a0a;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Cpath d='M50 200 Q200 50 350 200 Q200 350 50 200' fill='none' stroke='rgba(255,255,255,0.02)' stroke-width='1'/%3E%3Ccircle cx='200' cy='200' r='120' fill='none' stroke='rgba(255,255,255,0.02)' stroke-width='1'/%3E%3C/svg%3E");
+      background-size: 400px 400px;
+      background-position: center;
+    }
+
+    /* ── Page-specific backgrounds ── */
+    .page-about-bg {
+      background: #0a0a0a;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='80' fill='none' stroke='rgba(255,255,255,0.03)' stroke-width='1'/%3E%3Ccircle cx='100' cy='100' r='50' fill='none' stroke='rgba(255,255,255,0.02)' stroke-width='1'/%3E%3C/svg%3E");
+      background-size: 300px 300px;
+      background-position: 90% 10%;
+      background-repeat: no-repeat;
+    }
+
+    .page-explore-bg {
+      background: #0a0a0a;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Cpath d='M50 200 L350 200 M200 50 L200 350' stroke='rgba(255,255,255,0.02)' stroke-width='1'/%3E%3Ccircle cx='200' cy='200' r='120' fill='none' stroke='rgba(255,255,255,0.02)' stroke-width='1'/%3E%3C/svg%3E");
+      background-size: 400px 400px;
+      background-position: 10% 90%;
+      background-repeat: no-repeat;
+    }
+
+    .page-contact-bg {
+      background: #0a0a0a;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Cpath d='M30 150 L270 150 M150 30 L150 270' stroke='rgba(255,255,255,0.02)' stroke-width='1'/%3E%3Ccircle cx='150' cy='150' r='90' fill='none' stroke='rgba(255,255,255,0.02)' stroke-width='1'/%3E%3C/svg%3E");
+      background-size: 300px 300px;
+      background-position: 90% 80%;
+      background-repeat: no-repeat;
+    }
+
+    .page-booking-bg {
+      background: #0a0a0a;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300' viewBox='0 0 300 300'%3E%3Crect x='50' y='50' width='200' height='200' fill='none' stroke='rgba(255,255,255,0.02)' stroke-width='1'/%3E%3Cpath d='M50 150 L250 150 M150 50 L150 250' stroke='rgba(255,255,255,0.02)' stroke-width='1'/%3E%3C/svg%3E");
+      background-size: 300px 300px;
+      background-position: 5% 90%;
+      background-repeat: no-repeat;
+    }
+
+    .page-weather-bg {
+      background: #0a0a0a;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Ccircle cx='100' cy='100' r='70' fill='none' stroke='rgba(255,255,255,0.02)' stroke-width='1'/%3E%3Ccircle cx='100' cy='100' r='40' fill='none' stroke='rgba(255,255,255,0.02)' stroke-width='1'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+      background-position: 80% 20%;
+      background-repeat: no-repeat;
+    }
+
+    @media (max-width: 640px) {
+      .section-why,
+      .section-destinations,
+      .section-packages,
+      .section-steps {
+        background-size: 150px 150px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+  TOAST
+  ============================================================ -->
+  <div class="toast" id="toast">
+    <i class="fas fa-check-circle text-green-400"></i>
+    <span id="toastMessage">Success</span>
+  </div>
+
+  <!-- ============================================================
+  AUTH MODAL
+  ============================================================ -->
+  <div class="modal-overlay" id="authModal">
+    <div class="modal-box">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold" id="authTitle">Welcome to Itinera</h3>
+        <button class="text-white/50 hover:text-white text-xl cursor-pointer" id="authCloseBtn" title="Close modal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="auth-tabs flex border border-white/10 rounded-full overflow-hidden mb-4">
+        <button id="tabLogin" class="on">Log in</button>
+        <button id="tabRegister">Sign up</button>
+      </div>
+
+      <form id="loginForm">
+        <label for="loginEmail"><i class="fas fa-envelope mr-1"></i>Email</label>
+        <input type="email" id="loginEmail" placeholder="you@example.com" required />
+        <label for="loginPassword"><i class="fas fa-lock mr-1"></i>Password</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" required />
+        <button type="submit" class="w-full mt-4 bg-white text-black rounded-full py-3 font-semibold hover:bg-gray-100 transition flex items-center justify-center gap-2">
+          <i class="fas fa-arrow-right"></i>Log in
+        </button>
+        <p class="text-sm mt-2 text-white/40" id="loginStatus"></p>
+        <p class="text-xs text-white/30 mt-3 pt-3 border-t border-white/10">
+          <i class="fas fa-info-circle mr-1"></i>Demo: <span class="text-white/60">admin@example.com</span> / <span class="text-white/60">password</span>
+        </p>
+      </form>
+
+      <form id="registerForm" style="display:none;">
+        <label for="regName"><i class="fas fa-user mr-1"></i>Full name</label>
+        <input type="text" id="regName" placeholder="Jane Doe" required />
+        <label for="regEmail"><i class="fas fa-envelope mr-1"></i>Email</label>
+        <input type="email" id="regEmail" placeholder="you@example.com" required />
+        <label for="regPhone"><i class="fas fa-phone mr-1"></i>Phone</label>
+        <input type="tel" id="regPhone" placeholder="+1 555 000 0000" />
+        <label for="regPassword"><i class="fas fa-lock mr-1"></i>Password</label>
+        <input type="password" id="regPassword" placeholder="Min. 8 characters" required minlength="8" />
+        <button type="submit" class="w-full mt-4 bg-white text-black rounded-full py-3 font-semibold hover:bg-gray-100 transition flex items-center justify-center gap-2">
+          <i class="fas fa-user-plus"></i>Create account
+        </button>
+        <p class="text-sm mt-2 text-white/40" id="registerStatus"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================
+  APP
+  ============================================================ -->
+  <div id="app">
+
+    <!-- ==========================================================
+    PAGE: HOME
+    ========================================================== -->
+    <div class="page active" id="page-home">
+
+      <!-- Hero -->
+      <div class="hero-wrapper" id="heroWrapper" style="background-image: url('https://images.pexels.com/photos/1486222/pexels-photo-1486222.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+        <div class="giant-text">
+          <h1 id="hero-title">NEW YORK</h1>
+        </div>
+
+        <div class="content-layer">
+          <!-- Nav -->
+          <nav class="flex flex-col lg:flex-row justify-between items-center gap-4 w-full" id="nav-bar">
+            <a href="#" onclick="switchPage('home'); return false;" class="flex items-center gap-2 text-white no-underline">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" class="text-red-500 flex-shrink-0">
+                <path d="M12 2C12 2 13 8 18 12C13 16 12 22 12 22C12 22 11 16 6 12C11 8 12 2 12 2Z" fill="currentColor" />
+              </svg>
+              <span class="text-xl font-semibold tracking-wide">Itinera</span>
+            </a>
+
+            <div class="flex items-center justify-center flex-wrap gap-x-2 gap-y-1 px-4 py-2 rounded-full nav-pill text-sm font-medium">
+              <a href="#" data-page="home" class="nav-link active">
+                <i class="fas fa-home"></i><span class="nav-text">Home</span>
+              </a>
+              <a href="#" data-page="about" class="nav-link">
+                <i class="fas fa-info-circle"></i><span class="nav-text">About</span>
+              </a>
+              <a href="#" data-page="explore" class="nav-link">
+                <i class="fas fa-compass"></i><span class="nav-text">Explore</span>
+              </a>
+              <a href="#" data-page="contact" class="nav-link">
+                <i class="fas fa-envelope"></i><span class="nav-text">Contact</span>
+              </a>
+              <a href="#" data-page="booking" class="nav-link">
+                <i class="fas fa-plane"></i><span class="nav-text">Booking</span>
+              </a>
+              <a href="#" class="guest-actions btn-login">
+                <i class="fas fa-sign-in-alt"></i>Log in
+              </a>
+            </div>
+
+            <div class="flex items-center gap-4 text-sm font-medium">
+              <div class="user-chip-area hidden">
+                <div class="flex items-center gap-3 bg-white/10 border border-white/20 rounded-full pl-1.5 pr-2 py-1">
+                  <span class="user-avatar w-8 h-8 rounded-full bg-white text-black flex items-center justify-center font-bold text-sm">?</span>
+                  <span class="user-name text-sm font-medium">—</span>
+                  <button class="btn-logout text-white/60 hover:text-white text-xs px-1" title="Log out">
+                    <i class="fas fa-sign-out-alt"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </nav>
+
+          <!-- Hero bottom -->
+          <div class="flex flex-col md:flex-row justify-between items-end w-full gap-6 pb-1">
+            <div class="flex flex-col gap-6 max-w-3xl">
+              <div class="flex flex-wrap gap-8 md:gap-14">
+                <div class="stat-item">
+                  <div class="stat-number">20K+</div>
+                  <div class="text-[13px] text-white/60 mt-2 font-medium tracking-wide uppercase flex items-center gap-1.5">
+                    <i class="fas fa-smile text-white/40"></i>Happy Travellers
+                  </div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-number">2K+</div>
+                  <div class="text-[13px] text-white/60 mt-2 font-medium tracking-wide uppercase flex items-center gap-1.5">
+                    <i class="fas fa-route text-white/40"></i>Custom Tours
+                  </div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-number" id="homeDestCount">+5</div>
+                  <div class="text-[13px] text-white/60 mt-2 font-medium tracking-wide uppercase flex items-center gap-1.5">
+                    <i class="fas fa-globe-americas text-white/40"></i>Destinations
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-center gap-4 flex-wrap">
+                <button class="btn-primary" id="bookNowBtn">
+                  <i class="fas fa-calendar-check"></i>Book Now
+                </button>
+                <button class="w-12 h-12 bg-white rounded-full flex items-center justify-center text-black hover:bg-gray-100 transition shrink-0 group" id="arrowBtn" title="Start planning">
+                  <i class="fas fa-arrow-up-right group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition"></i>
+                </button>
+                <p class="text-xs text-white/60 max-w-[220px] leading-relaxed ml-1 font-normal">
+                  <i class="fas fa-heart text-red-400/60 mr-1"></i>Book unique stays that bring travelers and locals together.
+                </p>
+              </div>
+            </div>
+
+            <!-- Carousel -->
+            <div class="carousel-card group" id="carousel-card">
+              <div class="relative overflow-hidden rounded-xl mb-3">
+                <img id="carousel-img" src="https://images.pexels.com/photos/1486222/pexels-photo-1486222.jpeg?auto=compress&cs=tinysrgb&w=600" alt="New York" class="w-full h-[200px] object-cover transition duration-700" />
+                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                  <h4 id="carousel-name" class="text-xl font-bold text-white">New York</h4>
+                  <p id="carousel-location" class="text-sm text-white/80 flex items-center gap-1">
+                    <i class="fas fa-map-pin"></i>USA
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-center gap-4 px-1 pb-0.5">
+                <span id="carousel-text" class="text-xs font-semibold text-white/80 w-10">01/05</span>
+                <div class="flex-1 h-[3px] bg-white/20 rounded-full overflow-hidden">
+                  <div id="carousel-progress" class="h-full bg-white w-[20%] transition-all duration-500 ease-out rounded-full"></div>
+                </div>
+              </div>
+              <p id="carousel-desc" class="text-xs text-white/60 px-1 mt-2 leading-relaxed">The city that never sleeps — iconic skyline, endless energy, and world‑class culture.</p>
+              <div class="flex justify-between items-center mt-3 px-1">
+                <button id="carousel-prev" class="text-white/60 hover:text-white transition w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10" title="Previous destination">
+                  <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="flex gap-1.5" id="carousel-dots"></div>
+                <button id="carousel-next" class="text-white/60 hover:text-white transition w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10" title="Next destination">
+                  <i class="fas fa-chevron-right"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sections -->
+      <div class="sections-wrapper">
+
+        <!-- Why Choose Us -->
+        <section class="section-why rounded-2xl p-8 mb-24 relative" style="background-color: #0f0f0f;">
+          <div class="flex flex-col md:flex-row gap-12">
+            <div class="flex-1">
+              <h2 class="section-title">Why travelers choose <br />Itinera for their adventures</h2>
+              <p class="section-sub">From iconic cities to hidden gems, we make exploring safer, simpler, and more exciting with expert-crafted itineraries and 24/7 support.</p>
+              <div class="flex gap-8 mt-8">
+                <div class="flex flex-col items-center">
+                  <div class="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-xl font-bold border border-white/5">
+                    <i class="fas fa-user-check text-white/60 text-2xl"></i>
+                  </div>
+                  <span class="text-[10px] text-white/40 mt-2 text-center">12k Happy<br />Travellers</span>
+                </div>
+                <div class="flex flex-col items-center">
+                  <div class="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-xl font-bold border border-white/5">
+                    <i class="fas fa-award text-white/60 text-2xl"></i>
+                  </div>
+                  <span class="text-[10px] text-white/40 mt-2 text-center">10yrs Industry<br />Expertise</span>
+                </div>
+                <div class="flex flex-col items-center">
+                  <div class="w-16 h-16 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center text-xl font-bold border border-white/5" id="whyDestCount">
+                    <i class="fas fa-globe text-white/60 text-2xl"></i>
+                  </div>
+                  <span class="text-[10px] text-white/40 mt-2 text-center">5+ Destinations<br />Covered</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex-1 flex flex-col gap-4">
+              <div class="glass-card p-5 flex items-start gap-5">
+                <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-lg flex-shrink-0">
+                  <i class="fas fa-map text-white/70 text-xl"></i>
+                </div>
+                <div><h4 class="font-semibold text-sm flex items-center gap-2"><i class="fas fa-check-circle text-green-400/60 text-xs"></i>Local Expertise</h4><p class="text-xs text-white/50 mt-0.5">Our team crafts unique journeys that go beyond typical tours.</p></div>
+              </div>
+              <div class="glass-card p-5 flex items-start gap-5">
+                <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-lg flex-shrink-0">
+                  <i class="fas fa-calendar-alt text-white/70 text-xl"></i>
+                </div>
+                <div><h4 class="font-semibold text-sm flex items-center gap-2"><i class="fas fa-check-circle text-green-400/60 text-xs"></i>All-in-One Booking</h4><p class="text-xs text-white/50 mt-0.5">Book flights, stays, and experiences in one seamless place.</p></div>
+              </div>
+              <div class="glass-card p-5 flex items-start gap-5">
+                <div class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center text-lg flex-shrink-0">
+                  <i class="fas fa-headset text-white/70 text-xl"></i>
+                </div>
+                <div><h4 class="font-semibold text-sm flex items-center gap-2"><i class="fas fa-check-circle text-green-400/60 text-xs"></i>24/7 Support</h4><p class="text-xs text-white/50 mt-0.5">We're here anytime, anywhere — even during your trip.</p></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Top Destinations -->
+        <section class="section-destinations rounded-2xl p-8 mb-24 relative">
+          <div class="flex flex-wrap justify-between items-end mb-6 gap-4">
+            <div>
+              <h2 class="section-title">Top Destinations</h2>
+              <p class="section-sub" id="topDestHint">Loading destinations…</p>
+            </div>
+            <div class="flex gap-3">
+              <button class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/5 flex items-center justify-center hover:bg-white/20 transition" id="destPrevBtn" title="Previous">
+                <i class="fas fa-chevron-left text-white/60"></i>
+              </button>
+              <button class="w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/5 flex items-center justify-center hover:bg-white/20 transition" id="destNextBtn" title="Next">
+                <i class="fas fa-chevron-right text-white/60"></i>
+              </button>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="topDestGrid">
+            <!-- Populated by JavaScript -->
+          </div>
+          <button class="btn-primary mt-6" id="viewMoreBtn">
+            <i class="fas fa-compass"></i>Start Planning
+          </button>
+        </section>
+
+        <!-- Tour Packages -->
+        <section class="section-packages rounded-2xl p-8 mb-24 relative">
+          <div class="flex flex-col lg:flex-row gap-6">
+            <div class="glass-card p-8 flex flex-col justify-between flex-1 min-h-[260px]">
+              <div>
+                <h3 class="text-2xl font-bold mb-3 flex items-center gap-2"><i class="fas fa-boxes text-white/40"></i>Tour Packages</h3>
+                <p class="text-white/50 text-sm leading-relaxed max-w-sm">Affordable, customizable, and unforgettable adventures across the globe — from city breaks to coastal escapes.</p>
+              </div>
+              <button class="btn-primary self-start mt-4" id="browsePackagesBtn">
+                <i class="fas fa-box-open"></i>Browse packages
+              </button>
+            </div>
+            <div class="flex-1 flex flex-col sm:flex-row gap-4">
+              <div class="dest-card flex-1" id="packageCard1" style="cursor:default;">
+                <img src="https://images.pexels.com/photos/2905955/pexels-photo-2905955.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Island Hopper" class="h-40" />
+                <div class="px-1 pt-1">
+                  <h4 class="font-semibold flex items-center gap-2"><i class="fas fa-ship text-white/40"></i>Island Hopper</h4>
+                  <p class="text-[10px] text-white/50 mt-1">Explore the best islands with guided snorkeling and beach tours.</p>
+                </div>
+              </div>
+              <div class="dest-card flex-1" id="packageCard2" style="cursor:default;">
+                <img src="https://images.pexels.com/photos/16433633/pexels-photo-16433633.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Highland Escape" class="h-40" />
+                <div class="px-1 pt-1">
+                  <h4 class="font-semibold flex items-center gap-2"><i class="fas fa-mountain text-white/40"></i>Highland Escape</h4>
+                  <p class="text-[10px] text-white/50 mt-1">Experience scenic mountains with local culture and breathtaking views.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Booking Steps -->
+        <section class="section-steps rounded-2xl p-8 relative text-center">
+          <h2 class="section-title">Booking made as easy as 1-2-3</h2>
+          <p class="section-sub mx-auto mb-10">Plan your perfect journey in three simple steps.</p>
+          <div class="flex flex-col md:flex-row justify-center gap-12">
+            <div class="flex flex-col items-center max-w-xs">
+              <div class="step-circle"><i class="fas fa-map-pin text-white/70"></i></div>
+              <h4 class="font-semibold flex items-center gap-2"><i class="fas fa-check-circle text-green-400/50 text-xs"></i>Pick Your Destination</h4>
+              <p class="text-xs text-white/50 mt-1 text-center">Choose from our curated list of iconic spots.</p>
+            </div>
+            <div class="flex flex-col items-center max-w-xs">
+              <div class="step-circle"><i class="fas fa-sliders-h text-white/70"></i></div>
+              <h4 class="font-semibold flex items-center gap-2"><i class="fas fa-check-circle text-green-400/50 text-xs"></i>Customize Your Tour</h4>
+              <p class="text-xs text-white/50 mt-1 text-center">Select dates, activities, and stay preferences.</p>
+            </div>
+            <div class="flex flex-col items-center max-w-xs">
+              <div class="step-circle"><i class="fas fa-check text-white/70"></i></div>
+              <h4 class="font-semibold flex items-center gap-2"><i class="fas fa-check-circle text-green-400/50 text-xs"></i>Confirm &amp; Travel</h4>
+              <p class="text-xs text-white/50 mt-1 text-center">Secure your booking and get ready for adventure.</p>
+            </div>
+          </div>
+        </section>
+
+      </div><!-- end sections-wrapper -->
+
+      <!-- Footer -->
+      <footer class="footer relative z-10 mt-12">
+        <div class="max-w-6xl mx-auto px-6 py-10">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="md:col-span-2">
+              <a href="#" onclick="switchPage('home'); return false;" class="flex items-center gap-2 no-underline text-white">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="text-red-500 flex-shrink-0">
+                  <path d="M12 2C12 2 13 8 18 12C13 16 12 22 12 22C12 22 11 16 6 12C11 8 12 2 12 2Z" fill="currentColor" />
+                </svg>
+                <span class="text-lg font-semibold tracking-wide">Itinera</span>
+              </a>
+              <p class="text-white/45 text-sm leading-relaxed mt-3 max-w-sm">
+                Plan it. Live it. From iconic cities to hidden gems — expert-crafted journeys with 24/7 support.
+              </p>
+            </div>
+            <div>
+              <h5 class="font-semibold text-sm mb-3 flex items-center gap-2"><i class="fas fa-compass text-white/30"></i>Explore</h5>
+              <ul class="space-y-2 text-sm text-white/50">
+                <li><a href="#" onclick="switchPage('about'); return false;" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]"></i>About Us</a></li>
+                <li><a href="#" onclick="switchPage('explore'); return false;" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]"></i>Explore</a></li>
+                <li><a href="#" onclick="switchPage('booking'); return false;" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]"></i>Booking</a></li>
+              </ul>
+            </div>
+            <div>
+              <h5 class="font-semibold text-sm mb-3 flex items-center gap-2"><i class="fas fa-phone text-white/30"></i>Contact</h5>
+              <ul class="space-y-2 text-sm text-white/50">
+                <li class="flex items-center gap-2"><i class="fas fa-envelope w-4 text-white/30"></i>help@itinera.travel</li>
+                <li class="flex items-center gap-2"><i class="fas fa-phone w-4 text-white/30"></i>+1 (555) 123-4567</li>
+                <li class="flex items-center gap-2"><i class="fas fa-map-marker-alt w-4 text-white/30"></i>Cairo, Egypt</li>
+              </ul>
+              <div class="flex gap-3 mt-4">
+                <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition" title="X"><i class="fab fa-x-twitter text-white/60"></i></a>
+                <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition" title="Instagram"><i class="fab fa-instagram text-white/60"></i></a>
+                <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition" title="Facebook"><i class="fab fa-facebook-f text-white/60"></i></a>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row justify-between items-center gap-2 mt-8 pt-6 border-t border-white/10 text-xs text-white/35">
+            <span>&copy; <span id="footerYear"></span> Itinera · Team 2 Conference Project</span>
+            <span class="flex items-center gap-1.5">Made with <i class="fas fa-heart text-red-400"></i> in Egypt</span>
+          </div>
+        </div>
+      </footer>
+
+    </div><!-- end page-home -->
+
+
+    <!-- ==========================================================
+    PAGE: ABOUT
+    ========================================================== -->
+    <div class="page page-scroll page-about-bg" id="page-about">
+      <div class="giant-text"><h1>ABOUT</h1></div>
+      <div class="content-layer">
+        <nav class="flex flex-col lg:flex-row justify-between items-center gap-4 w-full">
+          <a href="#" onclick="switchPage('home'); return false;" class="flex items-center gap-2 no-underline text-white">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="text-red-500 flex-shrink-0">
+              <path d="M12 2C12 2 13 8 18 12C13 16 12 22 12 22C12 22 11 16 6 12C11 8 12 2 12 2Z" fill="currentColor" />
+            </svg>
+            <span class="text-xl font-semibold tracking-wide">Itinera</span>
+          </a>
+          <div class="flex items-center justify-center flex-wrap gap-x-2 gap-y-1 px-4 py-2 rounded-full nav-pill text-sm font-medium">
+            <a href="#" data-page="home" class="nav-link"><i class="fas fa-home"></i><span class="nav-text">Home</span></a>
+            <a href="#" data-page="about" class="nav-link active"><i class="fas fa-info-circle"></i><span class="nav-text">About</span></a>
+            <a href="#" data-page="explore" class="nav-link"><i class="fas fa-compass"></i><span class="nav-text">Explore</span></a>
+            <a href="#" data-page="contact" class="nav-link"><i class="fas fa-envelope"></i><span class="nav-text">Contact</span></a>
+            <a href="#" data-page="booking" class="nav-link"><i class="fas fa-plane"></i><span class="nav-text">Booking</span></a>
+            <a href="#" class="guest-actions btn-login"><i class="fas fa-sign-in-alt"></i>Log in</a>
+          </div>
+          <div class="flex items-center gap-4 text-sm font-medium">
+            <div class="user-chip-area hidden">
+              <div class="flex items-center gap-3 bg-white/10 border border-white/20 rounded-full pl-1.5 pr-2 py-1">
+                <span class="user-avatar w-8 h-8 rounded-full bg-white text-black flex items-center justify-center font-bold text-sm">?</span>
+                <span class="user-name text-sm font-medium">—</span>
+                <button class="btn-logout text-white/60 hover:text-white text-xs px-1"><i class="fas fa-sign-out-alt"></i></button>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        <div class="max-w-4xl mx-auto w-full mt-8">
+          <div class="glass-card p-8">
+            <h2 class="section-title">Our Mission</h2>
+            <p class="text-white/70 text-sm leading-relaxed mt-2">We make travel seamless, personal, and unforgettable. From the bustling streets of New York to the sun‑drenched islands of Greece, Itinera connects you with authentic stays and curated experiences.</p>
+            <div class="h-px bg-white/10 my-6"></div>
+            <h3 class="text-lg font-semibold mb-4 flex items-center gap-2"><i class="fas fa-users text-white/40"></i>The Team</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+              <div class="glass-card p-4 text-center"><div class="w-12 h-12 rounded-full bg-white/10 mx-auto flex items-center justify-center text-lg font-bold">A</div><h4 class="font-semibold mt-2">Amira</h4><p class="text-xs text-white/40">Founder</p></div>
+              <div class="glass-card p-4 text-center"><div class="w-12 h-12 rounded-full bg-white/10 mx-auto flex items-center justify-center text-lg font-bold">K</div><h4 class="font-semibold mt-2">Karim</h4><p class="text-xs text-white/40">Experience</p></div>
+              <div class="glass-card p-4 text-center"><div class="w-12 h-12 rounded-full bg-white/10 mx-auto flex items-center justify-center text-lg font-bold">S</div><h4 class="font-semibold mt-2">Sam</h4><p class="text-xs text-white/40">Engineering</p></div>
+              <div class="glass-card p-4 text-center"><div class="w-12 h-12 rounded-full bg-white/10 mx-auto flex items-center justify-center text-lg font-bold">L</div><h4 class="font-semibold mt-2">Layla</h4><p class="text-xs text-white/40">Design</p></div>
+              <div class="glass-card p-4 text-center"><div class="w-12 h-12 rounded-full bg-white/10 mx-auto flex items-center justify-center text-lg font-bold">O</div><h4 class="font-semibold mt-2">Omar</h4><p class="text-xs text-white/40">Operations</p></div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="footer relative z-10 mt-12">
+          <!-- footer same as home -->
+          <div class="max-w-6xl mx-auto px-6 py-10">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+              <div class="md:col-span-2">
+                <a href="#" onclick="switchPage('home'); return false;" class="flex items-center gap-2 no-underline text-white">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="text-red-500 flex-shrink-0">
+                    <path d="M12 2C12 2 13 8 18 12C13 16 12 22 12 22C12 22 11 16 6 12C11 8 12 2 12 2Z" fill="currentColor" />
+                  </svg>
+                  <span class="text-lg font-semibold tracking-wide">Itinera</span>
+                </a>
+                <p class="text-white/45 text-sm leading-relaxed mt-3 max-w-sm">Plan it. Live it. From iconic cities to hidden gems — expert-crafted journeys with 24/7 support.</p>
+              </div>
+              <div>
+                <h5 class="font-semibold text-sm mb-3 flex items-center gap-2"><i class="fas fa-compass text-white/30"></i>Explore</h5>
+                <ul class="space-y-2 text-sm text-white/50">
+                  <li><a href="#" onclick="switchPage('about'); return false;" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]"></i>About Us</a></li>
+                  <li><a href="#" onclick="switchPage('explore'); return false;" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]"></i>Explore</a></li>
+                  <li><a href="#" onclick="switchPage('booking'); return false;" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]"></i>Booking</a></li>
+                </ul>
+              </div>
+              <div>
+                <h5 class="font-semibold text-sm mb-3 flex items-center gap-2"><i class="fas fa-phone text-white/30"></i>Contact</h5>
+                <ul class="space-y-2 text-sm text-white/50">
+                  <li class="flex items-center gap-2"><i class="fas fa-envelope w-4 text-white/30"></i>help@itinera.travel</li>
+                  <li class="flex items-center gap-2"><i class="fas fa-phone w-4 text-white/30"></i>+1 (555) 123-4567</li>
+                  <li class="flex items-center gap-2"><i class="fas fa-map-marker-alt w-4 text-white/30"></i>Cairo, Egypt</li>
+                </ul>
+                <div class="flex gap-3 mt-4">
+                  <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition"><i class="fab fa-x-twitter text-white/60"></i></a>
+                  <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition"><i class="fab fa-instagram text-white/60"></i></a>
+                  <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition"><i class="fab fa-facebook-f text-white/60"></i></a>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-2 mt-8 pt-6 border-t border-white/10 text-xs text-white/35">
+              <span>&copy; <span class="footerYear"></span> Itinera · Team 2 Conference Project</span>
+              <span class="flex items-center gap-1.5">Made with <i class="fas fa-heart text-red-400"></i> in Egypt</span>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+
+    <!-- ==========================================================
+    PAGE: EXPLORE (wizard)
+    ========================================================== -->
+    <div class="page page-scroll page-explore-bg" id="page-explore">
+      <div class="giant-text"><h1>THE</h1></div>
+      <div class="content-layer">
+        <nav class="flex flex-col lg:flex-row justify-between items-center gap-4 w-full">
+          <a href="#" onclick="switchPage('home'); return false;" class="flex items-center gap-2 no-underline text-white">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="text-red-500 flex-shrink-0">
+              <path d="M12 2C12 2 13 8 18 12C13 16 12 22 12 22C12 22 11 16 6 12C11 8 12 2 12 2Z" fill="currentColor" />
+            </svg>
+            <span class="text-xl font-semibold tracking-wide">Itinera</span>
+          </a>
+          <div class="flex items-center justify-center flex-wrap gap-x-2 gap-y-1 px-4 py-2 rounded-full nav-pill text-sm font-medium">
+            <a href="#" data-page="home" class="nav-link"><i class="fas fa-home"></i><span class="nav-text">Home</span></a>
+            <a href="#" data-page="about" class="nav-link"><i class="fas fa-info-circle"></i><span class="nav-text">About</span></a>
+            <a href="#" data-page="explore" class="nav-link active"><i class="fas fa-compass"></i><span class="nav-text">Explore</span></a>
+            <a href="#" data-page="contact" class="nav-link"><i class="fas fa-envelope"></i><span class="nav-text">Contact</span></a>
+            <a href="#" data-page="booking" class="nav-link"><i class="fas fa-plane"></i><span class="nav-text">Booking</span></a>
+            <a href="#" class="guest-actions btn-login"><i class="fas fa-sign-in-alt"></i>Log in</a>
+          </div>
+          <div class="flex items-center gap-4 text-sm font-medium">
+            <div class="user-chip-area hidden">
+              <div class="flex items-center gap-3 bg-white/10 border border-white/20 rounded-full pl-1.5 pr-2 py-1">
+                <span class="user-avatar w-8 h-8 rounded-full bg-white text-black flex items-center justify-center font-bold text-sm">?</span>
+                <span class="user-name text-sm font-medium">—</span>
+                <button class="btn-logout text-white/60 hover:text-white text-xs px-1"><i class="fas fa-sign-out-alt"></i></button>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        <div class="max-w-5xl mx-auto w-full mt-8">
+          <div class="glass-card p-8 relative" style="overflow:visible;">
+            <h2 class="section-title">Plan your adventure</h2>
+            <p class="section-sub mb-6">Pick a destination, set your vibe, and we'll build the itinerary.</p>
+
+            <div class="step-indicator flex items-center gap-1 mb-6" id="stepIndicator">
+              <div class="step-dot on" id="stepDot1" data-step="1"><span class="dot">1</span>Destination</div>
+              <div class="step-line" id="stepLine1"><span class="fill"></span></div>
+              <div class="step-dot" id="stepDot2" data-step="2"><span class="dot">2</span>Trip &amp; group</div>
+              <div class="step-line" id="stepLine2"><span class="fill"></span></div>
+              <div class="step-dot" id="stepDot3" data-step="3"><span class="dot">3</span>Budget &amp; vibe</div>
+            </div>
+
+            <!-- STEP 1 -->
+            <div class="wizard-step active" id="wizardStep1">
+              <div class="flex justify-between items-baseline mb-4">
+                <h3 class="text-xl font-bold flex items-center gap-2"><i class="fas fa-globe-americas text-white/60"></i>Where to?</h3>
+                <span class="text-white/40 text-xs" id="wizardDestCounter"></span>
+              </div>
+              <div class="dest-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3" id="wizardDestGrid">
+                <!-- populated by JS -->
+              </div>
+              <div class="flex flex-wrap gap-3 mt-5">
+                <button type="button" id="wDestPrev" class="wk-btn"><i class="fas fa-chevron-left"></i>Prev</button>
+                <button type="button" id="wDestNext" class="wk-btn">Next <i class="fas fa-chevron-right"></i></button>
+                <button type="button" class="wk-btn on" id="wStep1Next">Continue <i class="fas fa-arrow-right"></i></button>
+              </div>
+              <div class="mt-6">
+                <div class="flex items-baseline justify-between mb-2">
+                  <h4 class="text-sm font-semibold flex items-center gap-2"><i class="fas fa-cloud-sun text-white/60"></i>7‑day forecast</h4>
+                  <span class="text-xs text-white/40" id="wizardWeatherStatus">Select a destination</span>
+                </div>
+                <div class="flex gap-3 overflow-x-auto pb-1" id="wizardForecast">
+                  <!-- populated by JS -->
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 2 -->
+            <div class="wizard-step" id="wizardStep2">
+              <div class="flex justify-between items-baseline mb-4">
+                <h3 class="text-xl font-bold flex items-center gap-2"><i class="fas fa-route text-white/60"></i>Trip details</h3>
+                <span class="text-white/40 text-xs">Solo or with the crew — your call.</span>
+              </div>
+              <div class="flight-grid">
+                <div><label><i class="far fa-calendar-alt mr-1"></i>Departure date</label><input type="date" id="wizardDate" /></div>
+                <div><label><i class="fas fa-user mr-1"></i>Travelers</label><input type="number" id="wizardTravelers" value="1" min="1" max="12" /></div>
+              </div>
+              <div class="mt-6">
+                <h4 class="text-sm font-semibold mb-2 flex items-center gap-2"><i class="fas fa-users text-white/40"></i>Group size</h4>
+                <div class="flex flex-wrap gap-3" id="wizardPackRow">
+                  <button type="button" class="wk-btn on" data-pack="solo"><i class="fas fa-user"></i>Solo · $850</button>
+                  <button type="button" class="wk-btn" data-pack="partners"><i class="fas fa-user-plus"></i>Solo+ · $1,450</button>
+                  <button type="button" class="wk-btn" data-pack="pack4"><i class="fas fa-users"></i>Pack of 4 · $2,600</button>
+                  <button type="button" class="wk-btn" data-pack="pack7"><i class="fas fa-users"></i>Pack of 7 · $4,600</button>
+                </div>
+                <p class="text-white/40 text-xs mt-2"><i class="fas fa-info-circle mr-1"></i>Rough per‑trip estimate — live rate on your trip card. Fully refundable.</p>
+              </div>
+              <div class="mt-6">
+                <h4 class="text-sm font-semibold mb-2 flex items-center gap-2"><i class="fas fa-bullseye text-white/40"></i>Plan focus</h4>
+                <div class="flex flex-wrap gap-3" id="wizardFocusRow">
+                  <button type="button" class="wk-btn on" data-vibe="cozy"><i class="fas fa-mug-hot"></i>Cozy &amp; local</button>
+                  <button type="button" class="wk-btn" data-vibe="outdoor"><i class="fas fa-mountain"></i>Outdoor &amp; adventure</button>
+                  <button type="button" class="wk-btn" data-vibe="cultural"><i class="fas fa-landmark"></i>Culture &amp; history</button>
+                  <button type="button" class="wk-btn" data-vibe="food"><i class="fas fa-utensils"></i>Food &amp; markets</button>
+                </div>
+              </div>
+              <div class="mt-6">
+                <h4 class="text-sm font-semibold mb-2 flex items-center gap-2"><i class="fas fa-heart text-white/40"></i>Interests</h4>
+                <div class="chip-row flex flex-wrap gap-2" id="wizardInterestChips">
+                  <span class="chip on" data-value="food"><i class="fas fa-utensils"></i>Food</span>
+                  <span class="chip" data-value="museums"><i class="fas fa-university"></i>Museums</span>
+                  <span class="chip" data-value="nature"><i class="fas fa-tree"></i>Nature</span>
+                  <span class="chip" data-value="nightlife"><i class="fas fa-moon"></i>Nightlife</span>
+                  <span class="chip" data-value="shopping"><i class="fas fa-shopping-bag"></i>Shopping</span>
+                  <span class="chip" data-value="history"><i class="fas fa-scroll"></i>History</span>
+                  <span class="chip" data-value="beaches"><i class="fas fa-umbrella-beach"></i>Beaches</span>
+                </div>
+              </div>
+              <div class="flex flex-wrap gap-3 mt-5">
+                <button type="button" id="wStep2Back" class="wk-btn"><i class="fas fa-arrow-left"></i>Back</button>
+                <button type="button" class="wk-btn on" id="wStep2Next">Continue <i class="fas fa-arrow-right"></i></button>
+              </div>
+            </div>
+
+            <!-- STEP 3 -->
+            <div class="wizard-step" id="wizardStep3">
+              <div class="flex justify-between items-baseline mb-4">
+                <h3 class="text-xl font-bold flex items-center gap-2"><i class="fas fa-coins text-white/60"></i>Budget &amp; length</h3>
+                <span class="text-white/40 text-xs">We'll pack the best fit for your wallet.</span>
+              </div>
+              <div>
+                <div class="flex items-baseline justify-between">
+                  <label class="text-sm font-semibold flex items-center gap-2"><i class="fas fa-dollar-sign text-white/40"></i>Trip budget (USD)</label>
+                  <span class="text-lg font-bold" id="wizardBudgetLabel">$2,400</span>
+                </div>
+                <input type="range" id="wizardBudget" min="500" max="8000" step="100" value="2400" class="w-full mt-3 accent-white" />
+                <div class="flex justify-between text-xs text-white/40 mt-1"><span><i class="fas fa-bed mr-1"></i>$500 · hostel &amp; street food</span><span><i class="fas fa-crown mr-1"></i>$8,000 · luxury</span></div>
+              </div>
+              <div class="mt-6">
+                <div class="flex items-baseline justify-between">
+                  <label class="text-sm font-semibold flex items-center gap-2"><i class="far fa-calendar-alt text-white/40"></i>Trip length</label>
+                  <span class="text-white/45 text-sm" id="wizardDaysLabel">7 days</span>
+                </div>
+                <input type="range" id="wizardDays" min="3" max="14" step="1" value="7" class="w-full mt-1 accent-white" />
+              </div>
+              <div class="mt-6">
+                <label class="flex items-center gap-3 cursor-pointer">
+                  <input type="checkbox" id="wizardExclusive" class="accent-white w-4 h-4" />
+                  <span class="text-sm flex items-center gap-2"><i class="fas fa-star text-yellow-400"></i>Include spots hidden from the maps — you'll get pins on your trip.</span>
+                </label>
+              </div>
+              <p class="text-sm text-white/40 leading-relaxed mt-4"><i class="fas fa-lightbulb text-yellow-400/60 mr-2"></i>I'll design the packing list around your vibe, your weather window, and your budget. Prices update live as you go.</p>
+              <div class="flex flex-wrap gap-3 mt-5">
+                <button type="button" id="wStep3Back" class="wk-btn"><i class="fas fa-arrow-left"></i>Back</button>
+                <button type="button" class="wk-btn on" id="wStep3Confirm"><i class="fas fa-check"></i>Looks good!</button>
+              </div>
+            </div>
+          </div>
+
+          <p class="text-center text-white/35 text-xs mt-8 max-w-xl mx-auto leading-relaxed flex items-center justify-center gap-2">
+            <i class="fas fa-shield-alt"></i>Plan your adventure, and we'll take care of the rest. All our plans are fully refundable — cancel any time before the first full day.
+          </p>
+        </div>
+
+        <button class="gen-btn" id="generateBtn" title="Generate my itinerary">G</button>
+
+        <footer class="footer relative z-10 mt-12">
+          <div class="max-w-6xl mx-auto px-6 py-10">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+              <div class="md:col-span-2">
+                <a href="#" onclick="switchPage('home'); return false;" class="flex items-center gap-2 no-underline text-white">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="text-red-500 flex-shrink-0">
+                    <path d="M12 2C12 2 13 8 18 12C13 16 12 22 12 22C12 22 11 16 6 12C11 8 12 2 12 2Z" fill="currentColor" />
+                  </svg>
+                  <span class="text-lg font-semibold tracking-wide">Itinera</span>
+                </a>
+                <p class="text-white/45 text-sm leading-relaxed mt-3 max-w-sm">Plan it. Live it. From iconic cities to hidden gems — expert-crafted journeys with 24/7 support.</p>
+              </div>
+              <div>
+                <h5 class="font-semibold text-sm mb-3 flex items-center gap-2"><i class="fas fa-compass text-white/30"></i>Explore</h5>
+                <ul class="space-y-2 text-sm text-white/50">
+                  <li><a href="#" onclick="switchPage('about'); return false;" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]"></i>About Us</a></li>
+                  <li><a href="#" onclick="switchPage('explore'); return false;" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]"></i>Explore</a></li>
+                  <li><a href="#" onclick="switchPage('booking'); return false;" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]"></i>Booking</a></li>
+                </ul>
+              </div>
+              <div>
+                <h5 class="font-semibold text-sm mb-3 flex items-center gap-2"><i class="fas fa-phone text-white/30"></i>Contact</h5>
+                <ul class="space-y-2 text-sm text-white/50">
+                  <li class="flex items-center gap-2"><i class="fas fa-envelope w-4 text-white/30"></i>help@itinera.travel</li>
+                  <li class="flex items-center gap-2"><i class="fas fa-phone w-4 text-white/30"></i>+1 (555) 123-4567</li>
+                  <li class="flex items-center gap-2"><i class="fas fa-map-marker-alt w-4 text-white/30"></i>Cairo, Egypt</li>
+                </ul>
+                <div class="flex gap-3 mt-4">
+                  <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition"><i class="fab fa-x-twitter text-white/60"></i></a>
+                  <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition"><i class="fab fa-instagram text-white/60"></i></a>
+                  <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition"><i class="fab fa-facebook-f text-white/60"></i></a>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-2 mt-8 pt-6 border-t border-white/10 text-xs text-white/35">
+              <span>&copy; <span class="footerYear"></span> Itinera · Team 2 Conference Project</span>
+              <span class="flex items-center gap-1.5">Made with <i class="fas fa-heart text-red-400"></i> in Egypt</span>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+
+    <!-- ==========================================================
+    PAGE: CONTACT
+    ========================================================== -->
+    <div class="page page-scroll page-contact-bg" id="page-contact">
+      <div class="giant-text"><h1>CONTACT</h1></div>
+      <div class="content-layer">
+        <nav class="flex flex-col lg:flex-row justify-between items-center gap-4 w-full">
+          <a href="#" onclick="switchPage('home'); return false;" class="flex items-center gap-2 no-underline text-white">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="text-red-500 flex-shrink-0">
+              <path d="M12 2C12 2 13 8 18 12C13 16 12 22 12 22C12 22 11 16 6 12C11 8 12 2 12 2Z" fill="currentColor" />
+            </svg>
+            <span class="text-xl font-semibold tracking-wide">Itinera</span>
+          </a>
+          <div class="flex items-center justify-center flex-wrap gap-x-2 gap-y-1 px-4 py-2 rounded-full nav-pill text-sm font-medium">
+            <a href="#" data-page="home" class="nav-link"><i class="fas fa-home"></i><span class="nav-text">Home</span></a>
+            <a href="#" data-page="about" class="nav-link"><i class="fas fa-info-circle"></i><span class="nav-text">About</span></a>
+            <a href="#" data-page="explore" class="nav-link"><i class="fas fa-compass"></i><span class="nav-text">Explore</span></a>
+            <a href="#" data-page="contact" class="nav-link active"><i class="fas fa-envelope"></i><span class="nav-text">Contact</span></a>
+            <a href="#" data-page="booking" class="nav-link"><i class="fas fa-plane"></i><span class="nav-text">Booking</span></a>
+            <a href="#" class="guest-actions btn-login"><i class="fas fa-sign-in-alt"></i>Log in</a>
+          </div>
+          <div class="flex items-center gap-4 text-sm font-medium">
+            <div class="user-chip-area hidden">
+              <div class="flex items-center gap-3 bg-white/10 border border-white/20 rounded-full pl-1.5 pr-2 py-1">
+                <span class="user-avatar w-8 h-8 rounded-full bg-white text-black flex items-center justify-center font-bold text-sm">?</span>
+                <span class="user-name text-sm font-medium">—</span>
+                <button class="btn-logout text-white/60 hover:text-white text-xs px-1"><i class="fas fa-sign-out-alt"></i></button>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        <div class="max-w-4xl mx-auto w-full mt-8">
+          <div class="glass-card p-8">
+            <h2 class="section-title">Get in Touch</h2>
+            <p class="section-sub mb-6">We reply within 2 hours — or 4 hours offline.</p>
+            <form id="contactForm" class="space-y-4 max-w-lg">
+              <div>
+                <label class="text-xs text-white/40 block mb-1 flex items-center gap-1.5"><i class="fas fa-user text-white/30"></i>Full name</label>
+                <input type="text" id="contactName" placeholder="Jane Doe" class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm focus:border-white/30 outline-none" />
+              </div>
+              <div>
+                <label class="text-xs text-white/40 block mb-1 flex items-center gap-1.5"><i class="fas fa-envelope text-white/30"></i>Email</label>
+                <input type="email" id="contactEmail" placeholder="jane@example.com" class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm focus:border-white/30 outline-none" />
+              </div>
+              <div>
+                <label class="text-xs text-white/40 block mb-1 flex items-center gap-1.5"><i class="fas fa-tag text-white/30"></i>Subject</label>
+                <select id="contactSubject" class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm focus:border-white/30 outline-none">
+                  <option>General</option>
+                  <option>Booking</option>
+                  <option>Pricing</option>
+                  <option>Technical</option>
+                </select>
+              </div>
+              <div>
+                <label class="text-xs text-white/40 block mb-1 flex items-center gap-1.5"><i class="fas fa-comment text-white/30"></i>Message</label>
+                <textarea id="contactMsg" rows="3" placeholder="How can we help?" class="w-full bg-white/5 border border-white/10 rounded-lg p-3 text-sm focus:border-white/30 outline-none"></textarea>
+              </div>
+              <button type="submit" class="btn-primary">
+                <i class="fas fa-paper-plane"></i>Send (POST)
+              </button>
+              <p id="contactStatus" class="text-white/30 text-sm mt-2"></p>
+            </form>
+            <div class="flex flex-wrap gap-6 mt-6 text-white/40 text-sm">
+              <span class="flex items-center gap-2"><i class="fas fa-envelope text-white/30"></i>help@itinera.travel</span>
+              <span class="flex items-center gap-2"><i class="fas fa-phone text-white/30"></i>+1 (555) 123-4567</span>
+              <span class="flex items-center gap-2"><i class="fas fa-map-marker-alt text-white/30"></i>Cairo, Egypt</span>
+            </div>
+          </div>
+        </div>
+
+        <footer class="footer relative z-10 mt-12">
+          <div class="max-w-6xl mx-auto px-6 py-10">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+              <div class="md:col-span-2">
+                <a href="#" onclick="switchPage('home'); return false;" class="flex items-center gap-2 no-underline text-white">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="text-red-500 flex-shrink-0">
+                    <path d="M12 2C12 2 13 8 18 12C13 16 12 22 12 22C12 22 11 16 6 12C11 8 12 2 12 2Z" fill="currentColor" />
+                  </svg>
+                  <span class="text-lg font-semibold tracking-wide">Itinera</span>
+                </a>
+                <p class="text-white/45 text-sm leading-relaxed mt-3 max-w-sm">Plan it. Live it. From iconic cities to hidden gems — expert-crafted journeys with 24/7 support.</p>
+              </div>
+              <div>
+                <h5 class="font-semibold text-sm mb-3 flex items-center gap-2"><i class="fas fa-compass text-white/30"></i>Explore</h5>
+                <ul class="space-y-2 text-sm text-white/50">
+                  <li><a href="#" onclick="switchPage('about'); return false;" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]"></i>About Us</a></li>
+                  <li><a href="#" onclick="switchPage('explore'); return false;" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]"></i>Explore</a></li>
+                  <li><a href="#" onclick="switchPage('booking'); return false;" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]"></i>Booking</a></li>
+                </ul>
+              </div>
+              <div>
+                <h5 class="font-semibold text-sm mb-3 flex items-center gap-2"><i class="fas fa-phone text-white/30"></i>Contact</h5>
+                <ul class="space-y-2 text-sm text-white/50">
+                  <li class="flex items-center gap-2"><i class="fas fa-envelope w-4 text-white/30"></i>help@itinera.travel</li>
+                  <li class="flex items-center gap-2"><i class="fas fa-phone w-4 text-white/30"></i>+1 (555) 123-4567</li>
+                  <li class="flex items-center gap-2"><i class="fas fa-map-marker-alt w-4 text-white/30"></i>Cairo, Egypt</li>
+                </ul>
+                <div class="flex gap-3 mt-4">
+                  <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition"><i class="fab fa-x-twitter text-white/60"></i></a>
+                  <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition"><i class="fab fa-instagram text-white/60"></i></a>
+                  <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition"><i class="fab fa-facebook-f text-white/60"></i></a>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-2 mt-8 pt-6 border-t border-white/10 text-xs text-white/35">
+              <span>&copy; <span class="footerYear"></span> Itinera · Team 2 Conference Project</span>
+              <span class="flex items-center gap-1.5">Made with <i class="fas fa-heart text-red-400"></i> in Egypt</span>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+
+    <!-- ==========================================================
+    PAGE: BOOKING
+    ========================================================== -->
+    <div class="page page-scroll page-booking-bg" id="page-booking">
+      <div class="giant-text"><h1>BOOKING</h1></div>
+      <div class="content-layer">
+        <nav class="flex flex-col lg:flex-row justify-between items-center gap-4 w-full">
+          <a href="#" onclick="switchPage('home'); return false;" class="flex items-center gap-2 no-underline text-white">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="text-red-500 flex-shrink-0">
+              <path d="M12 2C12 2 13 8 18 12C13 16 12 22 12 22C12 22 11 16 6 12C11 8 12 2 12 2Z" fill="currentColor" />
+            </svg>
+            <span class="text-xl font-semibold tracking-wide">Itinera</span>
+          </a>
+          <div class="flex items-center justify-center flex-wrap gap-x-2 gap-y-1 px-4 py-2 rounded-full nav-pill text-sm font-medium">
+            <a href="#" data-page="home" class="nav-link"><i class="fas fa-home"></i><span class="nav-text">Home</span></a>
+            <a href="#" data-page="about" class="nav-link"><i class="fas fa-info-circle"></i><span class="nav-text">About</span></a>
+            <a href="#" data-page="explore" class="nav-link"><i class="fas fa-compass"></i><span class="nav-text">Explore</span></a>
+            <a href="#" data-page="contact" class="nav-link"><i class="fas fa-envelope"></i><span class="nav-text">Contact</span></a>
+            <a href="#" data-page="booking" class="nav-link active"><i class="fas fa-plane"></i><span class="nav-text">Booking</span></a>
+            <a href="#" class="guest-actions btn-login"><i class="fas fa-sign-in-alt"></i>Log in</a>
+          </div>
+          <div class="flex items-center gap-4 text-sm font-medium">
+            <div class="user-chip-area hidden">
+              <div class="flex items-center gap-3 bg-white/10 border border-white/20 rounded-full pl-1.5 pr-2 py-1">
+                <span class="user-avatar w-8 h-8 rounded-full bg-white text-black flex items-center justify-center font-bold text-sm">?</span>
+                <span class="user-name text-sm font-medium">—</span>
+                <button class="btn-logout text-white/60 hover:text-white text-xs px-1"><i class="fas fa-sign-out-alt"></i></button>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        <div class="max-w-4xl mx-auto w-full mt-8">
+          <div class="glass-card p-8">
+            <h2 class="section-title flex items-center gap-3"><i class="fas fa-plane text-white/40"></i>Find Your Flight</h2>
+            <p class="section-sub mb-6">Round-trip flight search. Best rates for members — your search saves to your trips.</p>
+
+            <div class="flight-grid">
+              <div><label><i class="fas fa-map-pin mr-1"></i>From</label><input type="text" id="bookingFrom" placeholder="City / Airport" /></div>
+              <div><label><i class="fas fa-flag mr-1"></i>To</label><input type="text" id="bookingTo" placeholder="City / Airport" /></div>
+              <div><label><i class="far fa-calendar-alt mr-1"></i>Depart</label><input type="date" id="bookingDate" /></div>
+              <div><label><i class="far fa-calendar-alt mr-1"></i>Return (optional)</label><input type="date" id="bookingReturn" /></div>
+              <div><label><i class="fas fa-user mr-1"></i>Passengers</label>
+                <select id="bookingPassengers">
+                  <option>1</option><option>2</option><option>3</option><option>4</option>
+                  <option>5</option><option>6</option><option>7</option><option>8</option><option>9</option>
+                </select>
+              </div>
+              <div><label><i class="fas fa-crown mr-1"></i>Class</label>
+                <select id="bookingClass">
+                  <option value="economy">Economy</option>
+                  <option value="premium">Premium</option>
+                  <option value="business">Business</option>
+                  <option value="first">First</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-4 mt-6">
+              <button class="btn-primary" id="searchFlightsBtn">
+                <i class="fas fa-search"></i>Search Flights
+              </button>
+              <span class="text-white/30 text-xs flex items-center gap-1.5"><i class="fas fa-info-circle"></i>Demo — no actual routes are displayed; your search is saved as a trip request.</span>
+            </div>
+            <p id="bookingStatus" class="text-white/50 text-sm mt-3"></p>
+          </div>
+
+          <div id="bookingTripsShell">
+            <div class="flex justify-between items-baseline mt-6 mb-2">
+              <h3 class="text-lg font-semibold flex items-center gap-2"><i class="fas fa-suitcase text-white/40"></i>Your Trips</h3>
+              <span class="text-white/40 text-xs" id="bookingTripsHint">saved searches &amp; plans</span>
+            </div>
+            <div id="bookingTrips"><div class="empty-state"><i class="fas fa-inbox mr-2"></i>No trips yet — search above to save your first one! <i class="fas fa-rocket ml-1"></i></div></div>
+          </div>
+        </div>
+
+        <footer class="footer relative z-10 mt-12">
+          <div class="max-w-6xl mx-auto px-6 py-10">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+              <div class="md:col-span-2">
+                <a href="#" onclick="switchPage('home'); return false;" class="flex items-center gap-2 no-underline text-white">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="text-red-500 flex-shrink-0">
+                    <path d="M12 2C12 2 13 8 18 12C13 16 12 22 12 22C12 22 11 16 6 12C11 8 12 2 12 2Z" fill="currentColor" />
+                  </svg>
+                  <span class="text-lg font-semibold tracking-wide">Itinera</span>
+                </a>
+                <p class="text-white/45 text-sm leading-relaxed mt-3 max-w-sm">Plan it. Live it. From iconic cities to hidden gems — expert-crafted journeys with 24/7 support.</p>
+              </div>
+              <div>
+                <h5 class="font-semibold text-sm mb-3 flex items-center gap-2"><i class="fas fa-compass text-white/30"></i>Explore</h5>
+                <ul class="space-y-2 text-sm text-white/50">
+                  <li><a href="#" onclick="switchPage('about'); return false;" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]"></i>About Us</a></li>
+                  <li><a href="#" onclick="switchPage('explore'); return false;" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]"></i>Explore</a></li>
+                  <li><a href="#" onclick="switchPage('booking'); return false;" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]"></i>Booking</a></li>
+                </ul>
+              </div>
+              <div>
+                <h5 class="font-semibold text-sm mb-3 flex items-center gap-2"><i class="fas fa-phone text-white/30"></i>Contact</h5>
+                <ul class="space-y-2 text-sm text-white/50">
+                  <li class="flex items-center gap-2"><i class="fas fa-envelope w-4 text-white/30"></i>help@itinera.travel</li>
+                  <li class="flex items-center gap-2"><i class="fas fa-phone w-4 text-white/30"></i>+1 (555) 123-4567</li>
+                  <li class="flex items-center gap-2"><i class="fas fa-map-marker-alt w-4 text-white/30"></i>Cairo, Egypt</li>
+                </ul>
+                <div class="flex gap-3 mt-4">
+                  <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition"><i class="fab fa-x-twitter text-white/60"></i></a>
+                  <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition"><i class="fab fa-instagram text-white/60"></i></a>
+                  <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition"><i class="fab fa-facebook-f text-white/60"></i></a>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-2 mt-8 pt-6 border-t border-white/10 text-xs text-white/35">
+              <span>&copy; <span class="footerYear"></span> Itinera · Team 2 Conference Project</span>
+              <span class="flex items-center gap-1.5">Made with <i class="fas fa-heart text-red-400"></i> in Egypt</span>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+
+    <!-- ==========================================================
+    PAGE: WEATHER
+    ========================================================== -->
+    <div class="page page-scroll page-weather-bg" id="page-weather">
+      <div class="giant-text"><h1>WEATHER</h1></div>
+      <div class="content-layer">
+        <nav class="flex flex-col lg:flex-row justify-between items-center gap-4 w-full">
+          <a href="#" onclick="switchPage('home'); return false;" class="flex items-center gap-2 no-underline text-white">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="text-red-500 flex-shrink-0">
+              <path d="M12 2C12 2 13 8 18 12C13 16 12 22 12 22C12 22 11 16 6 12C11 8 12 2 12 2Z" fill="currentColor" />
+            </svg>
+            <span class="text-xl font-semibold tracking-wide">Itinera</span>
+          </a>
+          <div class="flex items-center justify-center flex-wrap gap-x-2 gap-y-1 px-4 py-2 rounded-full nav-pill text-sm font-medium">
+            <a href="#" data-page="home" class="nav-link"><i class="fas fa-home"></i><span class="nav-text">Home</span></a>
+            <a href="#" data-page="about" class="nav-link"><i class="fas fa-info-circle"></i><span class="nav-text">About</span></a>
+            <a href="#" data-page="explore" class="nav-link"><i class="fas fa-compass"></i><span class="nav-text">Explore</span></a>
+            <a href="#" data-page="contact" class="nav-link"><i class="fas fa-envelope"></i><span class="nav-text">Contact</span></a>
+            <a href="#" data-page="booking" class="nav-link"><i class="fas fa-plane"></i><span class="nav-text">Booking</span></a>
+            <a href="#" class="guest-actions btn-login"><i class="fas fa-sign-in-alt"></i>Log in</a>
+          </div>
+          <div class="flex items-center gap-4 text-sm font-medium">
+            <div class="user-chip-area hidden">
+              <div class="flex items-center gap-3 bg-white/10 border border-white/20 rounded-full pl-1.5 pr-2 py-1">
+                <span class="user-avatar w-8 h-8 rounded-full bg-white text-black flex items-center justify-center font-bold text-sm">?</span>
+                <span class="user-name text-sm font-medium">—</span>
+                <button class="btn-logout text-white/60 hover:text-white text-xs px-1"><i class="fas fa-sign-out-alt"></i></button>
+              </div>
+            </div>
+          </div>
+        </nav>
+
+        <div class="max-w-4xl mx-auto w-full mt-8">
+          <div class="glass-card p-8">
+            <h2 class="section-title flex items-center gap-3"><i class="fas fa-cloud-sun text-yellow-400"></i>Live Weather</h2>
+            <div class="flex gap-3 mt-2">
+              <input type="text" id="weatherInput" placeholder="City name (e.g. London)" class="flex-1 bg-white/5 border border-white/10 rounded-lg p-3 text-sm focus:border-white/30 outline-none" />
+              <button id="weatherSearchBtn" class="btn-primary">
+                <i class="fas fa-search"></i>Search
+              </button>
+            </div>
+            <p id="weatherError" class="text-red-400/70 text-sm mt-2"></p>
+            <div id="weatherResult" class="mt-4 glass-card p-5 hidden">
+              <div class="flex justify-between">
+                <div><h3 id="weatherCity" class="text-lg font-semibold">City</h3><span id="weatherCountry" class="text-white/40 text-sm">Country</span></div>
+                <div class="text-right"><span id="weatherTemp" class="text-4xl font-bold">--°C</span><br /><span id="weatherDesc" class="text-white/50">--</span></div>
+              </div>
+              <div class="flex gap-6 mt-3 text-sm text-white/40">
+                <span class="flex items-center gap-1.5"><i class="fas fa-wind"></i><span id="weatherWind">--</span> km/h</span>
+                <span class="flex items-center gap-1.5"><i class="fas fa-tint"></i><span id="weatherHumidity">--</span>%</span>
+                <span class="flex items-center gap-1.5"><i class="fas fa-cloud"></i><span id="weatherClouds">--</span>%</span>
+              </div>
+            </div>
+            <p class="text-white/20 text-xs mt-3 flex items-center gap-1.5"><i class="fas fa-database"></i>Live data via <strong>GET /api/weather?lat=&amp;lon=</strong> — falls back to a simulation if offline.</p>
+          </div>
+        </div>
+
+        <footer class="footer relative z-10 mt-12">
+          <div class="max-w-6xl mx-auto px-6 py-10">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+              <div class="md:col-span-2">
+                <a href="#" onclick="switchPage('home'); return false;" class="flex items-center gap-2 no-underline text-white">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="text-red-500 flex-shrink-0">
+                    <path d="M12 2C12 2 13 8 18 12C13 16 12 22 12 22C12 22 11 16 6 12C11 8 12 2 12 2Z" fill="currentColor" />
+                  </svg>
+                  <span class="text-lg font-semibold tracking-wide">Itinera</span>
+                </a>
+                <p class="text-white/45 text-sm leading-relaxed mt-3 max-w-sm">Plan it. Live it. From iconic cities to hidden gems — expert-crafted journeys with 24/7 support.</p>
+              </div>
+              <div>
+                <h5 class="font-semibold text-sm mb-3 flex items-center gap-2"><i class="fas fa-compass text-white/30"></i>Explore</h5>
+                <ul class="space-y-2 text-sm text-white/50">
+                  <li><a href="#" onclick="switchPage('about'); return false;" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]"></i>About Us</a></li>
+                  <li><a href="#" onclick="switchPage('explore'); return false;" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]"></i>Explore</a></li>
+                  <li><a href="#" onclick="switchPage('booking'); return false;" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]"></i>Booking</a></li>
+                </ul>
+              </div>
+              <div>
+                <h5 class="font-semibold text-sm mb-3 flex items-center gap-2"><i class="fas fa-phone text-white/30"></i>Contact</h5>
+                <ul class="space-y-2 text-sm text-white/50">
+                  <li class="flex items-center gap-2"><i class="fas fa-envelope w-4 text-white/30"></i>help@itinera.travel</li>
+                  <li class="flex items-center gap-2"><i class="fas fa-phone w-4 text-white/30"></i>+1 (555) 123-4567</li>
+                  <li class="flex items-center gap-2"><i class="fas fa-map-marker-alt w-4 text-white/30"></i>Cairo, Egypt</li>
+                </ul>
+                <div class="flex gap-3 mt-4">
+                  <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition"><i class="fab fa-x-twitter text-white/60"></i></a>
+                  <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition"><i class="fab fa-instagram text-white/60"></i></a>
+                  <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition"><i class="fab fa-facebook-f text-white/60"></i></a>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-2 mt-8 pt-6 border-t border-white/10 text-xs text-white/35">
+              <span>&copy; <span class="footerYear"></span> Itinera · Team 2 Conference Project</span>
+              <span class="flex items-center gap-1.5">Made with <i class="fas fa-heart text-red-400"></i> in Egypt</span>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+  </div><!-- end app -->
+
+
+  <!-- ============================================================
+  JAVASCRIPT
+  ============================================================ -->
+  <script>
+    /* ============================================================
+       ITINERA — Destination system with API integration & fixed navigation
+       ============================================================ */
+
+    // ── Session ──
+    let currentUser = null;
+    const TOKEN_KEY = 'itinera_token';
+    const USER_KEY = 'itinera_user';
+
+    function getToken() { return localStorage.getItem(TOKEN_KEY); }
+
+    function setSession(token, user) {
+      localStorage.setItem(TOKEN_KEY, token);
+      localStorage.setItem(USER_KEY, JSON.stringify(user));
+      currentUser = user;
+    }
+
+    function clearSession() {
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
+      currentUser = null;
+    }
+
+    function isLoggedIn() { return !!currentUser; }
+
+    // ── Toast ──
+    let toastTimer = null;
+
+    function toast(msg, isError) {
+      const el = document.getElementById('toast');
+      const msgEl = document.getElementById('toastMessage');
+      msgEl.textContent = msg;
+      el.className = 'toast show' + (isError ? ' err' : '');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { el.className = 'toast'; }, 3200);
+    }
+
+    // ── Core destination data (fallback and image mapping) ──
+    // Hardcoded curated destinations with real images (Hero carousel)
+    const curatedDestinations = [{
+      id: 1,
+      name: 'New York',
+      location: 'USA',
+      heroImage: 'https://images.pexels.com/photos/1486222/pexels-photo-1486222.jpeg?auto=compress&cs=tinysrgb&w=1920',
+      carouselImage: 'https://images.pexels.com/photos/1486222/pexels-photo-1486222.jpeg?auto=compress&cs=tinysrgb&w=600',
+      description: 'The city that never sleeps — iconic skyline, endless energy, and world‑class culture.',
+      alt: 'New York skyline with skyscrapers'
+    }, {
+      id: 2,
+      name: 'Greece',
+      location: 'Santorini',
+      heroImage: 'https://images.pexels.com/photos/1586077/pexels-photo-1586077.jpeg?auto=compress&cs=tinysrgb&w=1920',
+      carouselImage: 'https://images.pexels.com/photos/1586077/pexels-photo-1586077.jpeg?auto=compress&cs=tinysrgb&w=600',
+      description: 'White‑washed walls, deep blue seas, and sunsets that paint the sky in gold.',
+      alt: 'Santorini white buildings overlooking the sea'
+    }, {
+      id: 3,
+      name: 'France',
+      location: 'Paris',
+      heroImage: 'https://images.pexels.com/photos/699466/pexels-photo-699466.jpeg?auto=compress&cs=tinysrgb&w=1920',
+      carouselImage: 'https://images.pexels.com/photos/699466/pexels-photo-699466.jpeg?auto=compress&cs=tinysrgb&w=600',
+      description: 'Romantic boulevards, world‑famous art, and the unmistakable charm of the City of Light.',
+      alt: 'Eiffel Tower in Paris'
+    }, {
+      id: 4,
+      name: 'Spain',
+      location: 'Barcelona',
+      heroImage: 'https://images.pexels.com/photos/2872373/pexels-photo-2872373.jpeg?auto=compress&cs=tinysrgb&w=1920',
+      carouselImage: 'https://images.pexels.com/photos/2872373/pexels-photo-2872373.jpeg?auto=compress&cs=tinysrgb&w=600',
+      description: 'Vibrant streets, Gaudí masterpieces, and the rhythmic pulse of flamenco and tapas.',
+      alt: 'Barcelona cityscape with Sagrada Familia'
+    }, {
+      id: 5,
+      name: 'England',
+      location: 'London',
+      heroImage: 'https://images.pexels.com/photos/460672/pexels-photo-460672.jpeg?auto=compress&cs=tinysrgb&w=1920',
+      carouselImage: 'https://images.pexels.com/photos/460672/pexels-photo-460672.jpeg?auto=compress&cs=tinysrgb&w=600',
+      description: 'Historic landmarks, royal heritage, and a dynamic modern culture that spans the globe.',
+      alt: 'London skyline with Big Ben and river Thames'
+    }];
+
+    // ── State ──
+    let allDestinations = [];           // normalized destination list (API + fallback)
+    let heroDestinations = [];          // subset that appears in the carousel (curated)
+    let currentSlide = 0;
+    let carouselInterval = null;
+
+    // ── Normalization / Adapter ──
+    function normalizeDestination(apiItem) {
+      // Expect possible fields: id, name, city, country, latitude, longitude, image, etc.
+      const id = apiItem.id || apiItem.destination_id || Date.now() + Math.random();
+      const name = apiItem.name || apiItem.city || 'Unnamed';
+      const city = apiItem.city || apiItem.city_name || '';
+      const country = apiItem.country ? (apiItem.country.name || apiItem.country) : '';
+      const location = [city, country].filter(Boolean).join(', ');
+      const lat = apiItem.latitude || apiItem.lat || null;
+      const lon = apiItem.longitude || apiItem.lon || null;
+      // For images, we rely on our curated image mapping, not API (since API may not have good travel images)
+      // We'll keep a separate image lookup by name later.
+      return {
+        id,
+        name,
+        city,
+        country,
+        location: location || name,
+        latitude: lat,
+        longitude: lon,
+        // image fields will be filled later by our image mapping
+        image: null,
+        carouselImage: null,
+        heroImage: null,
+        description: apiItem.description || `Discover ${name}`,
+        alt: `${name} destination`
+      };
+    }
+
+    // ── Image mapping ──
+    function getImagesForDestination(name) {
+      // Find in curated list by name (case-insensitive)
+      const curated = curatedDestinations.find(d => d.name.toLowerCase() === name.toLowerCase());
+      if (curated) {
+        return {
+          heroImage: curated.heroImage,
+          carouselImage: curated.carouselImage,
+          description: curated.description || `Explore ${name}`,
+          alt: curated.alt || `${name} destination`
+        };
+      }
+      // Fallback: use a neutral placeholder (travel-themed)
+      return {
+        heroImage: 'https://images.pexels.com/photos/210243/pexels-photo-210243.jpeg?auto=compress&cs=tinysrgb&w=1920',
+        carouselImage: 'https://images.pexels.com/photos/210243/pexels-photo-210243.jpeg?auto=compress&cs=tinysrgb&w=600',
+        description: `Discover the beauty of ${name}`,
+        alt: `${name} travel destination`
+      };
+    }
+
+    // ── Fetch destinations from API ──
+    async function fetchDestinations() {
+      const apiUrl = window.APP_URL ? window.APP_URL + '/api/v1/destinations' : '/api/v1/destinations';
+      try {
+        const response = await fetch(apiUrl, {
+          headers: { 'Accept': 'application/json' }
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        // Expect data.data to be array
+        let items = data.data || data;
+        if (!Array.isArray(items)) items = [];
+        // Normalize each
+        const normalized = items.map(normalizeDestination);
+        // Merge images from curated mapping (by name)
+        normalized.forEach(d => {
+          const img = getImagesForDestination(d.name);
+          d.heroImage = img.heroImage;
+          d.carouselImage = img.carouselImage;
+          d.description = d.description || img.description;
+          d.alt = img.alt;
+        });
+        return normalized;
+      } catch (err) {
+        console.warn('Failed to fetch destinations from API, using fallback curated list.', err);
+        // Fallback: use curatedDestinations as allDestinations
+        return curatedDestinations.map(d => ({
+          ...d,
+          heroImage: d.heroImage,
+          carouselImage: d.carouselImage,
+        }));
+      }
+    }
+
+    // ── Initialize destination system ──
+    async function initDestinations() {
+      const apiData = await fetchDestinations();
+      // Merge with curated to ensure Hero has full data
+      // But we want heroDestinations to be the curated list (for carousel)
+      // allDestinations = API data + curated (if not already present)
+      const curatedIds = curatedDestinations.map(d => d.id);
+      const apiIds = apiData.map(d => d.id);
+      // Add any curated that are missing from API
+      const missingCurated = curatedDestinations.filter(d => !apiIds.includes(d.id));
+      const combined = [...apiData, ...missingCurated];
+      // Remove duplicates by id
+      const unique = combined.reduce((acc, cur) => {
+        if (!acc.some(d => d.id === cur.id)) acc.push(cur);
+        return acc;
+      }, []);
+      allDestinations = unique;
+      // heroDestinations = curatedDestinations (ensure they have latest images)
+      heroDestinations = curatedDestinations.map(d => {
+        const found = allDestinations.find(a => a.id === d.id);
+        return found || d;
+      });
+      // If heroDestinations empty, fallback to allDestinations slice
+      if (!heroDestinations.length) heroDestinations = allDestinations.slice(0, 5);
+      // Update UI
+      renderTopDest();
+      renderWizardDests();
+      renderDestStrip();
+      updateHero(0);
+      // Update stats
+      document.getElementById('homeDestCount').textContent = '+' + allDestinations.length;
+      const whyEl = document.getElementById('whyDestCount');
+      if (whyEl) whyEl.textContent = allDestinations.length + '+';
+    }
+
+    // ── Central destination opening function ──
+    function openDestination(destinationId) {
+      // Find destination by ID (prefer ID, fallback to name)
+      let dest = allDestinations.find(d => d.id == destinationId);
+      if (!dest) {
+        // Try by name (case-insensitive)
+        const name = String(destinationId).toLowerCase();
+        dest = allDestinations.find(d => d.name.toLowerCase() === name);
+      }
+      if (!dest) {
+        toast('Destination not found.', true);
+        return;
+      }
+
+      // Check if this destination is in the hero carousel (curated list)
+      const isInHero = heroDestinations.some(d => d.id === dest.id);
+      if (isInHero) {
+        // Navigate to home page and activate the slide
+        switchPage('home');
+        const slideIndex = heroDestinations.findIndex(d => d.id === dest.id);
+        if (slideIndex >= 0) {
+          goToSlide(slideIndex);
+        } else {
+          // fallback: try to find by name in hero list
+          const idx = heroDestinations.findIndex(d => d.name.toLowerCase() === dest.name.toLowerCase());
+          if (idx >= 0) goToSlide(idx);
+        }
+      } else {
+        // Not in hero → open the explore/wizard page with this destination pre-selected
+        // We'll switch to explore page and set the wizard destination
+        switchPage('explore');
+        // Select in wizard
+        wizardDest = dest;
+        renderWizardDests();
+        loadWizardForecast();
+        // Also set step to 1
+        goStep(1);
+        toast(`Exploring ${dest.name}`, false);
+      }
+    }
+
+    // ── Page switching ──
+    function switchPage(pageId) {
+      const pages = document.querySelectorAll('.page');
+      pages.forEach(p => p.classList.remove('active'));
+
+      const targetId = (pageId === 'home' && isLoggedIn()) ? 'home' : pageId;
+      const target = document.getElementById('page-' + targetId);
+      if (target) target.classList.add('active');
+
+      document.querySelectorAll('.nav-link').forEach(a => {
+        a.classList.toggle('active', a.dataset.page === pageId);
+      });
+
+      if (target) target.scrollTop = 0;
+
+      if (pageId === 'home') { renderTopDest();
+        animateHome(); }
+      if (pageId === 'booking') refreshTrips();
+      if (pageId === 'explore') { renderWizardDests();
+        loadWizardForecast(); }
+    }
+    window.switchPage = switchPage;
+
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        switchPage(link.dataset.page);
+      });
+    });
+
+    // ── Home animation ──
+    function animateHome() {
+      if (typeof gsap === 'undefined') return;
+      const nav = document.getElementById('nav-bar');
+      const title = document.getElementById('hero-title');
+      const stats = document.querySelectorAll('.stat-item');
+      const card = document.getElementById('carousel-card');
+      const sections = document.querySelector('.sections-wrapper');
+
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+      if (sections) { sections.style.opacity = 0;
+        tl.to(sections, { opacity: 1, duration: 1 }, '+=0.2'); }
+      gsap.set([nav, title, card], { clearProps: 'all' });
+      gsap.set(stats, { clearProps: 'all' });
+      gsap.set(title, { y: 50, opacity: 0 });
+      gsap.set(nav, { y: -20, opacity: 0 });
+      gsap.set(stats, { y: 30, opacity: 0 });
+      gsap.set(card, { x: 50, opacity: 0 });
+      tl.to(nav, { y: 0, opacity: 1, duration: 1 })
+        .to(title, { y: 0, opacity: 0.12, duration: 1.5 }, '-=1.5')
+        .to(stats, { y: 0, opacity: 1, duration: 0.8, stagger: 0.15 }, '-=1')
+        .to(card, { x: 0, opacity: 1, duration: 1 }, '-=0.8');
+    }
+
+    // ── Update Hero ──
+    function updateHero(index) {
+      const slide = heroDestinations[index];
+      if (!slide) {
+        // If heroDestinations empty, use first from allDestinations
+        if (allDestinations.length) {
+          const fallback = allDestinations[0];
+          const img = getImagesForDestination(fallback.name);
+          slide = { ...fallback, ...img };
+        } else return;
+      }
+      // Update hero background
+      const heroWrapper = document.getElementById('heroWrapper');
+      heroWrapper.style.backgroundImage = `url('${slide.heroImage || slide.carouselImage || 'https://images.pexels.com/photos/1486222/pexels-photo-1486222.jpeg?auto=compress&cs=tinysrgb&w=1920'}')`;
+
+      // Update giant text
+      const heroTitle = document.getElementById('hero-title');
+      heroTitle.textContent = slide.name.toUpperCase();
+
+      // Update carousel
+      const carouselImg = document.getElementById('carousel-img');
+      carouselImg.src = slide.carouselImage || slide.heroImage || 'https://images.pexels.com/photos/1486222/pexels-photo-1486222.jpeg?auto=compress&cs=tinysrgb&w=600';
+      carouselImg.alt = slide.alt || slide.name;
+      document.getElementById('carousel-name').textContent = slide.name;
+      document.getElementById('carousel-location').innerHTML = '<i class="fas fa-map-pin"></i>' + (slide.location || slide
+        .country || '');
+      document.getElementById('carousel-desc').textContent = slide.description || `Explore ${slide.name}`;
+      const total = heroDestinations.length || 1;
+      const idx = heroDestinations.findIndex(d => d.id === slide.id);
+      const currentIdx = idx >= 0 ? idx : 0;
+      document.getElementById('carousel-text').textContent =
+        String(currentIdx + 1).padStart(2, '0') + '/' + String(total).padStart(2, '0');
+      document.getElementById('carousel-progress').style.width = ((currentIdx + 1) / total) * 100 + '%';
+
+      // Update dots
+      const dotsContainer = document.getElementById('carousel-dots');
+      dotsContainer.innerHTML = '';
+      heroDestinations.forEach((_, i) => {
+        const dot = document.createElement('span');
+        dot.className = 'w-2 h-2 rounded-full transition cursor-pointer ' + (i === currentIdx ? 'bg-white' :
+          'bg-white/30 hover:bg-white/50');
+        dot.setAttribute('title', 'Go to ' + heroDestinations[i].name);
+        dot.addEventListener('click', () => goToSlide(i));
+        dotsContainer.appendChild(dot);
+      });
+
+      // Update destination count
+      document.getElementById('homeDestCount').textContent = '+' + allDestinations.length;
+      const whyEl = document.getElementById('whyDestCount');
+      if (whyEl) whyEl.textContent = allDestinations.length + '+';
+    }
+
+    // ── Carousel navigation ──
+    function goToSlide(index) {
+      if (heroDestinations.length === 0) return;
+      if (index < 0) index = heroDestinations.length - 1;
+      if (index >= heroDestinations.length) index = 0;
+      currentSlide = index;
+      updateHero(currentSlide);
+      if (carouselInterval) clearInterval(carouselInterval);
+      startAutoPlay();
+    }
+
+    function nextSlide() { goToSlide(currentSlide + 1); }
+
+    function prevSlide() { goToSlide(currentSlide - 1); }
+
+    function startAutoPlay() {
+      if (carouselInterval) clearInterval(carouselInterval);
+      carouselInterval = setInterval(nextSlide, 5500);
+    }
+
+    document.getElementById('carousel-prev').addEventListener('click', (e) => { e.stopPropagation();
+      prevSlide(); });
+    document.getElementById('carousel-next').addEventListener('click', (e) => { e.stopPropagation();
+      nextSlide(); });
+
+    const carouselCard = document.getElementById('carousel-card');
+    carouselCard.addEventListener('mouseenter', () => {
+      if (carouselInterval) clearInterval(carouselInterval);
+      carouselInterval = null;
+    });
+    carouselCard.addEventListener('mouseleave', startAutoPlay);
+
+    // ── Top Destinations ──
+    let destStart = 0;
+
+    function renderTopDest() {
+      const grid = document.getElementById('topDestGrid');
+      const hint = document.getElementById('topDestHint');
+      if (!allDestinations.length) {
+        hint.textContent = 'No destinations available.';
+        grid.innerHTML =
+          '<div class="dest-card" style="grid-column:1/-1;"><img src="https://images.pexels.com/photos/210243/pexels-photo-210243.jpeg?auto=compress&cs=tinysrgb&w=600" alt="No data" /><div class="px-1"><h4 class="font-semibold">Could not load destinations.</h4></div></div>';
+        return;
+      }
+      hint.textContent = allDestinations.length + ' destinations · click to explore';
+      // Show 4 destinations starting from destStart
+      const batch = [];
+      for (let i = 0; i < 4; i++) {
+        const idx = (destStart + i) % allDestinations.length;
+        batch.push(allDestinations[idx]);
+      }
+      grid.innerHTML = batch.map(d => {
+        const imgSrc = d.image || 'https://picsum.photos/seed/' + d.name + '/600/400';
+        return '<div class="dest-card" data-city="' + encodeURIComponent(d.city || d.name) + '">' +
+          '<img src="' + imgSrc + '" alt="' + (d.alt || d.name) + '" onerror="this.onerror=null;this.src=\'https://picsum.photos/seed/' + d.name + '/600/400\'" />' +
+          '<div class="px-1">' +
+          '<div class="dest-name">' + d.name + '<span class="dest-location"><i class="fas fa-map-pin"></i>' + (d
+            .location || d.country || '') + '</span></div>' +
+          '<p class="dest-desc">' + (d.description || `Discover ${d.name}`) + '</p>' +
+          '</div></div>';
+      }).join('');
+
+      grid.querySelectorAll('.dest-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const city = decodeURIComponent(card.dataset.city);
+          document.getElementById('weatherInput').value = city;
+          switchPage('weather');
+          searchWeather();
+        });
+      });
+    }
+
+    document.getElementById('destPrevBtn').addEventListener('click', () => {
+      if (!allDestinations.length) return;
+      destStart = (destStart - 1 + allDestinations.length) % allDestinations.length;
+      renderTopDest();
+    });
+    document.getElementById('destNextBtn').addEventListener('click', () => {
+      if (!allDestinations.length) return;
+      destStart = (destStart + 1) % allDestinations.length;
+      renderTopDest();
+    });
+
+    // ── Dashboard dest strip ──
+    function renderDestStrip() {
+      const strip = document.getElementById('dashDestStrip');
+      const hint = document.getElementById('dashDestHint');
+      if (!strip) return;
+      if (!allDestinations.length) {
+        if (hint) hint.textContent = 'unavailable';
+        strip.innerHTML = '<div class="empty-state" style="width:100%;">Could not load destinations.</div>';
+        return;
+      }
+      if (hint) hint.textContent = allDestinations.length + ' destinations';
+      strip.innerHTML = allDestinations.slice(0, 12).map(d => {
+        const imgSrc = d.image || 'https://picsum.photos/seed/' + d.name + '/600/400';
+        return '<div class="dest-card" data-id="' + d.id + '" data-name="' + encodeURIComponent(d.name) + '">' +
+          '<img src="' + imgSrc + '" alt="' + (d.alt || d.name) +
+          '" onerror="this.onerror=null;this.src=\'https://picsum.photos/seed/' + d.name + '/600/400\'" />' +
+          '<div class="px-1"><h4 class="font-semibold text-sm">' + d.name + '</h4><span class="text-white/45 text-xs"><i class="fas fa-map-pin mr-1"></i>' +
+          (d.location || d.country || '') + '</span></div></div>';
+      }).join('');
+      strip.querySelectorAll('.dest-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const id = card.dataset.id;
+          const name = decodeURIComponent(card.dataset.name);
+          if (id) openDestination(id);
+          else openDestination(name);
+        });
+      });
+    }
+
+    // ── Trips ──
+    const mockTrips = [];
+
+    function fetchTrips() { return Promise.resolve(mockTrips); }
+
+    function renderTripCard(t) {
+      const statusIcons = { pending: '⏳', planning: '📝', booked: '✅', completed: '✔', cancelled: '✖' };
+      const icon = statusIcons[t.status] || '•';
+      return '<div class="trip-card">' +
+        '<div class="flex justify-between items-start gap-2"><h4 class="font-semibold">' + t.title +
+        '</h4><span class="trip-status">' + icon + ' ' + t.status + '</span></div>' +
+        (t.destinations && t.destinations.length ? '<p class="text-white/45 text-sm mt-1"><i class="fas fa-map-marker-alt mr-1"></i>' +
+          t.destinations.map(d => d.name).join(', ') + '</p>' : '') +
+        '<div class="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-white/50 text-xs">' +
+        '<span><i class="far fa-calendar-alt mr-1"></i>' + (t.start_date || '—') + ' → ' + (t.end_date ||
+          '—') + '</span>' +
+        '<span><i class="fas fa-user mr-1"></i>' + (t.no_of_travelers || 0) + '</span>' +
+        '<span><i class="far fa-clock mr-1"></i>' + (t.no_of_days || 0) + ' days</span>' +
+        '<span><i class="fas fa-dollar-sign mr-1"></i>' + (t.budget || 0) + '</span>' +
+        '</div>' +
+        (t.interests && t.interests.length ? '<div class="flex flex-wrap gap-1 mt-2">' + t.interests.map(i =>
+          '<span class="bg-white/10 rounded-full px-2 py-0.5 text-xs text-white/60">' + i +
+          '</span>').join('') + '</div>' : '') +
+        '</div>';
+    }
+
+    function renderTripsInto(box, trips, emptyMsg) {
+      if (!trips.length) {
+        box.innerHTML = '<div class="empty-state"><i class="fas fa-inbox mr-2"></i>' + emptyMsg + '</div>';
+        return;
+      }
+      box.innerHTML = '<div class="trip-grid">' + trips.map(renderTripCard).join('') + '</div>';
+    }
+
+    function refreshTrips() {
+      const box = document.getElementById('bookingTrips');
+      const hint = document.getElementById('bookingTripsHint');
+      if (!box) return;
+      fetchTrips().then(trips => {
+        if (hint) hint.textContent = trips.length + ' trips';
+        renderTripsInto(box, trips, 'No trips yet — plan your first one above! <i class="fas fa-rocket ml-1"></i>');
+      }).catch(() => {
+        box.innerHTML = '<div class="empty-state"><i class="fas fa-exclamation-circle mr-2"></i>Could not load trips.</div>';
+      });
+    }
+
+    function refreshDashboard() {
+      if (!isLoggedIn()) return;
+      fetchTrips().then(trips => {
+        const today = new Date().toISOString().slice(0, 10);
+        document.getElementById('statTrips').textContent = trips.length;
+        document.getElementById('statUpcoming').textContent = trips.filter(t => t.start_date >= today)
+          .length;
+        document.getElementById('statBudget').textContent = '$' + trips.reduce((s, t) => s + Number(t
+          .budget || 0), 0);
+        document.getElementById('statDays').textContent = trips.reduce((s, t) => s + Number(t.no_of_days ||
+          0), 0);
+        document.getElementById('dashTripsHint').textContent = trips.length + ' trips';
+        renderTripsInto(document.getElementById('dashTripGrid'), trips.slice(0, 6),
+          'You have no trips yet. Plan your first journey! <i class="fas fa-suitcase ml-1"></i>');
+      }).catch(() => {
+        document.getElementById('dashTripsHint').textContent = 'unavailable';
+        document.getElementById('dashTripGrid').innerHTML =
+          '<div class="empty-state"><i class="fas fa-exclamation-circle mr-2"></i>Could not load trips.</div>';
+      });
+    }
+
+    // ── Booking flight search ──
+    function addDays(dateStr, days) {
+      const d = new Date(dateStr + 'T00:00:00');
+      d.setDate(d.getDate() + days);
+      return d.toISOString().slice(0, 10);
+    }
+
+    function doBookingSearch(payload) {
+      const status = document.getElementById('bookingStatus');
+      status.textContent = '⏳ Saving your flight search…';
+      status.style.color = 'rgba(255,255,255,0.6)';
+      document.getElementById('searchFlightsBtn').disabled = true;
+
+      setTimeout(() => {
+        mockTrips.push({
+          id: Date.now(),
+          title: payload.title || 'Flight search',
+          status: 'planning',
+          start_date: payload.start_date,
+          end_date: payload.end_date,
+          no_of_travelers: payload.no_of_travelers,
+          no_of_days: payload.no_of_days,
+          budget: payload.budget || 0,
+          interests: payload.interests || [],
+          destinations: [{ name: payload.title.split('→')[1]?.trim() || 'Unknown' }]
+        });
+        document.getElementById('searchFlightsBtn').disabled = false;
+        status.textContent = '✅ Search saved as a trip request.';
+        status.style.color = 'rgba(120,255,150,0.9)';
+        toast('Flight search saved — no live routes yet.');
+        refreshTrips();
+      }, 600);
+    }
+
+    function searchFlights() {
+      const status = document.getElementById('bookingStatus');
+      const from = document.getElementById('bookingFrom').value.trim();
+      const to = document.getElementById('bookingTo').value.trim();
+      const depart = document.getElementById('bookingDate').value;
+      const ret = document.getElementById('bookingReturn').value;
+      const pax = parseInt(document.getElementById('bookingPassengers').value || '1', 10);
+      const cls = document.getElementById('bookingClass').value;
+
+      if (!from && !to) {
+        status.textContent = '⚠️ Tell us where you want to go (From / To).';
+        status.style.color = 'rgba(255,120,120,0.9)';
+        return;
+      }
+      if (!depart) {
+        status.textContent = '⚠️ Pick a departure date first.';
+        status.style.color = 'rgba(255,120,120,0.9)';
+        return;
+      }
+      const end = ret || addDays(depart, 7);
+      const payload = {
+        title: (from || 'Anywhere') + ' → ' + (to || 'Everywhere') + ' · ' + depart,
+        travel_style: cls,
+        interests: [],
+        no_of_travelers: pax,
+        budget: 0,
+        no_of_days: Math.max(1, Math.round((new Date(end) - new Date(depart)) / 86400000)),
+        start_date: depart,
+        end_date: end
+      };
+      if (!isLoggedIn()) {
+        openAuthModal('login', '🔑 Log in to save your search — we\'ll continue automatically.', () => {
+          doBookingSearch(payload);
+        });
+        return;
+      }
+      doBookingSearch(payload);
+    }
+
+    document.getElementById('searchFlightsBtn').addEventListener('click', searchFlights);
+    ['bookingFrom', 'bookingTo', 'bookingDate', 'bookingReturn'].forEach(id => {
+      document.getElementById(id).addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') searchFlights();
+      });
+    });
+
+    // ── Auth modal ──
+    const authModal = document.getElementById('authModal');
+    let authMode = 'login';
+    let authCallback = null;
+
+    function openAuthModal(mode, message, cb) {
+      authMode = mode || 'login';
+      authCallback = cb || null;
+      document.getElementById('tabLogin').classList.toggle('on', authMode === 'login');
+      document.getElementById('tabRegister').classList.toggle('on', authMode === 'register');
+      document.getElementById('loginForm').style.display = authMode === 'login' ? 'block' : 'none';
+      document.getElementById('registerForm').style.display = authMode === 'register' ? 'block' : 'none';
+      document.getElementById('authTitle').textContent = authMode === 'login' ? 'Welcome back' : 'Join Itinera';
+      document.getElementById('loginStatus').textContent = '';
+      document.getElementById('registerStatus').textContent = message || '';
+      authModal.classList.add('open');
+    }
+    window.openAuthModal = openAuthModal;
+
+    function closeAuthModal() { authModal.classList.remove('open'); }
+
+    document.getElementById('authCloseBtn').addEventListener('click', closeAuthModal);
+    authModal.addEventListener('click', (e) => { if (e.target === authModal) closeAuthModal(); });
+    document.getElementById('tabLogin').addEventListener('click', () => openAuthModal('login'));
+    document.getElementById('tabRegister').addEventListener('click', () => openAuthModal('register'));
+
+    document.querySelectorAll('.btn-login').forEach(el => el.addEventListener('click', (e) => {
+      e.preventDefault();
+      openAuthModal('login');
+    }));
+
+    document.querySelectorAll('.btn-logout').forEach(el => el.addEventListener('click', () => {
+      clearSession();
+      applySession();
+      toast('Logged out. See you soon!');
+      switchPage('home');
+    }));
+
+    // Login
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const status = document.getElementById('loginStatus');
+      status.textContent = '⏳ Logging in…';
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+
+      setTimeout(() => {
+        if (email && password.length >= 4) {
+          const user = { id: 1, name: email.split('@')[0] || 'Traveler', email: email };
+          setSession('fake-token-' + Date.now(), user);
+          closeAuthModal();
+          applySession();
+          toast('Welcome back, ' + user.name + '!');
+          if (authCallback) { const cb = authCallback;
+            authCallback = null;
+            cb(); } else { switchPage('home'); }
+        } else {
+          status.textContent = '❌ Invalid credentials. Try admin@example.com / password';
+        }
+      }, 500);
+    });
+
+    // Register
+    document.getElementById('registerForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const status = document.getElementById('registerStatus');
+      const name = document.getElementById('regName').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const phone = document.getElementById('regPhone').value.trim();
+      const password = document.getElementById('regPassword').value;
+
+      if (!name || !email || password.length < 8) {
+        status.textContent = '❌ Please fill all fields correctly.';
+        return;
+      }
+      status.textContent = '⏳ Creating account…';
+      setTimeout(() => {
+        const user = { id: Date.now(), name: name, email: email, phone: phone };
+        setSession('fake-token-' + Date.now(), user);
+        closeAuthModal();
+        applySession();
+        toast('Account created — welcome to Itinera!');
+        if (authCallback) { const cb = authCallback;
+          authCallback = null;
+          cb(); } else { switchPage('home'); }
+      }, 500);
+    });
+
+    // ── Apply session UI ──
+    function applySession() {
+      const loggedIn = isLoggedIn();
+      document.querySelectorAll('.guest-actions').forEach(el => {
+        el.style.display = loggedIn ? 'none' : 'flex';
+      });
+      document.querySelectorAll('.user-chip-area').forEach(el => {
+        el.classList.toggle('hidden', !loggedIn);
+      });
+      if (loggedIn) {
+        document.querySelectorAll('.user-name').forEach(el => {
+          el.textContent = currentUser.name || currentUser.email || '—';
+        });
+        document.querySelectorAll('.user-avatar').forEach(el => {
+          el.textContent = (currentUser.name || '?').charAt(0).toUpperCase();
+        });
+        document.getElementById('dashName').textContent = (currentUser.name || 'traveler').split(' ')[0];
+        refreshDashboard();
+      }
+    }
+
+    // ── Weather ──
+    const weatherResult = document.getElementById('weatherResult');
+    const weatherError = document.getElementById('weatherError');
+
+    const WMO_DESC = {
+      0: 'Clear sky',
+      1: 'Mainly clear',
+      2: 'Partly cloudy',
+      3: 'Overcast',
+      45: 'Fog',
+      48: 'Rime fog',
+      51: 'Light drizzle',
+      53: 'Drizzle',
+      55: 'Dense drizzle',
+      61: 'Light rain',
+      63: 'Rain',
+      65: 'Heavy rain',
+      66: 'Freezing rain',
+      67: 'Freezing rain',
+      71: 'Light snow',
+      73: 'Snow',
+      75: 'Heavy snow',
+      77: 'Snow grains',
+      80: 'Rain showers',
+      81: 'Heavy showers',
+      82: 'Violent showers',
+      85: 'Snow showers',
+      86: 'Heavy snow showers',
+      95: 'Thunderstorm',
+      96: 'Thunderstorm + hail',
+      99: 'Thunderstorm + heavy hail'
+    };
+
+    function simulateWeather(city) {
+      const temps = [12, 18, 22, 26, 30, 8, 15, 20, 35, 28];
+      const descs = ['Clear sky', 'Partly cloudy', 'Cloudy', 'Light rain', 'Sunny', 'Overcast', 'Windy', 'Foggy',
+        'Hot & dry', 'Mild breeze'
+      ];
+      return {
+        city: city,
+        country: 'Simulated',
+        temp: temps[Math.floor(Math.random() * temps.length)],
+        desc: descs[Math.floor(Math.random() * descs.length)],
+        wind: Math.floor(Math.random() * 30) + 5,
+        humidity: Math.floor(Math.random() * 50) + 30,
+        clouds: Math.floor(Math.random() * 100)
+      };
+    }
+
+    function showWeather(data) {
+      document.getElementById('weatherCity').textContent = data.city;
+      document.getElementById('weatherCountry').textContent = data.country + (data._live ? ' · live' : ' · simulated');
+      document.getElementById('weatherTemp').textContent = Math.round(data.temp) + '°C';
+      document.getElementById('weatherDesc').textContent = data.desc;
+      document.getElementById('weatherWind').textContent = data.wind;
+      document.getElementById('weatherHumidity').textContent = data.humidity;
+      document.getElementById('weatherClouds').textContent = data.clouds;
+      weatherResult.classList.remove('hidden');
+    }
+
+    async function geocodeCity(name) {
+      const url = 'https://geocoding-api.open-meteo.com/v1/search?name=' +
+        encodeURIComponent(name) + '&count=1&language=en&format=json';
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('geocoding failed');
+      const data = await res.json();
+      if (!data.results || !data.results.length) throw new Error('city not found');
+      const r = data.results[0];
+      return { lat: r.latitude, lon: r.longitude, name: r.name, country: r.country || '' };
+    }
+
+    async function searchWeather() {
+      const input = document.getElementById('weatherInput').value.trim();
+      if (!input) {
+        weatherError.textContent = 'Please enter a city name.';
+        weatherResult.classList.add('hidden');
+        return;
+      }
+      weatherError.textContent = '';
+      try {
+        const geo = await geocodeCity(input);
+        const url = 'https://api.open-meteo.com/v1/forecast?latitude=' + geo.lat + '&longitude=' + geo.lon +
+          '&current_weather=true&timezone=auto';
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('weather API failed');
+        const data = await res.json();
+        const cur = data.current_weather || {};
+        const code = cur.weather_code != null ? cur.weather_code : cur.weathercode;
+        const temp = cur.temperature_2m != null ? cur.temperature_2m : cur.temperature;
+        const wind = cur.wind_speed_10m != null ? cur.wind_speed_10m : cur.windspeed;
+        showWeather({
+          city: geo.name,
+          country: geo.country,
+          temp: temp,
+          desc: WMO_DESC[code] || 'Weather conditions',
+          wind: Math.round(wind),
+          humidity: cur.relative_humidity_2m != null ? cur.relative_humidity_2m : '—',
+          clouds: cur.cloud_cover != null ? cur.cloud_cover : '—',
+          _live: true
+        });
+      } catch (err) {
+        const sim = simulateWeather(input);
+        showWeather(sim);
+        weatherError.textContent = '⚠️ Live API unavailable (' + err.message + ') — showing simulated data.';
+      }
+    }
+
+    document.getElementById('weatherSearchBtn').addEventListener('click', searchWeather);
+    document.getElementById('weatherInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') searchWeather();
+    });
+
+    // ── Contact form ──
+    document.getElementById('contactForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const status = document.getElementById('contactStatus');
+      status.textContent = '⏳ Sending…';
+      setTimeout(() => {
+        status.textContent = '✅ Message sent! (POST /api/v1/contacts)';
+        document.getElementById('contactForm').reset();
+        toast('Message sent — we reply within 2h.');
+      }, 500);
+    });
+
+    // ── Explore wizard ──
+    let wizardStep = 1;
+    let wizardDest = null;
+    let wizardDestStart = 0;
+    const WIZ_BATCH = 6;
+    let wizardPack = 'solo';
+    let wizardVibe = 'cozy';
+    let wizardInterests = ['food'];
+    let wizardBudget = 2400;
+    let wizardDays = 7;
+    let wizardExclusive = false;
+    let wizardWeather = [];
+
+    function goStep(n) {
+      wizardStep = Math.min(3, Math.max(1, n));
+      for (let i = 1; i <= 3; i++) {
+        const stepEl = document.getElementById('wizardStep' + i);
+        const dot = document.getElementById('stepDot' + i);
+        if (stepEl) stepEl.classList.toggle('active', i === wizardStep);
+        if (dot) dot.classList.toggle('on', i <= wizardStep);
+      }
+      const l1 = document.getElementById('stepLine1');
+      const l2 = document.getElementById('stepLine2');
+      if (l1) l1.classList.toggle('done', wizardStep >= 2);
+      if (l2) l2.classList.toggle('done', wizardStep >= 3);
+      const h1 = document.querySelector('#page-explore .giant-text h1');
+      if (h1) h1.style.opacity = wizardStep === 1 ? '' : '0';
+      document.getElementById('page-explore').scrollTop = 0;
+    }
+    window.goStep = goStep;
+
+    function renderWizardDests() {
+      const grid = document.getElementById('wizardDestGrid');
+      const counter = document.getElementById('wizardDestCounter');
+      const total = allDestinations.length;
+      if (counter) counter.textContent = total ? (wizardDestStart + 1) + '–' + Math.min(wizardDestStart + WIZ_BATCH,
+        total) + ' of ' + total : '';
+      if (!total) {
+        grid.innerHTML =
+          '<div class="empty-state" style="grid-column:1/-1;"><i class="fas fa-spinner fa-spin mr-2"></i>Loading destinations…</div>';
+        return;
+      }
+      const batch = [];
+      for (let i = 0; i < WIZ_BATCH; i++) {
+        batch.push(allDestinations[(wizardDestStart + i) % total]);
+      }
+      grid.innerHTML = batch.map(d => {
+        const sel = wizardDest && String(wizardDest.id) === String(d.id);
+        const imgSrc = d.carouselImage || d.heroImage || 'https://images.pexels.com/photos/210243/pexels-photo-210243.jpeg?auto=compress&cs=tinysrgb&w=600';
+        return '<div class="opt-card' + (sel ? ' on' : '') + '" data-id="' + d.id + '">' +
+          '<span class="tick"><i class="fas fa-check"></i></span>' +
+          '<img class="opt-thumb" src="' + imgSrc + '" alt="' + (d.alt || d.name) +
+          '" onerror="this.onerror=null;this.src=\'https://images.pexels.com/photos/210243/pexels-photo-210243.jpeg?auto=compress&cs=tinysrgb&w=600\'" />' +
+          '<div class="opt-name">' + d.name + '</div>' +
+          '<div class="opt-meta"><i class="fas fa-map-pin mr-1"></i>' + (d.location || d.country || '') +
+          '</div>' +
+          '</div>';
+      }).join('');
+      grid.querySelectorAll('.opt-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const id = card.dataset.id;
+          if (id) openDestination(id);
+        });
+      });
+    }
+
+    document.getElementById('wDestPrev').addEventListener('click', () => {
+      if (!allDestinations.length) return;
+      wizardDestStart = (wizardDestStart - WIZ_BATCH + allDestinations.length) % allDestinations.length;
+      renderWizardDests();
+    });
+    document.getElementById('wDestNext').addEventListener('click', () => {
+      if (!allDestinations.length) return;
+      wizardDestStart = (wizardDestStart + WIZ_BATCH) % allDestinations.length;
+      renderWizardDests();
+    });
+    document.getElementById('wStep1Next').addEventListener('click', () => {
+      if (!wizardDest) { toast('Pick a destination first.', true); return; }
+      goStep(2);
+    });
+    document.getElementById('wStep2Back').addEventListener('click', () => goStep(1));
+    document.getElementById('wStep2Next').addEventListener('click', () => goStep(3));
+    document.getElementById('wStep3Back').addEventListener('click', () => goStep(2));
+    document.getElementById('wStep3Confirm').addEventListener('click', () => { goStep(1);
+      toast('Adventure planned — hit Generate to save it!'); });
+
+    document.querySelectorAll('.step-dot').forEach(dot => {
+      dot.addEventListener('click', () => { if (dot.dataset.step) goStep(Number(dot.dataset.step)); });
+    });
+
+    // ── Wizard pack, focus, interests (keep existing) ──
+    document.querySelectorAll('#wizardPackRow .wk-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#wizardPackRow .wk-btn').forEach(b => b.classList.remove('on'));
+        btn.classList.add('on');
+        wizardPack = btn.dataset.pack;
+        const travelers = wizardPack === 'solo' ? 1 : wizardPack === 'partners' ? 2 : wizardPack ===
+          'pack4' ? 4 : 7;
+        document.getElementById('wizardTravelers').value = travelers;
+      });
+    });
+
+    document.querySelectorAll('#wizardFocusRow .wk-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#wizardFocusRow .wk-btn').forEach(b => b.classList.remove('on'));
+        btn.classList.add('on');
+        wizardVibe = btn.dataset.vibe;
+        document.querySelectorAll('#wizardInterestChips .chip').forEach(c => {
+          const val = c.dataset.value;
+          if (wizardVibe === 'food' && val === 'food' && !wizardInterests.includes(val))
+            wizardInterests.push(val);
+          if (wizardVibe === 'cultural' && val === 'history' && !wizardInterests.includes(val))
+            wizardInterests.push(val);
+          if (wizardVibe === 'outdoor' && val === 'nature' && !wizardInterests.includes(val))
+            wizardInterests.push(val);
+          if (wizardInterests.includes(val)) c.classList.add('on');
+        });
+      });
+    });
+
+    document.querySelectorAll('#wizardInterestChips .chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        chip.classList.toggle('on');
+        const v = chip.dataset.value;
+        wizardInterests = wizardInterests.includes(v) ?
+          wizardInterests.filter(i => i !== v) :
+          wizardInterests.concat(v);
+      });
+    });
+
+    const budgetInput = document.getElementById('wizardBudget');
+    const daysInput = document.getElementById('wizardDays');
+
+    function syncBudgetDays() {
+      wizardBudget = Number(budgetInput.value);
+      wizardDays = Number(daysInput.value);
+      document.getElementById('wizardBudgetLabel').textContent = '$' + Number(budgetInput.value)
+        .toLocaleString('en-US');
+      document.getElementById('wizardDaysLabel').textContent = wizardDays + (wizardDays === 1 ? ' day' : ' days');
+    }
+    budgetInput.addEventListener('input', syncBudgetDays);
+    daysInput.addEventListener('input', syncBudgetDays);
+    document.getElementById('wizardExclusive').addEventListener('change', (e) => { wizardExclusive = e.target.checked; });
+    document.getElementById('wizardDate').value = addDays(new Date().toISOString().slice(0, 10), 7);
+
+    function generateItinerary() {
+      if (!wizardDest) {
+        toast('Pick a destination first — step 1 stays empty.', true);
+        if (wizardStep !== 1) goStep(1);
+        return;
+      }
+      if (!isLoggedIn()) {
+        openAuthModal('login', '🔑 Log in to generate your personal itinerary.', generateItinerary);
+        return;
+      }
+      const btn = document.getElementById('generateBtn');
+      btn.disabled = true;
+      const d = wizardDest;
+      const avg = wizardWeather.length ?
+        Math.round(wizardWeather.reduce((s, w) => s + w.max, 0) / wizardWeather.length) :
+        '—';
+
+      const payload = {
+        title: 'Trip to ' + d.name + ' · ' + avg + '°C avg',
+        travel_style: wizardVibe,
+        interests: wizardInterests,
+        no_of_travelers: parseInt(document.getElementById('wizardTravelers').value || '1', 10),
+        budget: wizardBudget,
+        no_of_days: wizardDays,
+        start_date: addDays(new Date().toISOString().slice(0, 10), 7),
+        end_date: addDays(new Date().toISOString().slice(0, 10), 7 + wizardDays)
+      };
+
+      setTimeout(() => {
+        mockTrips.push({
+          id: Date.now(),
+          title: payload.title,
+          status: 'planning',
+          start_date: payload.start_date,
+          end_date: payload.end_date,
+          no_of_travelers: payload.no_of_travelers,
+          no_of_days: payload.no_of_days,
+          budget: payload.budget,
+          interests: payload.interests,
+          destinations: [{ name: d.name }]
+        });
+        btn.disabled = false;
+        btn.textContent = '✓';
+        setTimeout(() => { btn.textContent = 'G'; }, 1300);
+        toast('Itinerary generated — saved to your trips!');
+        switchPage('booking');
+        refreshTrips();
+      }, 600);
+    }
+    document.getElementById('generateBtn').addEventListener('click', generateItinerary);
+
+    // ── CTAs ──
+    document.getElementById('bookNowBtn').addEventListener('click', () => switchPage('booking'));
+    document.getElementById('arrowBtn').addEventListener('click', () => switchPage('explore'));
+    document.getElementById('viewMoreBtn').addEventListener('click', () => switchPage('explore'));
+    document.getElementById('browsePackagesBtn').addEventListener('click', () => switchPage('booking'));
+
+    // ── Init ──
+    (function init() {
+      document.querySelectorAll('.footerYear').forEach(el => el.textContent = new Date().getFullYear());
+      document.getElementById('footerYear').textContent = new Date().getFullYear();
+
+      const saved = localStorage.getItem(TOKEN_KEY);
+      const savedUser = localStorage.getItem(USER_KEY);
+      if (saved && savedUser) {
+        try { currentUser = JSON.parse(savedUser); } catch (e) { currentUser = null; }
+      }
+      applySession();
+
+      const today = new Date().toISOString().slice(0, 10);
+      document.getElementById('bookingDate').value = addDays(today, 7);
+      document.getElementById('bookingReturn').value = addDays(today, 14);
+
+      // Initialize destinations (API + fallback)
+      initDestinations().then(() => {
+        // After destinations loaded, set hero
+        if (heroDestinations.length) {
+          updateHero(0);
+          startAutoPlay();
+        }
+        renderTopDest();
+        renderWizardDests();
+        renderDestStrip();
+        refreshTrips();
+        animateHome();
+      });
+    })();
+  </script>
+
+</body>
+</html>

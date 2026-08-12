@@ -218,4 +218,100 @@
     banner: banner,
     toast: toast,
   };
+
+  /* ============================================================
+     Itinari.motion — page-level choreography (hero, cards, modals).
+     Same GSAP-only file invariant as feedback: swappable surface.
+     All helpers no-op gracefully without GSAP or reduced motion.
+     ============================================================ */
+
+  function gsapOrNull() {
+    return global.gsap || null;
+  }
+
+  function motionEnabled() {
+    return !!gsapOrNull() && !reducedMotion();
+  }
+
+  function toArray(targets) {
+    if (!targets) return [];
+    if (typeof targets.length === "number") return Array.prototype.slice.call(targets);
+    return [targets];
+  }
+
+  /** Fade-up entrance (hero, cards, modal body) with optional stagger. */
+  function fadeUp(targets, opts) {
+    opts = opts || {};
+    const els = toArray(targets);
+    if (!els.length) return;
+    const g = gsapOrNull();
+    if (!motionEnabled()) {
+      g && g.set(els, { clearProps: "all" });
+      els.forEach(function (e) { e.style.opacity = "1"; e.style.transform = "none"; });
+      return;
+    }
+    g.killTweensOf(els);
+    g.from(els, {
+      autoAlpha: 0,
+      y: opts.y != null ? opts.y : 22,
+      duration: opts.duration != null ? opts.duration : 0.6,
+      ease: opts.ease || "power3.out",
+      stagger: opts.stagger != null ? opts.stagger : 0,
+      delay: opts.delay != null ? opts.delay : 0,
+      clearProps: "opacity,transform",
+      overwrite: "auto",
+    });
+  }
+
+  /** Soft pop-in (chips, badges, toggles). */
+  function pop(targets, opts) {
+    opts = opts || {};
+    const els = toArray(targets);
+    if (!els.length) return;
+    const g = gsapOrNull();
+    if (!motionEnabled()) {
+      els.forEach(function (e) { e.style.opacity = "1"; e.style.transform = "none"; });
+      return;
+    }
+    g.killTweensOf(els);
+    g.from(els, {
+      autoAlpha: 0,
+      scale: opts.scale != null ? opts.scale : 0.94,
+      duration: opts.duration != null ? opts.duration : 0.45,
+      ease: opts.ease || "back.out(1.8)",
+      stagger: opts.stagger != null ? opts.stagger : 0,
+      delay: opts.delay != null ? opts.delay : 0,
+      clearProps: "opacity,transform",
+      overwrite: "auto",
+    });
+  }
+
+  /** Animated number counter (localized). Falls back to a static set. */
+  function countUp(el, to, opts) {
+    if (!el) return;
+    opts = opts || {};
+    const g = gsapOrNull();
+    const fmt = function (n) { return Math.round(n).toLocaleString(); };
+    if (!motionEnabled()) {
+      el.textContent = fmt(to);
+      return;
+    }
+    const state = { v: 0 };
+    g.killTweensOf(state);
+    g.to(state, {
+      v: to,
+      duration: opts.duration != null ? opts.duration : 1.4,
+      ease: opts.ease || "power2.out",
+      delay: opts.delay != null ? opts.delay : 0,
+      onUpdate: function () { el.textContent = fmt(state.v); },
+      onComplete: function () { el.textContent = fmt(to); },
+    });
+  }
+
+  It.motion = {
+    enabled: motionEnabled,
+    fadeUp: fadeUp,
+    pop: pop,
+    countUp: countUp,
+  };
 })(window);

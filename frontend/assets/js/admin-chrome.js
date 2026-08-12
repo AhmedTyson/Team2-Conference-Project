@@ -57,38 +57,6 @@
     const btn = el("sidebar-collapse");
     const shell = document.querySelector(".shell");
     if (!btn || !shell) return;
-
-    // Inject mobile hamburger menu toggle inside topbar
-    const topbar = document.querySelector(".topbar");
-    if (topbar) {
-      const burger = document.createElement("button");
-      burger.type = "button";
-      burger.id = "mobile-menu-toggle";
-      burger.className = "icon-btn burger-menu-btn";
-      burger.setAttribute("aria-label", "Toggle navigation drawer");
-      burger.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="width:18px; height:18px;"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>`;
-      topbar.insertBefore(burger, topbar.firstChild);
-
-      burger.addEventListener("click", function() {
-        shell.classList.toggle("is-mobile-sidebar-open");
-      });
-    }
-
-    // Inject mobile sidebar backdrop overlay
-    const backdrop = document.createElement("div");
-    backdrop.className = "sidebar-backdrop";
-    shell.appendChild(backdrop);
-    backdrop.addEventListener("click", function() {
-      shell.classList.remove("is-mobile-sidebar-open");
-    });
-
-    // Close mobile drawer when clicking a navigation link
-    document.querySelectorAll(".nav-item").forEach(function (a) {
-      a.addEventListener("click", function () {
-        shell.classList.remove("is-mobile-sidebar-open");
-      });
-    });
-
     let collapsed = false;
     try { collapsed = global.localStorage.getItem(SIDEBAR_KEY) === "1"; } catch (e) { /* ignore */ }
     setCollapsed(shell, btn, collapsed);
@@ -157,12 +125,6 @@
     const chip = el("user-chip");
     if (!chip) return;
 
-    // Relocate user chip to topbar-right next to theme toggle
-    const topbarRight = document.querySelector(".topbar-right");
-    if (topbarRight) {
-      topbarRight.appendChild(chip);
-    }
-
     const wrap = document.createElement("div");
     wrap.className = "user-menu";
     wrap.id = "user-menu";
@@ -200,8 +162,8 @@
     panel.hidden = true;
 
     const items = [
-      { label: "Profile", id: "user-menu-profile", action: function () { window.location.href = "user-details.html?id=current"; } },
-      { label: "Manage account", id: "user-menu-account", action: function () { window.location.href = "user-details.html?id=current"; } },
+      { label: "Profile", id: "user-menu-profile", action: function () { window.location.href = "profile.html"; } },
+      { label: "Settings", id: "user-menu-account", action: function () { window.location.href = "settings.html"; } },
     ];
     items.forEach(function (it) {
       const item = document.createElement("button");
@@ -348,6 +310,48 @@
     const ro = new MutationObserver(render);
     ro.observe(chip, { characterData: true, childList: true, subtree: true, attributes: true });
     render();
+  }
+
+  /* ---------- Notification bell with live unread count ---------- */
+  function initNotifBell() {
+    const bar = document.querySelector(".topbar-right");
+    if (!bar || el("topbar-bell")) return;
+
+    const link = document.createElement("a");
+    link.id = "topbar-bell";
+    link.className = "icon-btn";
+    link.href = "notifications.html";
+    link.title = "Notifications";
+    link.setAttribute("aria-label", "Notifications (0 unread)");
+    link.style.position = "relative";
+    link.innerHTML =
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>' +
+      '<span id="bell-badge" style="display:none; position:absolute; top:2px; right:2px; min-width:16px; height:16px; padding:0 4px; border-radius:8px; background:#ef4444; color:#fff; font-size:10px; font-weight:700; line-height:16px; text-align:center; box-sizing:border-box;">0</span>';
+    bar.insertBefore(link, bar.firstChild);
+
+    const badge = el("bell-badge");
+    function setCount(n) {
+      const count = Math.max(0, Number(n) || 0);
+      badge.textContent = count > 99 ? "99+" : String(count);
+      badge.style.display = count > 0 ? "block" : "none";
+      link.setAttribute("aria-label", "Notifications (" + count + " unread)");
+    }
+
+    function refresh() {
+      const It = global.Itinari;
+      if (!It || !It.apiGet || !It.session || !It.session.hasToken()) return;
+      It.apiGet("/v1/admin/notifications?per_page=1", { auth: true })
+        .then(function (res) {
+          const meta = res && res.body && res.body.meta;
+          setCount(meta ? meta.unread_count : 0);
+        })
+        .catch(function () { /* offline — keep last count */ });
+    }
+
+    refresh();
+    setInterval(refresh, 30000);
+    global.addEventListener("visibilitychange", function () { if (!document.hidden) refresh(); });
+    global.ItinariNotif = { refresh: refresh };
   }
 
   /* ---------- Phase 3: command palette (⌘K) ---------- */
@@ -725,20 +729,10 @@
           It.session.redirectToLogin(); 
           return; 
       }
-      const role = It.session.roleOf(user);
-      const isAgencyPage = document.body.getAttribute("data-page") === "agency";
-      if (isAgencyPage) {
-        if (role !== "agency") {
+      if (!It.session.isAdminRole(It.session.roleOf(user))) {
           It.session.clearSession();
           It.session.redirectToLogin();
           return;
-        }
-      } else {
-        if (!It.session.isAdminRole(role)) {
-          It.session.clearSession();
-          It.session.redirectToLogin();
-          return;
-        }
       }
 
       const chip = document.getElementById("user-chip");
@@ -746,10 +740,7 @@
         const nameEl = document.getElementById("chip-name");
         const roleEl = document.getElementById("chip-role");
         if (nameEl) nameEl.textContent = user.name || "";
-        if (roleEl) {
-          const rawRole = It.session.roleOf(user) || "admin";
-          roleEl.textContent = rawRole.replace(/_/g, ' ');
-        }
+        if (roleEl) roleEl.textContent = It.session.roleOf(user) || "admin";
         chip.hidden = false;
         
         // Trigger manual update of the user menu avatar since the observer might have fired early
@@ -764,7 +755,7 @@
         if (!chip.closest("a")) {
             chip.style.cursor = "pointer";
             chip.addEventListener("click", function() {
-                window.location.href = "user-details.html?id=current";
+                window.location.href = "profile.html";
             });
         }
       }
@@ -786,6 +777,7 @@
     initSearch();
     initModalHandling();
     initUserMenu();
+    initNotifBell();
     initCmdPalette();
     initBreadcrumb();
     initActionSlot();

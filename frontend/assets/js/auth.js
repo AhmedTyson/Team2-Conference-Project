@@ -43,6 +43,7 @@ onSuccess: function (body, form) {
         return {
           name: { on: "blur", rules: [R.required] },
           email: { on: "blur", rules: [R.required, R.email] },
+          phone: { on: "blur", rules: [R.required, R.phone] },
           password: { on: "input", rules: [R.required, R.password] },
           password_confirmation: {
             on: "input",
@@ -105,6 +106,14 @@ onSuccess: function (body, form) {
     const input = form.elements[name];
     if (!input) return null;
     const hint = document.getElementById("hint-" + name);
+    // optional sibling country-code select (e.g. name="phone" + name="phone_code")
+    const codeSelect = form.querySelector('[name="' + name + '_code"]');
+
+    function getValue() {
+      const v = input.value;
+      if (codeSelect && v) return codeSelect.value + " " + v;
+      return v;
+    }
 
     function setState(err, checked) {
       const group = input.closest(".field");
@@ -147,7 +156,7 @@ onSuccess: function (body, form) {
       if (other) other.addEventListener("input", function () { validate({ shake: false }); });
     }
 
-    return { name, input, validate, showError, clear: () => setState(null) };
+    return { name, input, validate, showError, clear: () => setState(null), getValue };
   }
 
   /* ------------------------------------------------------------------ */
@@ -173,9 +182,11 @@ onSuccess: function (body, form) {
       note.className = r.score === 0 ? "strength-note" : "strength-note " + r.level;
     }
     if (list) {
+      const touched = !!input.value;
       Array.prototype.forEach.call(list.children, function (li) {
         const met = r.checks[li.dataset.check];
         li.classList.toggle("met", !!met);
+        li.classList.toggle("not-met", touched && !met);
       });
     }
   }
@@ -211,7 +222,11 @@ onSuccess: function (body, form) {
 
   function collectPayload(fields) {
     const payload = {};
-    fields.forEach(function (f) { payload[f.name] = f.input.value; });
+    fields.forEach(function (f) {
+      // internal-only fields (e.g. the terms checkbox) never hit the API
+      if (f.input.type === "checkbox") return;
+      payload[f.name] = typeof f.getValue === "function" ? f.getValue() : f.input.value;
+    });
     return payload;
   }
 

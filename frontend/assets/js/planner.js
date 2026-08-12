@@ -308,7 +308,7 @@
 
         const attachments = trip.attachments || [];
         if (attachments.length === 0) {
-            list.innerHTML = `<div style="font-size:12px; color:#617e9e; text-align:center; padding:10px;">No items attached.</div>`;
+            list.innerHTML = `<div style="font-size:12px; color:rgba(255,255,255,0.45); text-align:center; padding:10px;">No items attached.</div>`;
             return;
         }
 

@@ -12,7 +12,10 @@
     stats: "/v1/dashboard",
     trips: "/v1/dashboard/trips",
     favs: "/v1/dashboard/favourites",
-    notifs: "/v1/notifications"
+    notifs: "/v1/notifications",
+    plans: "/v1/plans",
+    subscription: "/v1/me/subscription",
+    cancelSub: "/v1/me/subscription/cancel"
   };
 
   const mockTransactions = [
@@ -429,7 +432,7 @@
 
     const attachments = trip.attachments || [];
     if (attachments.length === 0) {
-      list.innerHTML = `<div style="font-size:12px; color:#617e9e; text-align:center; padding:10px;">No items attached.</div>`;
+      list.innerHTML = `<div style="font-size:12px; color:rgba(255,255,255,0.45); text-align:center; padding:10px;">No items attached.</div>`;
       return;
     }
 
@@ -636,7 +639,7 @@
   // -------------------------------------------------------------
   function renderProfile(user) {
     el("user-display-name").textContent = user.name;
-    el("user-display-role").textContent = It.session.roleOf(user).replace(/_/g, ' ').toUpperCase();
+    el("user-display-role").textContent = It.session.roleOf(user).toUpperCase();
 
     const letters = user.name.split(" ").map(n => n[0]).join("").toUpperCase().substring(0, 2);
     el("avatar-letters").textContent = letters || "U";
@@ -644,6 +647,107 @@
     const first = user.name.split(" ")[0].replace(/[.]+$/, "") || "there";
     el("greet").textContent = "Welcome back, " + first + ".";
     el("greet-sub").textContent = "Here's what's happening with your travels.";
+  }
+
+  // -------------------------------------------------------------
+  // Current Plan Panel (live subscription)
+  // -------------------------------------------------------------
+  function fmtMoney(cents, currency) {
+    const n = Number(cents || 0) / 100;
+    if (!isFinite(n)) return "--";
+    const cur = currency || "EGP";
+    try {
+      return new Intl.NumberFormat("en", { style: "currency", currency: cur }).format(n);
+    } catch (e) {
+      return n.toFixed(2) + " " + cur;
+    }
+  }
+
+  function fmtDateShort(iso) {
+    if (!iso) return "—";
+    const d = new Date(iso);
+    return isNaN(d.getTime()) ? "—" : d.toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric" });
+  }
+
+  function planCardHtml(sub, plans) {
+    const plan = (sub && sub.plan) || null;
+
+    if (!sub || !plan) {
+      return (
+        '<div class="plan-card-inner" style="display:flex; flex-wrap:wrap; gap:1rem; align-items:center; justify-content:space-between;">' +
+        '<div>' +
+        '<p style="font-weight:700; color:#ffffff; font-size:1.05rem;">Free plan</p>' +
+        '<p style="font-size:0.85rem; color:rgba(255,255,255,0.55); margin-top:0.25rem;">You are on the default free tier. Upgrade anytime to unlock AI trip planning and premium features.</p>' +
+        "</div>" +
+        '<a href="plans.html" class="btn-primary" style="background:#ffffff; border:none; padding:0.6rem 1.6rem; border-radius:40px; color:#0a0a0a; font-weight:600; text-decoration:none; font-size:0.9rem;">' +
+        '<i class="fas fa-tags"></i> Choose a plan</a>' +
+        "</div>"
+      );
+    }
+
+    const cycle = plan.billing_cycle === "yearly" ? "per year" : "per month";
+    const cancelled = sub.status === "cancelled";
+    const quota = plan.ai_quota_monthly != null ? plan.ai_quota_monthly + " / month" : "—";
+    const renews = cancelled ? "—" : fmtDateShort(sub.renews_at);
+
+    return (
+      '<div class="plan-card-inner" style="display:flex; flex-wrap:wrap; gap:1rem; align-items:center; justify-content:space-between;">' +
+      "<div>" +
+      '<div style="display:flex; align-items:center; gap:0.6rem; flex-wrap:wrap;">' +
+      '<span style="font-weight:800; color:#ffffff; font-size:1.15rem;">' + (plan.name || "Current plan") + "</span>" +
+      (cancelled
+        ? '<span style="background:#f59e0b22; color:#fbbf24; border:1px solid #f59e0b55; border-radius:999px; padding:0.15rem 0.7rem; font-size:0.72rem; font-weight:700;">CANCELLED</span>'
+        : '<span style="background:#16a34a22; color:#34d399; border:1px solid #16a34a55; border-radius:999px; padding:0.15rem 0.7rem; font-size:0.72rem; font-weight:700;">ACTIVE</span>') +
+      "</div>" +
+      '<p style="font-size:0.85rem; color:rgba(255,255,255,0.55); margin-top:0.35rem;">' +
+      fmtMoney(sub.price_cents, sub.currency) + " " + cycle +
+      " · AI quota: " + quota +
+      " · Renews: " + renews +
+      "</p>" +
+      "</div>" +
+      '<div style="display:flex; gap:0.6rem; flex-wrap:wrap;">' +
+      (cancelled
+        ? '<a href="plans.html" class="btn-primary" style="background:#ffffff; border:none; padding:0.55rem 1.4rem; border-radius:40px; color:#0a0a0a; font-weight:600; text-decoration:none; font-size:0.85rem;"><i class="fas fa-sync-alt"></i> Resubscribe</a>'
+        : '<a href="plans.html" class="btn-outline" style="background:transparent; border:1px solid rgba(255,255,255,0.35); padding:0.55rem 1.4rem; border-radius:40px; color:#ffffff; font-weight:600; text-decoration:none; font-size:0.85rem;"><i class="fas fa-arrow-trend-up"></i> Upgrade</a>' +
+          '<a href="receipt.html" class="btn-outline" style="background:transparent; border:1px solid rgba(255,255,255,0.35); padding:0.55rem 1.4rem; border-radius:40px; color:#ffffff; font-weight:600; text-decoration:none; font-size:0.85rem;"><i class="fas fa-receipt"></i> Receipt</a>' +
+          '<button type="button" class="btn-outline" onclick="cancelSubscription()" style="background:transparent; border:1px solid #dc2626; padding:0.55rem 1.4rem; border-radius:40px; color:#dc2626; font-weight:500; font-size:0.85rem; cursor:pointer;"><i class="fas fa-ban"></i> Cancel</button>') +
+      "</div>" +
+      "</div>"
+    );
+  }
+
+  function renderPlanCard(sub, plans) {
+    const area = el("plan-card-area");
+    if (!area) return;
+    area.innerHTML = planCardHtml(sub, plans);
+  }
+
+  global.cancelSubscription = function () {
+    if (!confirm("Cancel your current subscription? Your plan stays active until the end of the current period.")) return;
+    It.apiPost(DASH.cancelSub, {}, { auth: true }).then(function (res) {
+      if (res.ok) {
+        fb.banner("Subscription cancelled.", "is-ok");
+        loadPlanCard();
+      } else {
+        fb.banner((res.body && res.body.message) || "Could not cancel subscription.", "is-error");
+      }
+    }).catch(function (err) {
+      fb.banner(err.message || "Could not cancel subscription.", "is-error");
+    });
+  };
+
+  function loadPlanCard() {
+    Promise.all([
+      It.apiGet(DASH.subscription, { auth: true }),
+      It.apiGet(DASH.plans, { auth: true })
+    ]).then(function (results) {
+      const sub = results[0].ok && results[0].body && results[0].body.data ? results[0].body.data : null;
+      const plans = results[1].ok && results[1].body && results[1].body.data ? results[1].body.data : [];
+      renderPlanCard(sub, plans);
+    }).catch(function () {
+      const area = el("plan-card-area");
+      if (area) area.innerHTML = '<p style="color:rgba(255,255,255,0.55); font-size:0.85rem;">Plan info unavailable right now. <a href="plans.html" style="color:#7aa5ff;">Browse plans →</a></p>';
+    });
   }
 
   function load(user) {
@@ -715,6 +819,8 @@
 
       fb.banner("Showing demo mode dashboard (offline).", "is-info");
     });
+
+    loadPlanCard();
   }
 
   function boot() {
@@ -733,36 +839,17 @@
         global.location.replace(It.CONFIG.role.admin);
         return;
       }
+      if (role === "agency") {
+        global.location.replace(It.CONFIG.role.agency);
+        return;
+      }
       load(user);
     });
-  }
-
-  function initTheme() {
-    const btn = el("theme-toggle");
-    if (!btn) return;
-    const sun = btn.querySelector(".icon-sun");
-    const moon = btn.querySelector(".icon-moon");
-
-    let dark = false;
-    try { dark = global.localStorage.getItem("theme") === "dark"; } catch (e) {}
-
-    function setDark(val) {
-      dark = val;
-      document.documentElement.classList.toggle("dark", dark);
-      if (sun) sun.style.display = dark ? "none" : "block";
-      if (moon) moon.style.display = dark ? "block" : "none";
-      btn.setAttribute("aria-pressed", String(dark));
-      try { global.localStorage.setItem("theme", dark ? "dark" : "light"); } catch (e) {}
-    }
-
-    setDark(dark);
-    btn.addEventListener("click", function () { setDark(!dark); });
   }
 
   document.addEventListener("DOMContentLoaded", function () {
     const btn = el("logout-btn");
     if (btn) btn.addEventListener("click", function () { It.session.logout(); });
-    initTheme();
     boot();
   });
 })(window);
