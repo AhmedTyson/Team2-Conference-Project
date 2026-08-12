@@ -360,7 +360,9 @@ Route::middleware(['auth:api', 'role:admin|super_admin'])
 
 Route::middleware(['auth:api'])->prefix('v1')->group(function () {
     Route::post('/agency-requests', [AgencyRequestController::class, 'store']);
-    Route::get('/admin/agency-requests', [AdminAgencyController::class, 'adminIndex'])->middleware('role:admin|super_admin');
+    Route::get('/admin/agency-requests', [AdminAgencyController::class, 'adminIndex'])
+        ->middleware('role:admin|super_admin')
+        ->name('agency-requests.index');
     Route::post('/admin/agency-requests/{assignment}/approve', [AdminAgencyController::class, 'approve'])->middleware('role:admin|super_admin');
     Route::post('/agency/assignments/{assignment}/approve', [AgencyAssignmentController::class, 'approve'])->middleware('role:agency');
     Route::post('/agency/assignments/{assignment}/decline', [AgencyAssignmentController::class, 'decline'])->middleware('role:agency');

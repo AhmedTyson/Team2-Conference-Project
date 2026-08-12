@@ -5,6 +5,7 @@ namespace App\Http\Controllers\System;
 use App\Http\Controllers\Controller;
 use App\Models\Commerce\AgencyAssignment;
 use App\Services\System\FlagService;
+use App\Support\ApiResponse;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
@@ -30,6 +31,6 @@ class FlagController extends Controller
             $validated['details'] ?? null
         );
 
-        return response()->json(['message' => 'Flag submitted successfully', 'data' => $flag], 201);
+        return ApiResponse::success($flag, 'Flag submitted successfully', 201);
     }
 }

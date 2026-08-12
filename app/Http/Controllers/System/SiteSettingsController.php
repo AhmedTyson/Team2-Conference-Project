@@ -5,6 +5,7 @@ namespace App\Http\Controllers\System;
 use App\Http\Controllers\Controller;
 
 use App\Services\System\SettingService;
+use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 
 class SiteSettingsController extends Controller
@@ -20,9 +21,6 @@ class SiteSettingsController extends Controller
     {
         $data = $this->settingService->getPublicSettings();
 
-        return response()->json([
-            'success' => true,
-            'data' => $data,
-        ]);
+        return ApiResponse::success($data);
     }
 }

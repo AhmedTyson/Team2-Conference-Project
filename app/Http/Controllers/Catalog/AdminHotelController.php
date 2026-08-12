@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Catalog\StoreHotelRequest;
 use App\Http\Requests\Catalog\UpdateHotelRequest;
 use App\Models\Catalog\Hotel;
+use App\Support\ApiResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AdminHotelController extends Controller
@@ -27,7 +28,7 @@ class AdminHotelController extends Controller
 
         $hotel = Hotel::create($validated);
 
-        return new JsonResource($hotel);
+        return (new JsonResource($hotel))->response()->setStatusCode(201);
     }
 
     public function show($id)
@@ -51,16 +52,13 @@ class AdminHotelController extends Controller
         $hotel = Hotel::findOrFail($id);
         $hotel->delete();
 
-        return response()->json(['success' => true]);
+        return ApiResponse::success(null, 'Hotel deleted successfully');
     }
 
     public function restore($id)
     {
         Hotel::onlyTrashed()->findOrFail($id)->restore();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Hotel restored successfully.',
-        ]);
+        return ApiResponse::success(null, 'Hotel restored successfully.');
     }
 }

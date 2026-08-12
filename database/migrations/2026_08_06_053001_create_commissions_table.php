@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('source_id');
             $table->decimal('rate', 5, 4); // e.g. 0.1000 = 10%
             $table->integer('amount_cents');
-            $table->enum('status', ['pending', 'settled', 'cancelled'])->default('pending');
+            $table->string('status', 20)->default('pending');
             $table->timestamp('settled_at')->nullable();
             $table->timestamps();
             $table->index(['source_type', 'source_id']);

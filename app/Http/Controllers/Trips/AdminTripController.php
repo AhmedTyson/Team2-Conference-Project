@@ -8,6 +8,7 @@ use App\Http\Requests\Trips\UpdateTripRequest;
 use App\Http\Resources\TripResource;
 use App\Models\Trips\Trip;
 use App\Services\Trips\TripService;
+use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 
 class AdminTripController extends Controller
@@ -28,39 +29,25 @@ class AdminTripController extends Controller
     public function store(StoreTripRequest $request): JsonResponse
     {
         $trip = $this->tripService->store($request->validated());
-        return response()->json([
-            'success' => true,
-            'message' => 'Trip created successfully',
-            'data' => new TripResource($trip),
-        ]);
+        return ApiResponse::success(new TripResource($trip), 'Trip created successfully', 201);
     }
 
     public function update(UpdateTripRequest $request, int $id): JsonResponse
     {
         $trip = $this->tripService->update($id, $request->validated());
-        return response()->json([
-            'success' => true,
-            'message' => 'Trip updated successfully.',
-            'data' => new TripResource($trip),
-        ]);
+        return ApiResponse::success(new TripResource($trip), 'Trip updated successfully');
     }
 
     public function destroy(int $id): JsonResponse
     {
         $this->tripService->destroy($id);
-        return response()->json([
-            'success' => true,
-            'message' => 'Trip deleted successfully.',
-        ]);
+        return ApiResponse::success(null, 'Trip deleted successfully');
     }
 
     public function restore(int $id): JsonResponse
     {
         Trip::onlyTrashed()->findOrFail($id)->restore();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Trip restored successfully.',
-        ]);
+        return ApiResponse::success(null, 'Trip restored successfully');
     }
 }

@@ -123,12 +123,9 @@ class CheckoutAbuseTest extends TestCase
         $cacheProperty = $reflection->getProperty('cache');
         $cacheProperty->setAccessible(true);
         $cache = $cacheProperty->getValue($limiter);
-        dump("Cache driver: ".get_class($cache->getStore()));
-        dump("Cache prefix: '".($cache->getStore()->getPrefix() ?? '')."'");
         $limitersProperty = $reflection->getProperty('limiters');
         $limitersProperty->setAccessible(true);
         $limiters = $limitersProperty->getValue($limiter);
-        dump("Limiter limiters: ".json_encode(array_keys($limiters)));
 
         $this->actingAs($user, 'api')->postJson('/api/v1/checkout/initiate', [
             'type' => 'trip_fork',
@@ -140,29 +137,20 @@ class CheckoutAbuseTest extends TestCase
         $hashKey = md5('checkout'.$userKey);
         $cleanKey = $limiter->cleanRateLimiterKey($hashKey);
         $timerKey = $cleanKey.':timer';
-        dump("User key: $userKey");
-        dump("Hash key: $hashKey");
-        dump("Clean key: $cleanKey");
-        dump("Timer key: $timerKey");
-        dump("Cache get before clear: ".json_encode(Cache::get($timerKey)));
 
         // Check what key the limiter would use for the 6th request
         $reflection = new \ReflectionClass($limiter);
         $attemptsMethod = $reflection->getMethod('attempts');
         $attemptsMethod->setAccessible(true);
         $attempts = $attemptsMethod->invoke($limiter, $hashKey);
-        dump("Attempts before clear: $attempts");
 
         Cache::put($timerKey, null, now()->addMinutes(10));
-        dump("Cache get after clear: ".json_encode(Cache::get($timerKey)));
 
         // Try the 7th request
         $response = $this->actingAs($user, 'api')->postJson('/api/v1/checkout/initiate', [
             'type' => 'trip_fork',
             'trip_id' => $trip->id,
         ]);
-        dump("7th request status: " . $response->status());
-        dump("7th request attempts: " . $attemptsMethod->invoke($limiter, $hashKey));
         $response->assertStatus(200);
     }
 

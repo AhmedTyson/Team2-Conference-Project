@@ -12,7 +12,6 @@ use App\Services\Catalog\Fixtures\OpenStreetService;
 use App\Support\ApiResponse;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class MapController extends Controller
 {
@@ -49,14 +48,12 @@ class MapController extends Controller
                 1000
             );
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Destination map data retrieved successfully',
+        return ApiResponse::success([
             'destination' => $destination,
             'attractions' => $attractions,
             'hotels' => $hotels,
             'restaurants' => $restaurants,
-        ]);
+        ], 'Destination map data retrieved successfully');
     }
 
     public function trip(Request $request, Trip $trip, OpenStreetService $osm)
@@ -104,8 +101,6 @@ class MapController extends Controller
             ->filter()
             ->values();
 
-        Log::info($points->toArray());
-
         if ($points->count() < 2) {
             return ApiResponse::fail(
                 'Trip must contain at least two locations.',
@@ -124,9 +119,6 @@ class MapController extends Controller
             $waypoints
         );
 
-        return response()->json([
-            'success' => true,
-            'directions' => $directions,
-        ]);
+        return ApiResponse::success(['directions' => $directions], 'Trip directions retrieved successfully');
     }
 }

@@ -23,11 +23,7 @@ class TripController extends Controller
     public function create(Request $request)
     {
         $data = $this->tripService->getCreationData();
-        return response()->json([
-            'success' => true,
-            'message' => 'Trip creation data retrieved successfully.',
-            'data' => $data,
-        ]);
+        return ApiResponse::success($data, 'Trip creation data retrieved successfully');
     }
 
     public function store(StoreTripRequest $request)
@@ -37,11 +33,7 @@ class TripController extends Controller
             'status' => 'pending',
         ]);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Trip created successfully.',
-            'data' => new TripResource($trip),
-        ], 201);
+        return ApiResponse::success(new TripResource($trip), 'Trip created successfully', 201);
     }
 
     public function show(Request $request, Trip $trip)
@@ -52,11 +44,7 @@ class TripController extends Controller
 
         $trip->load(['itineraryItems.itemable', 'destinations']);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Trip retrieved successfully.',
-            'data' => new TripResource($trip),
-        ]);
+        return ApiResponse::success(new TripResource($trip), 'Trip retrieved successfully');
     }
 
     public function fork(Request $request, Trip $trip): JsonResponse
@@ -67,18 +55,12 @@ class TripController extends Controller
     public function attach(Request $request, Trip $trip, string $type): JsonResponse
     {
         if ($trip->user_id !== $request->user()->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Trip not found',
-            ], 404);
+            return ApiResponse::fail('Trip not found', 'not_found', 404);
         }
 
         $allowedTypes = ['hotel', 'flight', 'restaurant', 'attraction'];
         if (!in_array($type, $allowedTypes)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Invalid attachment type. Allowed types: ' . implode(', ', $allowedTypes),
-            ], 400);
+            return ApiResponse::fail('Invalid attachment type. Allowed types: ' . implode(', ', $allowedTypes), 'invalid_type', 400);
         }
 
         $validated = $request->validate([
@@ -91,36 +73,24 @@ class TripController extends Controller
         // Check if item exists
         $modelClass = 'App\\Models\\Catalog\\' . ucfirst($type);
         if (!class_exists($modelClass) || !$modelClass::find($itemId)) {
-            return response()->json([
-                'success' => false,
-                'message' => ucfirst($type) . ' not found',
-            ], 404);
+            return ApiResponse::fail(ucfirst($type) . ' not found', 'not_found', 404);
         }
 
         // Check if already attached. Using DB table explicitly if possible, or just relationship exist check.
         // Easiest is to query relationship
         if ($trip->$relation()->where($modelClass::make()->getTable() . '.id', $itemId)->exists()) {
-            return response()->json([
-                'success' => false,
-                'message' => ucfirst($type) . ' is already attached to this trip',
-            ], 409);
+            return ApiResponse::fail(ucfirst($type) . ' is already attached to this trip', 'already_attached', 409);
         }
 
         $trip->$relation()->attach($itemId);
 
-        return response()->json([
-            'success' => true,
-            'message' => ucfirst($type) . ' attached to trip successfully.',
-        ], 200);
+        return ApiResponse::success(null, ucfirst($type) . ' attached to trip successfully');
     }
 
     public function detach(Request $request, Trip $trip, int $itemId): JsonResponse
     {
         if ($trip->user_id !== $request->user()->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Trip not found',
-            ], 404);
+            return ApiResponse::fail('Trip not found', 'not_found', 404);
         }
 
         $detached = false;
@@ -134,15 +104,9 @@ class TripController extends Controller
         }
 
         if (!$detached) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Item not found attached to this trip',
-            ], 404);
+            return ApiResponse::fail('Item not found attached to this trip', 'not_found', 404);
         }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Item detached from trip successfully.',
-        ], 200);
+        return ApiResponse::success(null, 'Item detached from trip successfully');
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Interfaces\System\FlagRepositoryInterface;
 use App\Models\System\Flag;
 use App\Services\System\FlagService;
+use App\Support\ApiResponse;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 
@@ -24,7 +25,7 @@ class AdminFlagController extends Controller
 
         $flags = $this->repository->getAll();
 
-        return response()->json(['data' => $flags]);
+        return ApiResponse::success($flags, 'Flags retrieved successfully');
     }
 
     public function approve(Request $request, Flag $flag)
@@ -33,7 +34,7 @@ class AdminFlagController extends Controller
 
         $flag = $this->service->approve($flag, $request->user());
 
-        return response()->json(['data' => $flag]);
+        return ApiResponse::success($flag, 'Flag approved successfully');
     }
 
     public function decline(Request $request, Flag $flag)
@@ -42,6 +43,6 @@ class AdminFlagController extends Controller
 
         $flag = $this->service->decline($flag, $request->user());
 
-        return response()->json(['data' => $flag]);
+        return ApiResponse::success($flag, 'Flag declined successfully');
     }
 }

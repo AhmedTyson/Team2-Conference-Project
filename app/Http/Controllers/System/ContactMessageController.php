@@ -5,6 +5,7 @@ namespace App\Http\Controllers\System;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ContactMessageResource;
 use App\Services\System\ContactMessageService;
+use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 
 class ContactMessageController extends Controller
@@ -26,21 +27,13 @@ class ContactMessageController extends Controller
     {
         $message = $this->contactMessageService->markAsRead($id);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Message marked as read.',
-            'data' => new ContactMessageResource($message),
-        ]);
+        return ApiResponse::success(new ContactMessageResource($message), 'Message marked as read.');
     }
 
     public function markAsResolved(int $id): JsonResponse
     {
         $message = $this->contactMessageService->markAsResolved($id);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Message marked as resolved.',
-            'data' => new ContactMessageResource($message),
-        ]);
+        return ApiResponse::success(new ContactMessageResource($message), 'Message marked as resolved.');
     }
 }

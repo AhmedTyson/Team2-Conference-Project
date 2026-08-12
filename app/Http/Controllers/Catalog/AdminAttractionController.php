@@ -7,6 +7,7 @@ use App\Http\Requests\Catalog\StoreAttractionRequest;
 use App\Http\Requests\Catalog\UpdateAttractionRequest;
 use App\Models\Catalog\Attraction;
 use App\Services\Catalog\AttractionService;
+use App\Support\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -28,7 +29,7 @@ class AdminAttractionController extends Controller
     public function store(StoreAttractionRequest $request)
     {
         $attraction = $this->attractionService->store($request->validated());
-        return new JsonResource($attraction);
+        return (new JsonResource($attraction))->response()->setStatusCode(201);
     }
 
     public function show($id)
@@ -46,16 +47,13 @@ class AdminAttractionController extends Controller
     public function destroy($id)
     {
         $this->attractionService->destroy($id);
-        return response()->json(['success' => true]);
+        return ApiResponse::success(null, 'Attraction deleted successfully');
     }
 
     public function restore($id)
     {
         Attraction::onlyTrashed()->findOrFail($id)->restore();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Attraction restored successfully.',
-        ]);
+        return ApiResponse::success(null, 'Attraction restored successfully');
     }
 }

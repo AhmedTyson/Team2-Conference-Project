@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Commerce;
 
 use App\Http\Controllers\Controller;
 use App\Services\Commerce\AgencyAssignmentService;
+use App\Support\ApiResponse;
 use Illuminate\Http\Request;
 
 class AgencyRequestController extends Controller
@@ -21,6 +22,6 @@ class AgencyRequestController extends Controller
             $validated['budget_level'] ?? null
         );
 
-        return response()->json(['data' => $assignment], 201);
+        return ApiResponse::success($assignment, 'Assignment requested successfully', 201);
     }
 }

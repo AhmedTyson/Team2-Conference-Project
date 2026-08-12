@@ -7,6 +7,7 @@ use App\Http\Requests\Commerce\AdminSetPlansRequest;
 use App\Http\Requests\Commerce\SubscribePlanRequest;
 use App\Http\Requests\Commerce\UpgradePlanRequest;
 use App\Services\Commerce\PlanService;
+use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 
 class PlanController extends Controller
@@ -22,15 +23,12 @@ class PlanController extends Controller
     {
         $plans = $this->planService->setPlans($request->input('plans'));
 
-        return response()->json(['success' => true, 'data' => $plans], 200);
+        return ApiResponse::success($plans, 'Plans set successfully', 200);
     }
 
     public function index(): JsonResponse
     {
-        return response()->json([
-            'success' => true,
-            'data' => $this->planService->getAllPlans(),
-        ]);
+        return ApiResponse::success($this->planService->getAllPlans(), 'Plans retrieved successfully');
     }
 
     public function subscribe(SubscribePlanRequest $request): JsonResponse
@@ -40,7 +38,7 @@ class PlanController extends Controller
             $request->integer('plan_id')
         );
 
-        return response()->json(['success' => true, 'data' => $subscription->load('plan')], 201);
+        return ApiResponse::success($subscription->load('plan'), 'Subscription created successfully', 201);
     }
 
     public function upgrade(UpgradePlanRequest $request): JsonResponse
@@ -50,23 +48,20 @@ class PlanController extends Controller
             $request->integer('plan_id')
         );
 
-        return response()->json(['success' => true, 'data' => $result]);
+        return ApiResponse::success($result, 'Plan upgraded successfully', 201);
     }
 
     public function cancel(): JsonResponse
     {
         $subscription = $this->planService->cancel(auth()->user()->id);
 
-        return response()->json(['success' => true, 'data' => $subscription->load('plan')]);
+        return ApiResponse::success($subscription->load('plan'), 'Subscription cancelled successfully');
     }
 
     public function subscription(): JsonResponse
     {
         $subscription = $this->planService->subscription(auth()->user()->id);
 
-        return response()->json([
-            'success' => true,
-            'data' => $subscription,
-        ]);
+        return ApiResponse::success($subscription, 'Subscription retrieved successfully');
     }
 }

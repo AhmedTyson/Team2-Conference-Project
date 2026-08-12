@@ -21,11 +21,7 @@ class AIController extends Controller
 
         $enhancedContent = $groq->enhance($request->input('content'));
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Content enhanced successfully',
-            'data' => $enhancedContent,
-        ]);
+        return ApiResponse::success($enhancedContent, 'Content enhanced successfully');
     }
 
     // review my trip
@@ -51,10 +47,6 @@ class AIController extends Controller
         // so cache hits do NOT decrement the user's quota.
         $reviewedContent = $groq->review($trip, $trip_title, $trip_items, $request->user());
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Trip reviewed successfully',
-            'data' => json_decode($reviewedContent) ?? $reviewedContent,
-        ]);
+        return ApiResponse::success(json_decode($reviewedContent) ?? $reviewedContent, 'Trip reviewed successfully');
     }
 }

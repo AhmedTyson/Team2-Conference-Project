@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\RestaurantResource;
 use App\Services\Catalog\RestaurantService;
 use App\Models\Catalog\Restaurant;
+use App\Support\ApiResponse;
 
 class RestaurantController extends Controller
 {
@@ -31,7 +32,9 @@ class RestaurantController extends Controller
     public function destroy($id)
     {
         authorize('delete', Restaurant::class);
-        $this->restaurantService->destroy($id);
-        return response()->json(['message' => 'Restaurant deleted successfully']);
+
+        $restaurant = $this->restaurantService->destroy($id);
+
+        return ApiResponse::success(null, 'Restaurant deleted successfully');
     }
 }

@@ -25,7 +25,7 @@ class PaymobWebhookController extends Controller
         return response()->json([
             'success' => $result['success'],
             'message' => $result['message'] ?? '',
-        ], $result['status'] ?? 200);
+        ], 200);
     }
 
     public function callback(Request $request)
@@ -41,10 +41,6 @@ class PaymobWebhookController extends Controller
             );
         }
 
-        return response()->json([
-            'success' => $success,
-            'message' => $success ? 'Payment successful' : 'Payment failed',
-            'reference' => $merchantOrderId,
-        ]);
+        return ApiResponse::success(['reference' => $merchantOrderId], $success ? 'Payment successful' : 'Payment failed');
     }
 }

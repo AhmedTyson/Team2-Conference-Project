@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\System\StoreSurveyRequest;
 use App\Http\Requests\System\UpdateSurveyRequest;
 use App\Services\System\SurveyService;
+use App\Support\ApiResponse;
 use Illuminate\Http\Request;
 
 class SurveyController extends Controller
@@ -21,10 +22,7 @@ class SurveyController extends Controller
     {
         $surveys = $this->surveyService->getSurveyByUserId(auth()->id());
 
-        return response()->json([
-            'message' => 'Surveys retrieved successfully',
-            'data' => $surveys,
-        ]);
+        return ApiResponse::success($surveys, 'Surveys retrieved successfully');
     }
 
     /**
@@ -37,10 +35,7 @@ class SurveyController extends Controller
 
         $survey = $this->surveyService->createSurvey($data);
 
-        return response()->json([
-            'message' => 'Survey created successfully',
-            'data' => $survey,
-        ], 201);
+        return ApiResponse::success($survey, 'Survey created successfully', 201);
     }
 
     /**
@@ -50,10 +45,7 @@ class SurveyController extends Controller
     {
         $survey = $this->surveyService->getSurveyById($id, auth()->id());
 
-        return response()->json([
-            'message' => 'Survey retrieved successfully',
-            'data' => $survey,
-        ]);
+        return ApiResponse::success($survey, 'Survey retrieved successfully');
     }
 
     /**
@@ -65,9 +57,7 @@ class SurveyController extends Controller
 
         $this->surveyService->updateSurvey($id, $data, auth()->id());
 
-        return response()->json([
-            'message' => 'Survey updated successfully',
-        ]);
+        return ApiResponse::success(null, 'Survey updated successfully');
     }
 
     /**
@@ -77,8 +67,6 @@ class SurveyController extends Controller
     {
         $this->surveyService->deleteSurvey($id, auth()->id());
 
-        return response()->json([
-            'message' => 'Survey deleted successfully',
-        ]);
+        return ApiResponse::success(null, 'Survey deleted successfully');
     }
 }

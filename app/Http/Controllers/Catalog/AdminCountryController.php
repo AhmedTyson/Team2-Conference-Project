@@ -7,6 +7,7 @@ use App\Http\Requests\Catalog\StoreCountryRequest;
 use App\Http\Requests\Catalog\UpdateCountryRequest;
 use App\Models\Catalog\Country;
 use App\Services\Catalog\CountryService;
+use App\Support\ApiResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AdminCountryController extends Controller
@@ -27,7 +28,7 @@ class AdminCountryController extends Controller
     public function store(StoreCountryRequest $request)
     {
         $country = $this->countryService->store($request->validated());
-        return new JsonResource($country);
+        return (new JsonResource($country))->response()->setStatusCode(201);
     }
 
     public function show($id)
@@ -45,16 +46,13 @@ class AdminCountryController extends Controller
     public function destroy($id)
     {
         $this->countryService->destroy($id);
-        return response()->json(['success' => true]);
+        return ApiResponse::success(null, 'Country deleted successfully');
     }
 
     public function restore(int $id)
     {
         Country::onlyTrashed()->findOrFail($id)->restore();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Country restored successfully.',
-        ]);
+        return ApiResponse::success(null, 'Country restored successfully');
     }
 }

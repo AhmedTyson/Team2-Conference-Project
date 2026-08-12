@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\TripResource;
 use App\Models\Trips\Favourite;
 use App\Models\Trips\Trip;
+use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -37,15 +38,11 @@ class DashboardController extends Controller
         // Total number of favorites
         $totalFavourites = Favourite::where('user_id', $user->id)->count();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Dashboard statistics retrieved successfully.',
-            'data' => [
-                'total_trips' => $totalTrips,
-                'trip_statistics' => $formattedStats,
-                'total_favourites' => $totalFavourites,
-            ],
-        ]);
+        return ApiResponse::success([
+            'total_trips' => $totalTrips,
+            'trip_statistics' => $formattedStats,
+            'total_favourites' => $totalFavourites,
+        ], 'Dashboard statistics retrieved successfully.');
     }
 
     // Saved Trips & Booking History
@@ -57,11 +54,10 @@ class DashboardController extends Controller
         // Fetch all trips for this user, sorted by newest first
         $trips = Trip::where('user_id', $user->id)->latest()->get();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Saved trips retrieved successfully.',
-            'data' => TripResource::collection($trips),
-        ]);
+        return ApiResponse::success(
+            TripResource::collection($trips),
+            'Saved trips retrieved successfully.'
+        );
     }
 
     // Favorite Destinations & Places
@@ -76,10 +72,8 @@ class DashboardController extends Controller
             ->latest()
             ->get();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Favorite places retrieved successfully.',
-            'data' => $favourites->map(function ($fav) {
+        return ApiResponse::success(
+            $favourites->map(function ($fav) {
                 return [
                     'id' => $fav->id,
                     'favorable_type' => $fav->favorable_type,
@@ -89,6 +83,7 @@ class DashboardController extends Controller
                     'created_at' => $fav->created_at,
                 ];
             }),
-        ]);
+            'Favorite places retrieved successfully.'
+        );
     }
 }

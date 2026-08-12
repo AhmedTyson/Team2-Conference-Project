@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Commerce;
 use App\Http\Controllers\Controller;
 use App\Models\Commerce\AgencyAssignment;
 use App\Services\Commerce\AgencyAssignmentService;
+use App\Support\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
@@ -14,20 +15,29 @@ class AgencyAssignmentController extends Controller
 
     public function __construct(private AgencyAssignmentService $service) {}
 
-public function index(Request $request)
+    public function index(Request $request)
     {
         $assignments = AgencyAssignment::where('agency_user_id', $request->user()->id)
             ->with(['customer', 'trips'])
             ->get();
-            
-        return response()->json(['data' => $assignments]);
+
+        return ApiResponse::success($assignments, 'Agency assignments retrieved successfully');
     }
 
     public function myAssignments(Request $request)
     {
         $assignments = $this->service->listForCustomer($request->user()->id);
 
-        return response()->json(['data' => $assignments]);
+        return ApiResponse::success($assignments->items(), 'Agency assignments retrieved successfully', 200, [
+            'meta' => [
+                'current_page' => $assignments->currentPage(),
+                'per_page' => $assignments->perPage(),
+                'total' => $assignments->total(),
+                'last_page' => $assignments->lastPage(),
+                'from' => $assignments->firstItem(),
+                'to' => $assignments->lastItem(),
+            ]
+        ]);
     }
 
     public function cancel(Request $request, AgencyAssignment $assignment)
@@ -36,7 +46,7 @@ public function index(Request $request)
 
         $assignment = $this->service->cancel($assignment, $request->user()->id);
 
-        return response()->json(['data' => $assignment]);
+        return ApiResponse::success($assignment, 'Agency assignment cancelled successfully');
     }
 
     public function approve(Request $request, AgencyAssignment $assignment)
@@ -45,7 +55,7 @@ public function index(Request $request)
 
         $assignment = $this->service->agencyApprove($assignment);
 
-        return response()->json(['data' => $assignment]);
+        return ApiResponse::success($assignment, 'Agency assignment approved successfully');
     }
 
     public function decline(Request $request, AgencyAssignment $assignment)
@@ -54,7 +64,7 @@ public function index(Request $request)
 
         $assignment = $this->service->agencyDecline($assignment);
 
-        return response()->json(['data' => $assignment]);
+        return ApiResponse::success($assignment, 'Agency assignment declined successfully');
     }
 
     public function createTrip(Request $request, AgencyAssignment $assignment)
@@ -69,11 +79,11 @@ public function index(Request $request)
         ]);
 
         $trip = $this->service->buildTripForCustomer(
-            $assignment, 
+            $assignment,
             $validated['title'],
             $validated['items'] ?? []
         );
 
-        return response()->json(['data' => $trip], 201);
+        return ApiResponse::success($trip, 'Trip created successfully', 201);
     }
 }

@@ -50,11 +50,7 @@ class AdminDestinationController extends Controller
 
         $destination = Destination::create($validated);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Destination created successfully.',
-            'data' => $destination->load('country'),
-        ], 201);
+        return ApiResponse::success($destination->load('country'), 'Destination created successfully', 201);
     }
 
     public function update(UpdateDestinationRequest $request, int $id): JsonResponse
@@ -90,11 +86,7 @@ class AdminDestinationController extends Controller
 
         $destination->update($validated);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Destination updated successfully.',
-            'data' => $destination->load('country'),
-        ]);
+        return ApiResponse::success($destination->load('country'), 'Destination updated successfully');
     }
 
     public function destroy(int $id): JsonResponse
@@ -107,10 +99,7 @@ class AdminDestinationController extends Controller
 
         $destination->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Destination deleted successfully.',
-        ]);
+        return ApiResponse::success(null, 'Destination deleted successfully.');
     }
 
     public function restore(int $id): JsonResponse
@@ -118,10 +107,7 @@ class AdminDestinationController extends Controller
         $destination = Destination::onlyTrashed()->findOrFail($id);
         $destination->restore();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Destination restored successfully.',
-        ]);
+        return ApiResponse::success(null, 'Destination restored successfully');
     }
 }
 

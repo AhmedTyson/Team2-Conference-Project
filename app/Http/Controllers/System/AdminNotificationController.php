@@ -4,6 +4,7 @@ namespace App\Http\Controllers\System;
 
 use App\Http\Controllers\Controller;
 use App\Models\System\Notification;
+use App\Support\ApiResponse;
 use Illuminate\Http\Request;
 
 class AdminNotificationController extends Controller
@@ -20,10 +21,15 @@ class AdminNotificationController extends Controller
             $query->where('user_id', $request->query('user_id'));
         }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Platform notifications retrieved successfully',
-            'data' => $query->paginate(20),
+        $notifications = $query->paginate(20);
+
+        return ApiResponse::success($notifications, 'Platform notifications retrieved successfully', 200, [
+            'meta' => [
+                'current_page' => $notifications->currentPage(),
+                'per_page' => $notifications->perPage(),
+                'total' => $notifications->total(),
+                'last_page' => $notifications->lastPage(),
+            ]
         ]);
     }
 }

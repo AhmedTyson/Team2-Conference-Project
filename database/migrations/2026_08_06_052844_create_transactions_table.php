@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('booking_id')->nullable()->constrained()->nullOnDelete();
-            $table->enum('type', ['payment', 'refund', 'commission', 'point_redemption']);
+            $table->string('type', 20);
             $table->integer('amount_cents');
             $table->char('currency', 3)->default('EGP');
             $table->string('description', 255);

@@ -124,7 +124,7 @@ class TripAccessControlTest extends TestCase
         $this->actingAs($owner, 'api')
             ->getJson("/api/v1/maps/trip/{$trip->id}")
             ->assertOk()
-            ->assertJsonPath('directions.distance_km', 10);
+            ->assertJsonPath('data.directions.distance_km', 10);
     }
 
     public function test_user_cannot_map_another_users_trip(): void

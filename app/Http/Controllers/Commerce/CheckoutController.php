@@ -30,18 +30,11 @@ class CheckoutController extends Controller
                 $validated['idempotency_key'] ?? null,
             );
 
-            return response()->json([
-                'success' => true,
-                'data' => $data,
-            ]);
+            return ApiResponse::success($data, 'Checkout initiated successfully');
 
         } catch (AuthorizationException $e) {
             // SEC-04: authorization guard — return 403, not 422.
-            return response()->json([
-                'success' => false,
-                'message' => $e->getMessage(),
-                'data' => null,
-            ], 403);
+            return ApiResponse::fail($e->getMessage(), 'forbidden', 403);
         } catch (Exception $e) {
             return ApiResponse::fail(
                 $e->getMessage(),

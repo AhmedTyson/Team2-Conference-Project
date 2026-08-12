@@ -7,6 +7,7 @@ use App\Http\Requests\Catalog\StoreRestaurantRequest;
 use App\Http\Requests\Catalog\UpdateRestaurantRequest;
 use App\Models\Catalog\Restaurant;
 use App\Services\Catalog\RestaurantService;
+use App\Support\ApiResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AdminRestaurantController extends Controller
@@ -27,7 +28,7 @@ class AdminRestaurantController extends Controller
     public function store(StoreRestaurantRequest $request)
     {
         $restaurant = $this->restaurantService->store($request->validated());
-        return new JsonResource($restaurant);
+        return (new JsonResource($restaurant))->response()->setStatusCode(201);
     }
 
     public function show($id)
@@ -45,16 +46,13 @@ class AdminRestaurantController extends Controller
     public function destroy($id)
     {
         $this->restaurantService->destroy($id);
-        return response()->json(['success' => true]);
+        return ApiResponse::success(null, 'Restaurant deleted successfully');
     }
 
     public function restore($id)
     {
         Restaurant::onlyTrashed()->findOrFail($id)->restore();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Restaurant restored successfully.',
-        ]);
+        return ApiResponse::success(null, 'Restaurant restored successfully.');
     }
 }

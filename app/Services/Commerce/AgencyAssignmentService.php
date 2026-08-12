@@ -29,14 +29,14 @@ class AgencyAssignmentService
         ]);
     }
 
-    public function listPendingForAdmin(): Collection
+    public function listPendingForAdmin(int $perPage = 15, int $page = 1): \Illuminate\Pagination\LengthAwarePaginator
     {
-        return $this->repository->getPending();
+        return $this->repository->getPending($perPage, $page);
     }
 
-    public function listForCustomer(int $customerId): Collection
+    public function listForCustomer(int $customerId, int $perPage = 15, int $page = 1): \Illuminate\Pagination\LengthAwarePaginator
     {
-        return $this->repository->getForCustomer($customerId);
+        return $this->repository->getForCustomer($customerId, $perPage, $page);
     }
 
     public function cancel(AgencyAssignment $assignment, int $customerId): AgencyAssignment

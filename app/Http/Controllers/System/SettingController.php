@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\System\UpdateSettingRequest;
 use App\Http\Requests\System\UpdateSettingValueRequest;
 use App\Services\System\SettingService;
+use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 
 class SettingController extends Controller
@@ -21,31 +22,20 @@ class SettingController extends Controller
     {
         $settings = $this->settingService->getAllSettings();
 
-        return response()->json([
-            'success' => true,
-            'data' => $settings,
-        ]);
+        return ApiResponse::success($settings);
     }
 
     public function update(UpdateSettingRequest $request): JsonResponse
     {
         $settings = $this->settingService->bulkUpdate($request->validated('settings'));
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Settings updated successfully.',
-            'data' => $settings,
-        ]);
+        return ApiResponse::success($settings, 'Settings updated successfully.');
     }
 
     public function patchKey(UpdateSettingValueRequest $request, string $key): JsonResponse
     {
         $data = $this->settingService->patchKey($key, $request);
 
-        return response()->json([
-            'success' => true,
-            'message' => "Setting '{$key}' updated.",
-            'data' => $data,
-        ]);
+        return ApiResponse::success($data, "Setting '{$key}' updated.");
     }
 }

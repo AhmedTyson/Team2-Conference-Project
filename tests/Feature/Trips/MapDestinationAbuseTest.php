@@ -83,9 +83,9 @@ class MapDestinationAbuseTest extends TestCase
         Queue::assertPushed(GeocodeDestinationJob::class);
 
         // Without coordinates, nearby places are not fetched; city data still works.
-        $response->assertJsonPath('hotels', [])
-            ->assertJsonPath('restaurants', [])
-            ->assertJsonPath('attractions.0.name', 'Citadel');
+        $response->assertJsonPath('data.hotels', [])
+            ->assertJsonPath('data.restaurants', [])
+            ->assertJsonPath('data.attractions.0.name', 'Citadel');
     }
 
     public function test_repeated_gets_do_not_repeat_external_calls(): void

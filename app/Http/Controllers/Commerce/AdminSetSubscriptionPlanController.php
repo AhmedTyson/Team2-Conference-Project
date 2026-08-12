@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Commerce;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Commerce\AdminSetSubscriptionPlanRequest;
 use App\Models\Commerce\Plan;
+use App\Support\ApiResponse;
 
 class AdminSetSubscriptionPlanController extends Controller
 {
@@ -12,7 +13,7 @@ class AdminSetSubscriptionPlanController extends Controller
     {
         $plans = Plan::all();
 
-        return response()->json($plans);
+        return ApiResponse::success($plans, 'Subscription plans retrieved successfully');
     }
 
     public function update(AdminSetSubscriptionPlanRequest $request)
@@ -28,6 +29,6 @@ class AdminSetSubscriptionPlanController extends Controller
             'features' => $data['features'],
         ]);
 
-        return response()->json($plan);
+        return ApiResponse::success($plan, 'Subscription plan updated successfully');
     }
 }

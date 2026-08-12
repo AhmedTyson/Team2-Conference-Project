@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Commerce;
 
 use App\Http\Controllers\Controller;
+use App\Support\ApiResponse;
 use Illuminate\Http\Request;
 
 class PaymobController extends Controller
@@ -15,17 +16,11 @@ class PaymobController extends Controller
      */
     public function callback(Request $request)
     {
-        return response()->json([
-            'success' => false,
-            'message' => 'Legacy callback endpoint. Payment confirmations arrive via POST /api/v1/paymob/webhook.',
-        ], 404);
+        return ApiResponse::fail('Legacy callback endpoint. Payment confirmations arrive via POST /api/v1/paymob/webhook.', 'legacy_endpoint', 404);
     }
 
     public function process(Request $request)
     {
-        return response()->json([
-            'success' => false,
-            'message' => 'Legacy process endpoint. Use POST /api/v1/checkout/initiate instead.',
-        ], 404);
+        return ApiResponse::fail('Legacy process endpoint. Use POST /api/v1/checkout/initiate instead.', 'legacy_endpoint', 404);
     }
 }

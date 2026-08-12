@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 
 use App\Http\Requests\System\StoreContactMessageRequest;
 use App\Services\System\ContactMessageService;
+use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 
 class ContactController extends Controller
@@ -21,9 +22,6 @@ class ContactController extends Controller
     {
         $this->contactMessageService->store($request->validated());
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Your message has been sent successfully.',
-        ], 201);
+        return ApiResponse::success(null, 'Your message has been sent successfully.', 201);
     }
 }

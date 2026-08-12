@@ -7,6 +7,7 @@ use App\Http\Requests\Catalog\StoreFlightRequest;
 use App\Http\Requests\Catalog\UpdateFlightRequest;
 use App\Models\Catalog\Flight;
 use App\Services\Catalog\FlightService;
+use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 
 class AdminFlightController extends Controller
@@ -22,51 +23,34 @@ class AdminFlightController extends Controller
     {
         $flights = $this->flightService->getAdminList(request('trashed') === '1');
 
-        return response()->json([
-            'success' => true,
-            'data' => $flights,
-        ]);
+        return ApiResponse::success($flights, 'Flights retrieved successfully');
     }
 
     public function store(StoreFlightRequest $request): JsonResponse
     {
         $flight = $this->flightService->store($request->validated());
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Flight created successfully.',
-            'data' => $flight,
-        ], 201);
+        return ApiResponse::success($flight, 'Flight created successfully', 201);
     }
 
     public function update(UpdateFlightRequest $request, int $id): JsonResponse
     {
         $flight = $this->flightService->update($id, $request->validated());
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Flight updated successfully.',
-            'data' => $flight,
-        ]);
+        return ApiResponse::success($flight, 'Flight updated successfully');
     }
 
     public function destroy(int $id): JsonResponse
     {
         $this->flightService->destroy($id);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Flight deleted successfully.',
-        ]);
+        return ApiResponse::success(null, 'Flight deleted successfully');
     }
 
     public function restore(int $id): JsonResponse
     {
         Flight::onlyTrashed()->findOrFail($id)->restore();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Flight restored successfully.',
-        ]);
+        return ApiResponse::success(null, 'Flight restored successfully');
     }
 }

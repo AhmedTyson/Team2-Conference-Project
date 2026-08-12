@@ -64,6 +64,6 @@ class VerificationTest extends TestCase
 
         $response = $this->get($url);
         $response->assertStatus(403);
-        $response->assertJson(['message' => 'Invalid verification link']);
+        $response->assertJsonPath('error.message', 'Invalid verification link');
     }
 }

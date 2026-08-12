@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('trip_id')->nullable()->constrained()->nullOnDelete();
-            $table->enum('status', ['pending', 'processing', 'paid', 'failed', 'refunded'])->default('pending');
+            $table->string('status', 20)->default('pending');
             $table->unsignedInteger('amount_cents');
             $table->char('currency', 3)->default('EGP');
             $table->string('paymob_order_id', 100)->nullable()->unique();

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Commerce;
 use App\Http\Controllers\Controller;
 use App\Models\Commerce\AgencyAssignment;
 use App\Services\Commerce\AgencyAssignmentService;
+use App\Support\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
@@ -16,9 +17,21 @@ public function __construct(private AgencyAssignmentService $service) {}
 
     public function adminIndex()
     {
-        $pending = $this->service->listPendingForAdmin();
+        $page = request('page', 1);
+        $perPage = request('per_page', 15);
 
-        return response()->json(['data' => $pending]);
+        $pending = $this->service->listPendingForAdmin($perPage, $page);
+
+        return ApiResponse::success($pending->items(), 'Pending agency assignments retrieved successfully', 200, [
+            'pagination' => [
+                'current_page' => $pending->currentPage(),
+                'per_page' => $pending->perPage(),
+                'total' => $pending->total(),
+                'last_page' => $pending->lastPage(),
+                'from' => $pending->firstItem(),
+                'to' => $pending->lastItem(),
+            ]
+        ]);
     }
 
     public function approve(Request $request, AgencyAssignment $assignment)
@@ -35,6 +48,6 @@ public function __construct(private AgencyAssignmentService $service) {}
             $validated['agency_user_id']
         );
 
-        return response()->json(['data' => $assignment]);
+        return ApiResponse::success($assignment, 'Agency assignment approved successfully');
     }
 }

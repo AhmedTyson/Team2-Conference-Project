@@ -40,8 +40,7 @@ class AuthController extends Controller
             ->claims(['roles' => $user->getRoleNames()->toArray()])
             ->login($user);
 
-        return response()->json([
-            'message' => 'user created',
+        return ApiResponse::success([
             'token' => $token,
             'user' => [
                 'id' => $user->id,
@@ -50,7 +49,7 @@ class AuthController extends Controller
                 'roles' => $user->getRoleNames(),
                 'phone' => $user->phone,
             ],
-        ], 201);
+        ], 'user created', 201);
     }
 
     // Verify email & login
@@ -81,8 +80,7 @@ class AuthController extends Controller
 
         $user = auth('api')->user();
 
-        return response()->json([
-            'message' => 'user logged in successfully',
+        return ApiResponse::success([
             'token' => $token,
             'user' => [
                 'id' => $user->id,
@@ -91,7 +89,7 @@ class AuthController extends Controller
                 'roles' => $user->getRoleNames(),
 
             ],
-        ]);
+        ], 'user logged in successfully');
     }
 
     // Profile
@@ -99,8 +97,7 @@ class AuthController extends Controller
     {
         $user = auth('api')->user();
 
-        return response()->json([
-            'success' => true,
+        return ApiResponse::success([
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
@@ -130,42 +127,30 @@ class AuthController extends Controller
             (string) $hash,
             sha1($user->getEmailForVerification())
         )) {
-            return response()->json([
-                'message' => 'Invalid verification link',
-            ], 403);
+            return ApiResponse::fail('Invalid verification link', 'invalid_verification_link', 403);
         }
 
         if ($user->hasVerifiedEmail()) {
-            return response()->json([
-                'message' => 'Email already verified',
-            ]);
+            return ApiResponse::success([], 'Email already verified');
         }
 
         $user->markEmailAsVerified();
 
         event(new Verified($user));
 
-        return response()->json([
-            'message' => 'Email verified successfully',
-        ]);
+        return ApiResponse::success([], 'Email verified successfully');
     }
 
     // Resend the verification email
     public function resendVerificationEmail(Request $request)
     {
         if ($request->user()->hasVerifiedEmail()) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Email already verified.',
-            ], 200);
+            return ApiResponse::success([], 'Email already verified.');
         }
 
         $request->user()->sendEmailVerificationNotification();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Verification link sent successfully.',
-        ], 200);
+        return ApiResponse::success([], 'Verification link sent successfully.');
     }
 
     // LOGOUT
@@ -173,9 +158,7 @@ class AuthController extends Controller
     {
         auth('api')->logout();
 
-        return response()->json([
-            'message' => 'User Logged out Successfully',
-        ]);
+        return ApiResponse::success([], 'User Logged out Successfully');
     }
 
     // Refresh
@@ -183,9 +166,7 @@ class AuthController extends Controller
     {
         $token = auth('api')->refresh();
 
-        return response()->json([
-            'token' => $token,
-        ]);
+        return ApiResponse::success(['token' => $token]);
     }
 
     // ForgetPass
@@ -194,7 +175,7 @@ class AuthController extends Controller
         $stat = Password::sendResetLink($request->only('email'));
 
         if ($stat == Password::RESET_LINK_SENT) {
-            return response()->json(['message' => __($stat)]);
+            return ApiResponse::success(null, __($stat));
         }
 
         return ApiResponse::fail(__($stat), 'reset_link_failed', 422);
@@ -218,9 +199,7 @@ class AuthController extends Controller
         );
 
         if ($stat == Password::PASSWORD_RESET) {
-            return response()->json([
-                'message' => 'Passwrod reset successfully',
-            ], 200);
+            return ApiResponse::success([], 'Passwrod reset successfully');
         }
 
         return ApiResponse::fail((string) $stat, 'reset_failed', 422);
@@ -250,9 +229,7 @@ class AuthController extends Controller
 
         $user->update($data);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Profile updated successfully.',
+        return ApiResponse::success([
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
@@ -262,6 +239,6 @@ class AuthController extends Controller
                     : null,
                 'roles' => $user->getRoleNames(),
             ],
-        ], 200);
+        ], 'Profile updated successfully.');
     }
 }

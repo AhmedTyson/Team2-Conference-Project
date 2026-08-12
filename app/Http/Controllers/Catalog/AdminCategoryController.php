@@ -8,6 +8,7 @@ use App\Http\Requests\Catalog\UpdateCategoryRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Catalog\Category;
 use App\Services\Catalog\CategoryService;
+use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 
 class AdminCategoryController extends Controller
@@ -33,7 +34,7 @@ class AdminCategoryController extends Controller
     {
         $category = $this->categoryService->store($request->validated());
 
-        return new CategoryResource($category);
+        return (new CategoryResource($category))->response()->setStatusCode(201);
     }
 
     public function update(UpdateCategoryRequest $request, Category $category)
@@ -47,18 +48,13 @@ class AdminCategoryController extends Controller
     {
         $this->categoryService->destroy($category);
 
-        return response()->json([
-            'message' => 'Category deleted successfully',
-        ]);
+        return ApiResponse::success(null, 'Category deleted successfully');
     }
 
     public function restore(int $id): JsonResponse
     {
         Category::onlyTrashed()->findOrFail($id)->restore();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Category restored successfully.',
-        ]);
+        return ApiResponse::success(null, 'Category restored successfully');
     }
 }

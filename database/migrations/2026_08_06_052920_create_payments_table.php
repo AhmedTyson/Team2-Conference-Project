@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('booking_id')->constrained()->cascadeOnDelete();
             $table->string('paymob_transaction_id', 100)->unique();
-            $table->enum('status', ['paid', 'failed', 'refunded']);
+            $table->string('status', 20)->default('pending');
             $table->integer('amount_cents');
             $table->char('currency', 3);
             $table->string('card_type', 50)->nullable();

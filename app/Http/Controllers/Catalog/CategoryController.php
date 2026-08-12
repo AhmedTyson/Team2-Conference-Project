@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\CategoryResource;
 use App\Models\Catalog\Category;
 use App\Services\Catalog\CategoryService;
+use App\Support\ApiResponse;
 
 class CategoryController extends Controller
 {
@@ -18,19 +19,11 @@ class CategoryController extends Controller
 
     public function index()
     {
-        return response()->json([
-            'success' => true,
-            'message' => 'Categories fetched successfully',
-            'data' => CategoryResource::collection($this->categoryService->index()),
-        ]);
+        return ApiResponse::success(CategoryResource::collection($this->categoryService->index()), 'Categories fetched successfully');
     }
 
     public function show(Category $category)
     {
-        return response()->json([
-            'success' => true,
-            'message' => 'Category fetched successfully',
-            'data' => new CategoryResource($this->categoryService->show($category)),
-        ]);
+        return ApiResponse::success(new CategoryResource($this->categoryService->show($category)), 'Category fetched successfully');
     }
 }

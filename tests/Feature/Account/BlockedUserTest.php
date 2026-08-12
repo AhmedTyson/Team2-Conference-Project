@@ -34,13 +34,28 @@ class BlockedUserTest extends TestCase
 
     public function test_active_user_can_login_normally(): void
     {
-        $this->makeUser(['email' => 'active@example.com', 'is_active' => true]);
+        $role = \App\Models\Account\Role::firstOrCreate(['name' => 'user']);
+        $user = User::factory()->create([
+            'email' => 'active@example.com',
+            'is_active' => true,
+            'password' => 'password',
+        ]);
+        $user->assignRole($role);
 
-        $this->postJson('/api/login', [
+        $response = $this->postJson('/api/login', [
             'email' => 'active@example.com',
             'password' => 'password',
-        ])->assertOk()
-            ->assertJsonStructure(['token', 'user']);
+        ]);
+
+        $response->assertOk()
+            ->assertJson([
+                'success' => true,
+                'message' => 'user logged in successfully',
+                'data' => [
+                    'token' => $response->json('data.token'),
+                    'user' => $response->json('data.user'),
+                ],
+            ]);
     }
 
     public function test_blocked_user_existing_token_is_rejected(): void
@@ -72,7 +87,7 @@ class BlockedUserTest extends TestCase
             'password' => 'password',
         ])->assertOk();
 
-        $this->withToken($response->json('token'))
+        $this->withToken($response->json('data.token'))
             ->getJson('/api/user')
             ->assertOk();
     }

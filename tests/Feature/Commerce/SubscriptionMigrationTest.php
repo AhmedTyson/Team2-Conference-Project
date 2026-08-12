@@ -117,15 +117,16 @@ class SubscriptionMigrationTest extends TestCase
     |--------------------------------------------------------------------------
     */
 
-    public function test_migration_history_records_both_migrations(): void
+    public function test_migration_history_records_create_subscriptions_table(): void
     {
+        // Phase 5 cleanup: widening migration (0003) consolidated into create migration.
+        // The create migration now defines all 6 status values from the start.
         $migrations = DB::table('migrations')
             ->where('migration', 'like', '%subscription%')
             ->pluck('migration')
             ->toArray();
 
         $this->assertContains('2026_08_06_060001_create_subscriptions_table', $migrations);
-        $this->assertContains('2026_08_11_000003_widen_subscriptions_status_enum', $migrations);
     }
 
     /*

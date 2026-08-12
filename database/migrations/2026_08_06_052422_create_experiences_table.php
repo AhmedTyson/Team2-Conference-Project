@@ -20,7 +20,7 @@ return new class extends Migration
             $table->integer('price_cents');
             $table->integer('duration_minutes')->nullable();
             $table->integer('max_participants')->nullable();
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
+            $table->string('status', 20)->default('pending');
             $table->tinyInteger('eco_score')->nullable();
             $table->timestamps();
             $table->softDeletes();

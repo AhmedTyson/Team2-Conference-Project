@@ -44,14 +44,10 @@ class ReportController extends Controller
 
         Cache::forget('reports_page_1_15');
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Report generation queued',
-            'data' => [
-                'report' => $report,
-                'kpis' => $reportQuery->kpis($from, $to),
-            ],
-        ], 202);
+        return ApiResponse::success([
+            'report' => $report,
+            'kpis' => $reportQuery->kpis($from, $to),
+        ], 'Report generation queued', 202);
     }
 
     public function index(Request $request)
@@ -69,11 +65,14 @@ class ReportController extends Controller
             }
         );
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Reports fetched successfully',
-            'data' => $reports,
-        ], 200);
+        return ApiResponse::success($reports, 'Reports fetched successfully', 200, [
+            'meta' => [
+                'current_page' => $reports->currentPage(),
+                'per_page' => $reports->perPage(),
+                'total' => $reports->total(),
+                'last_page' => $reports->lastPage(),
+            ]
+        ]);
     }
 
     public function download($id)
@@ -97,12 +96,11 @@ class ReportController extends Controller
 
     public function myReports(Request $request)
     {
-        return response()->json([
-            'success' => true,
-            'message' => 'Reports fetched successfully',
-            'data' => Report::where('user_id', $request->user()->id)
+        return ApiResponse::success(
+            Report::where('user_id', $request->user()->id)
                 ->latest()
                 ->get(),
-        ], 200);
+            'Reports fetched successfully'
+        );
     }
 }

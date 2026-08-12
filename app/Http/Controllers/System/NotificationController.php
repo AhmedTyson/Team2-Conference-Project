@@ -25,13 +25,10 @@ class NotificationController extends Controller
             fn () => $user->notifications()->whereNull('read_at')->count()
         );
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Notifications retrieved',
-            'data' => $notifications,
+        return ApiResponse::success($notifications, 'Notifications retrieved', 200, [
             'meta' => [
                 'unread_count' => $unreadCount,
-            ],
+            ]
         ]);
     }
 
@@ -48,11 +45,7 @@ class NotificationController extends Controller
             Cache::decrement("user:{$request->user()->id}:unread_notifications");
         }
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Notification marked as read',
-            'data' => $notification,
-        ]);
+        return ApiResponse::success($notification, 'Notification marked as read');
     }
 
     public function markAllAsRead(Request $request)
@@ -63,9 +56,6 @@ class NotificationController extends Controller
 
         Cache::put("user:{$user->id}:unread_notifications", 0, now()->addHours(1));
 
-        return response()->json([
-            'success' => true,
-            'message' => 'All notifications marked as read',
-        ]);
+        return ApiResponse::success(null, 'All notifications marked as read');
     }
 }

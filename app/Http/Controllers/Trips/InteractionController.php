@@ -8,6 +8,7 @@ use App\Http\Requests\Trips\StoreReviewRequest;
 use App\Http\Resources\FavouriteResource;
 use App\Http\Resources\ReviewResource;
 use App\Models\Trips\Review;
+use App\Support\ApiResponse;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -45,21 +46,14 @@ class InteractionController extends Controller
         if ($favourite) {
             $favourite->delete();
 
-            return response()->json([
-                'message' => 'Removed from favourites',
-                'status' => 'removed',
-            ]);
+            return ApiResponse::success(['status' => 'removed'], 'Removed from favourites');
         }
 
         $favourite = $entity->favourites()->create([
             'user_id' => $request->user()->id,
         ]);
 
-        return response()->json([
-            'message' => 'Added to favourites',
-            'status' => 'added',
-            'data' => new FavouriteResource($favourite),
-        ], 201);
+        return ApiResponse::success(['data' => new FavouriteResource($favourite), 'status' => 'added'], 'Added to favourites', 201);
     }
 
     /**
@@ -77,10 +71,7 @@ class InteractionController extends Controller
             'status' => ReviewStatus::PENDING->value,
         ]);
 
-        return response()->json([
-            'message' => 'Review submitted successfully',
-            'data' => new ReviewResource($review),
-        ], 201);
+        return ApiResponse::success(new ReviewResource($review), 'Review submitted successfully', 201);
     }
 
     /**
@@ -96,8 +87,6 @@ class InteractionController extends Controller
 
         $review->delete();
 
-        return response()->json([
-            'message' => 'Review deleted successfully',
-        ]);
+        return ApiResponse::success(null, 'Review deleted successfully');
     }
 }

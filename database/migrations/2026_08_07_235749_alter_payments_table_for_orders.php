@@ -11,7 +11,6 @@ return new class extends Migration
         Schema::table('payments', function (Blueprint $table) {
             $table->unsignedBigInteger('booking_id')->nullable()->change();
             $table->foreignId('order_id')->nullable()->after('booking_id')->constrained()->cascadeOnDelete();
-            $table->string('status', 30)->change();
         });
     }
 

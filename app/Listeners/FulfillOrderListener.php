@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Enums\BillingCycle;
 use App\Enums\OrderStatus;
 use App\Enums\SubscriptionStatus;
 use App\Events\PaymentSucceeded;
@@ -134,7 +135,7 @@ class FulfillOrderListener implements ShouldQueue
             'price_cents' => $plan->price_cents,
             'currency' => $plan->currency,
             'started_at' => now(),
-            'renews_at' => $plan->billing_cycle === 'yearly' ? now()->addYear() : now()->addMonth(),
+            'renews_at' => $plan->billing_cycle === BillingCycle::YEARLY->value ? now()->addYear() : now()->addMonth(),
             'provider' => 'paymob',
             'provider_ref' => $payment->paymob_transaction_id,
         ]);

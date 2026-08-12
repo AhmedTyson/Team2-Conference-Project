@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Catalog;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\DestinationResource;
 use App\Services\Catalog\DestinationService;
+use App\Support\ApiResponse;
 
 class DestinationController extends Controller
 {
@@ -17,19 +18,11 @@ class DestinationController extends Controller
 
     public function index()
     {
-        return response()->json([
-            'success' => true,
-            'message' => 'Destinations fetched successfully',
-            'data' => DestinationResource::collection($this->destinationService->index()),
-        ]);
+        return ApiResponse::success(DestinationResource::collection($this->destinationService->index()), 'Destinations fetched successfully');
     }
 
     public function show($id)
     {
-        return response()->json([
-            'success' => true,
-            'message' => 'Destination fetched successfully',
-            'data' => new DestinationResource($this->destinationService->show($id)),
-        ]);
+        return ApiResponse::success(new DestinationResource($this->destinationService->show($id)), 'Destination fetched successfully');
     }
 }

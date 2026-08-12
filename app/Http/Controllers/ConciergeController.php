@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Trips\Trip;
 use App\Services\ConciergeService;
+use App\Support\ApiResponse;
 use Illuminate\Http\Request;
 
 class ConciergeController extends Controller
@@ -18,10 +19,7 @@ class ConciergeController extends Controller
 
         // Trip ownership
         if ($trip->user_id !== $request->user()->id) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Trip not found or does not belong to this user.',
-            ], 404);
+            return ApiResponse::fail('Trip not found or does not belong to this user.', 'not_found', 404);
         }
 
         $request->validate([
@@ -33,12 +31,6 @@ class ConciergeController extends Controller
             $request->message
         );
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Concierge response generated successfully.',
-            'data' => [
-                'response' => $response,
-            ],
-        ]);
+        return ApiResponse::success(['response' => $response], 'Concierge response generated successfully');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use App\Support\ApiResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class EnsureUserIsActive
@@ -29,16 +30,7 @@ class EnsureUserIsActive
         }
 
         if ($user && ! $user->is_active) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Your account has been blocked.',
-                'error' => [
-                    'type' => 'account_blocked',
-                    'status' => 403,
-                    'message' => 'Your account has been blocked.',
-                    'timestamp' => now()->toISOString(),
-                ],
-            ], 403);
+            return ApiResponse::fail('Your account has been blocked.', 'account_blocked', 403);
         }
 
         return $next($request);

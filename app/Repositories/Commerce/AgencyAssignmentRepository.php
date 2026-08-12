@@ -24,24 +24,27 @@ class AgencyAssignmentRepository implements AgencyAssignmentRepositoryInterface
         return AgencyAssignment::find($id);
     }
 
-public function getForAgency(int $agencyId): Collection
+    public function getForAgency(int $agencyId, int $perPage = 15, int $page = 1): \Illuminate\Pagination\LengthAwarePaginator
     {
-        return AgencyAssignment::where('agency_user_id', $agencyId)->get();
+        return AgencyAssignment::where('agency_user_id', $agencyId)
+            ->with(['customer'])
+            ->latest()
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
-    public function getPending(): Collection
+    public function getPending(int $perPage = 15, int $page = 1): \Illuminate\Pagination\LengthAwarePaginator
     {
         return AgencyAssignment::where('status', AgencyAssignmentStatus::REQUESTED)
             ->with(['customer', 'agency'])
             ->latest()
-            ->get();
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
-    public function getForCustomer(int $customerId): Collection
+    public function getForCustomer(int $customerId, int $perPage = 15, int $page = 1): \Illuminate\Pagination\LengthAwarePaginator
     {
         return AgencyAssignment::where('customer_id', $customerId)
             ->with(['agency', 'admin', 'trips'])
             ->latest()
-            ->get();
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 }

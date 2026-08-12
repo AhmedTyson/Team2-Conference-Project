@@ -94,7 +94,7 @@ class AuthThrottleTest extends TestCase
 
         $response->assertOk();
 
-        $token = $response->json('token');
+        $token = $response->json('data.token');
         $payload = json_decode(base64_decode(explode('.', $token)[1]), true);
 
         $this->assertContains('user', $payload['roles']);
