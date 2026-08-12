@@ -85,7 +85,7 @@ class FulfillOrderListener implements ShouldQueue
         }
 
         $trip->update(['status' => TripStatus::BOOKED]);
-        
+
         $user = User::find($userId);
         if ($user) {
             $user->notify(new TripBookedNotification($trip));

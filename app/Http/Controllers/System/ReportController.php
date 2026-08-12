@@ -20,14 +20,16 @@ class ReportController extends Controller
         GenerateReportRequest $request,
         ReportQuery $reportQuery
     ) {
-        $from = $request->validated('from');
-        $to = $request->validated('to');
+        $from   = $request->validated('from');
+        $to     = $request->validated('to');
+        $format = $request->validated('format', 'pdf') ?? 'pdf';
 
         $report = Report::create([
-            'user_id' => $request->user()->id,
+            'user_id'   => $request->user()->id,
             'from_date' => $from,
-            'to_date' => $to,
-            'status' => 'pending',
+            'to_date'   => $to,
+            'format'    => $format,
+            'status'    => 'pending',
         ]);
 
         GenerateReportJob::dispatch($report);

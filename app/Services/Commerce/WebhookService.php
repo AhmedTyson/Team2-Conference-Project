@@ -40,7 +40,7 @@ class WebhookService
             return ['success' => false, 'message' => 'Missing merchant_order_id', 'status' => 400];
         }
 
-        $lock = Cache::lock("paymob_webhook_processing_{$merchantOrderId}", 15);
+        $lock = Cache::lock("paymob_webhook_processing_{$merchantOrderId}", 60);
 
         if (! $lock->get()) {
             return ['success' => true, 'message' => 'Already processing', 'status' => 200];

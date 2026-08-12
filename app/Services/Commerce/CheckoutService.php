@@ -24,24 +24,6 @@ class CheckoutService
 
     public function processCheckout(User $user, string $type, int $productId, array $billingData, ?string $idempotencyKey = null): array
     {
-        if ($idempotencyKey) {
-            $reusable = $this->findReusableCheckout($user->id, $idempotencyKey);
-
-            if ($reusable !== null) {
-                return $reusable;
-            }
-
-            $alreadyProcessed = Order::query()
-                ->where('user_id', $user->id)
-                ->where('idempotency_key', $idempotencyKey)
-                ->where('status', '!=', OrderStatus::PENDING)
-                ->exists();
-
-            if ($alreadyProcessed) {
-                throw new Exception('Checkout already processed.');
-            }
-        }
-
         $strategy = CheckoutStrategyFactory::make($type);
 
         $product = $strategy->resolveProduct($productId);
@@ -59,6 +41,19 @@ class CheckoutService
         }
 
         $order = DB::transaction(function () use ($user, $totalCents, $strategy, $product, $idempotencyKey) {
+            if ($idempotencyKey) {
+                $alreadyProcessed = DB::table('orders')
+                    ->where('user_id', $user->id)
+                    ->where('idempotency_key', $idempotencyKey)
+                    ->where('status', '!=', OrderStatus::PENDING)
+                    ->lockForUpdate()
+                    ->exists();
+
+                if ($alreadyProcessed) {
+                    throw new Exception('Checkout already processed.');
+                }
+            }
+
             $order = $this->orderRepository->createOrder($user->id, $totalCents, 'EGP', $idempotencyKey);
             $this->orderRepository->createOrderItem($order, $product, $totalCents, ['purchase_type' => $strategy->getPurchaseType()]);
 

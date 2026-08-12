@@ -10,25 +10,31 @@ use Illuminate\Support\Facades\Storage;
 
 class GenerateReportService
 {
-    public function __construct(private ReportQuery $reportQuery) {}
+    public function __construct(
+        private ReportQuery $reportQuery,
+        private GenerateReportExcelService $excelService,
+    ) {}
 
     public function fillReport(Report $report): bool
     {
         $originalMemory = ini_set('memory_limit', '256M');
 
         try {
-            $data = $this->buildReportData($report->from_date->format('Y-m-d'), $report->to_date->format('Y-m-d'));
+            $from   = $report->from_date->format('Y-m-d');
+            $to     = $report->to_date->format('Y-m-d');
+            $format = $report->format ?? 'pdf';
 
-            $pdf = Pdf::loadView('reports.booking-report', $data);
+            $baseName = 'booking_report_' . $from . '_to_' . $to . '_' . uniqid();
 
-            $fileName = 'booking_report_'.$report->from_date->format('Y-m-d').'_to_'.$report->to_date->format('Y-m-d').'_'.uniqid().'.pdf';
-            $path = 'reports/'.$fileName;
-
-            Storage::disk('public')->put($path, $pdf->output());
+            if ($format === 'excel') {
+                $path = $this->generateExcel($baseName, $from, $to);
+            } else {
+                $path = $this->generatePdf($baseName, $from, $to);
+            }
 
             $report->update([
                 'file_path' => $path,
-                'status' => 'completed',
+                'status'    => 'completed',
             ]);
 
             return true;
@@ -44,6 +50,30 @@ class GenerateReportService
         } finally {
             ini_set('memory_limit', $originalMemory);
         }
+    }
+
+    private function generatePdf(string $baseName, string $from, string $to): string
+    {
+        $data     = $this->buildReportData($from, $to);
+        $pdf      = Pdf::loadView('reports.booking-report', $data);
+        $fileName = $baseName . '.pdf';
+        $path     = 'reports/' . $fileName;
+
+        Storage::disk('public')->put($path, $pdf->output());
+
+        return $path;
+    }
+
+    private function generateExcel(string $baseName, string $from, string $to): string
+    {
+        $tmpPath  = $this->excelService->generate($from, $to);
+        $fileName = $baseName . '.xlsx';
+        $path     = 'reports/' . $fileName;
+
+        Storage::disk('public')->put($path, file_get_contents($tmpPath));
+        @unlink($tmpPath);
+
+        return $path;
     }
 
     /**

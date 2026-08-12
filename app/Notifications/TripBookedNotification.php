@@ -2,39 +2,31 @@
 
 namespace App\Notifications;
 
+use App\Mail\TripBookedMail;
 use App\Models\Trips\Trip;
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
 
-class TripBookedNotification extends Notification implements ShouldQueue
+class TripBookedNotification extends AppNotification
 {
-    use Queueable;
+    public function __construct(public Trip $trip) {}
 
-    public function __construct(public readonly Trip $trip) {}
-
-    public function via($notifiable): array
+    public function toMail(object $notifiable)
     {
-        return ['mail', 'database'];
+        return (new TripBookedMail($this->trip))
+            ->to($notifiable->email);
     }
 
-    public function toMail($notifiable): MailMessage
-    {
-        return (new MailMessage)
-            ->subject('Trip Booked Successfully')
-            ->line('Your trip "'. $this->trip->title . '" has been successfully booked.')
-            ->action('View Trip', url('/trips/'.$this->trip->id))
-            ->line('Get ready for your adventure!');
-    }
-
-    public function toArray($notifiable): array
+    public function toDatabase(object $notifiable): array
     {
         return [
-            'type' => 'trip_booked',
+            'type'    => 'trip_booked',
             'trip_id' => $this->trip->id,
-            'title' => 'Trip Booked',
-            'message' => 'Your trip "'. $this->trip->title . '" has been successfully booked.',
+            'title'   => 'Trip Booked',
+            'message' => 'Your trip "' . $this->trip->title . '" has been successfully booked.',
         ];
+    }
+
+    protected function getNotifiableId(): string
+    {
+        return (string) $this->trip->id;
     }
 }

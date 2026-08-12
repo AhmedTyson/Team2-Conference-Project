@@ -2,29 +2,50 @@
 @section('title', 'Welcome to ' . config('app.name', 'Voyago'))
 
 @section('content')
-<div style="text-align: center; margin-bottom: 32px;">
-    <img src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?auto=format&fit=crop&q=80&w=600&h=250" alt="Travel Header" style="width: 100%; height: 200px; border-radius: 8px; object-fit: cover; background-color: #e5e7eb;">
+<div style="text-align: center; margin-bottom: 28px;">
+    <div class="icon-badge badge-ice">
+        <span>✈️</span>
+    </div>
+    <h2 style="color: #0F2854;">Welcome aboard, {{ $user->name }}!</h2>
+    <p style="color: #4988C4; font-size: 14px; margin: 0;">Your adventure starts now.</p>
 </div>
 
-<h2>Welcome aboard, {{ $user->name }}! ✈️</h2>
+<p>We're thrilled to have you join <strong>{{ config('app.name', 'Voyago') }}</strong> — the smart platform that turns travel dreams into perfectly planned realities.</p>
 
-<p>We are absolutely thrilled to have you join our community of global explorers. Whether you're looking to curate your next big adventure with AI or discover hidden gems shared by other travelers, you're in exactly the right place.</p>
-
-<div style="background-color: #f0f9ff; border-left: 4px solid #0ea5e9; padding: 16px 20px; margin: 24px 0; border-radius: 4px;">
-    <p style="margin: 0; color: #0369a1; font-weight: 500;"><strong>Pro Tip:</strong> Complete your profile preferences so our AI can tailor recommendations perfectly to your travel style!</p>
+<div class="callout callout-ice">
+    <p><strong>Pro Tip:</strong> Complete your profile preferences so our AI can tailor recommendations perfectly to your travel style!</p>
 </div>
 
 <p>Here is what you can do right now:</p>
 
-<ul style="padding-left: 20px; color: #4b5563; font-size: 15px; margin: 24px 0;">
-    <li style="margin-bottom: 12px;"><strong>🗺️ Plan Trips:</strong> Use our AI to instantly generate optimized, multi-day itineraries.</li>
-    <li style="margin-bottom: 12px;"><strong>🏨 Book Packages:</strong> Reserve hotels and flights securely in one click.</li>
-    <li style="margin-bottom: 12px;"><strong>🔄 Fork & Share:</strong> Find an inspiring trip? Clone it directly into your account and make it your own.</li>
-</ul>
+<table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+    <tr>
+        <td style="padding: 12px 0; border-bottom: 1px solid #BDE8F5; vertical-align: top; width: 36px; font-size: 20px;">🗺️</td>
+        <td style="padding: 12px 0 12px 12px; border-bottom: 1px solid #BDE8F5;">
+            <strong style="color: #0F2854;">Plan Trips</strong><br>
+            <span style="color: #6b7280; font-size: 14px;">Use our AI to instantly generate optimized, multi-day itineraries.</span>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 12px 0; border-bottom: 1px solid #BDE8F5; vertical-align: top; font-size: 20px;">🏨</td>
+        <td style="padding: 12px 0 12px 12px; border-bottom: 1px solid #BDE8F5;">
+            <strong style="color: #0F2854;">Book Packages</strong><br>
+            <span style="color: #6b7280; font-size: 14px;">Reserve hotels and flights securely in one click.</span>
+        </td>
+    </tr>
+    <tr>
+        <td style="padding: 12px 0; vertical-align: top; font-size: 20px;">🔄</td>
+        <td style="padding: 12px 0 12px 12px;">
+            <strong style="color: #0F2854;">Fork &amp; Share</strong><br>
+            <span style="color: #6b7280; font-size: 14px;">Find an inspiring trip? Clone it and make it your own.</span>
+        </td>
+    </tr>
+</table>
 
 <div class="btn-container">
     <a href="{{ url('/dashboard') }}" class="btn">Start Exploring Now</a>
 </div>
 
-<p style="margin-top: 32px; font-size: 14px;">Happy travels,<br>The {{ config('app.name', 'Voyago') }} Team</p>
+<hr class="divider">
+<p style="font-size: 13px; color: #6b7280; margin: 0;">Happy travels,<br><strong style="color: #0F2854;">The {{ config('app.name', 'Voyago') }} Team</strong></p>
 @endsection
