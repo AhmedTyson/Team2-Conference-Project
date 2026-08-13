@@ -1,42 +1,39 @@
 @extends('emails.layouts.main')
-@section('title', 'Your Subscription is Active!')
+@section('title', 'Subscription Active')
 
 @section('content')
-<div style="text-align: center; margin-bottom: 28px;">
-    <div class="icon-badge badge-amber">
-        <span>👑</span>
-    </div>
-    <h2 style="color: #0F2854;">You're now Premium!</h2>
-    <p style="color: #4988C4; font-size: 14px; margin: 0;">Full access unlocked — enjoy the benefits.</p>
+<div class="headline">
+    <p class="eyebrow">Subscription active</p>
+    <h2 style="margin-top: 0;">Premium is unlocked</h2>
 </div>
 
 <p>Hi <strong>{{ $user->name }}</strong>,</p>
-<p>Congratulations! Your subscription to the <strong style="color: #1C4D8D;">{{ $subscription->plan->name ?? 'Premium' }} Plan</strong> has been successfully activated.</p>
+<p>Your subscription to the <strong style="color: #056676;">{{ $subscription->plan->name ?? 'Premium' }} Plan</strong> is now active. Your new capabilities are live immediately.</p>
 
-<div style="background: linear-gradient(135deg, #0F2854, #1C4D8D); border-radius: 10px; padding: 24px; margin: 24px 0;">
-    <h3 style="color: #BDE8F5; margin-top: 0; font-size: 14px; letter-spacing: 0.08em; text-transform: uppercase;">What you've unlocked</h3>
+<div class="card" style="background-color: #056676; border-color: #056676;">
+    <p style="margin: 0 0 10px; font-size: 10px; font-weight: 700; color: #A3D2CA; letter-spacing: 0.18em; text-transform: uppercase;">What you have unlocked</p>
     <table style="width: 100%; border-collapse: collapse;">
         <tr>
-            <td style="padding: 10px 0; border-bottom: 1px solid rgba(189,232,245,0.2); color: #ffffff; font-size: 14px;">
-                🤖 <strong>Massive AI Quota</strong> — Generate up to {{ $subscription->plan->ai_quota_monthly ?? 50 }} itineraries/month
+            <td style="padding: 9px 0; border-bottom: 1px solid rgba(163, 210, 202, 0.25); color: #ffffff; font-size: 14px;">
+                <strong style="color: #A3D2CA;">AI planning</strong> — up to {{ $subscription->plan->ai_quota_monthly ?? 50 }} itinerary generations per month
             </td>
         </tr>
         <tr>
-            <td style="padding: 10px 0; border-bottom: 1px solid rgba(189,232,245,0.2); color: #ffffff; font-size: 14px;">
-                ⚡ <strong>Priority Support</strong> — Skip the queue and get help faster
+            <td style="padding: 9px 0; border-bottom: 1px solid rgba(163, 210, 202, 0.25); color: #ffffff; font-size: 14px;">
+                <strong style="color: #A3D2CA;">Priority support</strong> — skip the queue and get help faster
             </td>
         </tr>
         <tr>
-            <td style="padding: 10px 0; color: #ffffff; font-size: 14px;">
-                🔓 <strong>Exclusive Destinations</strong> — Access premium-only travel packages
+            <td style="padding: 9px 0; color: #ffffff; font-size: 14px;">
+                <strong style="color: #A3D2CA;">Exclusive packages</strong> — access premium-only offers
             </td>
         </tr>
     </table>
 </div>
 
-<p>Your AI generation counter has been fully reset and your new capabilities are live immediately. Go ahead and start planning!</p>
+<p>Your AI generation counter has been reset for this cycle. Start planning your next journey.</p>
 
 <div class="btn-container">
-    <a href="{{ url('/dashboard/subscription') }}" class="btn btn-amber">View Subscription Details</a>
+    <a href="{{ url('/dashboard.html') }}" class="btn btn-mint">Manage subscription</a>
 </div>
 @endsection

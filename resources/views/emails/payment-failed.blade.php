@@ -1,44 +1,50 @@
 @extends('emails.layouts.main')
-@section('title', 'Payment Failed')
+@section('title', 'Payment Not Completed')
 
 @section('content')
-<div style="text-align: center; margin-bottom: 28px;">
-    <div class="icon-badge badge-red">
-        <span>⚠️</span>
-    </div>
-    <h2 style="color: #991b1b;">Payment Failed</h2>
-    <p style="color: #ef4444; font-size: 14px; margin: 0;">Action required — your booking is on hold.</p>
+<div class="headline">
+    <p class="eyebrow">Action required</p>
+    <h2 style="margin-top: 0;">Payment not completed</h2>
 </div>
 
 <p>Hi <strong>{{ $user->name }}</strong>,</p>
-<p>Unfortunately, your recent payment attempt for <strong style="color: #0F2854;">Order #{{ $order->id }}</strong> could not be processed successfully.</p>
+<p>We could not process your recent payment for <strong style="color: #056676;">Order #{{ $order->id }}</strong>. Your booking is on hold and no charge has been applied to your account.</p>
 
-<div class="callout callout-red">
-    <p>
-        <strong>Amount Attempted:</strong> {{ number_format($order->total_cents / 100, 2) }} {{ strtoupper($order->currency) }}<br>
-        <span style="margin-top: 4px; display: block;">No charges were applied to your account.</span>
-    </p>
+<div class="card card-warn">
+    <table>
+        <tr>
+            <td class="k">Order reference</td>
+            <td class="v">#{{ $order->id }}</td>
+        </tr>
+        <tr>
+            <td class="k">Amount attempted</td>
+            <td class="v">{{ number_format($order->total_cents / 100, 2) }} {{ strtoupper($order->currency) }}</td>
+        </tr>
+    </table>
 </div>
 
-<p>This usually happens due to:</p>
-<table style="width: 100%; border-collapse: collapse; margin: 8px 0 20px;">
+<p style="font-size: 13px; color: #7A756E; margin-bottom: 14px;">Payments usually fail for one of these reasons:</p>
+<table class="features">
     <tr>
-        <td style="padding: 8px 0; border-bottom: 1px solid #fee2e2; color: #374151; font-size: 14px;">💳 Insufficient funds or card limit reached</td>
+        <td class="mark">&#8226;</td>
+        <td class="feature-sub">Insufficient funds or card limit reached</td>
     </tr>
     <tr>
-        <td style="padding: 8px 0; border-bottom: 1px solid #fee2e2; color: #374151; font-size: 14px;">📅 Expired card</td>
+        <td class="mark">&#8226;</td>
+        <td class="feature-sub">Expired card details</td>
     </tr>
     <tr>
-        <td style="padding: 8px 0; color: #374151; font-size: 14px;">🏦 Bank security block on online transactions</td>
+        <td class="mark">&#8226;</td>
+        <td class="feature-sub">Bank security block on online transactions</td>
     </tr>
 </table>
 
-<p>Please update your payment method or retry the checkout to complete your booking.</p>
+<p>Update your payment method and retry to complete your booking.</p>
 
 <div class="btn-container">
-    <a href="{{ url('/checkout/retry/' . $order->id) }}" class="btn btn-danger">Retry Payment Now</a>
+    <a href="{{ url('/checkout/retry/' . $order->id) }}" class="btn btn-outline">Retry payment</a>
 </div>
 
 <hr class="divider">
-<p style="font-size: 13px; color: #6b7280; margin: 0;">If the problem persists, please contact your bank or reach our support team.</p>
+<p style="font-size: 13px; color: #7A756E; margin: 0;">If the problem persists, contact your bank or reach out to our support team.</p>
 @endsection

@@ -1,30 +1,36 @@
 @extends('emails.layouts.main')
-@section('title', 'Your Trip was Forked!')
+@section('title', 'Your Trip Was Forked')
 
 @section('content')
-<div style="text-align: center; margin-bottom: 28px;">
-    <div class="icon-badge badge-blue">
-        <span>🌟</span>
-    </div>
-    <h2 style="color: #0F2854;">Someone loved your trip!</h2>
-    <p style="color: #4988C4; font-size: 14px; margin: 0;">Your itinerary inspired another traveller.</p>
+<div class="headline">
+    <p class="eyebrow">Trip forked</p>
+    <h2 style="margin-top: 0;">Your itinerary inspired someone</h2>
 </div>
 
 <p>Hi <strong>{{ $originalTrip->user->name }}</strong>,</p>
-<p>Great news! Your expertly crafted itinerary <strong style="color: #1C4D8D;">"{{ $originalTrip->title }}"</strong> has just been cloned (forked) by another user in the community.</p>
+<p>Your itinerary <strong style="color: #056676;">"{{ $originalTrip->title }}"</strong> has just been cloned by another traveller in the community.</p>
 
-<div style="background: linear-gradient(135deg, #eff6ff, #dbeafe); border: 1px solid #BDE8F5; border-radius: 10px; padding: 20px; margin: 24px 0; text-align: center;">
-    <p style="margin: 0; font-size: 15px; color: #0F2854;">
-        Your trip to <strong>{{ $originalTrip->destinations->first()->name ?? 'your destination' }}</strong> is inspiring others! 🌍
-    </p>
+<div class="card card-mint">
+    <table>
+        @if($originalTrip->destinations && $originalTrip->destinations->count())
+        <tr>
+            <td class="k">Destination</td>
+            <td class="v">{{ $originalTrip->destinations->pluck('name')->join(', ') }}</td>
+        </tr>
+        @endif
+        <tr>
+            <td class="k">Copied by</td>
+            <td class="v">A fellow traveller</td>
+        </tr>
+    </table>
 </div>
 
-<p>Every fork proves how valuable your travel knowledge is. Keep creating amazing itineraries and building your reputation on the platform.</p>
+<p>Every fork shows how valuable your travel knowledge is. Keep creating itineraries — your reputation on the platform grows with them.</p>
 
 <div class="btn-container">
-    <a href="{{ url('/trips/' . $originalTrip->id) }}" class="btn btn-navy">View Your Trip</a>
+    <a href="{{ url('/trips/' . $originalTrip->id) }}" class="btn">View your trip</a>
 </div>
 
 <hr class="divider">
-<p style="font-size: 13px; color: #6b7280; margin: 0;">Want to see who forked your trip? Check your notifications on the dashboard.</p>
+<p style="font-size: 13px; color: #7A756E; margin: 0;">Want to see who forked your trip? Check your notifications on the dashboard.</p>
 @endsection
