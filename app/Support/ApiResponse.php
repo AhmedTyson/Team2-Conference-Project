@@ -25,7 +25,7 @@ class ApiResponse
         string $message,
         string $type = 'http_error',
         int $status = 400,
-        array $details = []
+        array $extras = []
     ): JsonResponse {
         $payload = [
             'error' => [
@@ -36,8 +36,8 @@ class ApiResponse
             ],
         ];
 
-        if ($details !== []) {
-            $payload['error']['details'] = $details;
+        if ($extras !== []) {
+            $payload['error'] = array_merge($payload['error'], $extras);
         }
 
         return response()->json($payload, $status);

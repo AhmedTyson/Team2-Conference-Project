@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Support\ApiResponse;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -51,14 +52,24 @@ class ApiExceptionHandler
             ? $e->getStatusCode()
             : 500;
 
-        return response()->json([
-            'error' => [
-                'type' => $this->getExceptionType($e),
-                'status' => $status,
-                'message' => 'An unexpected error occurred.',
-                'timestamp' => now()->toISOString(),
-            ],
-        ], $status);
+        return $this->error(
+            $this->getExceptionType($e),
+            $status,
+            'An unexpected error occurred.'
+        );
+    }
+
+    /**
+     * Single error-envelope builder — every handler delegates here so the
+     * error shape stays identical across the whole API.
+     */
+    protected function error(
+        string $type,
+        int $status,
+        string $message,
+        array $extras = []
+    ): JsonResponse {
+        return ApiResponse::fail($message, $type, $status, $extras);
     }
 
     /**
@@ -70,14 +81,11 @@ class ApiExceptionHandler
     ): JsonResponse {
         $this->logException($e, 'Authentication failed');
 
-        return response()->json([
-            'error' => [
-                'type' => $this->getExceptionType($e),
-                'status' => 401,
-                'message' => 'Authentication required. Please provide valid credentials.',
-                'timestamp' => now()->toISOString(),
-            ],
-        ], 401);
+        return $this->error(
+            $this->getExceptionType($e),
+            401,
+            'Authentication required. Please provide valid credentials.'
+        );
     }
 
     /**
@@ -89,14 +97,11 @@ class ApiExceptionHandler
     ): JsonResponse {
         $this->logException($e, 'Authorization failed');
 
-        return response()->json([
-            'error' => [
-                'type' => $this->getExceptionType($e),
-                'status' => 403,
-                'message' => 'You do not have permission to perform this action.',
-                'timestamp' => now()->toISOString(),
-            ],
-        ], 403);
+        return $this->error(
+            $this->getExceptionType($e),
+            403,
+            'You do not have permission to perform this action.'
+        );
     }
 
     /**
@@ -119,15 +124,12 @@ class ApiExceptionHandler
 
         $this->logException($e, 'Validation failed', ['errors' => $errors]);
 
-        return response()->json([
-            'error' => [
-                'type' => $this->getExceptionType($e),
-                'status' => 422,
-                'message' => 'The provided data is invalid.',
-                'timestamp' => now()->toISOString(),
-                'validation_errors' => $errors,
-            ],
-        ], 422);
+        return $this->error(
+            $this->getExceptionType($e),
+            422,
+            'The provided data is invalid.',
+            ['validation_errors' => $errors]
+        );
     }
 
     /**
@@ -143,14 +145,11 @@ class ApiExceptionHandler
             ? 'The requested resource was not found.'
             : "The requested endpoint '{$request->getRequestUri()}' was not found.";
 
-        return response()->json([
-            'error' => [
-                'type' => $this->getExceptionType($e),
-                'status' => 404,
-                'message' => $message,
-                'timestamp' => now()->toISOString(),
-            ],
-        ], 404);
+        return $this->error(
+            $this->getExceptionType($e),
+            404,
+            $message
+        );
     }
 
     /**
@@ -162,15 +161,12 @@ class ApiExceptionHandler
     ): JsonResponse {
         $this->logException($e, 'Method not allowed');
 
-        return response()->json([
-            'error' => [
-                'type' => $this->getExceptionType($e),
-                'status' => 405,
-                'message' => "The {$request->method()} method is not allowed for this endpoint.",
-                'timestamp' => now()->toISOString(),
-                'allowed_methods' => $e->getHeaders()['Allow'] ?? 'Unknown',
-            ],
-        ], 405);
+        return $this->error(
+            $this->getExceptionType($e),
+            405,
+            "The {$request->method()} method is not allowed for this endpoint.",
+            ['allowed_methods' => $e->getHeaders()['Allow'] ?? 'Unknown']
+        );
     }
 
     /**
@@ -180,14 +176,11 @@ class ApiExceptionHandler
     {
         $this->logException($e, 'HTTP exception occurred');
 
-        return response()->json([
-            'error' => [
-                'type' => $this->getExceptionType($e),
-                'status' => $e->getStatusCode(),
-                'message' => $e->getMessage() ?: 'An HTTP error occurred.',
-                'timestamp' => now()->toISOString(),
-            ],
-        ], $e->getStatusCode());
+        return $this->error(
+            $this->getExceptionType($e),
+            $e->getStatusCode(),
+            $e->getMessage() ?: 'An HTTP error occurred.'
+        );
     }
 
     /**
@@ -200,37 +193,23 @@ class ApiExceptionHandler
         // Handle specific database constraint violations
         $errorCode = $e->errorInfo[1] ?? null;
 
-        switch ($errorCode) {
-            case 1451: // Foreign key constraint violation
-                return response()->json([
-                    'error' => [
-                        'type' => $this->getExceptionType($e),
-                        'status' => 409,
-                        'message' => 'Cannot delete this resource because it is referenced by other records.',
-                        'timestamp' => now()->toISOString(),
-                    ],
-                ], 409);
-
-            case 1062: // Duplicate entry
-                return response()->json([
-                    'error' => [
-                        'type' => $this->getExceptionType($e),
-                        'status' => 409,
-                        'message' => 'A record with this information already exists.',
-                        'timestamp' => now()->toISOString(),
-                    ],
-                ], 409);
-
-            default:
-                return response()->json([
-                    'error' => [
-                        'type' => $this->getExceptionType($e),
-                        'status' => 500,
-                        'message' => 'A database error occurred. Please try again later.',
-                        'timestamp' => now()->toISOString(),
-                    ],
-                ], 500);
-        }
+        return match ($errorCode) {
+            1451 => $this->error(
+                $this->getExceptionType($e),
+                409,
+                'Cannot delete this resource because it is referenced by other records.'
+            ),
+            1062 => $this->error(
+                $this->getExceptionType($e),
+                409,
+                'A record with this information already exists.'
+            ),
+            default => $this->error(
+                $this->getExceptionType($e),
+                500,
+                'A database error occurred. Please try again later.'
+            ),
+        };
     }
 
     /**
@@ -261,4 +240,3 @@ class ApiExceptionHandler
         Log::warning($message, $logContext);
     }
 }
-
