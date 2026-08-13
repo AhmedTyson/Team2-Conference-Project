@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Trips\Trip;
 use App\Services\ConciergeService;
 use App\Support\ApiResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ConciergeController extends Controller

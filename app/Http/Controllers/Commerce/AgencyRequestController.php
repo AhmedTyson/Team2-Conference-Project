@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Commerce;
 use App\Http\Controllers\Controller;
 use App\Services\Commerce\AgencyAssignmentService;
 use App\Support\ApiResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class AgencyRequestController extends Controller

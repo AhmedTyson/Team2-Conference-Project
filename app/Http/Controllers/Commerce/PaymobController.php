@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Commerce;
 
 use App\Http\Controllers\Controller;
 use App\Support\ApiResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class PaymobController extends Controller

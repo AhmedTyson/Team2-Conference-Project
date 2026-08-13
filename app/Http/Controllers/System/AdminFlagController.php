@@ -8,6 +8,7 @@ use App\Models\System\Flag;
 use App\Services\System\FlagService;
 use App\Support\ApiResponse;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class AdminFlagController extends Controller

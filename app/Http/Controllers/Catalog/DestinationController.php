@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\DestinationResource;
 use App\Services\Catalog\DestinationService;
 use App\Support\ApiResponse;
+use Illuminate\Http\JsonResponse;
 
 class DestinationController extends Controller
 {

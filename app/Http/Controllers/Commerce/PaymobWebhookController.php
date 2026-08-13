@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Interfaces\Commerce\PaymentGatewayInterface;
 use App\Services\Commerce\WebhookService;
 use App\Support\ApiResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class PaymobWebhookController extends Controller

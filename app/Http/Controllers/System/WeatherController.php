@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\System\ShowWeatherRequest;
 use App\Services\OpenMeteoService;
 use App\Support\ApiResponse;
+use Illuminate\Http\JsonResponse;
 
 class WeatherController extends Controller
 {

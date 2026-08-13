@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Commerce\AdminSetSubscriptionPlanRequest;
 use App\Models\Commerce\Plan;
 use App\Support\ApiResponse;
+use Illuminate\Http\JsonResponse;
 
 class AdminSetSubscriptionPlanController extends Controller
 {

@@ -8,6 +8,7 @@ use App\Http\Requests\Catalog\UpdateRestaurantRequest;
 use App\Models\Catalog\Restaurant;
 use App\Services\Catalog\RestaurantService;
 use App\Support\ApiResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AdminRestaurantController extends Controller

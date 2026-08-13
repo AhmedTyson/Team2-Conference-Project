@@ -7,6 +7,7 @@ use App\Http\Requests\Catalog\StoreHotelRequest;
 use App\Http\Requests\Catalog\UpdateHotelRequest;
 use App\Models\Catalog\Hotel;
 use App\Support\ApiResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AdminHotelController extends Controller

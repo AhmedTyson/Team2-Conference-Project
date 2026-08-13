@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Account\User;
 use App\Models\System\Notification;
 use App\Support\ApiResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 

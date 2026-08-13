@@ -13,6 +13,7 @@ use App\Models\Account\User;
 use App\Notifications\WelcomeNotification;
 use App\Support\ApiResponse;
 use Illuminate\Auth\Events\Verified;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;

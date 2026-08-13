@@ -7,6 +7,7 @@ use App\Http\Resources\CategoryResource;
 use App\Models\Catalog\Category;
 use App\Services\Catalog\CategoryService;
 use App\Support\ApiResponse;
+use Illuminate\Http\JsonResponse;
 
 class CategoryController extends Controller
 {

@@ -11,6 +11,7 @@ use App\Models\Trips\Trip;
 use App\Services\Catalog\Fixtures\OpenStreetService;
 use App\Support\ApiResponse;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 

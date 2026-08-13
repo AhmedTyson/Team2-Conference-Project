@@ -8,6 +8,7 @@ use App\Http\Requests\Catalog\UpdateAttractionRequest;
 use App\Models\Catalog\Attraction;
 use App\Services\Catalog\AttractionService;
 use App\Support\ApiResponse;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AdminAttractionController extends Controller

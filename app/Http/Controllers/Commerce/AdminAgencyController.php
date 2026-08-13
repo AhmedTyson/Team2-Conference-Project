@@ -7,6 +7,7 @@ use App\Models\Commerce\AgencyAssignment;
 use App\Services\Commerce\AgencyAssignmentService;
 use App\Support\ApiResponse;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class AdminAgencyController extends Controller
