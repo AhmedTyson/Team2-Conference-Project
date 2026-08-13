@@ -244,7 +244,7 @@ class GenerateReportExcelService
         $writer->addRow($this->createRowWithStyle(['Destination', 'Bookings'], $this->headerStyle(), 15.0));
         $alt = false;
         foreach ($topDestinations as $row) {
-            $writer->addRow($this->createRowWithStyle([$row->name ?? $row['name'], (int) $row->bookings_count ?? $row['bookings_count']], $this->dataStyle($alt), 15.0));
+            $writer->addRow($this->createRowWithStyle([$row->name, (int) $row->bookings_count], $this->dataStyle($alt), 15.0));
             $alt = ! $alt;
         }
 
@@ -253,7 +253,7 @@ class GenerateReportExcelService
         $writer->addRow($this->createRowWithStyle(['Destination', 'Revenue (USD)'], $this->headerStyle(), 15.0));
         $alt = false;
         foreach ($topRevenueDestinations as $row) {
-            $writer->addRow($this->createRowWithStyle([$row->name ?? $row['name'], (float) $row->revenue ?? $row['revenue']], $this->dataStyle($alt), 15.0));
+            $writer->addRow($this->createRowWithStyle([$row->name, (float) $row->revenue], $this->dataStyle($alt), 15.0));
             $alt = ! $alt;
         }
 

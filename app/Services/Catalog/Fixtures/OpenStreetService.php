@@ -119,8 +119,6 @@ class OpenStreetService
                 })
                 ->unique('name')
                 ->values()
-                ->unique('name')
-                ->values()
                 ->take(20)
                 ->toArray();
         });

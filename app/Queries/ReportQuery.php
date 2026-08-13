@@ -149,18 +149,6 @@ class ReportQuery
             ->count('user_id');
     }
 
-    public function returningUsers(?string $from, ?string $to): int
-    {
-        return Order::query()
-            ->when($from, fn ($q) => $q->whereDate('created_at', '>=', $from))
-            ->when($to, fn ($q) => $q->whereDate('created_at', '<=', $to))
-            ->select('user_id')
-            ->groupBy('user_id')
-            ->havingRaw('COUNT(*) > 1')
-            ->get()
-            ->count();
-    }
-
     public function activeUsersTrend(?string $from, ?string $to): Collection
     {
         return Order::query()
@@ -177,20 +165,6 @@ class ReportQuery
                 'period' => $row->period,
                 'active_users' => $row->total,
             ]);
-    }
-
-    public function newUsersTrend(?string $from, ?string $to): Collection
-    {
-        return User::query()
-            ->when($from, fn ($q) => $q->whereDate('created_at', '>=', $from))
-            ->when($to, fn ($q) => $q->whereDate('created_at', '<=', $to))
-            ->select(
-                $this->monthExpr('created_at'),
-                DB::raw('COUNT(*) as new_users')
-            )
-            ->groupBy('period')
-            ->orderBy('period')
-            ->get();
     }
 
     public function returningUsersTrend(?string $from, ?string $to): Collection

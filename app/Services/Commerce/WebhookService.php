@@ -26,35 +26,35 @@ class WebhookService
         if (! $this->paymentGateway->verifyWebhook($payload, $hmacSignature)) {
             Log::warning('Paymob webhook HMAC validation failed');
 
-            return ['success' => false, 'message' => 'Invalid HMAC', 'status' => 403];
+            return ['success' => false, 'message' => 'Invalid HMAC'];
         }
 
         $obj = $payload['obj'] ?? null;
         if (! $obj) {
-            return ['success' => false, 'message' => 'Invalid payload', 'status' => 400];
+            return ['success' => false, 'message' => 'Invalid payload'];
         }
 
         $merchantOrderId = $obj['order']['merchant_order_id'] ?? null;
 
         if (! $merchantOrderId) {
-            return ['success' => false, 'message' => 'Missing merchant_order_id', 'status' => 400];
+            return ['success' => false, 'message' => 'Missing merchant_order_id'];
         }
 
         $lock = Cache::lock("paymob_webhook_processing_{$merchantOrderId}", 60);
 
         if (! $lock->get()) {
-            return ['success' => true, 'message' => 'Already processing', 'status' => 200];
+            return ['success' => true, 'message' => 'Already processing'];
         }
 
         try {
             $payment = $this->paymentRepository->findByTransactionId($merchantOrderId);
 
             if (! $payment) {
-                return ['success' => false, 'message' => 'Payment not found', 'status' => 404];
+                return ['success' => false, 'message' => 'Payment not found'];
             }
 
             if (in_array($payment->status, [PaymentStatus::PAID, PaymentStatus::FAILED])) {
-                return ['success' => true, 'message' => 'Already processed', 'status' => 200];
+                return ['success' => true, 'message' => 'Already processed'];
             }
 
             $success = filter_var($obj['success'] ?? false, FILTER_VALIDATE_BOOLEAN);
@@ -72,7 +72,7 @@ class WebhookService
                     'order_age_hours' => round(now()->diffInHours($order->created_at), 2),
                 ]);
 
-                return ['success' => false, 'message' => 'Order expired beyond grace period', 'status' => 200];
+                return ['success' => false, 'message' => 'Order expired beyond grace period'];
             }
 
             $cardType = $obj['source_data']['type'] ?? null;
@@ -100,7 +100,7 @@ class WebhookService
                 event(new PaymentFailed($payment));
             }
 
-            return ['success' => true, 'message' => 'Processed', 'status' => 200];
+            return ['success' => true, 'message' => 'Processed'];
 
         } finally {
             $lock->release();

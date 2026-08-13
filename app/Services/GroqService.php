@@ -74,21 +74,9 @@ class GroqService
             // attractions
             $resturants = Restaurant::where('destination_id', $destinationId)->first();
 
-            // if(!$resturants){
-            //     throw new \RuntimeException("No restaurants found for the selected country.");
-            // }
-
             $hotels = Hotel::where('destination_id', $destinationId)->first();
 
-            // if(!$hotels){
-            //     throw new \RuntimeException("No hotels found for the selected country.");
-            // }
-
             $attractions = Attraction::where('destination_id', $destinationId)->first();
-
-            // if(!$attractions){
-            //     throw new \RuntimeException("No attractions found for the selected country.");
-            // }
 
             $prompt = "  
                 Generate a travel itinerary.
