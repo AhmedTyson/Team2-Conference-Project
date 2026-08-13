@@ -88,7 +88,7 @@ Route::middleware(['auth:api', 'verified'])->prefix('admin')->name('admin.')->gr
 });
 
 // ============================================================
-// CATALOG
+// CATALOG 
 // ============================================================
 
 // ---- Public explorer
