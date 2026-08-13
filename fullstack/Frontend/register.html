@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create account · Itinari</title>
+  <link rel="stylesheet" href="assets/css/auth.css" />
+  <script>
+    (function () {
+      var theme = localStorage.getItem("itinari_theme") || "system";
+      var isDark = theme === "dark" || (theme === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+      if (isDark) document.documentElement.classList.add("dark");
+    })();
+  </script>
+</head>
+<body data-page="register">
+  <main class="auth-shell">
+    <section class="auth-visual">
+      <div class="auth-slides">
+        <div class="auth-slide active" style="background-image: url('assets/img/slide1.png');"></div>
+        <div class="auth-slide" style="background-image: url('assets/img/slide2.png');"></div>
+        <div class="auth-slide" style="background-image: url('assets/img/slide3.png');"></div>
+      </div>
+      <div class="brand">Itinari</div>
+      <div>
+        <h1>Travel like a local.</h1>
+        <p>Explore hidden gems, saved spots, and authentic experiences curated by people, not algorithms.</p>
+      </div>
+    </section>
+
+    <section class="auth-form-side">
+      <div class="auth-card">
+        <h2>Create account</h2>
+        <p class="sub">Join the Itinari community.</p>
+
+        <form id="auth-form" novalidate>
+          <div class="field">
+            <label for="name">Full name</label>
+            <input id="name" name="name" type="text" autocomplete="name" placeholder="Ada Lovelace" />
+            <p class="field-hint" id="hint-name" role="alert"></p>
+          </div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" />
+            <p class="field-hint" id="hint-email" role="alert"></p>
+            <p class="hint-availability" id="avail-email" aria-live="polite"></p>
+          </div>
+
+          <div class="field">
+            <label for="password">Password</label>
+            <div class="input-wrap">
+              <input id="password" name="password" type="password" autocomplete="new-password" placeholder="At least 8 characters" />
+              <button type="button" class="pw-toggle" data-pw-toggle aria-label="Show password" aria-pressed="false">👁</button>
+            </div>
+            <p class="field-hint" id="hint-password" role="alert"></p>
+            <div class="strength-meter" id="pw-meter" aria-hidden="true">
+              <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+            </div>
+            <p class="strength-note" id="pw-strength-note"></p>
+            <ul class="hint-list" id="pw-checklist">
+              <li data-check="length">At least 8 characters</li>
+              <li data-check="upper">One uppercase letter</li>
+              <li data-check="lower">One lowercase letter</li>
+              <li data-check="digit">One number</li>
+              <li data-check="special">One special character</li>
+            </ul>
+          </div>
+
+          <div class="field">
+            <label for="password_confirmation">Confirm password</label>
+            <div class="input-wrap">
+              <input id="password_confirmation" name="password_confirmation" type="password" autocomplete="new-password" placeholder="Repeat your password" />
+              <button type="button" class="pw-toggle" data-pw-toggle aria-label="Show password" aria-pressed="false">👁</button>
+            </div>
+            <p class="field-hint" id="hint-password_confirmation" role="alert"></p>
+          </div>
+
+          <div class="field terms-field">
+            <input type="checkbox" id="terms" name="terms" />
+            <label for="terms">I agree to the <a href="#" onclick="return false;">Terms of Service</a> and <a href="#" onclick="return false;">Privacy Policy</a>.</label>
+          </div>
+
+          <button type="submit" class="btn-primary">
+            <span class="spinner"></span>
+            <span class="btn-label">Create account</span>
+          </button>
+
+          <div class="success-note" id="rg-success-note"></div>
+        </form>
+
+        <div class="auth-links">
+          Already have an account? <a href="login.html">Log in</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-banner" role="status">
+    <span id="site-banner-msg"></span><span id="site-banner-drain" aria-hidden="true"></span>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="assets/js/config.js?v=1786177601"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/validation.js"></script>
+  <script src="assets/js/animations.js"></script>
+  <script src="assets/js/session.js"></script>
+  <script src="assets/js/password-toggle.js"></script>
+  <script src="assets/js/auth.js"></script>
+</body>
+</html>

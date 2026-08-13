@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verify your email · Itinari</title>
+  <link rel="stylesheet" href="assets/css/auth.css" />
+  <script>
+    (function () {
+      var theme = localStorage.getItem("itinari_theme") || "system";
+      var isDark = theme === "dark" || (theme === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
+      if (isDark) document.documentElement.classList.add("dark");
+    })();
+  </script>
+</head>
+<body data-page="verify">
+  <main class="auth-shell">
+    <section class="auth-visual">
+      <div class="auth-slides">
+        <div class="auth-slide active" style="background-image: url('assets/img/slide1.png');"></div>
+        <div class="auth-slide" style="background-image: url('assets/img/slide2.png');"></div>
+        <div class="auth-slide" style="background-image: url('assets/img/slide3.png');"></div>
+      </div>
+      <div class="brand">Itinari</div>
+      <div>
+        <h1>One last step.</h1>
+        <p>Confirm your email to unlock the full itinerary experience.</p>
+      </div>
+    </section>
+
+    <section class="auth-form-side">
+      <div class="auth-card">
+        <h2>Check your inbox</h2>
+        <p class="sub">We sent a verification link to the address below. Follow it to activate your account.</p>
+
+        <input type="hidden" id="v-email-src" />
+
+        <div class="auth-links">
+          <button type="button" id="v-resend" class="btn-primary">
+            <span class="spinner"></span>
+            <span class="btn-label">Resend email</span>
+          </button>
+        </div>
+
+        <div class="auth-links">
+          <a href="login.html">Back to log in</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-banner" role="status">
+    <span id="site-banner-msg"></span><span id="site-banner-drain" aria-hidden="true"></span>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="assets/js/config.js?v=1786177601"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/validation.js"></script>
+  <script src="assets/js/animations.js"></script>
+  <script src="assets/js/session.js"></script>
+  <script src="assets/js/auth.js"></script>
+</body>
+</html>

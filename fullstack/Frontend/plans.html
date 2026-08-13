@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pick a Plan · Travel Planner</title>
+  <link rel="stylesheet" href="assets/css/tokens.css" />
+  <link rel="stylesheet" href="assets/css/app.css" />
+</head>
+<body data-page="plans" class="is-booting">
+  <div class="app">
+    <header class="app__header">
+      <a id="app-brand" class="app__brand" href="/home.html"></a>
+      <nav id="app-nav" class="nav" aria-label="Main navigation"></nav>
+      <div id="app-user" class="app__user">
+        <button id="theme-toggle" type="button" class="btn btn--ghost" aria-label="Toggle theme">◐</button>
+      </div>
+    </header>
+
+    <main class="app__main">
+      <div class="page">
+        <header class="page-header">
+          <p class="page-header__eyebrow">Membership</p>
+          <h1 class="page-header__title">Pick a plan</h1>
+          <p class="page-header__lead">More trips, more AI help, more room to dream. Switch or cancel anytime.</p>
+        </header>
+
+        <div id="current-plan" class="current-plan" hidden></div>
+
+        <div id="plan-grid" class="plan-grid">
+          <div class="skeleton skeleton--card"></div>
+          <div class="skeleton skeleton--card"></div>
+          <div class="skeleton skeleton--card"></div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="app__footer">
+      <span>Travel Planner</span>
+      <span>•</span>
+      <span>Plan. Explore. Remember.</span>
+    </footer>
+  </div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/session.js"></script>
+  <script src="assets/js/nav-config.js"></script>
+  <script src="assets/js/app-shell.js"></script>
+  <script src="assets/js/plans.js"></script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+/* ============================================================
+   Itinera – Sign in (index.html)
+   ============================================================ */
+body.login-page {
+    background: rgba(26, 26, 26, 0.94);
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+.login-card {
+    background: #ffffff; border: 2px solid #1a1a1a; border-radius: 12px;
+    padding: 36px 32px; width: 100%; max-width: 400px;
+}
+.login-card .brand { font-size: 22px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 4px; }
+.login-card .brand span { background: #1a1a1a; color: #fff; padding: 0 8px; border-radius: 4px; }
+.login-card .subtitle { color: #555; font-size: 13px; margin-bottom: 24px; }

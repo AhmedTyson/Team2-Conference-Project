@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Restaurant Details — Itinera</title>
+  <meta name="description" content="Restaurant details from the Itinera travel planner.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>(function(){try{if(localStorage.getItem('itinera_theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
+  <link rel="stylesheet" href="assets/css/itinera-tokens.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/pages.css">
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/app.css">
+</head>
+<body data-page="restaurants" class="is-booting">
+  <div class="app">
+    <header class="app__header">
+      <a id="app-brand" class="app__brand" href="/home.html"></a>
+      <nav id="app-nav" class="nav" aria-label="Main navigation"></nav>
+      <div id="app-user" class="app__user">
+        <button id="theme-toggle" type="button" class="btn btn--ghost" aria-label="Toggle theme">◐</button>
+      </div>
+    </header>
+
+    <main class="app__main">
+
+  <main id="main">
+    <div class="container">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="restaurants.html">Restaurants</a><span class="sep">/</span><span class="crumb-current" id="crumbCurrent">…</span>
+      </nav>
+    </div>
+    <div id="detail"></div>
+    <div class="state-host" id="stateHost" aria-live="polite"></div>
+  </main>
+
+    </main>
+
+    <footer class="app__footer"></footer>
+  </div>
+
+  <div class="toast-host" id="toastHost" aria-live="assertive"></div>
+  <div class="modal" id="modalHost" hidden></div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/session.js"></script>
+  <script src="assets/js/nav-config.js"></script>
+  <script src="assets/js/app-shell.js"></script>
+  <script src="assets/js/itinera-config.js"></script>
+  <script src="assets/js/itinera-api.js"></script>
+  <script src="assets/js/itinera-auth.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/review.js"></script>
+  <script src="assets/js/map.js"></script>
+  <script src="assets/js/pages/restaurant-details.js"></script>
+  <script>
+    It.app.boot();
+  </script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Itinera – Availability</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/availability.css" />
+</head>
+<body data-page="availability" data-auth="protected">
+
+    <nav class="sidebar" id="sidebar"></nav>
+
+    <div class="main">
+        <div class="itinera-layout">
+
+            <!-- LEFT COLUMN: Calendar -->
+            <div class="itinera-calendar">
+                <div class="itinera-header">
+                    <h1 class="page-title">
+                        Availability
+                        <small id="schedTripName">Select a trip</small>
+                    </h1>
+                    <a class="btn btn-dark" href="itinerary.html#attach">
+                        <i class="fas fa-plus"></i> Add
+                    </a>
+                </div>
+
+                <!-- Month tabs -->
+                <div class="month-tabs" id="monthTabs"></div>
+
+                <!-- Day view -->
+                <div class="flex-between" style="margin: 8px 0 4px;">
+                    <span style="font-weight:600; font-size:14px; color:#555;">
+                        <i class="far fa-calendar-alt"></i> Day view
+                    </span>
+                    <span style="font-size:13px; color:#888;" id="schedMonthLabel">Loading…</span>
+                </div>
+
+                <div class="day-grid" id="dayGrid"></div>
+
+                <div class="mt-16 flex" style="gap:16px; font-size:13px; color:#555;">
+                    <span><span style="display:inline-block; width:14px; height:14px; background:#1a1a1a; border-radius:4px; vertical-align:middle; margin-right:4px;"></span> Selected</span>
+                    <span><span style="display:inline-block; width:14px; height:14px; background:#fff; border:2px solid #1a1a1a; border-radius:4px; vertical-align:middle; margin-right:4px;"></span> Available</span>
+                    <span><span style="display:inline-block; width:14px; height:14px; background:#e8e8e8; border:2px solid #ccc; border-radius:4px; vertical-align:middle; margin-right:4px;"></span> No activities</span>
+                </div>
+            </div>
+
+            <!-- RIGHT SIDEBAR -->
+            <div class="itinera-sidebar">
+
+                <!-- Trip card -->
+                <div class="card" id="addTripCard">
+                    <div class="card-header">
+                        <h4><i class="fas fa-plane-departure"></i> Trip</h4>
+                        <a class="btn btn-sm btn-dark" href="itinerary.html">Open</a>
+                    </div>
+                    <div class="flex-between" style="align-items:flex-start;">
+                        <div class="flex" style="gap:12px; align-items:center;">
+                            <div class="avatar" id="tripAvatar">—</div>
+                            <div>
+                                <div class="name" id="addTripName" style="font-weight:700; font-size:15px;">No trip selected</div>
+                                <div class="sub" id="addTripMeta" style="font-size:12px; color:#777;">—</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stats-row">
+                        <span class="stat"><i class="fas fa-list"></i> <span id="addTripActivities">0</span> Activities</span>
+                        <span class="stat"><i class="fas fa-calendar-week"></i> <span id="addTripDays">—</span> Days</span>
+                        <span class="stat"><i class="fas fa-user-group"></i> <span id="addTripTravelers">—</span> Travelers</span>
+                    </div>
+                </div>
+
+                <!-- Activity feed -->
+                <div class="card" style="padding:16px 18px;">
+                    <div class="card-header" style="margin-bottom:10px;">
+                        <h4><i class="fas fa-rss"></i> Activity feed</h4>
+                    </div>
+                    <div id="feedList">
+                        <div class="empty-state" style="padding:16px;"><i class="fas fa-inbox"></i> No activities yet.</div>
+                    </div>
+                </div>
+
+                <!-- Time slots -->
+                <div class="card" style="padding:16px 18px;">
+                    <div class="card-header" style="margin-bottom:10px;">
+                        <h4><i class="fas fa-clock"></i> Time slots</h4>
+                    </div>
+                    <div class="time-slots" id="slotList">
+                        <span class="time-slot occupied">—</span>
+                    </div>
+                </div>
+
+            </div>
+            <!-- /itinera-sidebar -->
+        </div>
+        <!-- /itinera-layout -->
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="js/availability.js"></script>
+</body>
+</html>

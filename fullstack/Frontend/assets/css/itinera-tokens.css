@@ -1,0 +1,135 @@
+/* ============================================================
+   ITINERA — Design Tokens (YOGO Edition)
+   Monochrome grey + white system, light by default.
+   Dark mode is an override via [data-theme="dark"].
+   ============================================================ */
+
+:root {
+  /* --- Palette (Navy/Royal/Sky/Ice Blue System) --- */
+  --bg:            #f0f6fa;   /* soft light ice-blue tint background */
+  --bg-raised:     #e1edf5;
+  --surface:       #ffffff;   /* cards, panels              */
+  --surface-2:     #e7eff5;   /* hover, inputs, elevated    */
+  --surface-3:     #d1e0eb;   /* active, chips selected     */
+  --border:        #d8e3eb;   /* hairline borders           */
+  --border-strong: #4988c4;   /* focus, emphasized borders  */
+  --text:          #0f2854;   /* Navy primary text          */
+  --text-muted:    #1c4d8d;   /* Royal Blue secondary text  */
+  --text-faint:    #4988c4;   /* Sky Blue labels            */
+  --white:         #1c4d8d;   /* accent (filled)            */
+  --black:         #ffffff;   /* on-accent text             */
+
+  /* --- Effects (soft, airy — YOGO) --- */
+  --glow:     0 0 0 1px rgba(0, 0, 0, .06), 0 8px 32px rgba(0, 0, 0, .10);
+  --glow-strong: 0 0 0 1px rgba(0, 0, 0, .14), 0 12px 44px rgba(0, 0, 0, .16);
+  --shadow-sm: 0 2px 10px rgba(0, 0, 0, .12);
+  --ring:      0 0 0 2px var(--bg), 0 0 0 4px rgba(0, 0, 0, .55);
+
+  /* --- Theme-aware surfaces (kept in sync by [data-theme]) --- */
+  --scrim:          rgba(20, 20, 20, .5);      /* modal backdrop      */
+  --glass:          rgba(255, 255, 255, .85);  /* fav button on media */
+  --media-bg:       #e6e6e6;                   /* behind images       */
+  --overlay-header: rgba(247, 247, 247, .85); /* sticky header       */
+  --overlay-menu:   rgba(246, 246, 246, .98); /* mobile menu         */
+  --overlay-tab:    rgba(247, 247, 247, .92); /* bottom tab bar      */
+  --focus-glow:     rgba(0, 0, 0, .10);        /* input focus halo    */
+  --error-fill:     rgba(0, 0, 0, .06);
+  --error-border:   rgba(0, 0, 0, .25);
+  --error-line:     rgba(0, 0, 0, .4);
+
+  /* --- Radii (generous, YOGO) --- */
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --r-full: 999px;
+
+  /* --- Spacing scale --- */
+  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+  --sp-5: 20px; --sp-6: 24px; --sp-8: 32px; --sp-10: 40px;
+  --sp-12: 48px; --sp-16: 64px; --sp-20: 80px; --sp-24: 96px;
+
+  /* --- Typography --- */
+  --font-display: "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-body:    "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono", "Cascadia Mono", Consolas, monospace;
+
+  --fs-2xs: 0.6875rem;   /* mono labels            */
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.8125rem;
+  --fs-md: 0.9375rem;
+  --fs-lg: 1.0625rem;
+  --fs-xl: 1.0625rem;
+  --fs-2xl: 1.25rem;
+  --fs-3xl: 1.50rem;
+  --fs-4xl: 1.875rem;
+  --fs-5xl: 2.375rem;
+  --fs-6xl: 3.00rem;
+
+  --lh-tight: 1.15;
+  --lh-snug: 1.35;
+  --lh-normal: 1.6;
+
+  /* --- Motion --- */
+  --ease: cubic-bezier(.22, 1, .36, 1);
+  --dur-fast: 140ms;
+  --dur: 240ms;
+  --dur-slow: 480ms;
+
+  /* --- Layout --- */
+  --container: 1200px;
+  --header-h: 68px;
+  --tabbar-h: 64px;
+  --radius-card: var(--r-xl);
+
+  /* --- Z-index --- */
+  --z-nav: 100;
+  --z-overlay: 200;
+  --z-modal: 300;
+  --z-toast: 400;
+}
+
+:root[data-theme="dark"] {
+  /* --- Palette --- */
+  --bg:            #08101e;   /* very deep Navy dark background */
+  --bg-raised:     #0c182c;
+  --surface:       #0c192d;   /* Navy dark card surface */
+  --surface-2:     #152642;
+  --surface-3:     #1e365c;
+  --border:        #152642;
+  --border-strong: #4988c4;   /* Sky Blue borders */
+  --text:          #bde8f5;   /* Ice Blue primary text */
+  --text-muted:    #4988c4;   /* Sky Blue secondary text */
+  --text-faint:    #1c4d8d;   /* Royal Blue muted text */
+  --white:         #bde8f5;   /* accent text / blocks */
+  --black:         #050a12;
+
+  /* --- Effects --- */
+  --glow:          0 0 0 1px rgba(255,255,255,.08), 0 8px 32px rgba(0,0,0,.55);
+  --glow-strong:   0 0 0 1px rgba(255,255,255,.22), 0 12px 44px rgba(0,0,0,.7);
+  --shadow-sm:     0 2px 10px rgba(0,0,0,.45);
+  --ring:          0 0 0 2px var(--bg), 0 0 0 4px rgba(255,255,255,.65);
+
+  /* --- Theme-aware surfaces --- */
+  --scrim:         rgba(5, 10, 20, .82);
+  --glass:         rgba(12, 24, 45, .72);
+  --media-bg:      #111f35;
+  --overlay-header: rgba(8, 16, 30, .82);
+  --overlay-menu:  rgba(6, 12, 22, .97);
+  --overlay-tab:   rgba(10, 20, 38, .92);
+  --focus-glow:    rgba(255, 255, 255, .08);
+  --error-fill:    rgba(255, 255, 255, .08);
+  --error-border:  rgba(255, 255, 255, .25);
+  --error-line:    rgba(255, 255, 255, .5);
+
+  /* Decorative image scrims stay dark in both themes for legibility. */
+}
+
+@media (max-width: 767px) {
+  :root {
+    --fs-4xl: 1.50rem;
+    --fs-5xl: 1.875rem;
+    --fs-6xl: 2.25rem;
+    --header-h: 60px;
+  }
+}

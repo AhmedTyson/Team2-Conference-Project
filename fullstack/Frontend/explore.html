@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Explore · Travel Planner</title>
+  <link rel="stylesheet" href="assets/css/tokens.css" />
+  <link rel="stylesheet" href="assets/css/app.css" />
+</head>
+<body data-page="explore" class="is-booting">
+  <div class="app">
+    <header class="app__header">
+      <a id="app-brand" class="app__brand" href="/home.html"></a>
+      <nav id="app-nav" class="nav" aria-label="Main navigation"></nav>
+      <div id="app-user" class="app__user">
+        <button id="theme-toggle" type="button" class="btn btn--ghost" aria-label="Toggle theme">◐</button>
+      </div>
+    </header>
+
+    <main class="app__main">
+      <div class="page">
+        <header class="page-header">
+          <p class="page-header__eyebrow">Catalog</p>
+          <h1 class="page-header__title">Explore the world</h1>
+          <p class="page-header__lead">Every place we plan around — browse destinations, hotels, restaurants and attractions.</p>
+        </header>
+
+        <div class="tabs" role="tablist" aria-label="Catalog sections" id="catalog-tabs">
+          <button class="tab tab--on" role="tab" aria-selected="true" data-tab="destinations">Destinations</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="hotels">Hotels</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="restaurants">Restaurants</button>
+          <button class="tab" role="tab" aria-selected="false" data-tab="attractions">Attractions</button>
+        </div>
+
+        <div id="catalog-grid" class="grid">
+          <div class="skeleton skeleton--card"></div>
+          <div class="skeleton skeleton--card"></div>
+          <div class="skeleton skeleton--card"></div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="app__footer">
+      <span>Travel Planner</span>
+      <span>•</span>
+      <span>Plan. Explore. Remember.</span>
+    </footer>
+  </div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/session.js"></script>
+  <script src="assets/js/nav-config.js"></script>
+  <script src="assets/js/app-shell.js"></script>
+  <script src="assets/js/explore.js"></script>
+</body>
+</html>

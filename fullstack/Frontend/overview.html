@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Itinera – My Trips</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="css/common.css" />
+    <link rel="stylesheet" href="css/overview.css" />
+</head>
+<body data-page="overview" data-auth="protected">
+
+    <nav class="sidebar" id="sidebar"></nav>
+
+    <div class="main">
+        <div class="flex-between mb-16">
+            <h1 class="page-title">My Trips <small>Overview</small></h1>
+            <a class="btn btn-dark" href="create-trip.html">
+                <i class="fas fa-plus"></i> Create Trip
+            </a>
+        </div>
+
+        <div class="card trips-card">
+            <div id="tripsList">
+                <div class="empty-state"><i class="fas fa-spinner fa-spin"></i> Loading trips…</div>
+            </div>
+        </div>
+
+        <div class="mt-16 placeholder">
+            <i class="fas fa-info-circle"></i> <span id="tripsCountText">0 trips</span>
+        </div>
+    </div>
+
+    <script src="js/common.js"></script>
+    <script src="js/overview.js"></script>
+</body>
+</html>

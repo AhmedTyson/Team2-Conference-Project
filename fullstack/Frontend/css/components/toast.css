@@ -1,0 +1,37 @@
+/* ── Toast ── */
+
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(20, 20, 20, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #fff;
+  padding: 0.8rem 1.6rem;
+  border-radius: 2rem;
+  font-size: 0.9rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s, transform 0.25s;
+  z-index: 400;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(14px);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  max-width: min(90vw, 36rem);
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.toast.err {
+  border-color: rgba(255, 120, 120, 0.4);
+}
+
+.toast.err i {
+  color: #f87171 !important;
+}

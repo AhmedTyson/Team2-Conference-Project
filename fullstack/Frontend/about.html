@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About · Itinera</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = { darkMode: 'class' };</script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome 6 (free) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <!-- Shared styles -->
+  <link rel="stylesheet" href="css/app.css" />
+  <link rel="stylesheet" href="css/components/navbar.css" />
+  <link rel="stylesheet" href="css/components/buttons.css" />
+  <link rel="stylesheet" href="css/components/modal.css" />
+  <link rel="stylesheet" href="css/components/toast.css" />
+  <link rel="stylesheet" href="assets/css/tokens.css" />
+  <link rel="stylesheet" href="assets/css/app.css" />
+
+  <script>window.APP_URL = ".";</script>
+</head>
+<body class="page is-booting">
+
+  <header class="app__header">
+    <a id="app-brand" class="app__brand" href="/home.html"></a>
+    <nav id="app-nav" class="nav" aria-label="Main navigation"></nav>
+    <div id="app-user" class="app__user">
+      <button id="theme-toggle" type="button" class="btn btn--ghost" aria-label="Toggle theme">◐</button>
+    </div>
+  </header>
+
+  <div class="toast" id="toast">
+  <i class="fas fa-check-circle text-green-600 dark:text-green-400" aria-hidden="true"></i>
+  <span id="toastMessage">Success</span>
+</div>
+
+
+    <div class="page-scroll" style="padding-top: 80px;">
+    <div class="giant-text"><h1>ABOUT</h1></div>
+    <div class="content-layer">
+
+      <div class="max-w-4xl mx-auto w-full mt-8">
+        <div class="glass-card p-8">
+          <h2 class="section-title">Our Mission</h2>
+          <p class="text-slate-600 dark:text-white/70 text-sm leading-relaxed mt-2">
+            We make travel seamless, personal, and unforgettable. From the bustling streets of New York to the sun-drenched islands of Greece, Itinera connects you with authentic stays and curated experiences.
+          </p>
+          <div class="h-px bg-slate-200 dark:bg-white/10 my-6"></div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div class="glass-card p-5 flex gap-4 items-start">
+              <i class="fas fa-bullseye text-2xl text-slate-600 dark:text-white/60 mt-1" aria-hidden="true"></i>
+              <div>
+                <h4 class="font-semibold">Our story</h4>
+                <p class="text-sm text-slate-600 dark:text-white/50 mt-1">Born from a student team project at the Conference Project, Itinera grew into a full travel platform — planning, booking, weather, and reviews in one place.</p>
+              </div>
+            </div>
+            <div class="glass-card p-5 flex gap-4 items-start">
+              <i class="fas fa-heart text-2xl text-slate-600 dark:text-white/60 mt-1" aria-hidden="true"></i>
+              <div>
+                <h4 class="font-semibold">What we value</h4>
+                <p class="text-sm text-slate-600 dark:text-white/50 mt-1">Authenticity, transparency, and human support. Every journey we craft is built on those three pillars.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="h-px bg-slate-200 dark:bg-white/10 my-6"></div>
+          <h3 class="text-lg font-semibold mb-4 flex items-center gap-2"><i class="fas fa-users text-slate-600 dark:text-white/40" aria-hidden="true"></i>The Team</h3>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <div class="glass-card p-4 text-center">
+              <div class="w-12 h-12 rounded-full bg-slate-200 dark:bg-white/10 mx-auto flex items-center justify-center text-lg font-bold">A</div>
+              <h4 class="font-semibold mt-2">Amira</h4>
+              <p class="text-xs text-slate-600 dark:text-white/40">Founder</p>
+            </div>
+            <div class="glass-card p-4 text-center">
+              <div class="w-12 h-12 rounded-full bg-slate-200 dark:bg-white/10 mx-auto flex items-center justify-center text-lg font-bold">K</div>
+              <h4 class="font-semibold mt-2">Karim</h4>
+              <p class="text-xs text-slate-600 dark:text-white/40">Experience</p>
+            </div>
+            <div class="glass-card p-4 text-center">
+              <div class="w-12 h-12 rounded-full bg-slate-200 dark:bg-white/10 mx-auto flex items-center justify-center text-lg font-bold">S</div>
+              <h4 class="font-semibold mt-2">Sam</h4>
+              <p class="text-xs text-slate-600 dark:text-white/40">Engineering</p>
+            </div>
+            <div class="glass-card p-4 text-center">
+              <div class="w-12 h-12 rounded-full bg-slate-200 dark:bg-white/10 mx-auto flex items-center justify-center text-lg font-bold">L</div>
+              <h4 class="font-semibold mt-2">Layla</h4>
+              <p class="text-xs text-slate-600 dark:text-white/40">Design</p>
+            </div>
+            <div class="glass-card p-4 text-center">
+              <div class="w-12 h-12 rounded-full bg-slate-200 dark:bg-white/10 mx-auto flex items-center justify-center text-lg font-bold">O</div>
+              <h4 class="font-semibold mt-2">Omar</h4>
+              <p class="text-xs text-slate-600 dark:text-white/40">Operations</p>
+            </div>
+            <div class="glass-card p-4 text-center">
+              <div class="w-12 h-12 rounded-full bg-slate-200 dark:bg-white/10 mx-auto flex items-center justify-center text-lg font-bold">H</div>
+              <h4 class="font-semibold mt-2">Hana</h4>
+              <p class="text-xs text-slate-600 dark:text-white/40">Payments</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="app__footer"></footer>
+    </div>
+  </div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/session.js"></script>
+  <script src="assets/js/nav-config.js"></script>
+  <script src="assets/js/app-shell.js"></script>
+  <script>
+    It.app.boot();
+  </script>
+  
+</body>
+</html>
