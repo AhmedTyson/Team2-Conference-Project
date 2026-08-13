@@ -104,6 +104,12 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(10)->by($request->ip());
         });
 
+        // SEC-03: public weather lookup hits external Open-Meteo on cache
+        // miss — bound it per IP.
+        RateLimiter::for('weather', function (Request $request) {
+            return Limit::perMinute(30)->by($request->ip());
+        });
+
         // SEC-08: checkout initiation creates orders + external Paymob
         // intentions — bound it per user (authenticated route).
         RateLimiter::for('checkout', function (Request $request) {

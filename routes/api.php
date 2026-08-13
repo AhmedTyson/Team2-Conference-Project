@@ -299,7 +299,7 @@ Route::middleware(['auth:api'])->prefix('v1/admin')->name('admin.')->group(funct
 
 // ---- Public contacts & weather
 Route::post('/v1/contacts', [ContactController::class, 'store']);
-Route::get('/weather', [WeatherController::class, 'show']);
+Route::get('/weather', [WeatherController::class, 'show'])->middleware('throttle:weather');
 
 // ---- Surveys (authenticated)
 Route::middleware(['auth:api'])->group(function () {
