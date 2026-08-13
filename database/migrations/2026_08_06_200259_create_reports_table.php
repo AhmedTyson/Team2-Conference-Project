@@ -16,7 +16,9 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->date('from_date');
             $table->date('to_date');
-            $table->string('file_path');
+            $table->string('format', 10)->default('pdf');
+            $table->string('file_path')->nullable();
+            $table->string('status')->default('pending');
             $table->timestamps();
             $table->index('user_id');
         });

@@ -19,14 +19,18 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('profile_image')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->unsignedInteger('ai_generations_count')->default(0);
+            $table->timestamp('ai_reset_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
-            $table->string('token');
+            $table->string('token')->unique();
             $table->timestamp('created_at')->nullable();
+            $table->timestamp('expires_at')->nullable();
         });
 
         Schema::create('sessions', function (Blueprint $table) {

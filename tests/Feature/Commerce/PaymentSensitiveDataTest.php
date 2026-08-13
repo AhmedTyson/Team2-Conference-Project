@@ -92,7 +92,7 @@ class PaymentSensitiveDataTest extends TestCase
         $this->assertStringNotContainsString('4242424242424242', (string) DB::table('payments')->where('id', $payment->id)->value('card_pan'));
     }
 
-    public function test_p2_only_last_four_digits_are_stored(): void
+    public function test_p2_no_card_digits_are_stored(): void
     {
         [$order, $payment] = $this->makePendingPayment(User::factory()->create());
 
@@ -104,7 +104,8 @@ class PaymentSensitiveDataTest extends TestCase
             ],
         ])->assertStatus(200);
 
-        $this->assertEquals('9999', $payment->fresh()->card_pan);
+        $this->assertNull($payment->fresh()->card_pan);
+        $this->assertNotContains('card_pan', DB::getSchemaBuilder()->getColumnListing('payments'));
     }
 
     public function test_p3_raw_payload_is_encrypted_at_rest(): void

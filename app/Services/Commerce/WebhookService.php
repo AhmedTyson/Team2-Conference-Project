@@ -77,11 +77,10 @@ class WebhookService
 
             $cardType = $obj['source_data']['type'] ?? null;
             $cardSubType = $obj['source_data']['sub_type'] ?? null;
-            $cardPan = $obj['source_data']['pan'] ?? null;
 
             if ($success) {
-                DB::transaction(function () use ($payment, $payload, $cardType, $cardSubType, $cardPan) {
-                    $this->paymentRepository->updatePaymentStatus($payment, PaymentStatus::PAID->value, $payload, $cardType, $cardSubType, $cardPan);
+                DB::transaction(function () use ($payment, $payload, $cardType, $cardSubType) {
+                    $this->paymentRepository->updatePaymentStatus($payment, PaymentStatus::PAID->value, $payload, $cardType, $cardSubType);
 
                     if ($payment->order) {
                         $this->orderRepository->updateStatus($payment->order, OrderStatus::PAID->value);
@@ -90,8 +89,8 @@ class WebhookService
 
                 event(new PaymentSucceeded($payment));
             } else {
-                DB::transaction(function () use ($payment, $payload, $cardType, $cardSubType, $cardPan) {
-                    $this->paymentRepository->updatePaymentStatus($payment, PaymentStatus::FAILED->value, $payload, $cardType, $cardSubType, $cardPan);
+                DB::transaction(function () use ($payment, $payload, $cardType, $cardSubType) {
+                    $this->paymentRepository->updatePaymentStatus($payment, PaymentStatus::FAILED->value, $payload, $cardType, $cardSubType);
 
                     if ($payment->order) {
                         $this->orderRepository->updateStatus($payment->order, OrderStatus::FAILED->value);

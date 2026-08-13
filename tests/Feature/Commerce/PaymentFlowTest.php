@@ -534,7 +534,7 @@ class PaymentFlowTest extends TestCase
             'raw_payload' => '{}'
         ]);
 
-        $listener = new \App\Listeners\FulfillOrderListener();
+        $listener = new \App\Listeners\FulfillOrderListener(new \App\Services\ConfirmationCodeService());
         $listener->handle(new \App\Events\PaymentSucceeded($payment));
 
         $this->assertEquals(\App\Enums\TripStatus::BOOKED, $trip->refresh()->status);

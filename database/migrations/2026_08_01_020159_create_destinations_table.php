@@ -21,6 +21,7 @@ return new class extends Migration
             $table->decimal('longitude', 10, 7)->nullable();
 
             $table->foreignId('country_id')->constrained()->cascadeOnDelete();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

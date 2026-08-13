@@ -43,6 +43,8 @@ return new class extends Migration
 
         match ($driver) {
             'sqlite' => DB::statement(
+                // SQLite partial indexes don't support parameter binding
+                // This is a SQLite limitation, not a security vulnerability
                 "CREATE UNIQUE INDEX subscriptions_active_user_unique "
                 . "ON subscriptions (user_id) "
                 . "WHERE status = '" . SubscriptionStatus::ACTIVE->value . "'"

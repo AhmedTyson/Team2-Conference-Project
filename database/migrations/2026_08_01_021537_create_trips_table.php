@@ -31,6 +31,14 @@ return new class extends Migration
             $table->decimal('estimated_cost', 10, 2)->nullable();
 
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('parent_trip_id')->nullable()->constrained('trips')->nullOnDelete();
+            $table->foreignId('original_trip_id')->nullable()->constrained('trips')->nullOnDelete();
+            $table->boolean('is_fork')->default(false);
+            $table->boolean('is_public')->default(false)->after('is_fork');
+            $table->string('source_version_id')->nullable();
+            $table->string('confirmation_code', 8)->unique()->nullable();
+            $table->softDeletes();
+            $table->index('user_id', 'trips_user_id_index');
             $table->timestamps();
         });
     }

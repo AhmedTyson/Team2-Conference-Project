@@ -9,7 +9,7 @@ use App\Models\Commerce\OrderItem;
 
 class OrderRepository implements OrderRepositoryInterface
 {
-    public function createOrder(int $userId, int $totalCents, string $currency, ?string $idempotencyKey = null): Order
+    public function createOrder(int $userId, int $totalCents, string $currency, ?string $idempotencyKey = null, ?string $confirmationCode = null): Order
     {
         return Order::create([
             'user_id' => $userId,
@@ -17,6 +17,7 @@ class OrderRepository implements OrderRepositoryInterface
             'idempotency_key' => $idempotencyKey,
             'total_cents' => $totalCents,
             'currency' => $currency,
+            'confirmation_code' => $confirmationCode,
             // D5: normal pending-payment window is 30 minutes.
             'expires_at' => now()->addMinutes(30),
         ]);

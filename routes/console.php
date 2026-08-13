@@ -13,3 +13,6 @@ Schedule::command('orders:expire-stale')->everyMinute();
 
 // SEC-10 (D2): expire fixed-term subscriptions whose renews_at has passed.
 Schedule::command('subscriptions:expire-stale')->everyMinute();
+
+// SEC-11: delete expired password reset tokens (60-minute expiration).
+Schedule::command('password:expire-tokens')->daily();

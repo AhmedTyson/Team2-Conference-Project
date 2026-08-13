@@ -109,7 +109,7 @@ class EmailIntegrationTest extends TestCase
 
         $html = $mailable->render();
         $this->assertStringContainsString('Japan Explorer', $html);
-        $this->assertStringContainsString('Hi Original Creator', $html);
+        $this->assertStringContainsString('Hi <strong>Original Creator</strong>,', $html);
     }
 
     public function test_subscription_activated_notification_builds_correct_mailable()

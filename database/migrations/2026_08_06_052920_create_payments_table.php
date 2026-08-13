@@ -13,16 +13,15 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('booking_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('order_id')->nullable()->constrained()->cascadeOnDelete();
             $table->string('paymob_transaction_id', 100)->unique();
-            $table->string('status', 20)->default('pending');
+            $table->string('status', 30)->default('pending');
             $table->integer('amount_cents');
             $table->char('currency', 3);
-            $table->string('card_type', 50)->nullable();
-            $table->string('card_subtype', 50)->nullable();
-            $table->string('card_pan', 20)->nullable();
+            $table->text('client_secret')->nullable()->after('currency');
+            $table->text('checkout_url')->nullable()->after('client_secret');
             $table->boolean('hmac_valid');
-            $table->json('raw_payload');
+            $table->text('raw_payload')->nullable();
             $table->timestamps();
         });
     }

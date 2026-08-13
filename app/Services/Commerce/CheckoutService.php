@@ -8,6 +8,7 @@ use App\Interfaces\Commerce\PaymentGatewayInterface;
 use App\Interfaces\Commerce\PaymentRepositoryInterface;
 use App\Models\Account\User;
 use App\Models\Commerce\Order;
+use App\Services\ConfirmationCodeService;
 use App\Strategies\Checkout\CheckoutStrategyFactory;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -19,11 +20,22 @@ class CheckoutService
     public function __construct(
         protected PaymentGatewayInterface $paymentGateway,
         protected OrderRepositoryInterface $orderRepository,
-        protected PaymentRepositoryInterface $paymentRepository
+        protected PaymentRepositoryInterface $paymentRepository,
+        protected ConfirmationCodeService $confirmationCodeService
     ) {}
 
     public function processCheckout(User $user, string $type, int $productId, array $billingData, ?string $idempotencyKey = null): array
     {
+        // SEC-08: a repeated initiation with the same idempotency key reuses the
+        // existing pending checkout instead of creating a new order/payment.
+        if ($idempotencyKey !== null) {
+            $reusable = $this->findReusableCheckout($user->id, $idempotencyKey);
+
+            if ($reusable !== null) {
+                return $reusable;
+            }
+        }
+
         $strategy = CheckoutStrategyFactory::make($type);
 
         $product = $strategy->resolveProduct($productId);
@@ -54,7 +66,9 @@ class CheckoutService
                 }
             }
 
-            $order = $this->orderRepository->createOrder($user->id, $totalCents, 'EGP', $idempotencyKey);
+            $confirmationCode = $this->confirmationCodeService->generateUniqueCode('orders', 'confirmation_code');
+
+            $order = $this->orderRepository->createOrder($user->id, $totalCents, 'EGP', $idempotencyKey, $confirmationCode);
             $this->orderRepository->createOrderItem($order, $product, $totalCents, ['purchase_type' => $strategy->getPurchaseType()]);
 
             return $order;

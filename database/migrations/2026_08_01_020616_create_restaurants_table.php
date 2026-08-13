@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('cuisine');
 
             $table->string('price_range')->nullable();
+            $table->unsignedInteger('price_cents')->nullable();
 
             $table->decimal('rating', 2, 1)->nullable();
             $table->string('address')->nullable();
@@ -24,6 +25,7 @@ return new class extends Migration
 
             $table->foreignId('destination_id')->constrained()->cascadeOnDelete();
             $table->foreignId('category_id')->nullable()->constrained()->nullOnDelete();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

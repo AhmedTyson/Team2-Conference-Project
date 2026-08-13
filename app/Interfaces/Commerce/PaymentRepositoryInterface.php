@@ -10,5 +10,5 @@ interface PaymentRepositoryInterface
 
     public function findByTransactionId(string $transactionId): ?Payment;
 
-    public function updatePaymentStatus(Payment $payment, string $status, array $payload, ?string $cardType, ?string $cardSubType, ?string $cardPan): bool;
+    public function updatePaymentStatus(Payment $payment, string $status, array $payload, ?string $cardType, ?string $cardSubType): bool;
 }

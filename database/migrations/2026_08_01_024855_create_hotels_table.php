@@ -22,6 +22,7 @@ return new class extends Migration
             $table->unsignedTinyInteger('stars')->nullable();
             $table->string('availability')->nullable();
             $table->text('image')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

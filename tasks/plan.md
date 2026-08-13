@@ -1,5 +1,11 @@
 # Implementation Plan: Reorganize routes/api.php + Update Postman Collection
 
+## Migration Cleanup Phase (completed 2026-08-13 — see `tasks/migration_cleanup_plan.md`)
+- Flattened migration history: 44 → **36 files**; every add/alter/drop migration merged into its base `create_*` migration
+- Final schema contract (fresh DB): no experience/company/booking domain tables; payments without card columns (client_secret/checkout_url/raw_payload-text); trips with is_public + confirmation_code; password_reset_tokens with expires_at + unique token
+- Fixed pre-existing failures found during consolidation: `FulfillOrderListener` referenced dropped `bookings` table → `trips`; `CheckoutService` idempotency reuse (SEC-08) wired in; stale `PaymentSensitiveDataTest::p2` + `PaymentFlowTest` listener test updated
+- Gate = green: `php artisan migrate:fresh --seed` ✅ · `php artisan test` → 257 passed (900 assertions) ✅
+
 ## Objective
 Reorganize `routes/api.php` into a consistent, domain-ordered structure matching the 5-domain architecture (Account, Catalog, Trips, Commerce, System) with **zero behavior change** (identical URIs, methods, middleware, route names — 165 endpoints). Then restructure `postman_collection.json` to mirror the new layout and verify full endpoint coverage.
 

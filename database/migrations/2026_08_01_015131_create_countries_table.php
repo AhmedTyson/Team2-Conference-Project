@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('flag_url')->nullable();
             $table->string('currency', 10)->nullable();
             $table->json('languages');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

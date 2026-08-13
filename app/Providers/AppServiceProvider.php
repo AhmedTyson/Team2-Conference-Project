@@ -110,6 +110,31 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(5)->by($request->user('api')?->id ?? $request->ip());
         });
 
+        // SEC-12: password reset token requests - 3 per 10 minutes
+        RateLimiter::for('password_reset', function (Request $request) {
+            return Limit::perMinutes(10, 3)->by($request->ip());
+        });
+
+        // SEC-13: password reset (strong) - 5 per 1 minute
+        RateLimiter::for('password_reset_strong', function (Request $request) {
+            return Limit::perMinute(5)->by($request->ip());
+        });
+
+        // SEC-14: JWT token refresh - 15 per 1 minute
+        RateLimiter::for('refresh_token', function (Request $request) {
+            return Limit::perMinute(15)->by($request->ip());
+        });
+
+        // SEC-15: resend verification email - 6 per 1 minute
+        RateLimiter::for('resend_email', function (Request $request) {
+            return Limit::perMinute(6)->by($request->ip());
+        });
+
+        // SEC-16: general authenticated API requests - 60 per minute
+        RateLimiter::for('api_authenticated', function (Request $request) {
+            return Limit::perMinute(60)->by($request->user('api')?->id ?? $request->ip());
+        });
+
         Relation::enforceMorphMap([
             'user' => User::class,
             'hotel' => Hotel::class,

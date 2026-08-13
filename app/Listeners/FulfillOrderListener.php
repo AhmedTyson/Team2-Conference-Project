@@ -16,12 +16,17 @@ use App\Notifications\SubscriptionActivatedNotification;
 use App\Notifications\TripBookedNotification;
 use App\Enums\TripStatus;
 use App\Services\Trips\TripForkService;
+use App\Services\ConfirmationCodeService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class FulfillOrderListener implements ShouldQueue
 {
+    public function __construct(
+        protected ConfirmationCodeService $confirmationCodeService
+    ) {}
+
     public function handle(PaymentSucceeded $event): void
     {
         $payment = $event->payment;
@@ -90,6 +95,10 @@ class FulfillOrderListener implements ShouldQueue
         if ($user) {
             $user->notify(new TripBookedNotification($trip));
         }
+
+        $confirmationCode = $this->confirmationCodeService->generateUniqueCode('trips', 'confirmation_code');
+
+        $trip->update(['confirmation_code' => $confirmationCode]);
     }
 
     protected function fulfillTripFork(int $userId, int $sourceTripId): void

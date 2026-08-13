@@ -12,7 +12,6 @@ class PaymentRepository implements PaymentRepositoryInterface
     {
         return Payment::create([
             'order_id' => $orderId,
-            'booking_id' => null,
             'paymob_transaction_id' => $transactionId,
             'status' => PaymentStatus::PENDING,
             'amount_cents' => $amountCents,
@@ -29,29 +28,12 @@ class PaymentRepository implements PaymentRepositoryInterface
         return Payment::where('paymob_transaction_id', $transactionId)->first();
     }
 
-    public function updatePaymentStatus(Payment $payment, string $status, array $payload, ?string $cardType, ?string $cardSubType, ?string $cardPan): bool
+    public function updatePaymentStatus(Payment $payment, string $status, array $payload, ?string $cardType, ?string $cardSubType): bool
     {
         return $payment->update([
             'status' => $status,
             'hmac_valid' => true,
             'raw_payload' => $payload,
-            'card_type' => $cardType,
-            'card_subtype' => $cardSubType,
-            'card_pan' => $this->maskPan($cardPan),
         ]);
-    }
-
-    /**
-     * D4 policy: never persist a full PAN. Keep only the last four digits.
-     */
-    protected function maskPan(?string $pan): ?string
-    {
-        if ($pan === null) {
-            return null;
-        }
-
-        $digits = preg_replace('/[^0-9]/', '', $pan);
-
-        return $digits !== '' ? substr($digits, -4) : null;
     }
 }

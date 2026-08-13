@@ -107,6 +107,7 @@ class GenerateReportExcelService
         $weekly  = $this->reportQuery->weeklyRevenue($from, $to);
         $byType  = $this->reportQuery->revenueByBookingType($from, $to);
 
+        $writer->addRow($this->createRowWithStyle([''], $this->pageHeaderStyle(), 25.0));
         $writer->addRow($this->createRowWithStyle(['Revenue Analytics'], $this->titleStyle(), 15.0));
         $writer->addRow($this->createRowWithStyle([''], $this->dataStyle(false), 15.0));
 
@@ -147,6 +148,7 @@ class GenerateReportExcelService
         $status = $this->reportQuery->bookingStatusBreakdown($from, $to);
         $types  = $this->reportQuery->bookingTypesBreakdown($from, $to);
 
+        $writer->addRow($this->createRowWithStyle([''], $this->pageHeaderStyle(), 25.0));
         $writer->addRow($this->createRowWithStyle(['Booking Analytics'], $this->titleStyle(), 15.0));
         $writer->addRow($this->createRowWithStyle([''], $this->dataStyle(false), 15.0));
 
@@ -187,6 +189,7 @@ class GenerateReportExcelService
         $activeTrend = $this->reportQuery->activeUsersTrend($from, $to);
         $returning   = $this->reportQuery->returningUsersTrend($from, $to);
 
+        $writer->addRow($this->createRowWithStyle([''], $this->pageHeaderStyle(), 25.0));
         $writer->addRow($this->createRowWithStyle(['User Analytics'], $this->titleStyle(), 15.0));
         $writer->addRow($this->createRowWithStyle([''], $this->dataStyle(false), 15.0));
 
@@ -227,6 +230,7 @@ class GenerateReportExcelService
         $topRevenueDestinations = $this->reportQuery->topRevenueDestinations($from, $to);
         $peakBookingDays = $this->reportQuery->peakBookingDays($from, $to);
 
+        $writer->addRow($this->createRowWithStyle([''], $this->pageHeaderStyle(), 25.0));
         $writer->addRow($this->createRowWithStyle(['Business Insights'], $this->titleStyle(), 15.0));
         $writer->addRow($this->createRowWithStyle([''], $this->dataStyle(false), 15.0));
 
@@ -252,7 +256,7 @@ class GenerateReportExcelService
         $writer->addRow($this->createRowWithStyle(['Day', 'Bookings'], $this->headerStyle(), 15.0));
         $alt = false;
         foreach ($peakBookingDays as $row) {
-            $writer->addRow($this->createRowWithStyle([$row->day ?? $row['day'], (int) $row->bookings ?? $row['bookings']], $this->dataStyle($alt), 15.0));
+            $writer->addRow($this->createRowWithStyle([$row['day'] ?? $row->day, (int) ($row['bookings'] ?? $row->bookings)], $this->dataStyle($alt), 15.0));
             $alt = !$alt;
         }
     }
@@ -355,5 +359,14 @@ class GenerateReportExcelService
             ->withFontSize(11)
             ->withFontColor(self::WHITE)
             ->withBackgroundColor(self::ROYAL_BLUE);
+    }
+
+    private function pageHeaderStyle(): Style
+    {
+        return (new Style())
+            ->withFontBold(true)
+            ->withFontSize(10)
+            ->withFontColor(self::WHITE)
+            ->withBackgroundColor(self::NAVY);
     }
 }

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('contributor_name');
             $table->integer('amount_cents');
             $table->text('message')->nullable();
+            $table->index('trip_id', 'trip_contributions_trip_id_index');
             $table->timestamps();
         });
     }

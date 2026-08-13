@@ -20,6 +20,8 @@ return new class extends Migration
 
             $table->foreignId('trip_id')->constrained()->cascadeOnDelete();
             $table->foreignId('destination_id')->constrained()->cascadeOnDelete();
+            $table->index('trip_id', 'trip_destinations_trip_id_index');
+            $table->index('destination_id', 'trip_destinations_destination_id_index');
             $table->timestamps();
         });
     }
