@@ -38,19 +38,34 @@
     return !!It.readToken();
   }
 
-  /** First meaningful/role from a user's roles list. */
+  /** First meaningful role from a user's roles list. */
   function roleOf(user) {
     if (!user) return null;
     let list = user.roles || user.role;
     if (typeof list === "string") list = [list];
+    if (Array.isArray(list) && list.length && typeof list[0] === "object" && list[0].name) {
+      list = list.map(function (r) { return typeof r === "object" ? r.name : r; });
+    }
     list = list || [];
     if (list.indexOf("super_admin") !== -1) return "super_admin";
     if (list.indexOf("admin") !== -1) return "admin";
+    if (list.indexOf("agency") !== -1) return "agency";
+    if (list.indexOf("user") !== -1 || list.indexOf("customer") !== -1) return "customer";
     return list.length ? list[0] : null;
   }
 
   function isAdminRole(role) {
     return role === "admin" || role === "super_admin";
+  }
+
+  function getRedirectPath(role) {
+    if (role === "super_admin" || role === "admin") {
+      return (It.CONFIG && It.CONFIG.adminUrl) || "/admin/index.html";
+    }
+    if (role === "agency") {
+      return (It.CONFIG && It.CONFIG.agencyUrl) || "/agency/index.html";
+    }
+    return (It.CONFIG && It.CONFIG.dashboardUrl) || "/dashboard.html";
   }
 
   /**
@@ -173,6 +188,7 @@
     decodeJwt: decodeJwt,
     roleOf: roleOf,
     isAdminRole: isAdminRole,
+    getRedirectPath: getRedirectPath,
     currentUser: currentUser,
     extractUser: extractUser,
     bootAuth: resolveSession,

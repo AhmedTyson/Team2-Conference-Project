@@ -24,15 +24,18 @@
         password: { on: "blur", rules: [R.required] },
       },
       successNote: "li-success-note",
-onSuccess: function (body, form) {
+      onSuccess: function (body, form) {
         const token = It.extractToken(body);
         if (token) It.storeToken(token);
+        const user = (body && body.data && body.data.user) || (body && body.user) || (body && body.data) || It._cachedUser;
+        if (user && typeof user === "object") {
+          try { localStorage.setItem("itinari_user", JSON.stringify(user)); } catch (e) {}
+        }
         fb.banner("Logged in — taking you to your dashboard…", "is-ok");
         setTimeout(function () {
-          // role-aware landing: admin → admin shell, everyone else → user dashboard
-          const user = (body && body.user) || It._cachedUser;
           const role = It.session.roleOf(user);
-          global.location.href = It.session.isAdminRole(role) ? It.CONFIG.adminUrl : (role === "agency" ? It.CONFIG.role.agency : It.CONFIG.dashboardUrl);
+          const destination = It.session.getRedirectPath(role);
+          global.location.href = destination;
         }, 900);
       },
     },
@@ -338,9 +341,14 @@ form.addEventListener("submit", async function (e) {
   function init() {
     const page = document.body.dataset.page;
 
-    // Auto-redirect authenticated user away from login/register to dashboard
+    // Auto-redirect authenticated user away from login/register to their role-specific dashboard
     if ((page === "login" || page === "register") && It.session.hasToken()) {
-      global.location.replace("/home.html");
+      It.session.currentUser().then(function (user) {
+        const role = It.session.roleOf(user);
+        global.location.replace(It.session.getRedirectPath(role));
+      }).catch(function () {
+        global.location.replace("/dashboard.html");
+      });
       return;
     }
 

@@ -10,6 +10,7 @@
     // frontend static pages (served from this site's root, e.g. :8080)
     dashboardUrl: "/dashboard.html",
     adminUrl: "/admin/index.html",
+    agencyUrl: "/agency/index.html",
     tokenKey: "itinari_token",
     // token persistence: "localStorage" | "memory"
     tokenStorage: "localStorage",
@@ -22,12 +23,13 @@
       me: "/user",
       logout: "/logout",
     },
-    // role → landing/gate mapping (phase 8)
-    role: {
-      dashboard: "/dashboard.html",
-      admin: "/admin/index.html",
+    // role → landing/gate mapping
+    roleUrl: {
       super_admin: "/admin/index.html",
+      admin: "/admin/index.html",
       agency: "/agency/index.html",
+      user: "/dashboard.html",
+      customer: "/dashboard.html",
     },
   };
 
