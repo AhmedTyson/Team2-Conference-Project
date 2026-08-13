@@ -10,6 +10,7 @@ use App\Services\Trips\TripService;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class TripController extends Controller
 {
@@ -23,6 +24,7 @@ class TripController extends Controller
     public function create(Request $request)
     {
         $data = $this->tripService->getCreationData();
+
         return ApiResponse::success($data, 'Trip creation data retrieved successfully');
     }
 
@@ -38,8 +40,8 @@ class TripController extends Controller
 
     public function show(Request $request, Trip $trip)
     {
-        if ($trip->user_id !== $request->user()->id) {
-            return ApiResponse::fail('Trip not found or does not belong to this user.', 'not_found', 404);
+        if (Gate::forUser($request->user())->denies('view', $trip)) {
+            return ApiResponse::fail('Trip not found', 'not_found', 404);
         }
 
         $trip->load(['itineraryItems.itemable', 'destinations']);
@@ -54,13 +56,13 @@ class TripController extends Controller
 
     public function attach(Request $request, Trip $trip, string $type): JsonResponse
     {
-        if ($trip->user_id !== $request->user()->id) {
+        if (Gate::forUser($request->user())->denies('view', $trip)) {
             return ApiResponse::fail('Trip not found', 'not_found', 404);
         }
 
         $allowedTypes = ['hotel', 'flight', 'restaurant', 'attraction'];
-        if (!in_array($type, $allowedTypes)) {
-            return ApiResponse::fail('Invalid attachment type. Allowed types: ' . implode(', ', $allowedTypes), 'invalid_type', 400);
+        if (! in_array($type, $allowedTypes)) {
+            return ApiResponse::fail('Invalid attachment type. Allowed types: '.implode(', ', $allowedTypes), 'invalid_type', 400);
         }
 
         $validated = $request->validate([
@@ -68,28 +70,28 @@ class TripController extends Controller
         ]);
 
         $itemId = $validated['item_id'];
-        $relation = $type . 's';
+        $relation = $type.'s';
 
         // Check if item exists
-        $modelClass = 'App\\Models\\Catalog\\' . ucfirst($type);
-        if (!class_exists($modelClass) || !$modelClass::find($itemId)) {
-            return ApiResponse::fail(ucfirst($type) . ' not found', 'not_found', 404);
+        $modelClass = 'App\\Models\\Catalog\\'.ucfirst($type);
+        if (! class_exists($modelClass) || ! $modelClass::find($itemId)) {
+            return ApiResponse::fail(ucfirst($type).' not found', 'not_found', 404);
         }
 
         // Check if already attached. Using DB table explicitly if possible, or just relationship exist check.
         // Easiest is to query relationship
-        if ($trip->$relation()->where($modelClass::make()->getTable() . '.id', $itemId)->exists()) {
-            return ApiResponse::fail(ucfirst($type) . ' is already attached to this trip', 'already_attached', 409);
+        if ($trip->$relation()->where($modelClass::make()->getTable().'.id', $itemId)->exists()) {
+            return ApiResponse::fail(ucfirst($type).' is already attached to this trip', 'already_attached', 409);
         }
 
         $trip->$relation()->attach($itemId);
 
-        return ApiResponse::success(null, ucfirst($type) . ' attached to trip successfully');
+        return ApiResponse::success(null, ucfirst($type).' attached to trip successfully');
     }
 
     public function detach(Request $request, Trip $trip, int $itemId): JsonResponse
     {
-        if ($trip->user_id !== $request->user()->id) {
+        if (Gate::forUser($request->user())->denies('view', $trip)) {
             return ApiResponse::fail('Trip not found', 'not_found', 404);
         }
 
@@ -103,7 +105,7 @@ class TripController extends Controller
             }
         }
 
-        if (!$detached) {
+        if (! $detached) {
             return ApiResponse::fail('Item not found attached to this trip', 'not_found', 404);
         }
 

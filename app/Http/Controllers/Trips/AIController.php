@@ -3,17 +3,19 @@
 namespace App\Http\Controllers\Trips;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Trips\AiTripRequest;
 use App\Models\Trips\Trip;
-use App\Services\Trips\AiUsageService;
 use App\Services\GroqService;
+use App\Services\Trips\AiUsageService;
 use App\Support\ApiResponse;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class AIController extends Controller
 {
-    use AuthorizesRequests;    public function enhance(Request $request)
+    use AuthorizesRequests;
+
+    public function enhance(Request $request)
     {
         $request->validate(['content' => 'required|string']);
 
@@ -35,7 +37,7 @@ class AIController extends Controller
         }
 
         // SEC-02: ownership gate mirrors TripController::show — 404, no existence leak.
-        if ($trip->user_id !== $request->user()->id) {
+        if (Gate::forUser($request->user())->denies('view', $trip)) {
             return ApiResponse::fail('Trip not found', 'not_found', 404);
         }
 

@@ -12,6 +12,7 @@ use App\Services\Catalog\Fixtures\OpenStreetService;
 use App\Support\ApiResponse;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class MapController extends Controller
 {
@@ -59,7 +60,7 @@ class MapController extends Controller
     public function trip(Request $request, Trip $trip, OpenStreetService $osm)
     {
         // SEC-02: ownership gate mirrors TripController::show — 404, no existence leak.
-        if ($trip->user_id !== $request->user()->id) {
+        if (Gate::forUser($request->user())->denies('view', $trip)) {
             return ApiResponse::fail('Trip not found', 'not_found', 404);
         }
 
