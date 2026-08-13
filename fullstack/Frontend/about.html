@@ -7,7 +7,24 @@
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>tailwind.config = { darkMode: 'class' };</script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            background: "hsl(var(--background))",
+            foreground: "hsl(var(--foreground))",
+            card: "hsl(var(--card))",
+            "card-foreground": "hsl(var(--card-foreground))",
+            border: "hsl(var(--border))",
+            muted: "hsl(var(--muted))",
+            "muted-foreground": "hsl(var(--muted-foreground))"
+          }
+        }
+      }
+    };
+  </script>
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -52,60 +69,60 @@
       <div class="max-w-4xl mx-auto w-full mt-8">
         <div class="glass-card p-8">
           <h2 class="section-title">Our Mission</h2>
-          <p class="text-slate-600 dark:text-white/70 text-sm leading-relaxed mt-2">
+          <p class="text-muted-foreground text-sm leading-relaxed mt-2">
             We make travel seamless, personal, and unforgettable. From the bustling streets of New York to the sun-drenched islands of Greece, Itinera connects you with authentic stays and curated experiences.
           </p>
-          <div class="h-px bg-slate-200 dark:bg-white/10 my-6"></div>
+          <div class="h-px bg-muted my-6"></div>
 
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div class="glass-card p-5 flex gap-4 items-start">
-              <i class="fas fa-bullseye text-2xl text-slate-600 dark:text-white/60 mt-1" aria-hidden="true"></i>
+              <i class="fas fa-bullseye text-2xl text-muted-foreground mt-1" aria-hidden="true"></i>
               <div>
                 <h4 class="font-semibold">Our story</h4>
-                <p class="text-sm text-slate-600 dark:text-white/50 mt-1">Born from a student team project at the Conference Project, Itinera grew into a full travel platform — planning, booking, weather, and reviews in one place.</p>
+                <p class="text-sm text-muted-foreground mt-1">Born from a student team project at the Conference Project, Itinera grew into a full travel platform — planning, booking, weather, and reviews in one place.</p>
               </div>
             </div>
             <div class="glass-card p-5 flex gap-4 items-start">
-              <i class="fas fa-heart text-2xl text-slate-600 dark:text-white/60 mt-1" aria-hidden="true"></i>
+              <i class="fas fa-heart text-2xl text-muted-foreground mt-1" aria-hidden="true"></i>
               <div>
                 <h4 class="font-semibold">What we value</h4>
-                <p class="text-sm text-slate-600 dark:text-white/50 mt-1">Authenticity, transparency, and human support. Every journey we craft is built on those three pillars.</p>
+                <p class="text-sm text-muted-foreground mt-1">Authenticity, transparency, and human support. Every journey we craft is built on those three pillars.</p>
               </div>
             </div>
           </div>
 
-          <div class="h-px bg-slate-200 dark:bg-white/10 my-6"></div>
-          <h3 class="text-lg font-semibold mb-4 flex items-center gap-2"><i class="fas fa-users text-slate-600 dark:text-white/40" aria-hidden="true"></i>The Team</h3>
+          <div class="h-px bg-muted my-6"></div>
+          <h3 class="text-lg font-semibold mb-4 flex items-center gap-2"><i class="fas fa-users text-muted-foreground" aria-hidden="true"></i>The Team</h3>
           <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
             <div class="glass-card p-4 text-center">
-              <div class="w-12 h-12 rounded-full bg-slate-200 dark:bg-white/10 mx-auto flex items-center justify-center text-lg font-bold">A</div>
+              <div class="w-12 h-12 rounded-full bg-muted mx-auto flex items-center justify-center text-lg font-bold">A</div>
               <h4 class="font-semibold mt-2">Amira</h4>
-              <p class="text-xs text-slate-600 dark:text-white/40">Founder</p>
+              <p class="text-xs text-muted-foreground">Founder</p>
             </div>
             <div class="glass-card p-4 text-center">
-              <div class="w-12 h-12 rounded-full bg-slate-200 dark:bg-white/10 mx-auto flex items-center justify-center text-lg font-bold">K</div>
+              <div class="w-12 h-12 rounded-full bg-muted mx-auto flex items-center justify-center text-lg font-bold">K</div>
               <h4 class="font-semibold mt-2">Karim</h4>
-              <p class="text-xs text-slate-600 dark:text-white/40">Experience</p>
+              <p class="text-xs text-muted-foreground">Experience</p>
             </div>
             <div class="glass-card p-4 text-center">
-              <div class="w-12 h-12 rounded-full bg-slate-200 dark:bg-white/10 mx-auto flex items-center justify-center text-lg font-bold">S</div>
+              <div class="w-12 h-12 rounded-full bg-muted mx-auto flex items-center justify-center text-lg font-bold">S</div>
               <h4 class="font-semibold mt-2">Sam</h4>
-              <p class="text-xs text-slate-600 dark:text-white/40">Engineering</p>
+              <p class="text-xs text-muted-foreground">Engineering</p>
             </div>
             <div class="glass-card p-4 text-center">
-              <div class="w-12 h-12 rounded-full bg-slate-200 dark:bg-white/10 mx-auto flex items-center justify-center text-lg font-bold">L</div>
+              <div class="w-12 h-12 rounded-full bg-muted mx-auto flex items-center justify-center text-lg font-bold">L</div>
               <h4 class="font-semibold mt-2">Layla</h4>
-              <p class="text-xs text-slate-600 dark:text-white/40">Design</p>
+              <p class="text-xs text-muted-foreground">Design</p>
             </div>
             <div class="glass-card p-4 text-center">
-              <div class="w-12 h-12 rounded-full bg-slate-200 dark:bg-white/10 mx-auto flex items-center justify-center text-lg font-bold">O</div>
+              <div class="w-12 h-12 rounded-full bg-muted mx-auto flex items-center justify-center text-lg font-bold">O</div>
               <h4 class="font-semibold mt-2">Omar</h4>
-              <p class="text-xs text-slate-600 dark:text-white/40">Operations</p>
+              <p class="text-xs text-muted-foreground">Operations</p>
             </div>
             <div class="glass-card p-4 text-center">
-              <div class="w-12 h-12 rounded-full bg-slate-200 dark:bg-white/10 mx-auto flex items-center justify-center text-lg font-bold">H</div>
+              <div class="w-12 h-12 rounded-full bg-muted mx-auto flex items-center justify-center text-lg font-bold">H</div>
               <h4 class="font-semibold mt-2">Hana</h4>
-              <p class="text-xs text-slate-600 dark:text-white/40">Payments</p>
+              <p class="text-xs text-muted-foreground">Payments</p>
             </div>
           </div>
         </div>

@@ -100,37 +100,18 @@
       // 2. Append Theme toggle
       if (toggle) userWrap.appendChild(toggle);
 
-      if (user) {
-        // 3. Append User Avatar
-        var chip = document.createElement("a");
-        chip.href = "/profile.html";
-        chip.className = "app__username";
-        chip.title = "Your profile";
-        var img = avatarUrl(user);
-        if (img) {
-          chip.innerHTML = '<img class="user-avatar-img" src="' + img + '" alt="" width="26" height="26">';
-        } else {
-          var av = document.createElement("span");
-          av.className = "user-avatar-letter";
-          av.textContent = initialsOf(user && user.name);
-          chip.appendChild(av);
-        }
-        userWrap.appendChild(chip);
+      // Always show Log in and Sign up buttons, even if logged in, as requested
+      var loginLink = document.createElement("a");
+      loginLink.href = "/login.html";
+      loginLink.className = "btn btn--ghost btn--login-nav";
+      loginLink.textContent = "Log in";
+      userWrap.appendChild(loginLink);
 
-      } else {
-        // Guest layout: show Log in and Sign up buttons!
-        var loginLink = document.createElement("a");
-        loginLink.href = "/login.html";
-        loginLink.className = "btn btn--ghost btn--login-nav";
-        loginLink.textContent = "Log in";
-        userWrap.appendChild(loginLink);
-
-        var signupLink = document.createElement("a");
-        signupLink.href = "/register.html";
-        signupLink.className = "btn btn--primary btn--signup-nav";
-        signupLink.textContent = "Sign up";
-        userWrap.appendChild(signupLink);
-      }
+      var signupLink = document.createElement("a");
+      signupLink.href = "/register.html";
+      signupLink.className = "btn btn--primary btn--signup-nav";
+      signupLink.textContent = "Sign up";
+      userWrap.appendChild(signupLink);
 
       // 5. Create Hamburger Menu Overlay
       var overlay = document.getElementById("app-burger-menu");

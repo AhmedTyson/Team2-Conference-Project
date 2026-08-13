@@ -341,16 +341,16 @@ form.addEventListener("submit", async function (e) {
   function init() {
     const page = document.body.dataset.page;
 
-    // Auto-redirect authenticated user away from login/register to their role-specific dashboard
-    if ((page === "login" || page === "register") && It.session.hasToken()) {
-      It.session.currentUser().then(function (user) {
-        const role = It.session.roleOf(user);
-        global.location.replace(It.session.getRedirectPath(role));
-      }).catch(function () {
-        global.location.replace("/dashboard.html");
-      });
-      return;
-    }
+    // Auto-redirect removed so users can visit login/register freely
+    // if ((page === "login" || page === "register") && It.session.hasToken()) {
+    //   It.session.currentUser().then(function (user) {
+    //     const role = It.session.roleOf(user);
+    //     global.location.replace(It.session.getRedirectPath(role));
+    //   }).catch(function () {
+    //     global.location.replace("/dashboard.html");
+    //   });
+    //   return;
+    // }
 
     if (PAGES[page]) initForm(page, PAGES[page]);
     if (page === "verify") initVerify();
