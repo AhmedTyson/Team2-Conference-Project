@@ -41,6 +41,7 @@
   /** First meaningful role from a user's roles list. */
   function roleOf(user) {
     if (!user) return null;
+    if (user.user && typeof user.user === "object") user = user.user;
     let list = user.roles || user.role;
     if (typeof list === "string") list = [list];
     if (Array.isArray(list) && list.length && typeof list[0] === "object" && list[0].name) {
@@ -69,17 +70,17 @@
   }
 
   /**
-   * Pull the user object out of a /api/user response body, tolerant of the
-   * shapes actually seen in this codebase's own contract docs (tasks/plan.md:
-   * "GET /me / GET /api/user → profile + roles") and login handler (auth.js
-   * reads body.user directly, no wrapper): a raw user object, {user:{...}},
-   * or {data:{...}} (Laravel API Resource default). Requires an id or email
-   * so we don't mistake an unrelated envelope for the user.
+   * Pull the user object out of a /api/user response body or login response
    */
   function extractUser(body) {
     if (!body || typeof body !== "object") return null;
+    if (body.data && typeof body.data === "object") {
+      if (body.data.user && typeof body.data.user === "object") return body.data.user;
+      if (!Array.isArray(body.data) && (body.data.id !== undefined || body.data.email !== undefined)) {
+        return body.data;
+      }
+    }
     if (body.user && typeof body.user === "object") return body.user;
-    if (body.data && typeof body.data === "object" && !Array.isArray(body.data)) return body.data;
     if (body.id !== undefined || body.email !== undefined) return body;
     return null;
   }
@@ -90,19 +91,33 @@
    */
   async function currentUser() {
     if (_user) return _user;
-    const payload = tokenPayload();
-    if (!payload) return null;
+    if (!hasToken()) return null;
+
+    try {
+      const stored = localStorage.getItem("itinari_user");
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        _user = extractUser(parsed) || parsed;
+      }
+    } catch (e) {}
+
     try {
       const res = await It.apiGet(It.CONFIG.routes.me + "?_t=" + Date.now(), { auth: true });
       if (res.ok) {
         const user = extractUser(res.body);
         if (user) {
           _user = user;
+          try { localStorage.setItem("itinari_user", JSON.stringify(user)); } catch (e) {}
           return _user;
         }
+      } else if (res.status === 401 || res.status === 403) {
+        _user = null;
+        return null;
       }
-    } catch (e) { /* network — caller decides */ }
-    return null;
+    } catch (e) {
+      if (_user) return _user;
+    }
+    return _user;
   }
 
   const PUBLIC_PAGES = [
