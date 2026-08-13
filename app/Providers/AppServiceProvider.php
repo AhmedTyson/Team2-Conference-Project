@@ -10,8 +10,8 @@ use App\Interfaces\Catalog\DestinationRepositoryInterface;
 use App\Interfaces\Catalog\FlightRepositoryInterface;
 use App\Interfaces\Catalog\HotelRepositoryInterface;
 use App\Interfaces\Catalog\RestaurantRepositoryInterface;
-use App\Interfaces\Commerce\OrderRepositoryInterface;
 use App\Interfaces\Commerce\AgencyAssignmentRepositoryInterface;
+use App\Interfaces\Commerce\OrderRepositoryInterface;
 use App\Interfaces\Commerce\PaymentGatewayInterface;
 use App\Interfaces\Commerce\PaymentRepositoryInterface;
 use App\Interfaces\Commerce\PlanRepositoryInterface;
@@ -37,8 +37,8 @@ use App\Repositories\Catalog\DestinationRepository;
 use App\Repositories\Catalog\FlightRepository;
 use App\Repositories\Catalog\HotelRepository;
 use App\Repositories\Catalog\RestaurantRepository;
-use App\Repositories\Commerce\OrderRepository;
 use App\Repositories\Commerce\AgencyAssignmentRepository;
+use App\Repositories\Commerce\OrderRepository;
 use App\Repositories\Commerce\PaymentRepository;
 use App\Repositories\Commerce\PlanRepository;
 use App\Repositories\System\ContactMessageRepository;
@@ -58,7 +58,7 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->app->bind(\App\Interfaces\Commerce\AgencyAssignmentRepositoryInterface::class, \App\Repositories\Commerce\AgencyAssignmentRepository::class);
+        $this->app->bind(AgencyAssignmentRepositoryInterface::class, AgencyAssignmentRepository::class);
         $this->app->bind(PaymentGatewayInterface::class, PaymobGateway::class);
         $this->app->bind(OrderRepositoryInterface::class, OrderRepository::class);
         $this->app->bind(PaymentRepositoryInterface::class, PaymentRepository::class);
@@ -116,6 +116,11 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(5)->by($request->user('api')?->id ?? $request->ip());
         });
 
+        // SEC-03: public contact form writes to DB — bound per IP.
+        RateLimiter::for('contacts', function (Request $request) {
+            return Limit::perMinute(5)->by($request->ip());
+        });
+
         // SEC-12: password reset token requests - 3 per 10 minutes
         RateLimiter::for('password_reset', function (Request $request) {
             return Limit::perMinutes(10, 3)->by($request->ip());
@@ -153,5 +158,3 @@ class AppServiceProvider extends ServiceProvider
         ]);
     }
 }
-
-

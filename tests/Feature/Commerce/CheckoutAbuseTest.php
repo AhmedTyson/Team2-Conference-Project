@@ -69,6 +69,23 @@ class CheckoutAbuseTest extends TestCase
         $this->assertDatabaseHas('payments', ['order_id' => $orderId, 'status' => PaymentStatus::PENDING->value]);
     }
 
+    public function test_p17_trip_package_requires_ownership(): void
+    {
+        $owner = User::factory()->create();
+        $intruder = User::factory()->create();
+
+        $trip = $this->makeTrip($owner);
+
+        $this->actingAs($intruder, 'api')
+            ->postJson('/api/v1/checkout/initiate', [
+                'type' => 'trip_package',
+                'trip_id' => $trip->id,
+            ])
+            ->assertStatus(403);
+
+        $this->assertDatabaseMissing('orders', ['user_id' => $intruder->id]);
+    }
+
     public function test_p11_checkout_exceeding_rate_limit_is_rejected(): void
     {
         Cache::flush();

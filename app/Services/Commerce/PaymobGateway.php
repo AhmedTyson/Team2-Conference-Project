@@ -23,6 +23,13 @@ class PaymobGateway implements PaymentGatewayInterface
         $this->publicKey = config('paymob.public_key', '');
         $this->hmac = config('paymob.hmac', '');
 
+        // SEC-05: in production an empty HMAC secret makes webhook verification
+        // trivially forgeable (HMAC computed with empty key) and silently grants
+        // free fulfillment. Fail fast instead of accepting payments.
+        if ($this->hmac === '' && app()->environment('production')) {
+            throw new Exception('PAYMOB_HMAC is not configured for production.');
+        }
+
         $integrationString = config('paymob.integration_ids', '');
         $this->integrationIds = array_filter(array_map('intval', explode(',', $integrationString)));
     }
@@ -109,7 +116,7 @@ class PaymobGateway implements PaymentGatewayInterface
 
             return [
                 'success' => false,
-                'message' => 'Payment gateway error: '.$e->getMessage(),
+                'message' => 'Payment gateway error',
             ];
         }
     }

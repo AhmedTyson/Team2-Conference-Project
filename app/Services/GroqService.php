@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Http\Requests\Trips\AiTripRequest;
+use App\Models\Account\User;
 use App\Models\Catalog\Attraction;
 use App\Models\Catalog\Country;
 use App\Models\Catalog\Destination;
@@ -133,13 +134,13 @@ class GroqService
                 $this->aiUsageService->restoreQuota($request->user());
             }
             Log::error('Error generating content: '.$e->getMessage());
-            throw new \RuntimeException($e->getMessage() ?: 'Service unavailable. Please try again later.');
+            throw new \RuntimeException('Service unavailable. Please try again later.');
         }
 
         return $response['choices'][0]['message']['content'] ?? $request->content;
     }
 
-    public function review(Trip $trip, string $trip_title, $trip_items, ?\App\Models\Account\User $user = null)
+    public function review(Trip $trip, string $trip_title, $trip_items, ?User $user = null)
     {
 
         try {

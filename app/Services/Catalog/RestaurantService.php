@@ -2,9 +2,7 @@
 
 namespace App\Services\Catalog;
 
-use App\Models\Catalog\Restaurant;
 use App\Interfaces\Catalog\RestaurantRepositoryInterface;
-use App\Repositories\Catalog\RestaurantRepository;
 
 class RestaurantService
 {
@@ -43,12 +41,14 @@ class RestaurantService
     public function update($id, array $data)
     {
         $restaurant = $this->restaurantRepository->findById($id);
+
         return $this->restaurantRepository->update($restaurant, $data);
     }
 
     public function destroy($id)
     {
         $restaurant = $this->restaurantRepository->findById($id);
+
         return $this->restaurantRepository->delete($restaurant);
     }
 }

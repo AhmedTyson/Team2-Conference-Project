@@ -3,7 +3,6 @@
 // Account
 use App\Http\Controllers\Account\AdminUserController;
 use App\Http\Controllers\Account\AuthController;
-
 // Catalog
 use App\Http\Controllers\Catalog\AdminAttractionController;
 use App\Http\Controllers\Catalog\AdminCategoryController;
@@ -18,38 +17,35 @@ use App\Http\Controllers\Catalog\DestinationController;
 use App\Http\Controllers\Catalog\FlightController;
 use App\Http\Controllers\Catalog\HotelController;
 use App\Http\Controllers\Catalog\RestaurantController;
-use App\Http\Controllers\System\AdminFlagController;
-
+use App\Http\Controllers\Commerce\AdminAgencyController;
 // Commerce
 use App\Http\Controllers\Commerce\AdminAnalyticsController;
-use App\Http\Controllers\Commerce\CheckoutController;
-use App\Http\Controllers\Commerce\AgencyRequestController;
-use App\Http\Controllers\Commerce\AdminAgencyController;
 use App\Http\Controllers\Commerce\AgencyAssignmentController;
+use App\Http\Controllers\Commerce\AgencyRequestController;
+use App\Http\Controllers\Commerce\CheckoutController;
 use App\Http\Controllers\Commerce\PaymobWebhookController;
 use App\Http\Controllers\Commerce\PlanController;
-
+use App\Http\Controllers\ConciergeController;
 // System
+use App\Http\Controllers\System\AdminFlagController;
 use App\Http\Controllers\System\AdminNotificationController;
 use App\Http\Controllers\System\ContactController;
 use App\Http\Controllers\System\ContactMessageController;
 use App\Http\Controllers\System\DashboardController;
+use App\Http\Controllers\System\FlagController;
 use App\Http\Controllers\System\NotificationController;
 use App\Http\Controllers\System\ReportController;
 use App\Http\Controllers\System\SettingController;
 use App\Http\Controllers\System\SiteSettingsController;
 use App\Http\Controllers\System\SurveyController;
-use App\Http\Controllers\System\WeatherController;
-use App\Http\Controllers\System\FlagController;
 // Trips
+use App\Http\Controllers\System\WeatherController;
 use App\Http\Controllers\Trips\AdminReviewController;
 use App\Http\Controllers\Trips\AdminTripController;
 use App\Http\Controllers\Trips\AIController;
 use App\Http\Controllers\Trips\InteractionController;
 use App\Http\Controllers\Trips\MapController;
 use App\Http\Controllers\Trips\TripController;
-
-use App\Http\Controllers\ConciergeController;
 use App\Services\GroqService;
 use Illuminate\Support\Facades\Route;
 
@@ -208,7 +204,7 @@ Route::middleware(['auth:api'])->prefix('v1/trips')->group(function () {
     Route::post('/', [TripController::class, 'store']);
     Route::post('/{trip}/attach/{type}', [TripController::class, 'attach']);
     Route::delete('/{trip}/detach/{id}', [TripController::class, 'detach']);
-    
+
     // Deprecated shim: direct forking is disabled. Use /v1/checkout/initiate instead.
     Route::post('/{trip}/fork', [TripController::class, 'fork']);
 });
@@ -298,7 +294,7 @@ Route::middleware(['auth:api'])->prefix('v1/admin')->name('admin.')->group(funct
 // ============================================================
 
 // ---- Public contacts & weather
-Route::post('/v1/contacts', [ContactController::class, 'store']);
+Route::post('/v1/contacts', [ContactController::class, 'store'])->middleware('throttle:contacts');
 Route::get('/weather', [WeatherController::class, 'show'])->middleware('throttle:weather');
 
 // ---- Surveys (authenticated)
@@ -357,7 +353,6 @@ Route::middleware(['auth:api', 'role:admin|super_admin'])
         Route::get('/reports/{id}/download', [ReportController::class, 'download']);
     });
 
-
 Route::middleware(['auth:api'])->prefix('v1')->group(function () {
     Route::post('/agency-requests', [AgencyRequestController::class, 'store']);
     Route::get('/admin/agency-requests', [AdminAgencyController::class, 'adminIndex'])
@@ -371,8 +366,7 @@ Route::middleware(['auth:api'])->prefix('v1')->group(function () {
     Route::get('/agency-assignments', [AgencyAssignmentController::class, 'myAssignments']);
     Route::post('/agency-assignments/{assignment}/cancel', [AgencyAssignmentController::class, 'cancel']);
 
-
-   // Plans
+    // Plans
     Route::post('/agency-assignments/{assignment}/report', [FlagController::class, 'store'])->middleware('auth:api');
     Route::get('/admin/flags', [AdminFlagController::class, 'index'])->middleware('role:admin|super_admin');
     Route::post('/admin/flags/{flag}/approve', [AdminFlagController::class, 'approve'])->middleware('role:admin|super_admin');

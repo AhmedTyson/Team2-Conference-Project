@@ -46,6 +46,12 @@ class CheckoutService
             throw new AuthorizationException('You are not authorized to fork this trip.');
         }
 
+        // trip_package books the buyer's OWN trip — initiate checkout on another
+        // user's trip only leaks existence + creates dangling orders.
+        if ($type === 'trip_package' && $product->user_id !== $user->id) {
+            throw new AuthorizationException('You are not authorized to book this trip.');
+        }
+
         $totalCents = $strategy->calculatePrice($product);
 
         if ($totalCents <= 0) {

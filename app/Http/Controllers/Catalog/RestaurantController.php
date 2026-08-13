@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Catalog;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\RestaurantResource;
 use App\Services\Catalog\RestaurantService;
-use App\Models\Catalog\Restaurant;
-use App\Support\ApiResponse;
 
 class RestaurantController extends Controller
 {
@@ -20,21 +18,14 @@ class RestaurantController extends Controller
     public function index()
     {
         $restaurants = $this->restaurantService->getPublicList();
+
         return RestaurantResource::collection($restaurants);
     }
 
     public function show($id)
     {
         $restaurant = $this->restaurantService->showPublic($id);
+
         return new RestaurantResource($restaurant);
-    }
-
-    public function destroy($id)
-    {
-        authorize('delete', Restaurant::class);
-
-        $restaurant = $this->restaurantService->destroy($id);
-
-        return ApiResponse::success(null, 'Restaurant deleted successfully');
     }
 }
