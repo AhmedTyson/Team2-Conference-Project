@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Support\Constants\StatusCode;
 use Illuminate\Http\JsonResponse;
 
 class ApiResponse
@@ -9,7 +10,7 @@ class ApiResponse
     public static function success(
         mixed $data = null,
         string $message = 'Success',
-        int $status = 200,
+        int $status = StatusCode::HTTP_200,
         array $extra = []
     ): JsonResponse {
         $payload = [
@@ -24,7 +25,7 @@ class ApiResponse
     public static function fail(
         string $message,
         string $type = 'http_error',
-        int $status = 400,
+        int $status = StatusCode::HTTP_400,
         array $extras = []
     ): JsonResponse {
         $payload = [
