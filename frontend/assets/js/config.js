@@ -6,7 +6,12 @@
   "use strict";
 
   var CONFIG = {
-    apiBase: "http://127.0.0.1:8001/api",
+    apiBase:
+      global.location &&
+      global.location.hostname !== "127.0.0.1" &&
+      global.location.hostname !== "localhost"
+        ? "/api"
+        : "http://127.0.0.1:8001/api",
     // frontend static pages (served from this site's root, e.g. :8080)
     dashboardUrl: "/dashboard.html",
     adminUrl: "/admin/index.html",
