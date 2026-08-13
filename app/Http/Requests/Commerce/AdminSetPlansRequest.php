@@ -19,7 +19,7 @@ class AdminSetPlansRequest extends FormRequest
             'plans.*.name' => ['required', 'string', 'max:120'],
             'plans.*.price_cents' => ['required', 'integer', 'min:0'],
             'plans.*.currency' => ['sometimes', 'string', 'size:3'],
-            'plans.*.billing_cycle' => ['sometimes', 'in:' . implode(',', [BillingCycle::MONTHLY->value, BillingCycle::YEARLY->value])],
+            'plans.*.billing_cycle' => ['sometimes', 'in:'.implode(',', [BillingCycle::MONTHLY->value, BillingCycle::YEARLY->value])],
             'plans.*.ai_quota_monthly' => ['sometimes', 'integer', 'min:0'],
             'plans.*.features' => ['sometimes', 'array'],
             'plans.*.is_active' => ['sometimes', 'boolean'],

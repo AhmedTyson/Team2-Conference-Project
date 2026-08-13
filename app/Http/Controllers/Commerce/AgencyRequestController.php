@@ -18,7 +18,7 @@ class AgencyRequestController extends Controller
         ]);
 
         $assignment = $this->service->requestAssignment(
-            $request->user()->id, 
+            $request->user()->id,
             $validated['budget_level'] ?? null
         );
 

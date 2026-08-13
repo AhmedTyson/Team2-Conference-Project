@@ -18,7 +18,7 @@ class TripBookedMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Your Trip is Booked — ' . $this->trip->title,
+            subject: 'Your Trip is Booked — '.$this->trip->title,
         );
     }
 

@@ -4,7 +4,6 @@ namespace App\Services\System;
 
 use App\Enums\ContactMessageStatus;
 use App\Interfaces\System\ContactMessageRepositoryInterface;
-use App\Repositories\System\ContactMessageRepository;
 
 class ContactMessageService
 {
@@ -23,6 +22,7 @@ class ContactMessageService
     public function markAsRead($id)
     {
         $message = $this->contactMessageRepository->findById($id);
+
         return $this->contactMessageRepository->update($message, [
             'status' => ContactMessageStatus::READ->value,
         ]);
@@ -31,6 +31,7 @@ class ContactMessageService
     public function markAsResolved($id)
     {
         $message = $this->contactMessageRepository->findById($id);
+
         return $this->contactMessageRepository->update($message, [
             'status' => ContactMessageStatus::RESOLVED->value,
         ]);

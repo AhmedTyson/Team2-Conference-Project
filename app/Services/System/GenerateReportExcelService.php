@@ -5,8 +5,8 @@ namespace App\Services\System;
 use App\Queries\ReportQuery;
 use OpenSpout\Common\Entity\Row;
 use OpenSpout\Common\Entity\Style\Style;
-use OpenSpout\Writer\XLSX\Writer;
 use OpenSpout\Writer\XLSX\Options;
+use OpenSpout\Writer\XLSX\Writer;
 
 /**
  * Generates a multi-sheet Excel (.xlsx) report using openspout v5.
@@ -20,13 +20,19 @@ use OpenSpout\Writer\XLSX\Options;
 class GenerateReportExcelService
 {
     // openspout v5 Style uses AARRGGBB hex strings
-    private const NAVY       = 'FF0F2854';
+    private const NAVY = 'FF0F2854';
+
     private const ROYAL_BLUE = 'FF1C4D8D';
-    private const ICE_BLUE   = 'FF4988C4';
-    private const WHITE      = 'FFFFFFFF';
-    private const LIGHT_ROW  = 'FFF0F7FF';
-    private const TEXT_DARK  = 'FF1A2A4A';
-    private const TEXT_GRAY  = 'FF6B7280';
+
+    private const ICE_BLUE = 'FF4988C4';
+
+    private const WHITE = 'FFFFFFFF';
+
+    private const LIGHT_ROW = 'FFF0F7FF';
+
+    private const TEXT_DARK = 'FF1A2A4A';
+
+    private const TEXT_GRAY = 'FF6B7280';
 
     public function __construct(private ReportQuery $reportQuery) {}
 
@@ -35,8 +41,8 @@ class GenerateReportExcelService
      */
     public function generate(string $from, string $to): string
     {
-        $tmpPath = tempnam(sys_get_temp_dir(), 'report_') . '.xlsx';
-        $writer  = new Writer(new Options());
+        $tmpPath = tempnam(sys_get_temp_dir(), 'report_').'.xlsx';
+        $writer = new Writer(new Options);
         $writer->openToFile($tmpPath);
 
         $this->writeCoverSheet($writer, $from, $to);
@@ -57,7 +63,7 @@ class GenerateReportExcelService
     {
         $writer->getCurrentSheet()->setName('Cover');
         $generated = now()->format('Y-m-d H:i');
-        $currency  = 'USD';
+        $currency = 'USD';
 
         // Logo wordmark
         $writer->addRow($this->createRowWithStyle(['Itinari'], $this->coverLogoStyle(), 15.0));
@@ -71,7 +77,7 @@ class GenerateReportExcelService
 
         // Meta card
         $writer->addRow($this->createRowWithStyle(['Report Period'], $this->metaLabelStyle(), 15.0));
-        $writer->addRow($this->createRowWithStyle([$from . ' — ' . $to], $this->metaValueStyle(), 15.0));
+        $writer->addRow($this->createRowWithStyle([$from.' — '.$to], $this->metaValueStyle(), 15.0));
         $writer->addRow($this->createRowWithStyle(['Generated'], $this->metaLabelStyle(), 15.0));
         $writer->addRow($this->createRowWithStyle([$generated], $this->metaValueStyle(), 15.0));
         $writer->addRow($this->createRowWithStyle(['Classification'], $this->metaLabelStyle(), 15.0));
@@ -87,14 +93,14 @@ class GenerateReportExcelService
         $kpis = $this->reportQuery->kpis($from, $to);
 
         $writer->addRow($this->createRowWithStyle(['Booking Report — Executive Summary'], $this->titleStyle(), 15.0));
-        $writer->addRow($this->createRowWithStyle(["Period: {$from}  →  {$to}    Generated: " . now()->format('Y-m-d H:i')], $this->subtitleStyle(), 15.0));
+        $writer->addRow($this->createRowWithStyle(["Period: {$from}  →  {$to}    Generated: ".now()->format('Y-m-d H:i')], $this->subtitleStyle(), 15.0));
         $writer->addRow($this->createRowWithStyle([''], $this->dataStyle(false), 15.0));
 
         $writer->addRow($this->createRowWithStyle(['KPI', 'Value'], $this->headerStyle(), 15.0));
-        $writer->addRow($this->createRowWithStyle(['Total Revenue', number_format($kpis['revenue'], 2) . ' ' . ($kpis['currency'] ?? 'USD')], $this->dataStyle(true), 15.0));
+        $writer->addRow($this->createRowWithStyle(['Total Revenue', number_format($kpis['revenue'], 2).' '.($kpis['currency'] ?? 'USD')], $this->dataStyle(true), 15.0));
         $writer->addRow($this->createRowWithStyle(['Total Bookings', $kpis['bookings']], $this->dataStyle(false), 15.0));
         $writer->addRow($this->createRowWithStyle(['Active Users', $kpis['users']], $this->dataStyle(true), 15.0));
-        $writer->addRow($this->createRowWithStyle(['Revenue Growth %', number_format($kpis['growth_percent'], 1) . '%'], $this->dataStyle(false), 15.0));
+        $writer->addRow($this->createRowWithStyle(['Revenue Growth %', number_format($kpis['growth_percent'], 1).'%'], $this->dataStyle(false), 15.0));
     }
 
     // ── Revenue ───────────────────────────────────────────────────────
@@ -104,8 +110,8 @@ class GenerateReportExcelService
         $writer->addNewSheetAndMakeItCurrent()->setName('Revenue');
 
         $monthly = $this->reportQuery->monthlyRevenue($from, $to);
-        $weekly  = $this->reportQuery->weeklyRevenue($from, $to);
-        $byType  = $this->reportQuery->revenueByBookingType($from, $to);
+        $weekly = $this->reportQuery->weeklyRevenue($from, $to);
+        $byType = $this->reportQuery->revenueByBookingType($from, $to);
 
         $writer->addRow($this->createRowWithStyle([''], $this->pageHeaderStyle(), 25.0));
         $writer->addRow($this->createRowWithStyle(['Revenue Analytics'], $this->titleStyle(), 15.0));
@@ -116,7 +122,7 @@ class GenerateReportExcelService
         $alt = false;
         foreach ($monthly as $row) {
             $writer->addRow($this->createRowWithStyle([$row['period'], (float) $row['revenue']], $this->dataStyle($alt), 15.0));
-            $alt = !$alt;
+            $alt = ! $alt;
         }
 
         $writer->addRow($this->createRowWithStyle([''], $this->dataStyle(false), 15.0));
@@ -125,7 +131,7 @@ class GenerateReportExcelService
         $alt = false;
         foreach ($weekly as $row) {
             $writer->addRow($this->createRowWithStyle([$row['week_start'], (float) $row['revenue']], $this->dataStyle($alt), 15.0));
-            $alt = !$alt;
+            $alt = ! $alt;
         }
 
         $writer->addRow($this->createRowWithStyle([''], $this->dataStyle(false), 15.0));
@@ -134,7 +140,7 @@ class GenerateReportExcelService
         $alt = false;
         foreach ($byType as $row) {
             $writer->addRow($this->createRowWithStyle([$row['type'], (float) $row['revenue']], $this->dataStyle($alt), 15.0));
-            $alt = !$alt;
+            $alt = ! $alt;
         }
     }
 
@@ -144,9 +150,9 @@ class GenerateReportExcelService
     {
         $writer->addNewSheetAndMakeItCurrent()->setName('Bookings');
 
-        $trend  = $this->reportQuery->bookingsTrend($from, $to);
+        $trend = $this->reportQuery->bookingsTrend($from, $to);
         $status = $this->reportQuery->bookingStatusBreakdown($from, $to);
-        $types  = $this->reportQuery->bookingTypesBreakdown($from, $to);
+        $types = $this->reportQuery->bookingTypesBreakdown($from, $to);
 
         $writer->addRow($this->createRowWithStyle([''], $this->pageHeaderStyle(), 25.0));
         $writer->addRow($this->createRowWithStyle(['Booking Analytics'], $this->titleStyle(), 15.0));
@@ -157,7 +163,7 @@ class GenerateReportExcelService
         $alt = false;
         foreach ($trend as $row) {
             $writer->addRow($this->createRowWithStyle([$row['period'], (int) $row['bookings']], $this->dataStyle($alt), 15.0));
-            $alt = !$alt;
+            $alt = ! $alt;
         }
 
         $writer->addRow($this->createRowWithStyle([''], $this->dataStyle(false), 15.0));
@@ -166,7 +172,7 @@ class GenerateReportExcelService
         $alt = false;
         foreach ($status as $row) {
             $writer->addRow($this->createRowWithStyle([ucfirst($row['status']), (int) $row['count']], $this->dataStyle($alt), 15.0));
-            $alt = !$alt;
+            $alt = ! $alt;
         }
 
         $writer->addRow($this->createRowWithStyle([''], $this->dataStyle(false), 15.0));
@@ -175,7 +181,7 @@ class GenerateReportExcelService
         $alt = false;
         foreach ($types as $row) {
             $writer->addRow($this->createRowWithStyle([$row['type'], (int) $row['count']], $this->dataStyle($alt), 15.0));
-            $alt = !$alt;
+            $alt = ! $alt;
         }
     }
 
@@ -185,9 +191,9 @@ class GenerateReportExcelService
     {
         $writer->addNewSheetAndMakeItCurrent()->setName('Users');
 
-        $newUsers    = $this->reportQuery->newUsers($from, $to);
+        $newUsers = $this->reportQuery->newUsers($from, $to);
         $activeTrend = $this->reportQuery->activeUsersTrend($from, $to);
-        $returning   = $this->reportQuery->returningUsersTrend($from, $to);
+        $returning = $this->reportQuery->returningUsersTrend($from, $to);
 
         $writer->addRow($this->createRowWithStyle([''], $this->pageHeaderStyle(), 25.0));
         $writer->addRow($this->createRowWithStyle(['User Analytics'], $this->titleStyle(), 15.0));
@@ -198,7 +204,7 @@ class GenerateReportExcelService
         $alt = false;
         foreach ($newUsers as $row) {
             $writer->addRow($this->createRowWithStyle([$row['period'], (int) $row['new_users']], $this->dataStyle($alt), 15.0));
-            $alt = !$alt;
+            $alt = ! $alt;
         }
 
         $writer->addRow($this->createRowWithStyle([''], $this->dataStyle(false), 15.0));
@@ -207,7 +213,7 @@ class GenerateReportExcelService
         $alt = false;
         foreach ($activeTrend as $row) {
             $writer->addRow($this->createRowWithStyle([$row['period'], (int) $row['active_users']], $this->dataStyle($alt), 15.0));
-            $alt = !$alt;
+            $alt = ! $alt;
         }
 
         $writer->addRow($this->createRowWithStyle([''], $this->dataStyle(false), 15.0));
@@ -216,7 +222,7 @@ class GenerateReportExcelService
         $alt = false;
         foreach ($returning as $row) {
             $writer->addRow($this->createRowWithStyle([$row['period'], (int) $row['returning_users']], $this->dataStyle($alt), 15.0));
-            $alt = !$alt;
+            $alt = ! $alt;
         }
     }
 
@@ -239,7 +245,7 @@ class GenerateReportExcelService
         $alt = false;
         foreach ($topDestinations as $row) {
             $writer->addRow($this->createRowWithStyle([$row->name ?? $row['name'], (int) $row->bookings_count ?? $row['bookings_count']], $this->dataStyle($alt), 15.0));
-            $alt = !$alt;
+            $alt = ! $alt;
         }
 
         $writer->addRow($this->createRowWithStyle([''], $this->dataStyle(false), 15.0));
@@ -248,7 +254,7 @@ class GenerateReportExcelService
         $alt = false;
         foreach ($topRevenueDestinations as $row) {
             $writer->addRow($this->createRowWithStyle([$row->name ?? $row['name'], (float) $row->revenue ?? $row['revenue']], $this->dataStyle($alt), 15.0));
-            $alt = !$alt;
+            $alt = ! $alt;
         }
 
         $writer->addRow($this->createRowWithStyle([''], $this->dataStyle(false), 15.0));
@@ -257,7 +263,7 @@ class GenerateReportExcelService
         $alt = false;
         foreach ($peakBookingDays as $row) {
             $writer->addRow($this->createRowWithStyle([$row['day'] ?? $row->day, (int) ($row['bookings'] ?? $row->bookings)], $this->dataStyle($alt), 15.0));
-            $alt = !$alt;
+            $alt = ! $alt;
         }
     }
 
@@ -270,7 +276,7 @@ class GenerateReportExcelService
 
     private function titleStyle(): Style
     {
-        return (new Style())
+        return (new Style)
             ->withFontSize(16)
             ->withFontColor(self::NAVY)
             ->withBackgroundColor(self::LIGHT_ROW);
@@ -278,14 +284,14 @@ class GenerateReportExcelService
 
     private function subtitleStyle(): Style
     {
-        return (new Style())
+        return (new Style)
             ->withFontSize(10)
             ->withFontColor(self::TEXT_GRAY);
     }
 
     private function sectionStyle(): Style
     {
-        return (new Style())
+        return (new Style)
             ->withFontBold(true)
             ->withFontSize(12)
             ->withFontColor(self::WHITE)
@@ -294,7 +300,7 @@ class GenerateReportExcelService
 
     private function headerStyle(): Style
     {
-        return (new Style())
+        return (new Style)
             ->withFontBold(true)
             ->withFontSize(11)
             ->withFontColor(self::ICE_BLUE)
@@ -303,7 +309,7 @@ class GenerateReportExcelService
 
     private function dataStyle(bool $alternate): Style
     {
-        return (new Style())
+        return (new Style)
             ->withFontSize(10)
             ->withFontColor(self::TEXT_DARK)
             ->withBackgroundColor($alternate ? self::LIGHT_ROW : self::WHITE);
@@ -313,7 +319,7 @@ class GenerateReportExcelService
 
     private function coverLogoStyle(): Style
     {
-        return (new Style())
+        return (new Style)
             ->withFontBold(true)
             ->withFontSize(26)
             ->withFontColor(self::WHITE)
@@ -322,7 +328,7 @@ class GenerateReportExcelService
 
     private function coverTaglineStyle(): Style
     {
-        return (new Style())
+        return (new Style)
             ->withFontSize(9)
             ->withFontColor(self::ICE_BLUE)
             ->withBackgroundColor(self::NAVY);
@@ -330,7 +336,7 @@ class GenerateReportExcelService
 
     private function coverTitleStyle(): Style
     {
-        return (new Style())
+        return (new Style)
             ->withFontBold(true)
             ->withFontSize(18)
             ->withFontColor(self::WHITE)
@@ -339,7 +345,7 @@ class GenerateReportExcelService
 
     private function coverSubtitleStyle(): Style
     {
-        return (new Style())
+        return (new Style)
             ->withFontSize(10)
             ->withFontColor(self::ICE_BLUE)
             ->withBackgroundColor(self::ROYAL_BLUE);
@@ -347,7 +353,7 @@ class GenerateReportExcelService
 
     private function metaLabelStyle(): Style
     {
-        return (new Style())
+        return (new Style)
             ->withFontSize(9)
             ->withFontColor(self::ICE_BLUE)
             ->withBackgroundColor(self::WHITE);
@@ -355,7 +361,7 @@ class GenerateReportExcelService
 
     private function metaValueStyle(): Style
     {
-        return (new Style())
+        return (new Style)
             ->withFontSize(11)
             ->withFontColor(self::WHITE)
             ->withBackgroundColor(self::ROYAL_BLUE);
@@ -363,7 +369,7 @@ class GenerateReportExcelService
 
     private function pageHeaderStyle(): Style
     {
-        return (new Style())
+        return (new Style)
             ->withFontBold(true)
             ->withFontSize(10)
             ->withFontColor(self::WHITE)

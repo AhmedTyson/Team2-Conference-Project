@@ -29,12 +29,14 @@ class TripRepository implements TripRepositoryInterface
     public function update(Trip $trip, array $data): Trip
     {
         $trip->update($data);
+
         return $trip;
     }
 
     public function delete(Trip $trip): bool
     {
         $trip->delete();
+
         return true;
     }
 }

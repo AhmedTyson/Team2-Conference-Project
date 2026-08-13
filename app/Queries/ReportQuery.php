@@ -2,6 +2,7 @@
 
 namespace App\Queries;
 
+use App\Enums\OrderStatus;
 use App\Models\Account\User;
 use App\Models\Catalog\Hotel;
 use App\Models\Catalog\Restaurant;
@@ -118,7 +119,7 @@ class ReportQuery
             ->groupBy('status')
             ->get()
             ->map(fn ($row) => [
-                'status' => $row->status instanceof \App\Enums\OrderStatus ? $row->status->value : $row->status,
+                'status' => $row->status instanceof OrderStatus ? $row->status->value : $row->status,
                 'count' => $row->total,
             ]);
     }
@@ -200,7 +201,7 @@ class ReportQuery
             ->when($to, fn ($q) => $q->whereDate('created_at', '<=', $to))
             ->select(
                 $this->monthExpr('created_at'),
-                DB::raw('COUNT(DISTINCT user_id) as returning_users') 
+                DB::raw('COUNT(DISTINCT user_id) as returning_users')
             )
             ->groupBy('period')
             ->orderBy('period')

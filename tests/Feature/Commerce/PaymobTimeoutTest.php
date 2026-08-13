@@ -38,7 +38,8 @@ class PaymobTimeoutTest extends TestCase
         $captured = [];
 
         // Subclass PaymobClient to intercept the curl handle before exec.
-        $spy = new class(30, 5) extends PaymobClient {
+        $spy = new class(30, 5) extends PaymobClient
+        {
             public array $capturedOptions = [];
 
             public function HttpRequest($apiPath, $method, $header = [], $data = [])
@@ -49,7 +50,7 @@ class PaymobTimeoutTest extends TestCase
                 // then read them back before closing — this mirrors
                 // the actual production code path exactly.
                 curl_setopt($curl, CURLOPT_URL, $apiPath);
-                if ('GET' == $method) {
+                if ($method == 'GET') {
                     curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'GET');
                 } else {
                     curl_setopt($curl, CURLOPT_POST, true);
@@ -106,7 +107,8 @@ class PaymobTimeoutTest extends TestCase
      */
     public function test_paymob_gateway_make_client_returns_paymob_client(): void
     {
-        $gateway = new class extends PaymobGateway {
+        $gateway = new class extends PaymobGateway
+        {
             public function exposeMakeClient(): PaymobClient
             {
                 return $this->makeClient();
@@ -129,7 +131,8 @@ class PaymobTimeoutTest extends TestCase
     {
         config(['paymob.timeout' => 45, 'paymob.connect_timeout' => 8]);
 
-        $gateway = new class extends PaymobGateway {
+        $gateway = new class extends PaymobGateway
+        {
             public function exposeMakeClient(): PaymobClient
             {
                 return $this->makeClient();

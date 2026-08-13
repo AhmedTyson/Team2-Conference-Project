@@ -2,9 +2,7 @@
 
 namespace App\Services\Catalog;
 
-use App\Models\Catalog\Attraction;
 use App\Interfaces\Catalog\AttractionRepositoryInterface;
-use App\Repositories\Catalog\AttractionRepository;
 
 class AttractionService
 {
@@ -43,12 +41,14 @@ class AttractionService
     public function update($id, array $data)
     {
         $attraction = $this->attractionRepository->findById($id);
+
         return $this->attractionRepository->update($attraction, $data);
     }
 
     public function destroy($id)
     {
         $attraction = $this->attractionRepository->findById($id);
+
         return $this->attractionRepository->delete($attraction);
     }
 }

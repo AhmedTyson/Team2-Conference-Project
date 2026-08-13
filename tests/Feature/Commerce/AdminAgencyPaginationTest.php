@@ -6,6 +6,7 @@ use App\Enums\AgencyAssignmentStatus;
 use App\Models\Account\User;
 use App\Models\Commerce\AgencyAssignment;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class AdminAgencyPaginationTest extends TestCase
@@ -15,7 +16,7 @@ class AdminAgencyPaginationTest extends TestCase
     public function test_admin_index_returns_paginated_response()
     {
         // Arrange: Create admin role if it doesn't exist
-        $adminRole = \Spatie\Permission\Models\Role::firstOrCreate(
+        $adminRole = Role::firstOrCreate(
             ['name' => 'admin', 'guard_name' => 'api']
         );
 
@@ -41,7 +42,7 @@ class AdminAgencyPaginationTest extends TestCase
                     'agency_user_id',
                     'status',
                     'created_at',
-                ]
+                ],
             ],
             'pagination' => [
                 'total',
@@ -50,7 +51,7 @@ class AdminAgencyPaginationTest extends TestCase
                 'last_page',
                 'from',
                 'to',
-            ]
+            ],
         ]);
 
         // Assert: Check pagination values
@@ -64,7 +65,7 @@ class AdminAgencyPaginationTest extends TestCase
     public function test_admin_index_second_page_returns_correct_data()
     {
         // Arrange: Create admin role if it doesn't exist
-        $adminRole = \Spatie\Permission\Models\Role::firstOrCreate(
+        $adminRole = Role::firstOrCreate(
             ['name' => 'admin', 'guard_name' => 'api']
         );
 
@@ -89,7 +90,7 @@ class AdminAgencyPaginationTest extends TestCase
     public function test_admin_index_custom_per_page()
     {
         // Arrange: Create admin role if it doesn't exist
-        $adminRole = \Spatie\Permission\Models\Role::firstOrCreate(
+        $adminRole = Role::firstOrCreate(
             ['name' => 'admin', 'guard_name' => 'api']
         );
 
@@ -113,9 +114,10 @@ class AdminAgencyPaginationTest extends TestCase
 
     private function adminUser()
     {
-        $adminRole = \Spatie\Permission\Models\Role::firstOrCreate(
+        $adminRole = Role::firstOrCreate(
             ['name' => 'admin', 'guard_name' => 'api']
         );
+
         return User::factory()->admin()->create();
     }
 }

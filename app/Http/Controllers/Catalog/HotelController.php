@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\HotelResource;
 use App\Models\Catalog\Hotel;
 use App\Services\Catalog\HotelService;
-use Illuminate\Http\Request;
 
 class HotelController extends Controller
 {

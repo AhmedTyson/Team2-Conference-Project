@@ -2,10 +2,10 @@
 
 namespace Tests\Feature\Commerce;
 
+use App\Enums\AgencyAssignmentStatus;
 use App\Models\Account\User;
 use App\Models\Catalog\Hotel;
 use App\Models\Commerce\AgencyAssignment;
-use App\Enums\AgencyAssignmentStatus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
@@ -27,14 +27,14 @@ class AgencyTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->actingAs($user, 'api')->postJson('/api/v1/agency-requests', [
-            'budget_level' => 'high'
+            'budget_level' => 'high',
         ]);
 
         $response->assertStatus(201);
         $this->assertDatabaseHas('agency_assignments', [
             'customer_id' => $user->id,
             'budget_level' => 'high',
-            'status' => 'requested'
+            'status' => 'requested',
         ]);
     }
 
@@ -174,7 +174,7 @@ class AgencyTest extends TestCase
             "/api/v1/agency/assignments/{$assignment->id}/trips",
             [
                 'title' => 'Cairo Luxury Week',
-                'items' => [['type' => \App\Models\Catalog\Hotel::class, 'id' => $hotel->id]],
+                'items' => [['type' => Hotel::class, 'id' => $hotel->id]],
             ]
         );
 
@@ -184,7 +184,7 @@ class AgencyTest extends TestCase
             'agency_assignment_id' => $assignment->id,
             'title' => 'Cairo Luxury Week',
         ]);
-$this->assertDatabaseHas('trip_items', [
+        $this->assertDatabaseHas('trip_items', [
             'item_type' => 'hotel',
             'item_id' => $hotel->id,
         ]);
@@ -325,4 +325,3 @@ $this->assertDatabaseHas('trip_items', [
         $this->actingAs($agency, 'api')->postJson("/api/v1/admin/flags/{$flagId}/approve")->assertForbidden();
     }
 }
-

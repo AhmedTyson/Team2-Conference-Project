@@ -140,9 +140,9 @@ class HotelTest extends TestCase
         ];
 
         $response = $this->actingAs($admin, 'api')->postJson('/api/v1/admin/hotels', $payload);
-        
+
         $response->assertStatus(422);
-        
+
         $errorFields = collect($response->json('error.validation_errors'))->pluck('field')->toArray();
         $this->assertContains('name', $errorFields);
         $this->assertContains('stars', $errorFields);

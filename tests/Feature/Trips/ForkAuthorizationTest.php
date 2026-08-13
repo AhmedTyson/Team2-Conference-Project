@@ -3,11 +3,8 @@
 namespace Tests\Feature\Trips;
 
 use App\Enums\OrderStatus;
-use App\Enums\SubscriptionStatus;
 use App\Interfaces\Commerce\PaymentGatewayInterface;
 use App\Models\Account\User;
-use App\Models\Commerce\Plan;
-use App\Models\Commerce\Subscription;
 use App\Models\Trips\Trip;
 use App\Services\Trips\TripForkService;
 use Illuminate\Auth\Access\AuthorizationException;

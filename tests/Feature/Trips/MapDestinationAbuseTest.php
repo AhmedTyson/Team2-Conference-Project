@@ -6,6 +6,7 @@ use App\Jobs\GeocodeDestinationJob;
 use App\Models\Catalog\Destination;
 use App\Services\Catalog\Fixtures\OpenStreetService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Queue;
@@ -138,7 +139,7 @@ class MapDestinationAbuseTest extends TestCase
                 $attempt++;
 
                 if ($attempt === 1) {
-                    throw new \Illuminate\Http\Client\ConnectionException('Connection timed out');
+                    throw new ConnectionException('Connection timed out');
                 }
 
                 return Http::response([

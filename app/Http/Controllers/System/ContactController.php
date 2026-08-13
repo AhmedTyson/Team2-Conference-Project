@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\System;
 
 use App\Http\Controllers\Controller;
-
 use App\Http\Requests\System\StoreContactMessageRequest;
 use App\Services\System\ContactMessageService;
 use App\Support\ApiResponse;

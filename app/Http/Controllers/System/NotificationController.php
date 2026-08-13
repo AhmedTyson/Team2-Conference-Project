@@ -28,7 +28,7 @@ class NotificationController extends Controller
         return ApiResponse::success($notifications, 'Notifications retrieved', 200, [
             'meta' => [
                 'unread_count' => $unreadCount,
-            ]
+            ],
         ]);
     }
 

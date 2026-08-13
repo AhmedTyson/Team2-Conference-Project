@@ -2,9 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Support\ApiResponse;
 use Closure;
 use Illuminate\Http\Request;
-use App\Support\ApiResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class EnsureUserIsActive

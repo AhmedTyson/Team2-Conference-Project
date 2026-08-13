@@ -7,6 +7,7 @@ use App\Enums\PaymentStatus;
 use App\Interfaces\Commerce\PaymentGatewayInterface;
 use App\Models\Account\User;
 use App\Models\Commerce\Order;
+use App\Models\Commerce\Payment;
 use App\Models\Commerce\Plan;
 use App\Models\System\Setting;
 use App\Models\Trips\Trip;
@@ -119,7 +120,7 @@ class CheckoutAbuseTest extends TestCase
         }
 
         $this->assertLessThanOrEqual(5, Order::query()->where('user_id', $user->id)->count());
-        $this->assertLessThanOrEqual(5, \App\Models\Commerce\Payment::query()->count());
+        $this->assertLessThanOrEqual(5, Payment::query()->count());
     }
 
     public function test_p13_valid_user_can_checkout_again_after_the_limiter_window(): void
@@ -193,7 +194,7 @@ class CheckoutAbuseTest extends TestCase
         $this->assertEquals($first->json('data.checkout_url'), $second->json('data.checkout_url'));
 
         $this->assertEquals(1, Order::query()->where('user_id', $user->id)->count());
-        $this->assertEquals(1, \App\Models\Commerce\Payment::query()->count());
+        $this->assertEquals(1, Payment::query()->count());
     }
 
     public function test_p15_trip_fork_checkout_still_calculates_server_side_amount(): void

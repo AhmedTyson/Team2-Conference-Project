@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Account;
 
+use App\Models\Account\Role;
 use App\Models\Account\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -34,7 +35,7 @@ class BlockedUserTest extends TestCase
 
     public function test_active_user_can_login_normally(): void
     {
-        $role = \App\Models\Account\Role::firstOrCreate(['name' => 'user']);
+        $role = Role::firstOrCreate(['name' => 'user']);
         $user = User::factory()->create([
             'email' => 'active@example.com',
             'is_active' => true,

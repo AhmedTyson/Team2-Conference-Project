@@ -18,14 +18,14 @@ class BookingCancelledNotification extends AppNotification
     public function toDatabase(object $notifiable): array
     {
         return [
-            'type'     => 'booking_cancelled',
+            'type' => 'booking_cancelled',
             'order_id' => $this->order->id,
-            'message'  => 'Your booking for Order #' . $this->order->id . ' has been cancelled.',
+            'message' => 'Your booking for Order #'.$this->order->id.' has been cancelled.',
         ];
     }
 
     protected function getNotifiableId(): string
     {
-        return 'cancel-' . $this->order->id;
+        return 'cancel-'.$this->order->id;
     }
 }

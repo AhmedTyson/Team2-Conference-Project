@@ -62,14 +62,10 @@ class PasswordResetToken extends Model
 
     /**
      * Create a new password reset token with expiration.
-     *
-     * @param string $email
-     * @param string $token
-     * @return static
      */
     public static function createWithExpiration(string $email, string $token): static
     {
-        $tokenInstance = new static();
+        $tokenInstance = new static;
         $tokenInstance->email = $email;
         $tokenInstance->token = $token;
         $tokenInstance->expires_at = Carbon::now()->addMinutes(60);
@@ -80,8 +76,6 @@ class PasswordResetToken extends Model
 
     /**
      * Check if the token has expired.
-     *
-     * @return bool
      */
     public function isExpired(): bool
     {
@@ -90,11 +84,9 @@ class PasswordResetToken extends Model
 
     /**
      * Check if the token is still valid.
-     *
-     * @return bool
      */
     public function isValid(): bool
     {
-        return !$this->isExpired();
+        return ! $this->isExpired();
     }
 }

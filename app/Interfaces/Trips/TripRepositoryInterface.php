@@ -16,5 +16,4 @@ interface TripRepositoryInterface
     public function update(Trip $trip, array $data): Trip;
 
     public function delete(Trip $trip): bool;
-
 }

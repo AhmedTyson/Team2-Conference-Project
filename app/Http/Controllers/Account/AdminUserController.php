@@ -20,36 +20,42 @@ class AdminUserController extends Controller
     public function index()
     {
         $users = $this->userService->getAdminList();
+
         return UserResource::collection($users);
     }
 
     public function show(int $id)
     {
         $user = $this->userService->showAdmin($id);
+
         return new UserResource($user);
     }
 
     public function store(StoreUserRequest $request)
     {
         $user = $this->userService->store($request->validated());
+
         return new UserResource($user);
     }
 
     public function update(UpdateUserRequest $request, int $id)
     {
         $user = $this->userService->update($id, $request->validated());
+
         return new UserResource($user);
     }
 
     public function active(int $id)
     {
         $user = $this->userService->setActive($id);
+
         return new UserResource($user);
     }
 
     public function block(int $id)
     {
         $user = $this->userService->setBlock($id);
+
         return new UserResource($user);
     }
 }

@@ -3,7 +3,6 @@
 namespace App\Services\Catalog;
 
 use App\Interfaces\Catalog\DestinationRepositoryInterface;
-use App\Repositories\Catalog\DestinationRepository;
 
 class DestinationService
 {

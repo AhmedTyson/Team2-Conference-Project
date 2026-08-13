@@ -9,9 +9,9 @@ class AgencyAssignmentPolicy
 {
     public function view(User $user, AgencyAssignment $assignment): bool
     {
-        return $user->id === $assignment->customer_id || 
-               $user->id === $assignment->agency_user_id || 
-               $user->hasRole('admin') || 
+        return $user->id === $assignment->customer_id ||
+               $user->id === $assignment->agency_user_id ||
+               $user->hasRole('admin') ||
                $user->hasRole('super_admin');
     }
 

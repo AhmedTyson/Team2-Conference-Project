@@ -13,7 +13,7 @@ class AgencyAssignmentStateTransitionTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'api']);
@@ -24,15 +24,15 @@ class AgencyAssignmentStateTransitionTest extends TestCase
     {
         $admin = User::factory()->create();
         $admin->assignRole(Role::findByName('admin', 'api'));
-        
+
         $agency = User::factory()->create();
 
         $assignment = AgencyAssignment::factory()->create([
-            'status' => AgencyAssignmentStatus::ADMIN_APPROVED
+            'status' => AgencyAssignmentStatus::ADMIN_APPROVED,
         ]);
 
         $response = $this->actingAs($admin, 'api')->postJson("/api/v1/admin/agency-requests/{$assignment->id}/approve", [
-            'agency_user_id' => $agency->id
+            'agency_user_id' => $agency->id,
         ]);
 
         $response->assertStatus(409);
@@ -80,7 +80,7 @@ class AgencyAssignmentStateTransitionTest extends TestCase
 
         $response = $this->actingAs($agency, 'api')->postJson("/api/v1/agency/assignments/{$assignment->id}/trips", [
             'title' => 'Test',
-            'items' => []
+            'items' => [],
         ]);
 
         $response->assertStatus(409);

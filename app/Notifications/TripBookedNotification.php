@@ -18,10 +18,10 @@ class TripBookedNotification extends AppNotification
     public function toDatabase(object $notifiable): array
     {
         return [
-            'type'    => 'trip_booked',
+            'type' => 'trip_booked',
             'trip_id' => $this->trip->id,
-            'title'   => 'Trip Booked',
-            'message' => 'Your trip "' . $this->trip->title . '" has been successfully booked.',
+            'title' => 'Trip Booked',
+            'message' => 'Your trip "'.$this->trip->title.'" has been successfully booked.',
         ];
     }
 

@@ -5,10 +5,13 @@ namespace Tests\Feature\Commerce;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Enums\SubscriptionStatus;
+use App\Enums\TripStatus;
 use App\Events\PaymentSucceeded;
 use App\Interfaces\Commerce\PaymentGatewayInterface;
+use App\Listeners\FulfillOrderListener;
 use App\Models\Account\User;
 use App\Models\Commerce\Order;
+use App\Models\Commerce\OrderItem;
 use App\Models\Commerce\Payment;
 use App\Models\Commerce\Plan;
 use App\Models\Commerce\Subscription;
@@ -16,7 +19,9 @@ use App\Models\Trips\Trip;
 use App\Notifications\PaymentFailedNotification;
 use App\Notifications\PaymentSucceededNotification;
 use App\Notifications\SubscriptionActivatedNotification;
+use App\Notifications\TripBookedNotification;
 use App\Notifications\TripForkedNotification;
+use App\Services\ConfirmationCodeService;
 use App\Services\Trips\TripForkService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
@@ -501,50 +506,48 @@ class PaymentFlowTest extends TestCase
 
     public function test_payment_fulfillment_books_trip_package()
     {
-        \Illuminate\Support\Facades\Notification::fake();
+        Notification::fake();
 
         $user = User::factory()->create();
         $trip = Trip::factory()->create([
             'user_id' => $user->id,
-            'status' => \App\Enums\TripStatus::PLANNING
+            'status' => TripStatus::PLANNING,
         ]);
 
-        $order = \App\Models\Commerce\Order::create([
+        $order = Order::create([
             'user_id' => $user->id,
-            'status' => \App\Enums\OrderStatus::PAID,
+            'status' => OrderStatus::PAID,
             'total_cents' => 50000,
             'currency' => 'EGP',
         ]);
 
-        \App\Models\Commerce\OrderItem::create([
+        OrderItem::create([
             'order_id' => $order->id,
             'product_type' => Trip::class,
             'product_id' => $trip->id,
             'price_cents' => 50000,
-            'metadata' => ['purchase_type' => 'trip_package']
+            'metadata' => ['purchase_type' => 'trip_package'],
         ]);
 
-        $payment = \App\Models\Commerce\Payment::create([
+        $payment = Payment::create([
             'order_id' => $order->id,
             'amount_cents' => 50000,
             'currency' => 'EGP',
             'status' => 'paid',
             'paymob_transaction_id' => 'tx_123',
             'hmac_valid' => true,
-            'raw_payload' => '{}'
+            'raw_payload' => '{}',
         ]);
 
-        $listener = new \App\Listeners\FulfillOrderListener(new \App\Services\ConfirmationCodeService());
-        $listener->handle(new \App\Events\PaymentSucceeded($payment));
+        $listener = new FulfillOrderListener(new ConfirmationCodeService);
+        $listener->handle(new PaymentSucceeded($payment));
 
-        $this->assertEquals(\App\Enums\TripStatus::BOOKED, $trip->refresh()->status);
-        
-        \Illuminate\Support\Facades\Notification::assertSentTo(
+        $this->assertEquals(TripStatus::BOOKED, $trip->refresh()->status);
+
+        Notification::assertSentTo(
             $user,
-            \App\Notifications\TripBookedNotification::class,
+            TripBookedNotification::class,
             fn ($notification) => $notification->trip->id === $trip->id
         );
     }
 }
-
-

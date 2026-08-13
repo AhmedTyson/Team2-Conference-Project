@@ -29,7 +29,7 @@ class AdminNotificationController extends Controller
                 'per_page' => $notifications->perPage(),
                 'total' => $notifications->total(),
                 'last_page' => $notifications->lastPage(),
-            ]
+            ],
         ]);
     }
 }

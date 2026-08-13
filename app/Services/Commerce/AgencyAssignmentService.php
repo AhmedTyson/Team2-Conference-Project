@@ -8,10 +8,15 @@ use App\Events\Commerce\AgencyAssignmentAdminApproved;
 use App\Events\Commerce\AgencyAssignmentApproved;
 use App\Events\Commerce\AgencyAssignmentDeclined;
 use App\Interfaces\Commerce\AgencyAssignmentRepositoryInterface;
-use Illuminate\Database\Eloquent\Relations\Relation;
+use App\Models\Catalog\Attraction;
+use App\Models\Catalog\Destination;
+use App\Models\Catalog\Flight;
+use App\Models\Catalog\Hotel;
+use App\Models\Catalog\Restaurant;
 use App\Models\Commerce\AgencyAssignment;
 use App\Models\Trips\Trip;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 
 class AgencyAssignmentService
@@ -29,12 +34,12 @@ class AgencyAssignmentService
         ]);
     }
 
-    public function listPendingForAdmin(int $perPage = 15, int $page = 1): \Illuminate\Pagination\LengthAwarePaginator
+    public function listPendingForAdmin(int $perPage = 15, int $page = 1): LengthAwarePaginator
     {
         return $this->repository->getPending($perPage, $page);
     }
 
-    public function listForCustomer(int $customerId, int $perPage = 15, int $page = 1): \Illuminate\Pagination\LengthAwarePaginator
+    public function listForCustomer(int $customerId, int $perPage = 15, int $page = 1): LengthAwarePaginator
     {
         return $this->repository->getForCustomer($customerId, $perPage, $page);
     }
@@ -117,7 +122,7 @@ class AgencyAssignmentService
                 // Expecting array format: ['type' => 'App\Models\Catalog\Hotel', 'id' => 1]
                 $class = $item['type'];
                 $id = $item['id'];
-                
+
                 $trip->{$this->getRelationName($class)}()->attach($id);
             }
 
@@ -138,8 +143,8 @@ class AgencyAssignmentService
 
     private function assertStatus(AgencyAssignment $assignment, AgencyAssignmentStatus ...$expectedStatuses): void
     {
-        if (!in_array($assignment->status, $expectedStatuses)) {
-            abort(409, 'Invalid assignment state transition. Current state: ' . ($assignment->status->value ?? 'unknown'));
+        if (! in_array($assignment->status, $expectedStatuses)) {
+            abort(409, 'Invalid assignment state transition. Current state: '.($assignment->status->value ?? 'unknown'));
         }
     }
 
@@ -147,18 +152,13 @@ class AgencyAssignmentService
     {
         $class = Relation::getMorphedModel($class) ?? $class;
 
-        return match($class) {
-            \App\Models\Catalog\Hotel::class => 'hotels',
-            \App\Models\Catalog\Flight::class => 'flights',
-            \App\Models\Catalog\Restaurant::class => 'restaurants',
-            \App\Models\Catalog\Attraction::class => 'attractions',
-            \App\Models\Catalog\Destination::class => 'destinations',
-            default => throw new \Exception("Unsupported type")
+        return match ($class) {
+            Hotel::class => 'hotels',
+            Flight::class => 'flights',
+            Restaurant::class => 'restaurants',
+            Attraction::class => 'attractions',
+            Destination::class => 'destinations',
+            default => throw new \Exception('Unsupported type')
         };
     }
 }
-
-
-
-
-

@@ -7,7 +7,6 @@ use App\Http\Requests\System\StoreSurveyRequest;
 use App\Http\Requests\System\UpdateSurveyRequest;
 use App\Services\System\SurveyService;
 use App\Support\ApiResponse;
-use Illuminate\Http\Request;
 
 class SurveyController extends Controller
 {

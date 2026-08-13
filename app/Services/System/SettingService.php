@@ -3,9 +3,8 @@
 namespace App\Services\System;
 
 use App\Interfaces\System\SettingRepositoryInterface;
-use App\Repositories\System\SettingRepository;
-use Illuminate\Support\Facades\Cache;
 use App\Models\System\Setting;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 class SettingService

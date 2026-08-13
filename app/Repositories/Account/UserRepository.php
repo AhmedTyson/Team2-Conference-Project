@@ -16,9 +16,10 @@ class UserRepository implements UserRepositoryInterface
     public function findById($id, array $relations = []): User
     {
         $query = User::query();
-        if (!empty($relations)) {
+        if (! empty($relations)) {
             $query->with($relations);
         }
+
         return $query->findOrFail($id);
     }
 
@@ -30,6 +31,7 @@ class UserRepository implements UserRepositoryInterface
     public function update(User $user, array $data): User
     {
         $user->update($data);
+
         return $user;
     }
 }

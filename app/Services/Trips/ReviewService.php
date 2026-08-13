@@ -4,7 +4,6 @@ namespace App\Services\Trips;
 
 use App\Enums\ReviewStatus;
 use App\Interfaces\Trips\ReviewRepositoryInterface;
-use App\Repositories\Trips\ReviewRepository;
 
 class ReviewService
 {
@@ -23,6 +22,7 @@ class ReviewService
     public function approve($id)
     {
         $review = $this->reviewRepository->findById($id);
+
         return $this->reviewRepository->update($review, [
             'status' => ReviewStatus::APPROVED->value,
         ]);
@@ -31,6 +31,7 @@ class ReviewService
     public function reject($id)
     {
         $review = $this->reviewRepository->findById($id);
+
         return $this->reviewRepository->update($review, [
             'status' => ReviewStatus::REJECTED->value,
         ]);
@@ -39,6 +40,7 @@ class ReviewService
     public function destroy($id)
     {
         $review = $this->reviewRepository->findById($id);
+
         return $this->reviewRepository->delete($review);
     }
 }

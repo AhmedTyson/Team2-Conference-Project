@@ -4,6 +4,7 @@ namespace Tests\Feature\Account;
 
 use App\Models\Account\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Permission\Models\Permission;
 use Tests\TestCase;
 
 class RoleMassAssignmentTest extends TestCase
@@ -50,7 +51,7 @@ class RoleMassAssignmentTest extends TestCase
     {
         $role = Role::create(['name' => 'editor', 'guard_name' => 'api']);
 
-        $permission = \Spatie\Permission\Models\Permission::create([
+        $permission = Permission::create([
             'name' => 'edit content',
             'guard_name' => 'api',
         ]);

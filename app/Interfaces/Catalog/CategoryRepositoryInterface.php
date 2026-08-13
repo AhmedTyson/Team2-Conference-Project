@@ -3,7 +3,6 @@
 namespace App\Interfaces\Catalog;
 
 use App\Models\Catalog\Category;
-use Illuminate\Database\Eloquent\Collection;
 
 interface CategoryRepositoryInterface
 {
@@ -16,5 +15,4 @@ interface CategoryRepositoryInterface
     public function update(Category $category, array $data);
 
     public function delete(Category $category);
-
 }

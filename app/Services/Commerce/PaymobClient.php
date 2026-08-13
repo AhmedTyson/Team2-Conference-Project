@@ -47,7 +47,7 @@ class PaymobClient extends Paymob
         $curl = curl_init();
 
         curl_setopt($curl, CURLOPT_URL, $apiPath);
-        if ('GET' == $method) {
+        if ($method == 'GET') {
             curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'GET');
         } else {
             curl_setopt($curl, CURLOPT_POST, true);
@@ -62,7 +62,7 @@ class PaymobClient extends Paymob
 
         $response = curl_exec($curl);
 
-        if (false === $response) {
+        if ($response === false) {
             throw new \Exception('Curl error: '.curl_error($curl));
         }
         curl_close($curl);

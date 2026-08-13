@@ -6,14 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Commerce\AgencyAssignment;
 use App\Services\Commerce\AgencyAssignmentService;
 use App\Support\ApiResponse;
-use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Request;
 
 class AdminAgencyController extends Controller
 {
     use AuthorizesRequests;
 
-public function __construct(private AgencyAssignmentService $service) {}
+    public function __construct(private AgencyAssignmentService $service) {}
 
     public function adminIndex()
     {
@@ -30,7 +30,7 @@ public function __construct(private AgencyAssignmentService $service) {}
                 'last_page' => $pending->lastPage(),
                 'from' => $pending->firstItem(),
                 'to' => $pending->lastItem(),
-            ]
+            ],
         ]);
     }
 

@@ -31,12 +31,14 @@ class FlightRepository implements FlightRepositoryInterface
     public function update(Flight $flight, array $data): Flight
     {
         $flight->update($data);
+
         return $flight;
     }
 
     public function delete(Flight $flight): bool
     {
         $flight->delete();
+
         return true;
     }
 }

@@ -26,6 +26,7 @@ class ContactMessageRepository implements ContactMessageRepositoryInterface
     public function update(ContactMessage $message, array $data): ContactMessage
     {
         $message->update($data);
+
         return $message;
     }
 }

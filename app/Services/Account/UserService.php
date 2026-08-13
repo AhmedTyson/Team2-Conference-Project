@@ -3,7 +3,6 @@
 namespace App\Services\Account;
 
 use App\Interfaces\Account\UserRepositoryInterface;
-use App\Repositories\Account\UserRepository;
 use Illuminate\Support\Facades\Hash;
 
 class UserService
@@ -33,24 +32,28 @@ class UserService
             'password' => Hash::make($data['password']),
             'is_active' => $data['is_active'] ?? 1,
         ];
+
         return $this->userRepository->create($userData);
     }
 
     public function update($id, array $data)
     {
         $user = $this->userRepository->findById($id);
+
         return $this->userRepository->update($user, $data);
     }
 
     public function setActive($id)
     {
         $user = $this->userRepository->findById($id);
+
         return $this->userRepository->update($user, ['is_active' => 1]);
     }
 
     public function setBlock($id)
     {
         $user = $this->userRepository->findById($id);
+
         return $this->userRepository->update($user, ['is_active' => 0]);
     }
 }

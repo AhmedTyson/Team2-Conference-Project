@@ -8,7 +8,6 @@ use App\Interfaces\Commerce\PaymentGatewayInterface;
 use App\Models\Account\User;
 use App\Models\Commerce\Order;
 use App\Models\Commerce\Payment;
-use App\Models\Commerce\Plan;
 use App\Models\Trips\Trip;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;

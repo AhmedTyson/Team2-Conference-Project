@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Commerce\AgencyAssignment;
 use App\Services\Commerce\AgencyAssignmentService;
 use App\Support\ApiResponse;
-use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Http\Request;
 
 class AgencyAssignmentController extends Controller
 {
@@ -36,7 +36,7 @@ class AgencyAssignmentController extends Controller
                 'last_page' => $assignments->lastPage(),
                 'from' => $assignments->firstItem(),
                 'to' => $assignments->lastItem(),
-            ]
+            ],
         ]);
     }
 

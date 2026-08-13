@@ -3,7 +3,6 @@
 namespace App\Services\Catalog;
 
 use App\Interfaces\Catalog\HotelRepositoryInterface;
-use App\Repositories\Catalog\HotelRepository;
 
 class HotelService
 {

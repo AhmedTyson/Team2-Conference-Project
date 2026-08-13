@@ -11,8 +11,7 @@ class ConciergeController extends Controller
 {
     public function __construct(
         private ConciergeService $conciergeService
-    ) {
-    }
+    ) {}
 
     public function ask(Request $request, Trip $trip)
     {

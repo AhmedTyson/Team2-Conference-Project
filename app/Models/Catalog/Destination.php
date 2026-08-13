@@ -2,22 +2,17 @@
 
 namespace App\Models\Catalog;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
-
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-
-use Illuminate\Database\Eloquent\Relations\HasMany;
-
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-
-use App\Models\Trips\Review;
 use App\Models\Trips\Favourite;
+use App\Models\Trips\Review;
 use App\Models\Trips\Trip;
 use App\Models\Trips\TripDestination;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Destination extends Model
 {

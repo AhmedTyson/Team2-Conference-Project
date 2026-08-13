@@ -10,7 +10,9 @@ use App\Models\Commerce\Order;
 use App\Models\Commerce\Payment;
 use App\Models\Trips\Trip;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 class OrderLifecycleTest extends TestCase
@@ -50,7 +52,7 @@ class OrderLifecycleTest extends TestCase
         ]);
     }
 
-    private function makeOrderWithPayment(User $user, ?\Illuminate\Support\Carbon $createdAt = null, ?\Illuminate\Support\Carbon $expiresAt = null, ?Trip $trip = null): array
+    private function makeOrderWithPayment(User $user, ?Carbon $createdAt = null, ?Carbon $expiresAt = null, ?Trip $trip = null): array
     {
         $order = Order::create([
             'user_id' => $user->id,
@@ -89,7 +91,7 @@ class OrderLifecycleTest extends TestCase
         return [$order, $payment];
     }
 
-    private function postWebhook(Payment $payment, bool $success): \Illuminate\Testing\TestResponse
+    private function postWebhook(Payment $payment, bool $success): TestResponse
     {
         return $this->postJson('/api/v1/paymob/webhook?hmac=valid', [
             'obj' => [

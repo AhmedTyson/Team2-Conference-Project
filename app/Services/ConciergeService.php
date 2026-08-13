@@ -3,9 +3,7 @@
 namespace App\Services;
 
 use App\Models\Trips\Trip;
-use Illuminate\Support\Facades\Log;
 use LucianoTonet\GroqLaravel\Facades\Groq;
-use Illuminate\Support\Facades\Http;
 
 class ConciergeService
 {
@@ -54,7 +52,7 @@ class ConciergeService
     }
 
     public function ask(Trip $trip, string $message): string
-{
+    {
 
         $context = $this->getTripContext($trip);
 
@@ -64,7 +62,7 @@ class ConciergeService
             Use the following trip information to answer the user's question.
 
             Trip context:
-            " . json_encode($context) . "
+            ".json_encode($context)."
 
             User question:
             {$message}
@@ -92,6 +90,6 @@ class ConciergeService
 
         return $response->choices[0]->message->content
             ?? 'No response available.';
-    
-}
+
     }
+}

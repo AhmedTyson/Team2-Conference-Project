@@ -18,7 +18,7 @@ class BookingCancelledMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Booking Cancellation Confirmation — Order #' . $this->order->id,
+            subject: 'Booking Cancellation Confirmation — Order #'.$this->order->id,
         );
     }
 

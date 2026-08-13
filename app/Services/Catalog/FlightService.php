@@ -3,7 +3,6 @@
 namespace App\Services\Catalog;
 
 use App\Interfaces\Catalog\FlightRepositoryInterface;
-use App\Repositories\Catalog\FlightRepository;
 use Illuminate\Support\Facades\Http;
 
 class FlightService
@@ -35,18 +34,21 @@ class FlightService
         if (($data['source'] ?? 'manual') === 'external') {
             return $this->createFromExternalApi($data);
         }
+
         return $this->flightRepository->create($data);
     }
 
     public function update($id, array $data)
     {
         $flight = $this->flightRepository->findById($id);
+
         return $this->flightRepository->update($flight, $data);
     }
 
     public function destroy($id)
     {
         $flight = $this->flightRepository->findById($id);
+
         return $this->flightRepository->delete($flight);
     }
 

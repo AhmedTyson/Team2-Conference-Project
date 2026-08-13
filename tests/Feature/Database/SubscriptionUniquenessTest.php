@@ -6,6 +6,7 @@ use App\Enums\SubscriptionStatus;
 use App\Models\Account\User;
 use App\Models\Commerce\Plan;
 use App\Models\Commerce\Subscription;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -73,7 +74,7 @@ class SubscriptionUniquenessTest extends TestCase
 
         $this->activeSub($user, $plan);
 
-        $this->expectException(\Illuminate\Database\QueryException::class);
+        $this->expectException(QueryException::class);
 
         $this->activeSub($user, $plan);
     }
@@ -194,7 +195,7 @@ class SubscriptionUniquenessTest extends TestCase
         $threw = false;
         try {
             $this->activeSub($user, $plan);
-        } catch (\Illuminate\Database\QueryException $e) {
+        } catch (QueryException $e) {
             $threw = true;
         }
 

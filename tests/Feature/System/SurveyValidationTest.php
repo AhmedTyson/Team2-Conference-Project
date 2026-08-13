@@ -6,6 +6,7 @@ use App\Enums\BudgetLevel;
 use App\Models\Account\User;
 use App\Models\System\Survey;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Spatie\Permission\Models\Role;
 use Tests\TestCase;
 
 class SurveyValidationTest extends TestCase
@@ -16,7 +17,7 @@ class SurveyValidationTest extends TestCase
     {
         parent::setUp();
 
-        \Spatie\Permission\Models\Role::create(['name' => 'traveler', 'guard_name' => 'api']);
+        Role::create(['name' => 'traveler', 'guard_name' => 'api']);
         $this->user = User::factory()->create();
         $this->user->assignRole('traveler');
     }

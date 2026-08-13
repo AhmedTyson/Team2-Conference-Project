@@ -18,5 +18,4 @@ interface RestaurantRepositoryInterface
     public function update(Restaurant $restaurant, array $data): Restaurant;
 
     public function delete(Restaurant $restaurant): bool;
-
 }

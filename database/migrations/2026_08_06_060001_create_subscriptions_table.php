@@ -45,18 +45,18 @@ return new class extends Migration
             'sqlite' => DB::statement(
                 // SQLite partial indexes don't support parameter binding
                 // This is a SQLite limitation, not a security vulnerability
-                "CREATE UNIQUE INDEX subscriptions_active_user_unique "
-                . "ON subscriptions (user_id) "
-                . "WHERE status = '" . SubscriptionStatus::ACTIVE->value . "'"
+                'CREATE UNIQUE INDEX subscriptions_active_user_unique '
+                .'ON subscriptions (user_id) '
+                ."WHERE status = '".SubscriptionStatus::ACTIVE->value."'"
             ),
-            'mysql'  => DB::statement(
-                "ALTER TABLE subscriptions "
-                . "ADD COLUMN active_user_id INT GENERATED ALWAYS AS "
-                . "(CASE WHEN status = ? THEN user_id ELSE NULL END) STORED"
-                . ", ADD UNIQUE KEY subscriptions_active_user_unique (active_user_id)",
+            'mysql' => DB::statement(
+                'ALTER TABLE subscriptions '
+                .'ADD COLUMN active_user_id INT GENERATED ALWAYS AS '
+                .'(CASE WHEN status = ? THEN user_id ELSE NULL END) STORED'
+                .', ADD UNIQUE KEY subscriptions_active_user_unique (active_user_id)',
                 [SubscriptionStatus::ACTIVE->value]
             ),
-            default  => throw new \RuntimeException(
+            default => throw new RuntimeException(
                 "DB-02 constraint does not support driver: {$driver}. Expected sqlite or mysql."
             ),
         };
@@ -68,8 +68,8 @@ return new class extends Migration
 
         match ($driver) {
             'sqlite' => DB::statement('DROP INDEX IF EXISTS subscriptions_active_user_unique'),
-            'mysql'  => DB::statement('ALTER TABLE subscriptions DROP INDEX subscriptions_active_user_unique'),
-            default  => null,
+            'mysql' => DB::statement('ALTER TABLE subscriptions DROP INDEX subscriptions_active_user_unique'),
+            default => null,
         };
     }
 };

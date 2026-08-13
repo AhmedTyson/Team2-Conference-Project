@@ -21,24 +21,28 @@ class AdminReviewController extends Controller
     public function index()
     {
         $reviews = $this->reviewService->getAdminList(request('trashed') === '1');
+
         return ReviewResource::collection($reviews);
     }
 
     public function approve(int $id): JsonResponse
     {
         $review = $this->reviewService->approve($id);
+
         return ApiResponse::success(new ReviewResource($review), 'Review approved successfully');
     }
 
     public function reject(int $id): JsonResponse
     {
         $review = $this->reviewService->reject($id);
+
         return ApiResponse::success(new ReviewResource($review), 'Review rejected successfully');
     }
 
     public function destroy(int $id): JsonResponse
     {
         $this->reviewService->destroy($id);
+
         return ApiResponse::success(null, 'Review deleted successfully');
     }
 

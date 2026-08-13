@@ -21,9 +21,10 @@ class AttractionRepository implements AttractionRepositoryInterface
     public function findById($id, array $relations = []): Attraction
     {
         $query = Attraction::query();
-        if (!empty($relations)) {
+        if (! empty($relations)) {
             $query->with($relations);
         }
+
         return $query->findOrFail($id);
     }
 
@@ -35,12 +36,14 @@ class AttractionRepository implements AttractionRepositoryInterface
     public function update(Attraction $attraction, array $data): Attraction
     {
         $attraction->update($data);
+
         return $attraction;
     }
 
     public function delete(Attraction $attraction): bool
     {
         $attraction->delete();
+
         return true;
     }
 }

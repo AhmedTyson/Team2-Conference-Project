@@ -10,7 +10,6 @@ use App\Models\Trips\ItineraryItem;
 use App\Models\Trips\Trip;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Http;
 use LucianoTonet\GroqLaravel\Facades\Groq;
 use Mockery;
 use Tests\TestCase;

@@ -22,30 +22,35 @@ class AdminRestaurantController extends Controller
     public function index()
     {
         $restaurants = $this->restaurantService->getAdminList(request('trashed') === '1');
+
         return JsonResource::collection($restaurants);
     }
 
     public function store(StoreRestaurantRequest $request)
     {
         $restaurant = $this->restaurantService->store($request->validated());
+
         return (new JsonResource($restaurant))->response()->setStatusCode(201);
     }
 
     public function show($id)
     {
         $restaurant = $this->restaurantService->showAdmin($id);
+
         return new JsonResource($restaurant);
     }
 
     public function update(UpdateRestaurantRequest $request, $id)
     {
         $restaurant = $this->restaurantService->update($id, $request->validated());
+
         return new JsonResource($restaurant);
     }
 
     public function destroy($id)
     {
         $this->restaurantService->destroy($id);
+
         return ApiResponse::success(null, 'Restaurant deleted successfully');
     }
 

@@ -18,5 +18,4 @@ interface AttractionRepositoryInterface
     public function update(Attraction $attraction, array $data): Attraction;
 
     public function delete(Attraction $attraction): bool;
-
 }

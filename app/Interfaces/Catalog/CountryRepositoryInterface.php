@@ -16,5 +16,4 @@ interface CountryRepositoryInterface
     public function update(Country $country, array $data): Country;
 
     public function delete(Country $country): bool;
-
 }

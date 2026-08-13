@@ -14,5 +14,4 @@ interface ContactMessageRepositoryInterface
     public function create(array $data): ContactMessage;
 
     public function update(ContactMessage $message, array $data): ContactMessage;
-
 }

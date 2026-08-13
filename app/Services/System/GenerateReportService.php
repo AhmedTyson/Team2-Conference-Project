@@ -20,11 +20,11 @@ class GenerateReportService
         $originalMemory = ini_set('memory_limit', '256M');
 
         try {
-            $from   = $report->from_date->format('Y-m-d');
-            $to     = $report->to_date->format('Y-m-d');
+            $from = $report->from_date->format('Y-m-d');
+            $to = $report->to_date->format('Y-m-d');
             $format = $report->format ?? 'pdf';
 
-            $baseName = 'booking_report_' . $from . '_to_' . $to . '_' . uniqid();
+            $baseName = 'booking_report_'.$from.'_to_'.$to.'_'.uniqid();
 
             if ($format === 'excel') {
                 $path = $this->generateExcel($baseName, $from, $to);
@@ -34,7 +34,7 @@ class GenerateReportService
 
             $report->update([
                 'file_path' => $path,
-                'status'    => 'completed',
+                'status' => 'completed',
             ]);
 
             return true;
@@ -54,10 +54,10 @@ class GenerateReportService
 
     private function generatePdf(string $baseName, string $from, string $to): string
     {
-        $data     = $this->buildReportData($from, $to);
-        $pdf      = Pdf::loadView('reports.booking-report', $data);
-        $fileName = $baseName . '.pdf';
-        $path     = 'reports/' . $fileName;
+        $data = $this->buildReportData($from, $to);
+        $pdf = Pdf::loadView('reports.booking-report', $data);
+        $fileName = $baseName.'.pdf';
+        $path = 'reports/'.$fileName;
 
         Storage::disk('public')->put($path, $pdf->output());
 
@@ -66,9 +66,9 @@ class GenerateReportService
 
     private function generateExcel(string $baseName, string $from, string $to): string
     {
-        $tmpPath  = $this->excelService->generate($from, $to);
-        $fileName = $baseName . '.xlsx';
-        $path     = 'reports/' . $fileName;
+        $tmpPath = $this->excelService->generate($from, $to);
+        $fileName = $baseName.'.xlsx';
+        $path = 'reports/'.$fileName;
 
         Storage::disk('public')->put($path, file_get_contents($tmpPath));
         @unlink($tmpPath);

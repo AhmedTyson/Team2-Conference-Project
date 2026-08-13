@@ -110,4 +110,3 @@ class AdminDestinationController extends Controller
         return ApiResponse::success(null, 'Destination restored successfully');
     }
 }
-

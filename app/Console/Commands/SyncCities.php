@@ -34,15 +34,17 @@ class SyncCities extends Command
             $countries = Country::where('iso_code', strtoupper($code))->get();
             if ($countries->isEmpty()) {
                 $this->error("No country found in the database with ISO code '{$code}'. Please add it first.");
+
                 return;
             }
         } else {
             $countries = Country::whereNotNull('iso_code')->get();
             if ($countries->isEmpty()) {
-                $this->error("No countries found with valid ISO codes in the database.");
+                $this->error('No countries found with valid ISO codes in the database.');
+
                 return;
             }
-            if (!$this->confirm("Are you sure you want to fetch cities for ALL {$countries->count()} countries? This will make many API requests.")) {
+            if (! $this->confirm("Are you sure you want to fetch cities for ALL {$countries->count()} countries? This will make many API requests.")) {
                 return;
             }
         }
@@ -57,7 +59,7 @@ class SyncCities extends Command
             $totalCities += $count;
             $bar->advance();
             // Small delay to be polite to Wikidata API
-            usleep(250000); 
+            usleep(250000);
         }
 
         $bar->finish();

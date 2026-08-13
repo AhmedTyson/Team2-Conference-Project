@@ -12,17 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('flags', function (Blueprint $table) {
-       $table->id();
-           $table->foreignId('reporter_id')->constrained('users')->cascadeOnDelete();
-           $table->morphs('flaggable'); 
-           $table->foreignId('agency_assignment_id')->nullable()->constrained()->nullOnDelete(); 
-           $table->string('reason');
-           $table->text('details')->nullable();
-           $table->string('status')->default('pending');
-           $table->foreignId('reviewed_by')->nullable()->constrained('users')->nullOnDelete();
-           $table->timestamp('reviewed_at')->nullable();
-           $table->timestamps();
-       });
+            $table->id();
+            $table->foreignId('reporter_id')->constrained('users')->cascadeOnDelete();
+            $table->morphs('flaggable');
+            $table->foreignId('agency_assignment_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('reason');
+            $table->text('details')->nullable();
+            $table->string('status')->default('pending');
+            $table->foreignId('reviewed_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->timestamp('reviewed_at')->nullable();
+            $table->timestamps();
+        });
     }
 
     /**

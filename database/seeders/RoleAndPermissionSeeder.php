@@ -50,9 +50,9 @@ class RoleAndPermissionSeeder extends Seeder
         ];
 
         $agencyPermissions = [
-            'catalog.hotels.view', 
+            'catalog.hotels.view',
             'catalog.restaurants.view',
-            'catalog.attractions.view', 
+            'catalog.attractions.view',
             'catalog.flights.view',
             'catalog.destinations.view',
         ];

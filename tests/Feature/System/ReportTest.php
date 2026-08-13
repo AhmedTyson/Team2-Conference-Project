@@ -3,10 +3,10 @@
 namespace Tests\Feature\System;
 
 use App\Models\Account\User;
-use App\Models\System\Report;
 use App\Models\Commerce\Order;
 use App\Models\Commerce\OrderItem;
 use App\Models\Commerce\Payment;
+use App\Models\System\Report;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Role;
@@ -57,7 +57,7 @@ class ReportTest extends TestCase
         Storage::fake('public');
 
         $user = User::factory()->create();
-        
+
         $order = Order::create([
             'user_id' => $user->id,
             'status' => 'fulfilled',
@@ -72,7 +72,7 @@ class ReportTest extends TestCase
             'product_type' => 'App\Models\Catalog\Hotel',
             'product_id' => 1,
             'price_cents' => 50000,
-            'metadata' => []
+            'metadata' => [],
         ]);
 
         Payment::create([
@@ -93,7 +93,7 @@ class ReportTest extends TestCase
         ]);
 
         $response->assertStatus(202);
-        
+
         // Assert revenue is picked up correctly
         $this->assertEquals(500, $response->json('data.kpis.revenue'));
     }

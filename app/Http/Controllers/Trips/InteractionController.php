@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Trips;
 
-use App\Http\Controllers\Controller;
 use App\Enums\ReviewStatus;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Trips\StoreReviewRequest;
 use App\Http\Resources\FavouriteResource;
 use App\Http\Resources\ReviewResource;

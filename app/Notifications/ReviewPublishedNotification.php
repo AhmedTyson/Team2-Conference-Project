@@ -18,9 +18,9 @@ class ReviewPublishedNotification extends AppNotification
     public function toDatabase(object $notifiable): array
     {
         return [
-            'type'      => 'review_published',
+            'type' => 'review_published',
             'review_id' => $this->review->id,
-            'message'   => 'Your review has been approved and is now publicly visible.',
+            'message' => 'Your review has been approved and is now publicly visible.',
         ];
     }
 

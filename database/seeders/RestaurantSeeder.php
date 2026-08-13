@@ -27,7 +27,7 @@ class RestaurantSeeder extends Seeder
 
         foreach ($restaurants as $rest) {
             $priceRange = $rest['price_range'] ?? '$';
-            $priceCents = match($priceRange) {
+            $priceCents = match ($priceRange) {
                 '$$$' => rand(60000, 120000),
                 '$$' => rand(30000, 60000),
                 default => rand(15000, 30000),

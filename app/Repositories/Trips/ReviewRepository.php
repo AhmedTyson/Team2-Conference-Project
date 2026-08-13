@@ -24,12 +24,14 @@ class ReviewRepository implements ReviewRepositoryInterface
     public function update(Review $review, array $data): Review
     {
         $review->update($data);
+
         return $review;
     }
 
     public function delete(Review $review): bool
     {
         $review->delete();
+
         return true;
     }
 }

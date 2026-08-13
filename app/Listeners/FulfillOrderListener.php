@@ -5,6 +5,7 @@ namespace App\Listeners;
 use App\Enums\BillingCycle;
 use App\Enums\OrderStatus;
 use App\Enums\SubscriptionStatus;
+use App\Enums\TripStatus;
 use App\Events\PaymentSucceeded;
 use App\Models\Account\User;
 use App\Models\Commerce\Plan;
@@ -14,9 +15,8 @@ use App\Notifications\PaymentFailedNotification;
 use App\Notifications\PaymentSucceededNotification;
 use App\Notifications\SubscriptionActivatedNotification;
 use App\Notifications\TripBookedNotification;
-use App\Enums\TripStatus;
-use App\Services\Trips\TripForkService;
 use App\Services\ConfirmationCodeService;
+use App\Services\Trips\TripForkService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -158,4 +158,3 @@ class FulfillOrderListener implements ShouldQueue
         $user->notify(new SubscriptionActivatedNotification($subscription));
     }
 }
-

@@ -2,9 +2,8 @@
 
 namespace App\Services\Catalog;
 
-use App\Models\Catalog\Category;
 use App\Interfaces\Catalog\CategoryRepositoryInterface;
-use App\Repositories\Catalog\CategoryRepository;
+use App\Models\Catalog\Category;
 
 class CategoryService
 {

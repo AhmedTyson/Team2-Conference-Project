@@ -4,7 +4,6 @@ namespace Tests\Feature\Catalog;
 
 use App\Models\Account\User;
 use App\Models\Catalog\Attraction;
-use App\Models\Catalog\Category;
 use App\Models\Catalog\Country;
 use App\Models\Catalog\Destination;
 use App\Models\Catalog\Flight;
@@ -22,6 +21,7 @@ class AdminRestoreTest extends TestCase
     use RefreshDatabase;
 
     private User $admin;
+
     private User $user;
 
     protected function setUp(): void

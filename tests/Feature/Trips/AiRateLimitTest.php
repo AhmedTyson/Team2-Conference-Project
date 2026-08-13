@@ -3,6 +3,7 @@
 namespace Tests\Feature\Trips;
 
 use App\Models\Account\User;
+use App\Models\Trips\Trip;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use LucianoTonet\GroqLaravel\Facades\Groq;
 use Mockery;
@@ -77,7 +78,7 @@ class AiRateLimitTest extends TestCase
     {
         $this->mockGroq();
 
-        $trip = \App\Models\Trips\Trip::factory()->create(['user_id' => $this->user->id]);
+        $trip = Trip::factory()->create(['user_id' => $this->user->id]);
 
         $this->actingAs($this->user, 'api')->postJson("/api/v1/trips/{$trip->id}/concierge", [
             'message' => 'Suggest a restaurant',

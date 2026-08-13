@@ -20,6 +20,7 @@ class ExpirePasswordTokens extends Command
 
         if ($expiredTokens->isEmpty()) {
             $this->info('No expired password reset tokens found.');
+
             return self::SUCCESS;
         }
 
@@ -29,6 +30,7 @@ class ExpirePasswordTokens extends Command
         });
 
         $this->info("Deleted {$count} expired password reset token(s).");
+
         return self::SUCCESS;
     }
 }

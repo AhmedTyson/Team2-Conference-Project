@@ -18,5 +18,4 @@ interface FlightRepositoryInterface
     public function update(Flight $flight, array $data): Flight;
 
     public function delete(Flight $flight): bool;
-
 }

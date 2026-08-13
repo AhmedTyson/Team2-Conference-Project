@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\System;
 
 use App\Http\Controllers\Controller;
-
 use App\Http\Requests\System\GenerateReportRequest;
 use App\Jobs\GenerateReportJob;
 use App\Models\System\Report;
@@ -20,16 +19,16 @@ class ReportController extends Controller
         GenerateReportRequest $request,
         ReportQuery $reportQuery
     ) {
-        $from   = $request->validated('from');
-        $to     = $request->validated('to');
+        $from = $request->validated('from');
+        $to = $request->validated('to');
         $format = $request->validated('format', 'pdf') ?? 'pdf';
 
         $report = Report::create([
-            'user_id'   => $request->user()->id,
+            'user_id' => $request->user()->id,
             'from_date' => $from,
-            'to_date'   => $to,
-            'format'    => $format,
-            'status'    => 'pending',
+            'to_date' => $to,
+            'format' => $format,
+            'status' => 'pending',
         ]);
 
         GenerateReportJob::dispatch($report);
@@ -73,7 +72,7 @@ class ReportController extends Controller
                 'per_page' => $reports->perPage(),
                 'total' => $reports->total(),
                 'last_page' => $reports->lastPage(),
-            ]
+            ],
         ]);
     }
 

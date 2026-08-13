@@ -20,6 +20,7 @@ class ContactMessageController extends Controller
     public function index()
     {
         $messages = $this->contactMessageService->getAdminList();
+
         return ContactMessageResource::collection($messages);
     }
 

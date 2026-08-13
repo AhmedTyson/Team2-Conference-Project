@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\System;
 
-use App\Services\OpenMeteoService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;

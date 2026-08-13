@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Commerce;
 
-use App\Console\Commands\ExpireStaleSubscriptions;
 use App\Enums\SubscriptionStatus;
 use App\Models\Account\User;
 use App\Models\Commerce\Plan;

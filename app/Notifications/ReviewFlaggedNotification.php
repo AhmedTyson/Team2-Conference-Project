@@ -18,14 +18,14 @@ class ReviewFlaggedNotification extends AppNotification
     public function toDatabase(object $notifiable): array
     {
         return [
-            'type'      => 'review_flagged',
+            'type' => 'review_flagged',
             'review_id' => $this->review->id,
-            'message'   => 'Your review has been flagged and is under moderation review.',
+            'message' => 'Your review has been flagged and is under moderation review.',
         ];
     }
 
     protected function getNotifiableId(): string
     {
-        return 'flag-' . $this->review->id;
+        return 'flag-'.$this->review->id;
     }
 }

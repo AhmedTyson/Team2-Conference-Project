@@ -2,9 +2,6 @@
 
 namespace App\Interfaces\Catalog;
 
-use App\Models\Catalog\Hotel;
-use Illuminate\Database\Eloquent\Collection;
-
 interface HotelRepositoryInterface
 {
     public function getAll();
@@ -16,5 +13,4 @@ interface HotelRepositoryInterface
     public function update($id, array $data);
 
     public function delete($id);
-
 }

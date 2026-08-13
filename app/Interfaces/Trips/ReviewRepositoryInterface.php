@@ -14,5 +14,4 @@ interface ReviewRepositoryInterface
     public function update(Review $review, array $data): Review;
 
     public function delete(Review $review): bool;
-
 }

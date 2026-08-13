@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Account;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Account\Auth\ForgotPasswordRequest;
 use App\Http\Requests\Account\Auth\LoginRequest;
 use App\Http\Requests\Account\Auth\RegisterRequest;
@@ -10,7 +11,6 @@ use App\Http\Requests\Account\Auth\UpdateProfileRequest;
 use App\Models\Account\Role;
 use App\Models\Account\User;
 use App\Notifications\WelcomeNotification;
-use App\Http\Controllers\Controller;
 use App\Support\ApiResponse;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;

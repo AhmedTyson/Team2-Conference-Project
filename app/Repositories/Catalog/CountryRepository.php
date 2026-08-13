@@ -26,12 +26,14 @@ class CountryRepository implements CountryRepositoryInterface
     public function update(Country $country, array $data): Country
     {
         $country->update($data);
+
         return $country;
     }
 
     public function delete(Country $country): bool
     {
         $country->delete();
+
         return true;
     }
 }
