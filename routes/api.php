@@ -200,7 +200,7 @@ Route::group([], function () {
 
 // ---- Trip planner (authenticated)
 Route::middleware(['auth:api', 'verified'])->prefix('trips')->group(function () {
-    Route::get('/create', [TripController::class, 'create']);
+    Route::get('/create', [TripController::class, 'creationData']);
     Route::post('/', [TripController::class, 'store']);
     Route::post('/{trip}/attach/{type}', [TripController::class, 'attach']);
     Route::delete('/{trip}/detach/{id}', [TripController::class, 'detach']);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Trips;
 
+use App\Enums\TripStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Trips\StoreTripRequest;
 use App\Http\Resources\TripResource;
@@ -21,7 +22,7 @@ class TripController extends Controller
         $this->tripService = $tripService;
     }
 
-    public function create(Request $request): JsonResponse
+    public function creationData(Request $request): JsonResponse
     {
         $data = $this->tripService->getCreationData();
 
@@ -32,7 +33,7 @@ class TripController extends Controller
     {
         $trip = $this->tripService->store($request->validated() + [
             'user_id' => $request->user()->id,
-            'status' => 'pending',
+            'status' => TripStatus::PENDING->value,
         ]);
 
         return ApiResponse::success(new TripResource($trip), 'Trip created successfully', 201);

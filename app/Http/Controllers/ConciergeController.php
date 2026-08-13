@@ -7,6 +7,7 @@ use App\Services\ConciergeService;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class ConciergeController extends Controller
 {
@@ -16,10 +17,8 @@ class ConciergeController extends Controller
 
     public function ask(Request $request, Trip $trip): JsonResponse
     {
-
-        // Trip ownership
-        if ($trip->user_id !== $request->user()->id) {
-            return ApiResponse::fail('Trip not found or does not belong to this user.', 'not_found', 404);
+        if (Gate::forUser($request->user())->denies('view', $trip)) {
+            return ApiResponse::fail('Trip not found', 'not_found', 404);
         }
 
         $request->validate([
