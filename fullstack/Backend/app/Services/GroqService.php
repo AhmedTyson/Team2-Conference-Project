@@ -57,42 +57,42 @@ class GroqService
 
     public function generateAi(AiTripRequest $request)
     {
+        $destinationCountryId = $request->destination_country_id;
+        $budget = $request->budget;
+        $noOfDays = $request->no_of_days;
+        $noOfTravelers = $request->no_of_travelers;
+        $travelStyle = $request->travel_style;
+        $interests = $request->interests;
 
         try {
-            // filter where country
-            // filter budget
+            $country = Country::where('id', $destinationCountryId)->first();
 
-            // edit messages
-
-            $country = Country::where('id', $request->destination_country_id)->first();
-
-            $destination = Destination::where('country_id', $request->destination_country_id)->first();
+            $destination = Destination::where('country_id', $destinationCountryId)->first();
             $destinationId = $destination?->id;
 
-            // restu
-            // hotels
-            // attractions
             $resturants = Restaurant::where('destination_id', $destinationId)->first();
 
             $hotels = Hotel::where('destination_id', $destinationId)->first();
 
             $attractions = Attraction::where('destination_id', $destinationId)->first();
 
+            $interestString = implode(', ', $interests);
+
             $prompt = "  
                 Generate a travel itinerary.
 
                 Country: {$country->name}
-                Budget: {$request->budget}
-                Days: {$request->no_of_days}
-                Travelers: {$request->no_of_travelers}
-                Travel Style: {$request->travel_style}
-                Interests: ".implode(', ', $request->interests)."
+                Budget: {$budget}
+                Days: {$noOfDays}
+                Travelers: {$noOfTravelers}
+                Travel Style: {$travelStyle}
+                Interests: {$interestString}
                 
                 Generate Transportation Tips, Estimated Costs and a list of recommended attractions:{$attractions?->name}, restaurants:{$resturants?->name}, and hotels:{$hotels?->name} for the trip.
                 
                 return response in json format with keys: itinerary, transportation_tips, estimated_costs, recommended_attractions, recommended_restaurants, recommended_hotels. don't add special characters or bold json in beginneing or end of the response.";
 
-            $cacheKey = 'ai:generate_itinerary'.md5(json_encode([$request->destination_country_id, $request->budget, $request->no_of_days, $request->no_of_travelers, $request->travel_style, implode(', ', $request->interests)]));
+            $cacheKey = 'ai:generate_itinerary'.md5(json_encode([$destinationCountryId, $budget, $noOfDays, $noOfTravelers, $travelStyle, $interestString]));
 
             $response = Cache::remember($cacheKey, now()->addMinutes(60), function () use ($prompt, $request) {
 
@@ -125,7 +125,7 @@ class GroqService
             throw new \RuntimeException('Service unavailable. Please try again later.');
         }
 
-        return $response['choices'][0]['message']['content'] ?? $request->content;
+        return $response['choices'][0]['message']['content'] ?? '';
     }
 
     public function review(Trip $trip, string $trip_title, $trip_items, ?User $user = null)

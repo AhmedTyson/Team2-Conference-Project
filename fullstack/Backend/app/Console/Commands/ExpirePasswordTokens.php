@@ -3,14 +3,24 @@
 namespace App\Console\Commands;
 
 use App\Models\System\PasswordResetToken;
-use Illuminate\Console\Attributes\Description;
-use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 
-#[Signature('password:expire-tokens')]
-#[Description('Delete expired password reset tokens')]
 class ExpirePasswordTokens extends Command
 {
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'password:expire-tokens';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = 'Delete expired password reset tokens';
+
     /**
      * Execute the console command.
      */
