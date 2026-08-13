@@ -46,7 +46,6 @@ use App\Http\Controllers\Trips\AIController;
 use App\Http\Controllers\Trips\InteractionController;
 use App\Http\Controllers\Trips\MapController;
 use App\Http\Controllers\Trips\TripController;
-use App\Services\GroqService;
 use Illuminate\Support\Facades\Route;
 
 // ============================================================
@@ -226,7 +225,7 @@ Route::middleware(['auth:api'])->group(function () {
 
 // ---- AI trip assistant
 Route::post('/enhance', [AIController::class, 'enhance'])->middleware(['auth:api', 'throttle:ai']);
-Route::post('/review', [GroqService::class, 'generateAi'])
+Route::post('/review', [AIController::class, 'generate'])
     ->middleware(['auth:api', 'permission:generate ai itineraries', 'throttle:ai']);
 Route::get('/review/{id}', [AIController::class, 'review'])
     ->middleware(['auth:api', 'throttle:ai']);
