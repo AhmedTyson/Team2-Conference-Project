@@ -28,12 +28,12 @@ class PlanService
 
     public function subscribe(int $userId, int $planId): Subscription
     {
-        abort(400, 'Direct subscriptions are disabled. Please use the /api/v1/checkout/initiate endpoint to purchase a subscription.');
+        abort(400, 'Direct subscriptions are disabled. Please use the /api/checkout/initiate endpoint to purchase a subscription.');
     }
 
     public function upgrade(int $userId, int $planId): array
     {
-        abort(400, 'Direct upgrades are disabled. Please use the /api/v1/checkout/initiate endpoint to upgrade.');
+        abort(400, 'Direct upgrades are disabled. Please use the /api/checkout/initiate endpoint to upgrade.');
     }
 
     public function cancel(int $userId): Subscription

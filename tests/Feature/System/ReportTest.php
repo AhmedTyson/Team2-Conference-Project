@@ -35,7 +35,7 @@ class ReportTest extends TestCase
     {
         Storage::fake('public');
 
-        $response = $this->actingAs($this->admin(), 'api')->postJson('/api/v1/admin/reports/generate', [
+        $response = $this->actingAs($this->admin(), 'api')->postJson('/api/admin/reports/generate', [
             'from' => now()->subMonth()->toDateString(),
             'to' => now()->toDateString(),
         ]);
@@ -87,7 +87,7 @@ class ReportTest extends TestCase
             'updated_at' => now(),
         ]);
 
-        $response = $this->actingAs($this->admin(), 'api')->postJson('/api/v1/admin/reports/generate', [
+        $response = $this->actingAs($this->admin(), 'api')->postJson('/api/admin/reports/generate', [
             'from' => now()->subDays(2)->toDateString(),
             'to' => now()->addDays(2)->toDateString(),
         ]);
@@ -107,7 +107,7 @@ class ReportTest extends TestCase
 
         $report = Report::factory()->create(['file_path' => $reportPath]);
 
-        $response = $this->actingAs($this->admin(), 'api')->getJson("/api/v1/admin/reports/{$report->id}/download");
+        $response = $this->actingAs($this->admin(), 'api')->getJson("/api/admin/reports/{$report->id}/download");
 
         $response->assertStatus(200)
             ->assertHeader('content-type', 'application/pdf');
@@ -121,7 +121,7 @@ class ReportTest extends TestCase
 
         $report = Report::factory()->create(['file_path' => 'reports/ghost.pdf']);
 
-        $response = $this->actingAs($this->admin(), 'api')->getJson("/api/v1/admin/reports/{$report->id}/download");
+        $response = $this->actingAs($this->admin(), 'api')->getJson("/api/admin/reports/{$report->id}/download");
 
         $response->assertStatus(404)
             ->assertJsonStructure(['error' => ['type', 'status', 'message', 'timestamp']]);
@@ -133,7 +133,7 @@ class ReportTest extends TestCase
 
         $report = Report::factory()->create(['status' => 'pending', 'file_path' => null]);
 
-        $response = $this->actingAs($this->admin(), 'api')->getJson("/api/v1/admin/reports/{$report->id}/download");
+        $response = $this->actingAs($this->admin(), 'api')->getJson("/api/admin/reports/{$report->id}/download");
 
         $response->assertStatus(409)
             ->assertJsonPath('error.type', 'generation_in_progress')

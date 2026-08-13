@@ -30,7 +30,7 @@ class AdminAgencyPaginationTest extends TestCase
 
         // Act: Get first page
         $response = $this->actingAs($this->adminUser())
-            ->getJson('/api/v1/admin/agency-requests');
+            ->getJson('/api/admin/agency-requests');
 
         // Assert: Check paginated response structure
         $response->assertStatus(200);
@@ -79,7 +79,7 @@ class AdminAgencyPaginationTest extends TestCase
 
         // Act: Get second page
         $response = $this->actingAs($this->adminUser())
-            ->getJson('/api/v1/admin/agency-requests?page=2');
+            ->getJson('/api/admin/agency-requests?page=2');
 
         // Assert: Check second page has correct data
         $data = $response->json();
@@ -104,7 +104,7 @@ class AdminAgencyPaginationTest extends TestCase
 
         // Act: Request 10 per page
         $response = $this->actingAs($this->adminUser())
-            ->getJson('/api/v1/admin/agency-requests?per_page=10');
+            ->getJson('/api/admin/agency-requests?per_page=10');
 
         // Assert: Check custom per_page
         $data = $response->json();

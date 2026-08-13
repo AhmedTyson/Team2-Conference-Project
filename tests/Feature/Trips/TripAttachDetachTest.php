@@ -18,7 +18,7 @@ class TripAttachDetachTest extends TestCase
         $trip = Trip::factory()->create(['user_id' => $user->id]);
         $hotel = Hotel::factory()->create();
 
-        $response = $this->actingAs($user, 'api')->postJson("/api/v1/trips/{$trip->id}/attach/hotel", [
+        $response = $this->actingAs($user, 'api')->postJson("/api/trips/{$trip->id}/attach/hotel", [
             'item_id' => $hotel->id,
         ]);
 
@@ -33,7 +33,7 @@ class TripAttachDetachTest extends TestCase
         $trip = Trip::factory()->create(['user_id' => $user1->id]);
         $hotel = Hotel::factory()->create();
 
-        $response = $this->actingAs($user2, 'api')->postJson("/api/v1/trips/{$trip->id}/attach/hotel", [
+        $response = $this->actingAs($user2, 'api')->postJson("/api/trips/{$trip->id}/attach/hotel", [
             'item_id' => $hotel->id,
         ]);
 
@@ -46,7 +46,7 @@ class TripAttachDetachTest extends TestCase
         $trip = Trip::factory()->create(['user_id' => $user->id]);
         $hotel = Hotel::factory()->create();
 
-        $response = $this->actingAs($user, 'api')->postJson("/api/v1/trips/{$trip->id}/attach/invalidtype", [
+        $response = $this->actingAs($user, 'api')->postJson("/api/trips/{$trip->id}/attach/invalidtype", [
             'item_id' => $hotel->id,
         ]);
 
@@ -58,7 +58,7 @@ class TripAttachDetachTest extends TestCase
         $user = User::factory()->create();
         $trip = Trip::factory()->create(['user_id' => $user->id]);
 
-        $response = $this->actingAs($user, 'api')->postJson("/api/v1/trips/{$trip->id}/attach/hotel", []);
+        $response = $this->actingAs($user, 'api')->postJson("/api/trips/{$trip->id}/attach/hotel", []);
 
         $response->assertStatus(422);
     }
@@ -68,7 +68,7 @@ class TripAttachDetachTest extends TestCase
         $user = User::factory()->create();
         $trip = Trip::factory()->create(['user_id' => $user->id]);
 
-        $response = $this->actingAs($user, 'api')->postJson("/api/v1/trips/{$trip->id}/attach/hotel", [
+        $response = $this->actingAs($user, 'api')->postJson("/api/trips/{$trip->id}/attach/hotel", [
             'item_id' => 9999,
         ]);
 
@@ -83,7 +83,7 @@ class TripAttachDetachTest extends TestCase
 
         $trip->hotels()->attach($hotel->id);
 
-        $response = $this->actingAs($user, 'api')->postJson("/api/v1/trips/{$trip->id}/attach/hotel", [
+        $response = $this->actingAs($user, 'api')->postJson("/api/trips/{$trip->id}/attach/hotel", [
             'item_id' => $hotel->id,
         ]);
 
@@ -98,7 +98,7 @@ class TripAttachDetachTest extends TestCase
 
         $trip->hotels()->attach($hotel->id);
 
-        $response = $this->actingAs($user, 'api')->deleteJson("/api/v1/trips/{$trip->id}/detach/{$hotel->id}");
+        $response = $this->actingAs($user, 'api')->deleteJson("/api/trips/{$trip->id}/detach/{$hotel->id}");
 
         $response->assertStatus(200);
         $this->assertFalse($trip->hotels()->where('hotels.id', $hotel->id)->exists());
@@ -109,7 +109,7 @@ class TripAttachDetachTest extends TestCase
         $user = User::factory()->create();
         $trip = Trip::factory()->create(['user_id' => $user->id]);
 
-        $response = $this->actingAs($user, 'api')->deleteJson("/api/v1/trips/{$trip->id}/detach/9999");
+        $response = $this->actingAs($user, 'api')->deleteJson("/api/trips/{$trip->id}/detach/9999");
 
         $response->assertStatus(404);
     }

@@ -31,7 +31,7 @@ class CategoryTest extends TestCase
 
         Category::factory()->count(3)->create();
 
-        $response = $this->actingAs($admin, 'api')->getJson('/api/v1/admin/categories');
+        $response = $this->actingAs($admin, 'api')->getJson('/api/admin/categories');
 
         $response->assertStatus(200)
             ->assertJsonCount(3, 'data');
@@ -42,7 +42,7 @@ class CategoryTest extends TestCase
         $admin = User::factory()->create();
         $admin->assignRole('admin');
 
-        $response = $this->actingAs($admin, 'api')->postJson('/api/v1/admin/categories', [
+        $response = $this->actingAs($admin, 'api')->postJson('/api/admin/categories', [
             'name' => 'Beach',
             'type' => 'destination',
         ]);
@@ -61,7 +61,7 @@ class CategoryTest extends TestCase
         $admin = User::factory()->create();
         $admin->assignRole('admin');
 
-        $response = $this->actingAs($admin, 'api')->postJson('/api/v1/admin/categories', [
+        $response = $this->actingAs($admin, 'api')->postJson('/api/admin/categories', [
             'type' => 'destination',
         ]);
 
@@ -79,7 +79,7 @@ class CategoryTest extends TestCase
             'type' => 'destination',
         ]);
 
-        $response = $this->actingAs($admin, 'api')->putJson("/api/v1/admin/categories/{$category->id}", [
+        $response = $this->actingAs($admin, 'api')->putJson("/api/admin/categories/{$category->id}", [
             'name' => 'New Name',
             'type' => 'hotel',
         ]);
@@ -101,7 +101,7 @@ class CategoryTest extends TestCase
 
         $category = Category::factory()->create();
 
-        $response = $this->actingAs($admin, 'api')->deleteJson("/api/v1/admin/categories/{$category->id}");
+        $response = $this->actingAs($admin, 'api')->deleteJson("/api/admin/categories/{$category->id}");
 
         $response->assertStatus(200)
             ->assertJsonPath('message', 'Category deleted successfully');
@@ -114,8 +114,8 @@ class CategoryTest extends TestCase
         $user = User::factory()->create();
         $user->assignRole('traveler');
 
-        $this->actingAs($user, 'api')->getJson('/api/v1/admin/categories')->assertStatus(403);
-        $this->actingAs($user, 'api')->postJson('/api/v1/admin/categories', [
+        $this->actingAs($user, 'api')->getJson('/api/admin/categories')->assertStatus(403);
+        $this->actingAs($user, 'api')->postJson('/api/admin/categories', [
             'name' => 'Hacked',
             'type' => 'destination',
         ])->assertStatus(403);

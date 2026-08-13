@@ -62,7 +62,7 @@ class PlansTest extends TestCase
     {
         $admin = $this->adminUser();
 
-        $response = $this->actingAs($admin, 'api')->postJson('/api/v1/admin/set-plans', [
+        $response = $this->actingAs($admin, 'api')->postJson('/api/admin/set-plans', [
             'plans' => [
                 [
                     'name' => 'Pro',
@@ -90,7 +90,7 @@ class PlansTest extends TestCase
     {
         $user = $this->regularUser();
 
-        $this->actingAs($user, 'api')->postJson('/api/v1/admin/set-plans', [
+        $this->actingAs($user, 'api')->postJson('/api/admin/set-plans', [
             'plans' => [['name' => 'Pro', 'price_cents' => 100]],
         ])->assertStatus(403);
     }
@@ -99,7 +99,7 @@ class PlansTest extends TestCase
     {
         $admin = $this->adminUser();
 
-        $this->actingAs($admin, 'api')->postJson('/api/v1/admin/set-plans', [
+        $this->actingAs($admin, 'api')->postJson('/api/admin/set-plans', [
             'plans' => [['name' => '', 'price_cents' => -5]],
         ])->assertStatus(422);
     }
@@ -110,7 +110,7 @@ class PlansTest extends TestCase
         Plan::factory()->count(2)->create(['is_active' => true]);
         Plan::factory()->create(['is_active' => false]);
 
-        $response = $this->actingAs($user, 'api')->getJson('/api/v1/plans');
+        $response = $this->actingAs($user, 'api')->getJson('/api/plans');
 
         $response->assertStatus(200)->assertJson(['success' => true]);
         $this->assertCount(2, $response->json('data'));
@@ -118,7 +118,7 @@ class PlansTest extends TestCase
 
     public function test_plans_require_auth(): void
     {
-        $this->getJson('/api/v1/plans')->assertStatus(401);
+        $this->getJson('/api/plans')->assertStatus(401);
     }
 
     public function test_direct_subscribe_redirects_to_checkout(): void
@@ -126,12 +126,12 @@ class PlansTest extends TestCase
         $user = $this->regularUser();
         $plan = Plan::factory()->create(['price_cents' => 19900, 'ai_quota_monthly' => 50]);
 
-        $response = $this->actingAs($user, 'api')->postJson('/api/v1/me/subscribe', [
+        $response = $this->actingAs($user, 'api')->postJson('/api/me/subscribe', [
             'plan_id' => $plan->id,
         ]);
 
         $response->assertStatus(400)
-            ->assertJsonPath('error.message', 'Direct subscriptions are disabled. Please use the /api/v1/checkout/initiate endpoint to purchase a subscription.');
+            ->assertJsonPath('error.message', 'Direct subscriptions are disabled. Please use the /api/checkout/initiate endpoint to purchase a subscription.');
         $this->assertDatabaseCount('subscriptions', 0);
     }
 
@@ -141,7 +141,7 @@ class PlansTest extends TestCase
         $plan = Plan::factory()->create();
         Subscription::factory()->create(['user_id' => $user->id, 'plan_id' => $plan->id, 'status' => 'active']);
 
-        $this->actingAs($user, 'api')->postJson('/api/v1/me/subscribe', [
+        $this->actingAs($user, 'api')->postJson('/api/me/subscribe', [
             'plan_id' => $plan->id,
         ])->assertStatus(400);
     }
@@ -151,7 +151,7 @@ class PlansTest extends TestCase
         $user = $this->regularUser();
         $plan = Plan::factory()->create(['is_active' => false]);
 
-        $this->actingAs($user, 'api')->postJson('/api/v1/me/subscribe', [
+        $this->actingAs($user, 'api')->postJson('/api/me/subscribe', [
             'plan_id' => $plan->id,
         ])->assertStatus(422);
     }
@@ -170,12 +170,12 @@ class PlansTest extends TestCase
             'renews_at' => now()->addDays(20),
         ]);
 
-        $response = $this->actingAs($user, 'api')->postJson('/api/v1/me/upgrade', [
+        $response = $this->actingAs($user, 'api')->postJson('/api/me/upgrade', [
             'plan_id' => $target->id,
         ]);
 
         $response->assertStatus(400)
-            ->assertJsonPath('error.message', 'Direct upgrades are disabled. Please use the /api/v1/checkout/initiate endpoint to upgrade.');
+            ->assertJsonPath('error.message', 'Direct upgrades are disabled. Please use the /api/checkout/initiate endpoint to upgrade.');
     }
 
     public function test_direct_upgrade_disabled_without_subscription(): void
@@ -183,7 +183,7 @@ class PlansTest extends TestCase
         $user = $this->regularUser();
         $plan = Plan::factory()->create();
 
-        $this->actingAs($user, 'api')->postJson('/api/v1/me/upgrade', [
+        $this->actingAs($user, 'api')->postJson('/api/me/upgrade', [
             'plan_id' => $plan->id,
         ])->assertStatus(400);
     }
@@ -194,7 +194,7 @@ class PlansTest extends TestCase
         $plan = Plan::factory()->create();
         Subscription::factory()->create(['user_id' => $user->id, 'plan_id' => $plan->id, 'status' => 'active']);
 
-        $response = $this->actingAs($user, 'api')->postJson('/api/v1/me/subscription/cancel');
+        $response = $this->actingAs($user, 'api')->postJson('/api/me/subscription/cancel');
 
         $response->assertStatus(200)->assertJson(['success' => true]);
         $this->assertDatabaseHas('subscriptions', [
@@ -208,7 +208,7 @@ class PlansTest extends TestCase
     {
         $user = $this->regularUser();
 
-        $this->actingAs($user, 'api')->postJson('/api/v1/me/subscription/cancel')->assertStatus(422);
+        $this->actingAs($user, 'api')->postJson('/api/me/subscription/cancel')->assertStatus(422);
     }
 
     public function test_user_can_view_subscription_with_plan(): void
@@ -217,7 +217,7 @@ class PlansTest extends TestCase
         $plan = Plan::factory()->create(['name' => 'Pro']);
         Subscription::factory()->create(['user_id' => $user->id, 'plan_id' => $plan->id, 'status' => 'active']);
 
-        $response = $this->actingAs($user, 'api')->getJson('/api/v1/me/subscription');
+        $response = $this->actingAs($user, 'api')->getJson('/api/me/subscription');
 
         $response->assertStatus(200)->assertJson(['success' => true]);
         $this->assertSame('Pro', $response->json('data.plan.name'));
@@ -228,7 +228,7 @@ class PlansTest extends TestCase
     {
         $user = $this->regularUser();
 
-        $this->actingAs($user, 'api')->getJson('/api/v1/me/subscription')
+        $this->actingAs($user, 'api')->getJson('/api/me/subscription')
             ->assertStatus(200)
             ->assertJsonPath('data', null);
     }

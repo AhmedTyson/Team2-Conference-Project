@@ -80,7 +80,7 @@ class AiRateLimitTest extends TestCase
 
         $trip = Trip::factory()->create(['user_id' => $this->user->id]);
 
-        $this->actingAs($this->user, 'api')->postJson("/api/v1/trips/{$trip->id}/concierge", [
+        $this->actingAs($this->user, 'api')->postJson("/api/trips/{$trip->id}/concierge", [
             'message' => 'Suggest a restaurant',
         ])->assertStatus(200);
 
@@ -92,7 +92,7 @@ class AiRateLimitTest extends TestCase
             'content' => 'Second',
         ])->assertStatus(200);
 
-        $this->actingAs($this->user, 'api')->postJson("/api/v1/trips/{$trip->id}/concierge", [
+        $this->actingAs($this->user, 'api')->postJson("/api/trips/{$trip->id}/concierge", [
             'message' => 'One more',
         ])->assertStatus(429);
     }

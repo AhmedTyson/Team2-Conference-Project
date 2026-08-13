@@ -31,7 +31,7 @@ class RestaurantTest extends TestCase
 
         Restaurant::factory()->count(3)->create();
 
-        $response = $this->actingAs($admin, 'api')->getJson('/api/v1/admin/restaurants');
+        $response = $this->actingAs($admin, 'api')->getJson('/api/admin/restaurants');
 
         $response->assertStatus(200)
             ->assertJsonCount(3, 'data');
@@ -44,7 +44,7 @@ class RestaurantTest extends TestCase
 
         $destination = Destination::factory()->create();
 
-        $response = $this->actingAs($admin, 'api')->postJson('/api/v1/admin/restaurants', [
+        $response = $this->actingAs($admin, 'api')->postJson('/api/admin/restaurants', [
             'name' => 'Nile Bistro',
             'cuisine' => 'Egyptian',
             'rating' => 5,
@@ -67,7 +67,7 @@ class RestaurantTest extends TestCase
 
         $restaurant = Restaurant::factory()->create(['name' => 'Old Grill']);
 
-        $response = $this->actingAs($admin, 'api')->putJson("/api/v1/admin/restaurants/{$restaurant->id}", [
+        $response = $this->actingAs($admin, 'api')->putJson("/api/admin/restaurants/{$restaurant->id}", [
             'name' => 'New Grill',
             'cuisine' => 'Grill',
             'rating' => 4,
@@ -90,7 +90,7 @@ class RestaurantTest extends TestCase
 
         $restaurant = Restaurant::factory()->create();
 
-        $this->actingAs($admin, 'api')->deleteJson("/api/v1/admin/restaurants/{$restaurant->id}")
+        $this->actingAs($admin, 'api')->deleteJson("/api/admin/restaurants/{$restaurant->id}")
             ->assertStatus(200);
 
         $this->assertSoftDeleted('restaurants', ['id' => $restaurant->id]);
@@ -101,7 +101,7 @@ class RestaurantTest extends TestCase
         $admin = User::factory()->create();
         $admin->assignRole('admin');
 
-        $this->actingAs($admin, 'api')->postJson('/api/v1/admin/restaurants', [
+        $this->actingAs($admin, 'api')->postJson('/api/admin/restaurants', [
             'name' => 'No Destination',
             'cuisine' => 'X',
             'rating' => 3,
@@ -114,6 +114,6 @@ class RestaurantTest extends TestCase
         $user = User::factory()->create();
         $user->assignRole('traveler');
 
-        $this->actingAs($user, 'api')->getJson('/api/v1/admin/restaurants')->assertStatus(403);
+        $this->actingAs($user, 'api')->getJson('/api/admin/restaurants')->assertStatus(403);
     }
 }

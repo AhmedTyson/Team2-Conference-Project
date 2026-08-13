@@ -32,7 +32,7 @@ class AttractionTest extends TestCase
 
         Attraction::factory()->count(3)->create();
 
-        $response = $this->actingAs($admin, 'api')->getJson('/api/v1/admin/attractions');
+        $response = $this->actingAs($admin, 'api')->getJson('/api/admin/attractions');
 
         $response->assertStatus(200)
             ->assertJsonCount(3, 'data');
@@ -46,7 +46,7 @@ class AttractionTest extends TestCase
         $destination = Destination::factory()->create();
         $category = Category::factory()->create(['type' => 'attraction']);
 
-        $response = $this->actingAs($admin, 'api')->postJson('/api/v1/admin/attractions', [
+        $response = $this->actingAs($admin, 'api')->postJson('/api/admin/attractions', [
             'name' => 'Giza Pyramids',
             'description' => 'Ancient wonder',
             'destination_id' => $destination->id,
@@ -70,7 +70,7 @@ class AttractionTest extends TestCase
 
         $attraction = Attraction::factory()->create(['name' => 'Old Site']);
 
-        $response = $this->actingAs($admin, 'api')->putJson("/api/v1/admin/attractions/{$attraction->id}", [
+        $response = $this->actingAs($admin, 'api')->putJson("/api/admin/attractions/{$attraction->id}", [
             'name' => 'New Site',
             'description' => 'Updated description',
             'destination_id' => $attraction->destination_id,
@@ -93,7 +93,7 @@ class AttractionTest extends TestCase
 
         $attraction = Attraction::factory()->create();
 
-        $this->actingAs($admin, 'api')->deleteJson("/api/v1/admin/attractions/{$attraction->id}")
+        $this->actingAs($admin, 'api')->deleteJson("/api/admin/attractions/{$attraction->id}")
             ->assertStatus(200);
 
         $this->assertSoftDeleted('attractions', ['id' => $attraction->id]);
@@ -104,6 +104,6 @@ class AttractionTest extends TestCase
         $user = User::factory()->create();
         $user->assignRole('traveler');
 
-        $this->actingAs($user, 'api')->getJson('/api/v1/admin/attractions')->assertStatus(403);
+        $this->actingAs($user, 'api')->getJson('/api/admin/attractions')->assertStatus(403);
     }
 }

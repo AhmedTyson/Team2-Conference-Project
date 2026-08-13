@@ -31,7 +31,7 @@ class HotelTest extends TestCase
 
         Hotel::factory()->count(3)->create();
 
-        $response = $this->actingAs($admin, 'api')->getJson('/api/v1/admin/hotels');
+        $response = $this->actingAs($admin, 'api')->getJson('/api/admin/hotels');
 
         $response->assertStatus(200)
             ->assertJsonCount(3, 'data');
@@ -44,7 +44,7 @@ class HotelTest extends TestCase
 
         $destination = Destination::factory()->create();
 
-        $response = $this->actingAs($admin, 'api')->postJson('/api/v1/admin/hotels', [
+        $response = $this->actingAs($admin, 'api')->postJson('/api/admin/hotels', [
             'name' => 'Palm Resort',
             'stars' => 5,
             'price_per_night' => 12000,
@@ -69,7 +69,7 @@ class HotelTest extends TestCase
 
         $hotel = Hotel::factory()->create(['name' => 'Old Inn']);
 
-        $response = $this->actingAs($admin, 'api')->putJson("/api/v1/admin/hotels/{$hotel->id}", [
+        $response = $this->actingAs($admin, 'api')->putJson("/api/admin/hotels/{$hotel->id}", [
             'name' => 'New Inn',
             'stars' => 4,
             'price_per_night' => 9000,
@@ -93,7 +93,7 @@ class HotelTest extends TestCase
 
         $hotel = Hotel::factory()->create();
 
-        $response = $this->actingAs($admin, 'api')->deleteJson("/api/v1/admin/hotels/{$hotel->id}");
+        $response = $this->actingAs($admin, 'api')->deleteJson("/api/admin/hotels/{$hotel->id}");
 
         $response->assertStatus(200);
         $this->assertSoftDeleted('hotels', ['id' => $hotel->id]);
@@ -104,7 +104,7 @@ class HotelTest extends TestCase
         $admin = User::factory()->create();
         $admin->assignRole('admin');
 
-        $response = $this->actingAs($admin, 'api')->postJson('/api/v1/admin/hotels', ['name' => 'X']);
+        $response = $this->actingAs($admin, 'api')->postJson('/api/admin/hotels', ['name' => 'X']);
 
         $response->assertStatus(422)
             ->assertJsonStructure(['error' => ['type', 'status', 'message', 'timestamp']]);
@@ -115,8 +115,8 @@ class HotelTest extends TestCase
         $user = User::factory()->create();
         $user->assignRole('traveler');
 
-        $this->actingAs($user, 'api')->getJson('/api/v1/admin/hotels')->assertStatus(403);
-        $this->actingAs($user, 'api')->postJson('/api/v1/admin/hotels', [
+        $this->actingAs($user, 'api')->getJson('/api/admin/hotels')->assertStatus(403);
+        $this->actingAs($user, 'api')->postJson('/api/admin/hotels', [
             'name' => 'Hacked',
             'stars' => 5,
             'price_per_night' => 1,
@@ -139,7 +139,7 @@ class HotelTest extends TestCase
             'destination_id' => 99999,
         ];
 
-        $response = $this->actingAs($admin, 'api')->postJson('/api/v1/admin/hotels', $payload);
+        $response = $this->actingAs($admin, 'api')->postJson('/api/admin/hotels', $payload);
 
         $response->assertStatus(422);
 

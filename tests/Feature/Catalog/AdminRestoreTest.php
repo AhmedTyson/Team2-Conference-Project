@@ -52,12 +52,12 @@ class AdminRestoreTest extends TestCase
         $hotel->delete();
 
         $response = $this->actingAs($this->admin, 'api')
-            ->patchJson("/api/v1/admin/hotels/{$hotel->id}/restore");
+            ->patchJson("/api/admin/hotels/{$hotel->id}/restore");
 
         $response->assertOk()->assertJson(['success' => true]);
         $this->assertDatabaseHas('hotels', ['id' => $hotel->id, 'deleted_at' => null]);
 
-        $this->actingAs($this->admin, 'api')->getJson('/api/v1/admin/hotels')
+        $this->actingAs($this->admin, 'api')->getJson('/api/admin/hotels')
             ->assertOk()
             ->assertJsonFragment(['id' => $hotel->id]);
     }
@@ -70,10 +70,10 @@ class AdminRestoreTest extends TestCase
         $hotel->delete();
 
         $this->actingAs($this->admin, 'api')
-            ->patchJson("/api/v1/admin/hotels/{$hotel->id}/restore")
+            ->patchJson("/api/admin/hotels/{$hotel->id}/restore")
             ->assertOk();
 
-        $this->actingAs($this->admin, 'api')->getJson('/api/v1/admin/hotels?trashed=1')
+        $this->actingAs($this->admin, 'api')->getJson('/api/admin/hotels?trashed=1')
             ->assertOk()
             ->assertJsonMissing(['id' => $hotel->id]);
     }
@@ -92,7 +92,7 @@ class AdminRestoreTest extends TestCase
         foreach ($records as $path => $record) {
             $record->delete();
             $this->actingAs($this->admin, 'api')
-                ->patchJson("/api/v1/admin/{$path}/{$record->id}/restore")
+                ->patchJson("/api/admin/{$path}/{$record->id}/restore")
                 ->assertOk()
                 ->assertJson(['success' => true]);
             $this->assertDatabaseHas($record->getTable(), ['id' => $record->id, 'deleted_at' => null]);
@@ -100,13 +100,13 @@ class AdminRestoreTest extends TestCase
 
         $country->delete();
         $this->actingAs($this->admin, 'api')
-            ->patchJson("/api/v1/admin/countries/{$country->id}/restore")
+            ->patchJson("/api/admin/countries/{$country->id}/restore")
             ->assertOk();
         $this->assertDatabaseHas('countries', ['id' => $country->id, 'deleted_at' => null]);
 
         $destination->delete();
         $this->actingAs($this->admin, 'api')
-            ->patchJson("/api/v1/admin/destinations/{$destination->id}/restore")
+            ->patchJson("/api/admin/destinations/{$destination->id}/restore")
             ->assertOk();
         $this->assertDatabaseHas('destinations', ['id' => $destination->id, 'deleted_at' => null]);
     }
@@ -125,12 +125,12 @@ class AdminRestoreTest extends TestCase
         $review->delete();
 
         $this->actingAs($this->admin, 'api')
-            ->patchJson("/api/v1/admin/trips/{$trip->id}/restore")
+            ->patchJson("/api/admin/trips/{$trip->id}/restore")
             ->assertOk()
             ->assertJson(['success' => true]);
 
         $this->actingAs($this->admin, 'api')
-            ->patchJson("/api/v1/admin/reviews/{$review->id}/restore")
+            ->patchJson("/api/admin/reviews/{$review->id}/restore")
             ->assertOk()
             ->assertJson(['success' => true]);
 
@@ -146,7 +146,7 @@ class AdminRestoreTest extends TestCase
         $hotel->delete();
 
         $this->actingAs($this->user, 'api')
-            ->patchJson("/api/v1/admin/hotels/{$hotel->id}/restore")
+            ->patchJson("/api/admin/hotels/{$hotel->id}/restore")
             ->assertForbidden();
     }
 
@@ -155,14 +155,14 @@ class AdminRestoreTest extends TestCase
         $hotel = Hotel::factory()->create();
 
         $this->actingAs($this->admin, 'api')
-            ->patchJson("/api/v1/admin/hotels/{$hotel->id}/restore")
+            ->patchJson("/api/admin/hotels/{$hotel->id}/restore")
             ->assertNotFound();
     }
 
     public function test_nonexistent_record_restore_is_not_found(): void
     {
         $this->actingAs($this->admin, 'api')
-            ->patchJson('/api/v1/admin/hotels/999999/restore')
+            ->patchJson('/api/admin/hotels/999999/restore')
             ->assertNotFound();
     }
 
@@ -174,10 +174,10 @@ class AdminRestoreTest extends TestCase
         $hotel->delete();
 
         $this->actingAs($this->admin, 'api')
-            ->patchJson("/api/v1/admin/hotels/{$hotel->id}/restore")
+            ->patchJson("/api/admin/hotels/{$hotel->id}/restore")
             ->assertOk();
 
-        $this->getJson('/api/v1/hotels')
+        $this->getJson('/api/hotels')
             ->assertOk()
             ->assertJsonFragment(['id' => $hotel->id]);
     }

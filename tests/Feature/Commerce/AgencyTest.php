@@ -26,7 +26,7 @@ class AgencyTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user, 'api')->postJson('/api/v1/agency-requests', [
+        $response = $this->actingAs($user, 'api')->postJson('/api/agency-requests', [
             'budget_level' => 'high',
         ]);
 
@@ -50,7 +50,7 @@ class AgencyTest extends TestCase
         ]);
 
         $response = $this->actingAs($admin, 'api')->postJson(
-            "/api/v1/admin/agency-requests/{$assignment->id}/approve",
+            "/api/admin/agency-requests/{$assignment->id}/approve",
             ['agency_user_id' => $agencyUser->id]
         );
 
@@ -72,7 +72,7 @@ class AgencyTest extends TestCase
         ]);
 
         $response = $this->actingAs($customer, 'api')->postJson(
-            "/api/v1/admin/agency-requests/{$assignment->id}/approve",
+            "/api/admin/agency-requests/{$assignment->id}/approve",
             ['agency_user_id' => User::factory()->create()->id]
         );
 
@@ -93,7 +93,7 @@ class AgencyTest extends TestCase
         ]);
 
         $response = $this->actingAs($agencyUser, 'api')->postJson(
-            "/api/v1/agency/assignments/{$assignment->id}/approve"
+            "/api/agency/assignments/{$assignment->id}/approve"
         );
 
         $response->assertOk();
@@ -113,7 +113,7 @@ class AgencyTest extends TestCase
         ]);
 
         $response = $this->actingAs($agencyUser, 'api')->postJson(
-            "/api/v1/agency/assignments/{$assignment->id}/decline"
+            "/api/agency/assignments/{$assignment->id}/decline"
         );
 
         $response->assertOk();
@@ -134,7 +134,7 @@ class AgencyTest extends TestCase
         ]);
 
         $response = $this->actingAs($agencyUser, 'api')->postJson(
-            "/api/v1/agency/assignments/{$assignment->id}/approve"
+            "/api/agency/assignments/{$assignment->id}/approve"
         );
 
         $response->assertForbidden();
@@ -153,7 +153,7 @@ class AgencyTest extends TestCase
             'status' => AgencyAssignmentStatus::ADMIN_APPROVED,
         ]);
 
-        $response = $this->actingAs($agencyUser, 'api')->getJson('/api/v1/agency/assignments');
+        $response = $this->actingAs($agencyUser, 'api')->getJson('/api/agency/assignments');
 
         $response->assertOk()->assertJsonCount(1, 'data');
     }
@@ -171,7 +171,7 @@ class AgencyTest extends TestCase
         $hotel = Hotel::factory()->create();
 
         $response = $this->actingAs($agencyUser, 'api')->postJson(
-            "/api/v1/agency/assignments/{$assignment->id}/trips",
+            "/api/agency/assignments/{$assignment->id}/trips",
             [
                 'title' => 'Cairo Luxury Week',
                 'items' => [['type' => Hotel::class, 'id' => $hotel->id]],
@@ -206,7 +206,7 @@ class AgencyTest extends TestCase
         $assignment = $this->approvedAssignment($agency);
 
         $response = $this->actingAs(User::find($assignment->customer_id), 'api')->postJson(
-            "/api/v1/agency-assignments/{$assignment->id}/report",
+            "/api/agency-assignments/{$assignment->id}/report",
             ['reason' => 'Overcharged on trip build', 'details' => 'Quoted $2,000, billed $3,000.']
         );
 
@@ -229,7 +229,7 @@ class AgencyTest extends TestCase
         $stranger = User::factory()->create();
 
         $response = $this->actingAs($stranger, 'api')->postJson(
-            "/api/v1/agency-assignments/{$assignment->id}/report",
+            "/api/agency-assignments/{$assignment->id}/report",
             ['reason' => 'Not my assignment']
         );
 
@@ -246,7 +246,7 @@ class AgencyTest extends TestCase
         ]);
 
         $response = $this->actingAs($customer, 'api')->postJson(
-            "/api/v1/agency-assignments/{$assignment->id}/report",
+            "/api/agency-assignments/{$assignment->id}/report",
             ['reason' => 'Too early']
         );
 
@@ -263,15 +263,15 @@ class AgencyTest extends TestCase
         $assignment = $this->approvedAssignment($agency);
 
         $report = $this->actingAs(User::find($assignment->customer_id), 'api')->postJson(
-            "/api/v1/agency-assignments/{$assignment->id}/report",
+            "/api/agency-assignments/{$assignment->id}/report",
             ['reason' => 'Misleading itinerary']
         );
         $flagId = $report->json('data.id');
 
-        $list = $this->actingAs($admin, 'api')->getJson('/api/v1/admin/flags');
+        $list = $this->actingAs($admin, 'api')->getJson('/api/admin/flags');
         $list->assertOk()->assertJsonCount(1, 'data');
 
-        $approve = $this->actingAs($admin, 'api')->postJson("/api/v1/admin/flags/{$flagId}/approve");
+        $approve = $this->actingAs($admin, 'api')->postJson("/api/admin/flags/{$flagId}/approve");
         $approve->assertOk();
         $this->assertDatabaseHas('flags', [
             'id' => $flagId,
@@ -289,12 +289,12 @@ class AgencyTest extends TestCase
         $assignment = $this->approvedAssignment($agency);
 
         $report = $this->actingAs(User::find($assignment->customer_id), 'api')->postJson(
-            "/api/v1/agency-assignments/{$assignment->id}/report",
+            "/api/agency-assignments/{$assignment->id}/report",
             ['reason' => 'Minor dispute']
         );
         $flagId = $report->json('data.id');
 
-        $decline = $this->actingAs($admin, 'api')->postJson("/api/v1/admin/flags/{$flagId}/decline");
+        $decline = $this->actingAs($admin, 'api')->postJson("/api/admin/flags/{$flagId}/decline");
         $decline->assertOk();
         $this->assertDatabaseHas('flags', [
             'id' => $flagId,
@@ -316,12 +316,12 @@ class AgencyTest extends TestCase
         $assignment = $this->approvedAssignment($agency);
 
         $report = $this->actingAs(User::find($assignment->customer_id), 'api')->postJson(
-            "/api/v1/agency-assignments/{$assignment->id}/report",
+            "/api/agency-assignments/{$assignment->id}/report",
             ['reason' => 'Anything']
         );
         $flagId = $report->json('data.id');
 
-        $this->actingAs($agency, 'api')->getJson('/api/v1/admin/flags')->assertForbidden();
-        $this->actingAs($agency, 'api')->postJson("/api/v1/admin/flags/{$flagId}/approve")->assertForbidden();
+        $this->actingAs($agency, 'api')->getJson('/api/admin/flags')->assertForbidden();
+        $this->actingAs($agency, 'api')->postJson("/api/admin/flags/{$flagId}/approve")->assertForbidden();
     }
 }

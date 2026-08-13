@@ -56,7 +56,7 @@ class CheckoutAbuseTest extends TestCase
         $user = User::factory()->create();
         $trip = $this->makeTrip($user);
 
-        $response = $this->actingAs($user, 'api')->postJson('/api/v1/checkout/initiate', [
+        $response = $this->actingAs($user, 'api')->postJson('/api/checkout/initiate', [
             'type' => 'trip_fork',
             'trip_id' => $trip->id,
         ]);
@@ -78,7 +78,7 @@ class CheckoutAbuseTest extends TestCase
         $trip = $this->makeTrip($owner);
 
         $this->actingAs($intruder, 'api')
-            ->postJson('/api/v1/checkout/initiate', [
+            ->postJson('/api/checkout/initiate', [
                 'type' => 'trip_package',
                 'trip_id' => $trip->id,
             ])
@@ -94,13 +94,13 @@ class CheckoutAbuseTest extends TestCase
         $trip = $this->makeTrip($user);
 
         for ($i = 0; $i < 5; $i++) {
-            $this->actingAs($user, 'api')->postJson('/api/v1/checkout/initiate', [
+            $this->actingAs($user, 'api')->postJson('/api/checkout/initiate', [
                 'type' => 'trip_fork',
                 'trip_id' => $trip->id,
             ])->assertStatus(200);
         }
 
-        $this->actingAs($user, 'api')->postJson('/api/v1/checkout/initiate', [
+        $this->actingAs($user, 'api')->postJson('/api/checkout/initiate', [
             'type' => 'trip_fork',
             'trip_id' => $trip->id,
         ])->assertStatus(429);
@@ -113,7 +113,7 @@ class CheckoutAbuseTest extends TestCase
         $trip = $this->makeTrip($user);
 
         for ($i = 0; $i < 10; $i++) {
-            $this->actingAs($user, 'api')->postJson('/api/v1/checkout/initiate', [
+            $this->actingAs($user, 'api')->postJson('/api/checkout/initiate', [
                 'type' => 'trip_fork',
                 'trip_id' => $trip->id,
             ]);
@@ -130,7 +130,7 @@ class CheckoutAbuseTest extends TestCase
         $trip = $this->makeTrip($user);
 
         for ($i = 0; $i < 5; $i++) {
-            $this->actingAs($user, 'api')->postJson('/api/v1/checkout/initiate', [
+            $this->actingAs($user, 'api')->postJson('/api/checkout/initiate', [
                 'type' => 'trip_fork',
                 'trip_id' => $trip->id,
             ])->assertStatus(200);
@@ -145,7 +145,7 @@ class CheckoutAbuseTest extends TestCase
         $limitersProperty->setAccessible(true);
         $limiters = $limitersProperty->getValue($limiter);
 
-        $this->actingAs($user, 'api')->postJson('/api/v1/checkout/initiate', [
+        $this->actingAs($user, 'api')->postJson('/api/checkout/initiate', [
             'type' => 'trip_fork',
             'trip_id' => $trip->id,
         ])->assertStatus(429);
@@ -165,7 +165,7 @@ class CheckoutAbuseTest extends TestCase
         Cache::put($timerKey, null, now()->addMinutes(10));
 
         // Try the 7th request
-        $response = $this->actingAs($user, 'api')->postJson('/api/v1/checkout/initiate', [
+        $response = $this->actingAs($user, 'api')->postJson('/api/checkout/initiate', [
             'type' => 'trip_fork',
             'trip_id' => $trip->id,
         ]);
@@ -178,13 +178,13 @@ class CheckoutAbuseTest extends TestCase
         $user = User::factory()->create();
         $trip = $this->makeTrip($user);
 
-        $first = $this->actingAs($user, 'api')->postJson('/api/v1/checkout/initiate', [
+        $first = $this->actingAs($user, 'api')->postJson('/api/checkout/initiate', [
             'type' => 'trip_fork',
             'trip_id' => $trip->id,
             'idempotency_key' => 'checkout-abc-123',
         ])->assertStatus(200);
 
-        $second = $this->actingAs($user, 'api')->postJson('/api/v1/checkout/initiate', [
+        $second = $this->actingAs($user, 'api')->postJson('/api/checkout/initiate', [
             'type' => 'trip_fork',
             'trip_id' => $trip->id,
             'idempotency_key' => 'checkout-abc-123',
@@ -204,7 +204,7 @@ class CheckoutAbuseTest extends TestCase
 
         $settingPrice = (int) (Setting::where('key', 'trip_fork_price_cents')->value('value') ?: 50000);
 
-        $response = $this->actingAs($user, 'api')->postJson('/api/v1/checkout/initiate', [
+        $response = $this->actingAs($user, 'api')->postJson('/api/checkout/initiate', [
             'type' => 'trip_fork',
             'trip_id' => $trip->id,
             'billing' => ['email' => 'attacker@example.com', 'phone_number' => '1111111111'],
@@ -228,7 +228,7 @@ class CheckoutAbuseTest extends TestCase
             'is_active' => true,
         ]);
 
-        $response = $this->actingAs($user, 'api')->postJson('/api/v1/checkout/initiate', [
+        $response = $this->actingAs($user, 'api')->postJson('/api/checkout/initiate', [
             'type' => 'subscription',
             'plan_id' => $plan->id,
             'billing' => ['email' => 'attacker@example.com'],

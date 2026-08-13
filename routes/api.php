@@ -74,11 +74,11 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/email/resend', [AuthController::class, 'resendVerificationEmail'])
         ->middleware(['throttle:6,1'])
         ->name('verification.resend');
-    Route::patch('/v1/profile', [AuthController::class, 'updateProfile']);
+    Route::patch('/profile', [AuthController::class, 'updateProfile']);
 });
 
 // ---- Admin: users
-Route::middleware(['auth:api', 'verified'])->prefix('v1/admin')->name('admin.')->group(function () {
+Route::middleware(['auth:api', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/users', [AdminUserController::class, 'index'])->middleware('permission:manage users');
     Route::get('/users/{user}', [AdminUserController::class, 'show'])->middleware('permission:manage users');
     Route::post('/users', [AdminUserController::class, 'store'])->middleware('permission:manage users');
@@ -92,7 +92,7 @@ Route::middleware(['auth:api', 'verified'])->prefix('v1/admin')->name('admin.')-
 // ============================================================
 
 // ---- Public explorer
-Route::prefix('v1')->group(function () {
+Route::group([], function () {
     // Categories
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
     Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
@@ -122,7 +122,7 @@ Route::prefix('v1')->group(function () {
 });
 
 // ---- Admin CRUD
-Route::middleware(['auth:api', 'verified'])->prefix('v1/admin')->name('admin.')->group(function () {
+Route::middleware(['auth:api', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     // Categories
     Route::get('/categories', [AdminCategoryController::class, 'index'])
         ->middleware('permission:manage categories')->name('categories.index');
@@ -193,35 +193,35 @@ Route::middleware(['auth:api', 'verified'])->prefix('v1/admin')->name('admin.')-
 // ============================================================
 
 // ---- Maps
-Route::prefix('v1')->group(function () {
+Route::group([], function () {
     Route::get('/maps/destination/{destination}', [MapController::class, 'destination'])->middleware('throttle:maps');
     Route::get('/maps/trip/{trip}', [MapController::class, 'trip'])->middleware(['auth:api', 'verified']);
 });
 
 // ---- Trip planner (authenticated)
-Route::middleware(['auth:api', 'verified'])->prefix('v1/trips')->group(function () {
+Route::middleware(['auth:api', 'verified'])->prefix('trips')->group(function () {
     Route::get('/create', [TripController::class, 'create']);
     Route::post('/', [TripController::class, 'store']);
     Route::post('/{trip}/attach/{type}', [TripController::class, 'attach']);
     Route::delete('/{trip}/detach/{id}', [TripController::class, 'detach']);
 
-    // Deprecated shim: direct forking is disabled. Use /v1/checkout/initiate instead.
+    // Deprecated shim: direct forking is disabled. Use /checkout/initiate instead.
     Route::post('/{trip}/fork', [TripController::class, 'fork']);
 });
 
 // Owner trip view (registered after literal /create so the literal wins)
-Route::get('/v1/trips/{trip}', [TripController::class, 'show'])->middleware(['auth:api', 'verified']);
+Route::get('/trips/{trip}', [TripController::class, 'show'])->middleware(['auth:api', 'verified']);
 
 // ---- Concierge (AI trip assistant chat)
 Route::middleware(['auth:api', 'verified', 'throttle:ai'])->group(function () {
-    Route::post('/v1/trips/{trip}/concierge', [ConciergeController::class, 'ask']);
+    Route::post('/trips/{trip}/concierge', [ConciergeController::class, 'ask']);
 });
 
 // ---- Interaction & reviews
 Route::middleware(['auth:api', 'verified'])->group(function () {
-    Route::post('/v1/favourites/{type}/{id}', [InteractionController::class, 'toggleFavourite']);
-    Route::post('/v1/reviews/{type}/{id}', [InteractionController::class, 'storeReview']);
-    Route::delete('/v1/reviews/{id}', [InteractionController::class, 'destroyReview']);
+    Route::post('/favourites/{type}/{id}', [InteractionController::class, 'toggleFavourite']);
+    Route::post('/reviews/{type}/{id}', [InteractionController::class, 'storeReview']);
+    Route::delete('/reviews/{id}', [InteractionController::class, 'destroyReview']);
 });
 
 // ---- AI trip assistant
@@ -232,7 +232,7 @@ Route::get('/review/{id}', [AIController::class, 'review'])
     ->middleware(['auth:api', 'verified', 'throttle:ai']);
 
 // ---- Admin: trips & reviews moderation
-Route::middleware(['auth:api', 'verified'])->prefix('v1/admin')->name('admin.')->group(function () {
+Route::middleware(['auth:api', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     // Trips
     Route::get('/trips', [AdminTripController::class, 'index'])->middleware('permission:manage trips');
     Route::post('/trips', [AdminTripController::class, 'store'])->middleware('permission:manage trips');
@@ -253,7 +253,7 @@ Route::middleware(['auth:api', 'verified'])->prefix('v1/admin')->name('admin.')-
 // ============================================================
 
 // ---- Plans & subscriptions
-Route::middleware(['auth:api', 'verified'])->prefix('v1')->name('plans.')->group(function () {
+Route::middleware(['auth:api', 'verified'])->name('plans.')->group(function () {
     Route::post('/admin/set-plans', [PlanController::class, 'setPlans'])
         ->middleware('permission:manage plans');
 
@@ -270,19 +270,19 @@ Route::middleware(['auth:api', 'verified'])->prefix('v1')->name('plans.')->group
 });
 
 // ---- Checkout
-Route::middleware(['auth:api', 'verified'])->prefix('v1/checkout')->name('checkout.')->group(function () {
+Route::middleware(['auth:api', 'verified'])->prefix('checkout')->name('checkout.')->group(function () {
     Route::post('/initiate', [CheckoutController::class, 'initiate'])
         ->middleware('throttle:checkout')->name('initiate');
 });
 
 // ---- Paymob webhooks (no auth — provider signature verified in controller)
-Route::prefix('v1/paymob')->name('paymob-v1.')->group(function () {
+Route::prefix('paymob')->name('paymob-v1.')->group(function () {
     Route::post('/webhook', [PaymobWebhookController::class, 'handle'])->name('webhook');
     Route::get('/callback', [PaymobWebhookController::class, 'callback'])->name('callback');
 });
 
 // ---- Admin: revenue analytics
-Route::middleware(['auth:api', 'verified'])->prefix('v1/admin')->name('admin.')->group(function () {
+Route::middleware(['auth:api', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/analytics/revenue', [AdminAnalyticsController::class, 'revenue'])
         ->middleware('permission:view analytics')->name('analytics.revenue');
     Route::get('/analytics', [AdminAnalyticsController::class, 'index'])
@@ -294,7 +294,7 @@ Route::middleware(['auth:api', 'verified'])->prefix('v1/admin')->name('admin.')-
 // ============================================================
 
 // ---- Public contacts & weather
-Route::post('/v1/contacts', [ContactController::class, 'store'])->middleware('throttle:contacts');
+Route::post('/contacts', [ContactController::class, 'store'])->middleware('throttle:contacts');
 Route::get('/weather', [WeatherController::class, 'show'])->middleware('throttle:weather');
 
 // ---- Surveys (authenticated)
@@ -303,14 +303,14 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
 });
 
 // ---- Dashboard
-Route::middleware(['auth:api', 'verified'])->prefix('v1/dashboard')->name('dashboard.')->group(function () {
+Route::middleware(['auth:api', 'verified'])->prefix('dashboard')->name('dashboard.')->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('index');
     Route::get('/trips', [DashboardController::class, 'trips'])->name('trips');
     Route::get('/favourites', [DashboardController::class, 'favourites'])->name('favourites');
 });
 
 // ---- Notifications
-Route::middleware(['auth:api', 'verified'])->prefix('v1/notifications')->name('notifications.')->group(function () {
+Route::middleware(['auth:api', 'verified'])->prefix('notifications')->name('notifications.')->group(function () {
     Route::get('/', [NotificationController::class, 'index']);
     Route::patch('/read-all', [NotificationController::class, 'markAllAsRead']);
     Route::patch('/{notification}/read', [NotificationController::class, 'markAsRead']);
@@ -322,11 +322,11 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
 });
 
 // ---- Admin
-Route::middleware(['auth:api', 'verified', 'role:admin|super_admin'])->prefix('v1/admin/notifications')->name('admin.notifications.')->group(function () {
+Route::middleware(['auth:api', 'verified', 'role:admin|super_admin'])->prefix('admin/notifications')->name('admin.notifications.')->group(function () {
     Route::get('/', [AdminNotificationController::class, 'index']);
 });
 
-Route::middleware(['auth:api', 'verified'])->prefix('v1/admin')->name('admin.')->group(function () {
+Route::middleware(['auth:api', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     // Contact inbox
     Route::get('/contacts', [ContactMessageController::class, 'index'])
         ->middleware('permission:manage contacts')->name('contacts.index');
@@ -346,14 +346,14 @@ Route::middleware(['auth:api', 'verified'])->prefix('v1/admin')->name('admin.')-
 
 // ---- Reports
 Route::middleware(['auth:api', 'verified', 'role:admin|super_admin'])
-    ->prefix('v1/admin')
+    ->prefix('admin')
     ->group(function () {
         Route::get('/reports', [ReportController::class, 'index']);
         Route::post('/reports/generate', [ReportController::class, 'generate']);
         Route::get('/reports/{id}/download', [ReportController::class, 'download']);
     });
 
-Route::middleware(['auth:api', 'verified'])->prefix('v1')->group(function () {
+Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::post('/agency-requests', [AgencyRequestController::class, 'store']);
     Route::get('/admin/agency-requests', [AdminAgencyController::class, 'adminIndex'])
         ->middleware('role:admin|super_admin')

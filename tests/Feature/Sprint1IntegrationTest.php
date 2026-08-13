@@ -26,38 +26,38 @@ class Sprint1IntegrationTest extends TestCase
 
     public function test_fady_trips()
     {
-        $response = $this->getJson('/api/v1/trips/create');
+        $response = $this->getJson('/api/trips/create');
         $this->assertNotEquals(404, $response->status(), 'Fady: Trips create missing');
     }
 
     public function test_adham_trip_attachments()
     {
         // Attach endpoint now exists (built in Sprint 1). Verify it resolves and requires auth.
-        $response = $this->postJson('/api/v1/trips/1/attach/hotel');
+        $response = $this->postJson('/api/trips/1/attach/hotel');
         $this->assertEquals(401, $response->status(), 'Adham: Attach endpoint requires authentication');
     }
 
     public function test_kenzy_destinations_hotels()
     {
-        $response = $this->getJson('/api/v1/destinations');
+        $response = $this->getJson('/api/destinations');
         $this->assertNotEquals(404, $response->status(), 'Kenzy: Destinations missing');
 
-        $response = $this->getJson('/api/v1/hotels');
+        $response = $this->getJson('/api/hotels');
         $this->assertNotEquals(404, $response->status(), 'Kenzy: Hotels missing');
     }
 
     public function test_hana_restaurants_attractions()
     {
-        $response = $this->getJson('/api/v1/restaurants');
+        $response = $this->getJson('/api/restaurants');
         $this->assertNotEquals(404, $response->status(), 'Hana: Restaurants missing');
 
-        $response = $this->getJson('/api/v1/attractions');
+        $response = $this->getJson('/api/attractions');
         $this->assertNotEquals(404, $response->status(), 'Hana: Attractions missing');
     }
 
     public function test_rana_categories()
     {
-        $response = $this->getJson('/api/v1/categories');
+        $response = $this->getJson('/api/categories');
         $this->assertNotEquals(404, $response->status(), 'Rana: Categories missing');
     }
 }

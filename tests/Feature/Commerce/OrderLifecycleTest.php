@@ -93,7 +93,7 @@ class OrderLifecycleTest extends TestCase
 
     private function postWebhook(Payment $payment, bool $success): TestResponse
     {
-        return $this->postJson('/api/v1/paymob/webhook?hmac=valid', [
+        return $this->postJson('/api/paymob/webhook?hmac=valid', [
             'obj' => [
                 'success' => $success,
                 'order' => ['merchant_order_id' => $payment->paymob_transaction_id],
@@ -106,7 +106,7 @@ class OrderLifecycleTest extends TestCase
         $user = User::factory()->create();
         $trip = $this->makeTrip($user);
 
-        $response = $this->actingAs($user, 'api')->postJson('/api/v1/checkout/initiate', [
+        $response = $this->actingAs($user, 'api')->postJson('/api/checkout/initiate', [
             'type' => 'trip_fork',
             'trip_id' => $trip->id,
         ])->assertStatus(200);
@@ -145,7 +145,7 @@ class OrderLifecycleTest extends TestCase
         $this->assertEquals(0, Trip::where('parent_trip_id', $trip->id)->count());
 
         // A stale order is not reused for idempotent checkout — a new checkout is created.
-        $response = $this->actingAs($user, 'api')->postJson('/api/v1/checkout/initiate', [
+        $response = $this->actingAs($user, 'api')->postJson('/api/checkout/initiate', [
             'type' => 'trip_fork',
             'trip_id' => $trip->id,
             'idempotency_key' => 'stale-key-1',

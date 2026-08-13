@@ -51,10 +51,10 @@ class MapDestinationAbuseTest extends TestCase
         ]);
 
         for ($i = 0; $i < 10; $i++) {
-            $this->getJson("/api/v1/maps/destination/{$destination->id}")->assertOk();
+            $this->getJson("/api/maps/destination/{$destination->id}")->assertOk();
         }
 
-        $this->getJson("/api/v1/maps/destination/{$destination->id}")
+        $this->getJson("/api/maps/destination/{$destination->id}")
             ->assertStatus(429);
     }
 
@@ -71,7 +71,7 @@ class MapDestinationAbuseTest extends TestCase
             'longitude' => null,
         ]);
 
-        $response = $this->getJson("/api/v1/maps/destination/{$destination->id}");
+        $response = $this->getJson("/api/maps/destination/{$destination->id}");
 
         $response->assertOk()->assertJson(['success' => true]);
 
@@ -102,8 +102,8 @@ class MapDestinationAbuseTest extends TestCase
             'longitude' => 31.2357,
         ]);
 
-        $this->getJson("/api/v1/maps/destination/{$destination->id}")->assertOk();
-        $this->getJson("/api/v1/maps/destination/{$destination->id}")->assertOk();
+        $this->getJson("/api/maps/destination/{$destination->id}")->assertOk();
+        $this->getJson("/api/maps/destination/{$destination->id}")->assertOk();
 
         // 1 OpenAI + 2 Overpass on first request; cache serves the second.
         Http::assertSentCount(3);

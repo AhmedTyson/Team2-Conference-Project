@@ -34,7 +34,7 @@ class UserTest extends TestCase
 
         User::factory()->count(3)->create();
 
-        $response = $this->actingAs($admin, 'api')->getJson('/api/v1/admin/users');
+        $response = $this->actingAs($admin, 'api')->getJson('/api/admin/users');
 
         $response->assertStatus(200);
         $response->assertJsonCount(4, 'data');
@@ -50,7 +50,7 @@ class UserTest extends TestCase
         $admin->assignRole('admin');
 
         $response = $this->actingAs($admin, 'api')
-            ->postJson('/api/v1/admin/users', [
+            ->postJson('/api/admin/users', [
                 'name' => 'New Admin User',
                 'email' => 'newuser@example.com',
                 'password' => 'secret123',
@@ -75,7 +75,7 @@ class UserTest extends TestCase
         $admin->assignRole('admin');
 
         $response = $this->actingAs($admin, 'api')
-            ->postJson('/api/v1/admin/users', ['email' => 'missing-fields@example.com']);
+            ->postJson('/api/admin/users', ['email' => 'missing-fields@example.com']);
 
         $response->assertStatus(422);
         $response->assertJsonStructure(['error' => ['type', 'status', 'message', 'timestamp']]);
@@ -86,10 +86,10 @@ class UserTest extends TestCase
         $user = User::factory()->create();
         $user->assignRole('traveler');
 
-        $this->actingAs($user, 'api')->getJson('/api/v1/admin/users')->assertStatus(403);
+        $this->actingAs($user, 'api')->getJson('/api/admin/users')->assertStatus(403);
 
         $this->actingAs($user, 'api')
-            ->postJson('/api/v1/admin/users', [
+            ->postJson('/api/admin/users', [
                 'name' => 'Hacker',
                 'email' => 'hacker@example.com',
                 'password' => 'secret123',

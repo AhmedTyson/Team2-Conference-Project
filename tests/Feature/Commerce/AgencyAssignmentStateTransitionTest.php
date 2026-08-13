@@ -31,7 +31,7 @@ class AgencyAssignmentStateTransitionTest extends TestCase
             'status' => AgencyAssignmentStatus::ADMIN_APPROVED,
         ]);
 
-        $response = $this->actingAs($admin, 'api')->postJson("/api/v1/admin/agency-requests/{$assignment->id}/approve", [
+        $response = $this->actingAs($admin, 'api')->postJson("/api/admin/agency-requests/{$assignment->id}/approve", [
             'agency_user_id' => $agency->id,
         ]);
 
@@ -48,7 +48,7 @@ class AgencyAssignmentStateTransitionTest extends TestCase
             'agency_user_id' => $agency->id,
         ]);
 
-        $response = $this->actingAs($agency, 'api')->postJson("/api/v1/agency/assignments/{$assignment->id}/approve");
+        $response = $this->actingAs($agency, 'api')->postJson("/api/agency/assignments/{$assignment->id}/approve");
 
         $response->assertStatus(409);
     }
@@ -63,7 +63,7 @@ class AgencyAssignmentStateTransitionTest extends TestCase
             'agency_user_id' => $agency->id,
         ]);
 
-        $response = $this->actingAs($agency, 'api')->postJson("/api/v1/agency/assignments/{$assignment->id}/decline");
+        $response = $this->actingAs($agency, 'api')->postJson("/api/agency/assignments/{$assignment->id}/decline");
 
         $response->assertStatus(409);
     }
@@ -78,7 +78,7 @@ class AgencyAssignmentStateTransitionTest extends TestCase
             'agency_user_id' => $agency->id,
         ]);
 
-        $response = $this->actingAs($agency, 'api')->postJson("/api/v1/agency/assignments/{$assignment->id}/trips", [
+        $response = $this->actingAs($agency, 'api')->postJson("/api/agency/assignments/{$assignment->id}/trips", [
             'title' => 'Test',
             'items' => [],
         ]);

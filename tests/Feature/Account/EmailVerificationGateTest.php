@@ -32,7 +32,7 @@ class EmailVerificationGateTest extends TestCase
     public function test_unverified_user_is_blocked_from_business_route(): void
     {
         $this->actingAs($this->unverified, 'api')
-            ->getJson('/api/v1/trips/'.$this->trip->id)
+            ->getJson('/api/trips/'.$this->trip->id)
             ->assertStatus(403)
             ->assertJsonPath('error.type', 'email_not_verified')
             ->assertJsonPath('error.status', 403);
@@ -41,7 +41,7 @@ class EmailVerificationGateTest extends TestCase
     public function test_verified_user_reaches_business_route(): void
     {
         $this->actingAs($this->verified, 'api')
-            ->getJson('/api/v1/trips/'.$this->trip->id)
+            ->getJson('/api/trips/'.$this->trip->id)
             ->assertStatus(200);
     }
 
@@ -57,7 +57,7 @@ class EmailVerificationGateTest extends TestCase
             ->assertJsonPath('error.type', 'email_not_verified');
 
         $this->actingAs($this->unverified, 'api')
-            ->patchJson('/api/v1/profile', ['name' => 'New Name'])
+            ->patchJson('/api/profile', ['name' => 'New Name'])
             ->assertStatus(200);
     }
 
@@ -76,7 +76,7 @@ class EmailVerificationGateTest extends TestCase
         Notification::fake();
 
         $this->actingAs($this->verified, 'api')
-            ->patchJson('/api/v1/profile', ['email' => 'new@example.com'])
+            ->patchJson('/api/profile', ['email' => 'new@example.com'])
             ->assertStatus(200);
 
         $user = $this->verified->fresh();
@@ -87,7 +87,7 @@ class EmailVerificationGateTest extends TestCase
         Notification::assertSentTo($user, VerifyEmail::class);
 
         $this->actingAs($user, 'api')
-            ->getJson('/api/v1/trips/'.$this->trip->id)
+            ->getJson('/api/trips/'.$this->trip->id)
             ->assertStatus(403)
             ->assertJsonPath('error.type', 'email_not_verified');
     }

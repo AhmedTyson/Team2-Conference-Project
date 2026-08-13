@@ -50,7 +50,7 @@ class AdminTrashedRecordsTest extends TestCase
         $trashed = Hotel::factory()->create(['destination_id' => $destination->id]);
         $trashed->delete();
 
-        $response = $this->actingAs($this->admin, 'api')->getJson('/api/v1/admin/hotels');
+        $response = $this->actingAs($this->admin, 'api')->getJson('/api/admin/hotels');
 
         $response->assertOk();
         $ids = collect($response->json('data'))->pluck('id');
@@ -66,7 +66,7 @@ class AdminTrashedRecordsTest extends TestCase
         $trashed = Hotel::factory()->create(['destination_id' => $destination->id]);
         $trashed->delete();
 
-        $response = $this->actingAs($this->admin, 'api')->getJson('/api/v1/admin/hotels?trashed=1');
+        $response = $this->actingAs($this->admin, 'api')->getJson('/api/admin/hotels?trashed=1');
 
         $response->assertOk();
         $ids = collect($response->json('data'))->pluck('id');
@@ -83,7 +83,7 @@ class AdminTrashedRecordsTest extends TestCase
             $trashed = $model::factory()->create();
             $trashed->delete();
 
-            $response = $this->actingAs($this->admin, 'api')->getJson("/api/v1/admin/{$path}?trashed=1");
+            $response = $this->actingAs($this->admin, 'api')->getJson("/api/admin/{$path}?trashed=1");
 
             $response->assertOk();
             $this->assertTrue(
@@ -100,11 +100,11 @@ class AdminTrashedRecordsTest extends TestCase
         $trashedCategory = Category::factory()->create();
         $trashedCategory->delete();
 
-        $this->actingAs($this->admin, 'api')->getJson('/api/v1/admin/countries?trashed=1')
+        $this->actingAs($this->admin, 'api')->getJson('/api/admin/countries?trashed=1')
             ->assertOk()
             ->assertJsonFragment(['id' => $trashedCountry->id]);
 
-        $this->actingAs($this->admin, 'api')->getJson('/api/v1/admin/categories?trashed=1')
+        $this->actingAs($this->admin, 'api')->getJson('/api/admin/categories?trashed=1')
             ->assertOk()
             ->assertJsonFragment(['id' => $trashedCategory->id]);
     }
@@ -115,7 +115,7 @@ class AdminTrashedRecordsTest extends TestCase
         $trashed = Destination::factory()->create(['country_id' => $country->id]);
         $trashed->delete();
 
-        $this->actingAs($this->admin, 'api')->getJson('/api/v1/admin/destinations?trashed=1')
+        $this->actingAs($this->admin, 'api')->getJson('/api/admin/destinations?trashed=1')
             ->assertOk()
             ->assertJsonFragment(['id' => $trashed->id]);
     }
@@ -134,11 +134,11 @@ class AdminTrashedRecordsTest extends TestCase
         ]);
         $review->delete();
 
-        $trips = $this->actingAs($this->admin, 'api')->getJson('/api/v1/admin/trips?trashed=1');
+        $trips = $this->actingAs($this->admin, 'api')->getJson('/api/admin/trips?trashed=1');
         $trips->assertOk();
         $this->assertTrue(collect($trips->json('data'))->pluck('id')->contains($trip->id));
 
-        $reviews = $this->actingAs($this->admin, 'api')->getJson('/api/v1/admin/reviews?trashed=1');
+        $reviews = $this->actingAs($this->admin, 'api')->getJson('/api/admin/reviews?trashed=1');
         $reviews->assertOk();
         $this->assertTrue(collect($reviews->json('data'))->pluck('id')->contains($review->id));
     }
@@ -149,7 +149,7 @@ class AdminTrashedRecordsTest extends TestCase
         $trashed = Trip::factory()->create(['user_id' => $user->id]);
         $trashed->delete();
 
-        $response = $this->actingAs($this->admin, 'api')->getJson('/api/v1/admin/trips');
+        $response = $this->actingAs($this->admin, 'api')->getJson('/api/admin/trips');
 
         $response->assertOk();
         $this->assertFalse(collect($response->json('data'))->pluck('id')->contains($trashed->id));
@@ -159,7 +159,7 @@ class AdminTrashedRecordsTest extends TestCase
     {
         $user = User::factory()->create();
 
-        $this->actingAs($user, 'api')->getJson('/api/v1/admin/hotels?trashed=1')
+        $this->actingAs($user, 'api')->getJson('/api/admin/hotels?trashed=1')
             ->assertForbidden();
     }
 
@@ -170,7 +170,7 @@ class AdminTrashedRecordsTest extends TestCase
         $trashed = Hotel::factory()->create(['destination_id' => $destination->id]);
         $trashed->delete();
 
-        $this->getJson('/api/v1/hotels')
+        $this->getJson('/api/hotels')
             ->assertOk()
             ->assertJsonMissing(['id' => $trashed->id]);
     }
@@ -181,7 +181,7 @@ class AdminTrashedRecordsTest extends TestCase
         $destination = Destination::factory()->create(['country_id' => $country->id]);
         $hotel = Hotel::factory()->create(['destination_id' => $destination->id]);
 
-        $this->actingAs($this->admin, 'api')->deleteJson("/api/v1/admin/hotels/{$hotel->id}")->assertOk();
+        $this->actingAs($this->admin, 'api')->deleteJson("/api/admin/hotels/{$hotel->id}")->assertOk();
 
         $this->assertSoftDeleted('hotels', ['id' => $hotel->id]);
         $this->assertDatabaseHas('hotels', ['id' => $hotel->id]);
@@ -198,8 +198,8 @@ class AdminTrashedRecordsTest extends TestCase
             'reviewable_type' => Hotel::class,
         ]);
 
-        $this->actingAs($this->admin, 'api')->deleteJson("/api/v1/admin/trips/{$trip->id}")->assertOk();
-        $this->actingAs($this->admin, 'api')->deleteJson("/api/v1/admin/reviews/{$review->id}")->assertOk();
+        $this->actingAs($this->admin, 'api')->deleteJson("/api/admin/trips/{$trip->id}")->assertOk();
+        $this->actingAs($this->admin, 'api')->deleteJson("/api/admin/reviews/{$review->id}")->assertOk();
 
         $this->assertSoftDeleted('trips', ['id' => $trip->id]);
         $this->assertSoftDeleted('reviews', ['id' => $review->id]);
@@ -215,7 +215,7 @@ class AdminTrashedRecordsTest extends TestCase
         $hotelB->delete();
 
         $this->actingAs($this->admin, 'api')
-            ->patchJson("/api/v1/admin/hotels/{$hotelA->id}/restore")
+            ->patchJson("/api/admin/hotels/{$hotelA->id}/restore")
             ->assertOk();
 
         $this->assertNotSoftDeleted('hotels', ['id' => $hotelA->id]);

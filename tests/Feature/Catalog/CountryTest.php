@@ -30,7 +30,7 @@ class CountryTest extends TestCase
 
         Country::factory()->count(3)->create();
 
-        $this->actingAs($admin, 'api')->getJson('/api/v1/admin/countries')
+        $this->actingAs($admin, 'api')->getJson('/api/admin/countries')
             ->assertStatus(200)
             ->assertJsonCount(3, 'data');
     }
@@ -40,7 +40,7 @@ class CountryTest extends TestCase
         $admin = User::factory()->create();
         $admin->assignRole('admin');
 
-        $response = $this->actingAs($admin, 'api')->postJson('/api/v1/admin/countries', [
+        $response = $this->actingAs($admin, 'api')->postJson('/api/admin/countries', [
             'name' => 'Egypt',
             'iso_code' => 'EG',
             'languages' => ['ar', 'en'],
@@ -59,7 +59,7 @@ class CountryTest extends TestCase
 
         $country = Country::factory()->create(['name' => 'Old Name']);
 
-        $response = $this->actingAs($admin, 'api')->putJson("/api/v1/admin/countries/{$country->id}", [
+        $response = $this->actingAs($admin, 'api')->putJson("/api/admin/countries/{$country->id}", [
             'name' => 'New Name',
             'iso_code' => $country->iso_code,
         ]);
@@ -77,7 +77,7 @@ class CountryTest extends TestCase
 
         $country = Country::factory()->create();
 
-        $this->actingAs($admin, 'api')->deleteJson("/api/v1/admin/countries/{$country->id}")
+        $this->actingAs($admin, 'api')->deleteJson("/api/admin/countries/{$country->id}")
             ->assertStatus(200);
 
         $this->assertSoftDeleted('countries', ['id' => $country->id]);
@@ -88,8 +88,8 @@ class CountryTest extends TestCase
         $user = User::factory()->create();
         $user->assignRole('traveler');
 
-        $this->actingAs($user, 'api')->getJson('/api/v1/admin/countries')->assertStatus(403);
-        $this->actingAs($user, 'api')->postJson('/api/v1/admin/countries', [
+        $this->actingAs($user, 'api')->getJson('/api/admin/countries')->assertStatus(403);
+        $this->actingAs($user, 'api')->postJson('/api/admin/countries', [
             'name' => 'Hacked',
             'iso_code' => 'XX',
         ])->assertStatus(403);

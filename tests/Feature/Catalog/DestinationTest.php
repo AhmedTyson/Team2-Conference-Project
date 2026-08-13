@@ -35,7 +35,7 @@ class DestinationTest extends TestCase
         $country = Country::factory()->create();
         Destination::factory()->count(3)->create(['country_id' => $country->id]);
 
-        $response = $this->actingAs($admin, 'api')->getJson('/api/v1/admin/destinations');
+        $response = $this->actingAs($admin, 'api')->getJson('/api/admin/destinations');
 
         $response->assertStatus(200)
             ->assertJsonCount(3, 'data');
@@ -46,7 +46,7 @@ class DestinationTest extends TestCase
         $user = User::factory()->create();
         $user->assignRole('traveler');
 
-        $this->actingAs($user, 'api')->getJson('/api/v1/admin/destinations')->assertStatus(403);
+        $this->actingAs($user, 'api')->getJson('/api/admin/destinations')->assertStatus(403);
     }
 
     public function test_admin_can_create_destination_with_auto_coordinates()
@@ -72,7 +72,7 @@ class DestinationTest extends TestCase
             'description' => 'A nice place',
         ];
 
-        $response = $this->actingAs($admin, 'api')->postJson('/api/v1/admin/destinations', $payload);
+        $response = $this->actingAs($admin, 'api')->postJson('/api/admin/destinations', $payload);
 
         $response->assertStatus(201)
             ->assertJsonPath('data.name', 'Eiffel Tower Area')
@@ -105,7 +105,7 @@ class DestinationTest extends TestCase
             'longitude' => 25.0,
         ];
 
-        $response = $this->actingAs($admin, 'api')->putJson("/api/v1/admin/destinations/{$destination->id}", $payload);
+        $response = $this->actingAs($admin, 'api')->putJson("/api/admin/destinations/{$destination->id}", $payload);
 
         $response->assertStatus(200)
             ->assertJsonPath('data.name', 'New Name');
@@ -127,7 +127,7 @@ class DestinationTest extends TestCase
         $country = Country::factory()->create();
         $destination = Destination::factory()->create(['country_id' => $country->id]);
 
-        $response = $this->actingAs($admin, 'api')->deleteJson("/api/v1/admin/destinations/{$destination->id}");
+        $response = $this->actingAs($admin, 'api')->deleteJson("/api/admin/destinations/{$destination->id}");
 
         $response->assertStatus(200)
             ->assertJsonPath('message', 'Destination deleted successfully.');

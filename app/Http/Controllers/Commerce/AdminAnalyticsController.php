@@ -89,7 +89,7 @@ class AdminAnalyticsController extends Controller
     /**
      * Return aggregated analytics charts data (Users + Revenue) for the admin dashboard.
      *
-     * GET /api/v1/admin/analytics
+     * GET /api/admin/analytics
      */
     public function index(): JsonResponse
     {

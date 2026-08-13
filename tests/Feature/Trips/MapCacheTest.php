@@ -42,8 +42,8 @@ class MapCacheTest extends TestCase
             'longitude' => 31.2357,
         ]);
 
-        $first = $this->getJson("/api/v1/maps/destination/{$destination->id}");
-        $second = $this->getJson("/api/v1/maps/destination/{$destination->id}");
+        $first = $this->getJson("/api/maps/destination/{$destination->id}");
+        $second = $this->getJson("/api/maps/destination/{$destination->id}");
 
         $first->assertOk()->assertJson(['success' => true]);
         $second->assertOk()->assertJson(['success' => true]);
@@ -74,8 +74,8 @@ class MapCacheTest extends TestCase
             'longitude' => 29.9187,
         ]);
 
-        $this->getJson("/api/v1/maps/destination/{$cairo->id}")->assertOk();
-        $this->getJson("/api/v1/maps/destination/{$alex->id}")->assertOk();
+        $this->getJson("/api/maps/destination/{$cairo->id}")->assertOk();
+        $this->getJson("/api/maps/destination/{$alex->id}")->assertOk();
 
         $this->assertTrue(Cache::has('osm:attractions_ai:'.md5('Cairo')));
         $this->assertTrue(Cache::has('osm:attractions_ai:'.md5('Alexandria')));

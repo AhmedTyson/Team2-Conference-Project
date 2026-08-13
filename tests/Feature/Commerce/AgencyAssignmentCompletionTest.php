@@ -31,7 +31,7 @@ class AgencyAssignmentCompletionTest extends TestCase
         AgencyAssignment::factory()->create(['status' => AgencyAssignmentStatus::ADMIN_APPROVED]);
         AgencyAssignment::factory()->create(['status' => AgencyAssignmentStatus::AGENCY_APPROVED]);
 
-        $response = $this->actingAs($admin, 'api')->getJson('/api/v1/admin/agency-requests');
+        $response = $this->actingAs($admin, 'api')->getJson('/api/admin/agency-requests');
 
         $response->assertOk()
             ->assertJsonCount(1, 'data')
@@ -44,7 +44,7 @@ class AgencyAssignmentCompletionTest extends TestCase
         $agency = User::factory()->create();
         $agency->assignRole('agency');
 
-        $this->actingAs($agency, 'api')->getJson('/api/v1/admin/agency-requests')->assertForbidden();
+        $this->actingAs($agency, 'api')->getJson('/api/admin/agency-requests')->assertForbidden();
     }
 
     public function test_customer_can_view_own_agency_assignments(): void
@@ -59,7 +59,7 @@ class AgencyAssignmentCompletionTest extends TestCase
             'status' => AgencyAssignmentStatus::AGENCY_APPROVED,
         ]);
 
-        $response = $this->actingAs($customer, 'api')->getJson('/api/v1/agency-assignments');
+        $response = $this->actingAs($customer, 'api')->getJson('/api/agency-assignments');
 
         $response->assertOk()
             ->assertJsonCount(2, 'data');
@@ -74,7 +74,7 @@ class AgencyAssignmentCompletionTest extends TestCase
             'status' => AgencyAssignmentStatus::REQUESTED,
         ]);
 
-        $response = $this->actingAs($customer, 'api')->getJson('/api/v1/agency-assignments');
+        $response = $this->actingAs($customer, 'api')->getJson('/api/agency-assignments');
 
         $response->assertOk()
             ->assertJsonCount(0, 'data');
@@ -89,7 +89,7 @@ class AgencyAssignmentCompletionTest extends TestCase
         ]);
 
         $response = $this->actingAs($customer, 'api')->postJson(
-            "/api/v1/agency-assignments/{$assignment->id}/cancel"
+            "/api/agency-assignments/{$assignment->id}/cancel"
         );
 
         $response->assertOk();
@@ -109,7 +109,7 @@ class AgencyAssignmentCompletionTest extends TestCase
         ]);
 
         $this->actingAs($customer, 'api')->postJson(
-            "/api/v1/agency-assignments/{$assignment->id}/cancel"
+            "/api/agency-assignments/{$assignment->id}/cancel"
         )->assertOk();
 
         $this->assertDatabaseHas('agency_assignments', [
@@ -127,7 +127,7 @@ class AgencyAssignmentCompletionTest extends TestCase
         ]);
 
         $this->actingAs($customer, 'api')->postJson(
-            "/api/v1/agency-assignments/{$assignment->id}/cancel"
+            "/api/agency-assignments/{$assignment->id}/cancel"
         )->assertStatus(409);
 
         $this->assertDatabaseHas('agency_assignments', [
@@ -145,7 +145,7 @@ class AgencyAssignmentCompletionTest extends TestCase
         ]);
 
         $this->actingAs($customer, 'api')->postJson(
-            "/api/v1/agency-assignments/{$assignment->id}/cancel"
+            "/api/agency-assignments/{$assignment->id}/cancel"
         )->assertStatus(409);
     }
 
@@ -159,7 +159,7 @@ class AgencyAssignmentCompletionTest extends TestCase
         ]);
 
         $this->actingAs($intruder, 'api')->postJson(
-            "/api/v1/agency-assignments/{$assignment->id}/cancel"
+            "/api/agency-assignments/{$assignment->id}/cancel"
         )->assertForbidden();
 
         $this->assertDatabaseHas('agency_assignments', [

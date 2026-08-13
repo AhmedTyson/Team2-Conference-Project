@@ -43,7 +43,7 @@ class MaintenanceModeTest extends TestCase
         // Bring the app down — this writes storage/framework/down.
         Artisan::call('down');
 
-        $response = $this->getJson('/api/v1/categories');
+        $response = $this->getJson('/api/categories');
 
         // Restore immediately so subsequent tests aren't affected.
         Artisan::call('up');
@@ -63,7 +63,7 @@ class MaintenanceModeTest extends TestCase
         Artisan::call('down');
         Artisan::call('up');
 
-        $response = $this->getJson('/api/v1/categories');
+        $response = $this->getJson('/api/categories');
 
         // Categories index should return 200 (unauthenticated public endpoint).
         $response->assertOk();

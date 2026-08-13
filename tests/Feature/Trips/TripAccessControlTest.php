@@ -122,7 +122,7 @@ class TripAccessControlTest extends TestCase
         ]);
 
         $this->actingAs($owner, 'api')
-            ->getJson("/api/v1/maps/trip/{$trip->id}")
+            ->getJson("/api/maps/trip/{$trip->id}")
             ->assertOk()
             ->assertJsonPath('data.directions.distance_km', 10);
     }
@@ -136,7 +136,7 @@ class TripAccessControlTest extends TestCase
         Http::fake();
 
         $this->actingAs($attacker, 'api')
-            ->getJson("/api/v1/maps/trip/{$trip->id}")
+            ->getJson("/api/maps/trip/{$trip->id}")
             ->assertStatus(404);
 
         // No external map processing happened for the unauthorized request.

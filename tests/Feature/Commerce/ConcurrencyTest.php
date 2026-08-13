@@ -63,7 +63,7 @@ class ConcurrencyTest extends TestCase
         $lock = Cache::lock("paymob_webhook_processing_{$merchantOrderId}", 15);
         $lock->get();
 
-        $response = $this->postJson('/api/v1/paymob/webhook?hmac=valid', $payload);
+        $response = $this->postJson('/api/paymob/webhook?hmac=valid', $payload);
 
         // The webhook should gracefully return 200 (Already processing) to prevent Paymob from retrying,
         // but it MUST NOT dispatch the PaymentSucceeded event or update the DB.
@@ -79,7 +79,7 @@ class ConcurrencyTest extends TestCase
         $lock->release();
 
         // Now hit it again without the lock
-        $response2 = $this->postJson('/api/v1/paymob/webhook?hmac=valid', $payload);
+        $response2 = $this->postJson('/api/paymob/webhook?hmac=valid', $payload);
         $response2->assertStatus(200);
         $response2->assertJson(['message' => 'Processed']);
 
@@ -88,7 +88,7 @@ class ConcurrencyTest extends TestCase
         $this->assertEquals(PaymentStatus::PAID, $payment->fresh()->status);
 
         // Hit it a THIRD time (after it's fully paid)
-        $response3 = $this->postJson('/api/v1/paymob/webhook?hmac=valid', $payload);
+        $response3 = $this->postJson('/api/paymob/webhook?hmac=valid', $payload);
         $response3->assertStatus(200);
         $response3->assertJson(['message' => 'Already processed']);
 

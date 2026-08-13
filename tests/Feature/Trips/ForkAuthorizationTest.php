@@ -80,7 +80,7 @@ class ForkAuthorizationTest extends TestCase
         $trip = $this->privateTrip($owner);
 
         $this->actingAs($buyer, 'api')
-            ->postJson('/api/v1/checkout/initiate', [
+            ->postJson('/api/checkout/initiate', [
                 'type' => 'trip_fork',
                 'trip_id' => $trip->id,
             ])
@@ -100,7 +100,7 @@ class ForkAuthorizationTest extends TestCase
         $trip = $this->privateTrip($owner);
 
         $this->actingAs($buyer, 'api')
-            ->postJson('/api/v1/checkout/initiate', [
+            ->postJson('/api/checkout/initiate', [
                 'type' => 'trip_fork',
                 'trip_id' => $trip->id,
             ])
@@ -160,7 +160,7 @@ class ForkAuthorizationTest extends TestCase
         $trip = $this->publicTrip($owner);
 
         $response = $this->actingAs($buyer, 'api')
-            ->postJson('/api/v1/checkout/initiate', [
+            ->postJson('/api/checkout/initiate', [
                 'type' => 'trip_fork',
                 'trip_id' => $trip->id,
             ]);

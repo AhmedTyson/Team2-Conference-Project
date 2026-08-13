@@ -64,7 +64,7 @@ class PaymentFlowTest extends TestCase
             'status' => 'pending',
         ]);
 
-        $response = $this->actingAs($user, 'api')->postJson('/api/v1/checkout/initiate', [
+        $response = $this->actingAs($user, 'api')->postJson('/api/checkout/initiate', [
             'type' => 'trip_fork',
             'trip_id' => $trip->id,
         ]);
@@ -139,7 +139,7 @@ class PaymentFlowTest extends TestCase
         ];
 
         // Hit Webhook
-        $response = $this->postJson('/api/v1/paymob/webhook?hmac=valid_signature', $payload);
+        $response = $this->postJson('/api/paymob/webhook?hmac=valid_signature', $payload);
         $response->assertStatus(200);
 
         // Assert Payment & Order Updated
@@ -203,7 +203,7 @@ class PaymentFlowTest extends TestCase
             ],
         ];
 
-        $response = $this->postJson('/api/v1/paymob/webhook?hmac=valid', $payload);
+        $response = $this->postJson('/api/paymob/webhook?hmac=valid', $payload);
         $response->assertStatus(200);
 
         // Assert Subscription
@@ -251,7 +251,7 @@ class PaymentFlowTest extends TestCase
             ],
         ];
 
-        $response = $this->postJson('/api/v1/paymob/webhook?hmac=valid', $payload);
+        $response = $this->postJson('/api/paymob/webhook?hmac=valid', $payload);
         $response->assertStatus(200);
 
         $this->assertEquals(PaymentStatus::FAILED, $payment->fresh()->status);
@@ -319,7 +319,7 @@ class PaymentFlowTest extends TestCase
             ],
         ];
 
-        $response = $this->postJson('/api/v1/paymob/webhook?hmac=valid', $payload);
+        $response = $this->postJson('/api/paymob/webhook?hmac=valid', $payload);
         $response->assertStatus(200);
 
         // Payment was captured, but fulfillment failed → order flips to visible FAILED state
@@ -429,8 +429,8 @@ class PaymentFlowTest extends TestCase
             ],
         ];
 
-        $this->postJson('/api/v1/paymob/webhook?hmac=valid', $payload)->assertStatus(200);
-        $this->postJson('/api/v1/paymob/webhook?hmac=valid', $payload)->assertStatus(200);
+        $this->postJson('/api/paymob/webhook?hmac=valid', $payload)->assertStatus(200);
+        $this->postJson('/api/paymob/webhook?hmac=valid', $payload)->assertStatus(200);
 
         $this->assertEquals(PaymentStatus::PAID, $payment->fresh()->status);
         $this->assertEquals(1, Trip::where('parent_trip_id', $sourceTrip->id)->count());
@@ -486,7 +486,7 @@ class PaymentFlowTest extends TestCase
             ],
         ];
 
-        $this->postJson('/api/v1/paymob/webhook?hmac=valid', $cancelPayload)->assertStatus(200);
+        $this->postJson('/api/paymob/webhook?hmac=valid', $cancelPayload)->assertStatus(200);
 
         $this->assertEquals(PaymentStatus::FAILED, $payment->fresh()->status);
         $this->assertEquals(OrderStatus::FAILED, $order->fresh()->status);
@@ -497,7 +497,7 @@ class PaymentFlowTest extends TestCase
         $successPayload = $cancelPayload;
         $successPayload['obj']['success'] = true;
 
-        $this->postJson('/api/v1/paymob/webhook?hmac=valid', $successPayload)->assertStatus(200);
+        $this->postJson('/api/paymob/webhook?hmac=valid', $successPayload)->assertStatus(200);
 
         $this->assertEquals(PaymentStatus::FAILED, $payment->fresh()->status);
         $this->assertEquals(OrderStatus::FAILED, $order->fresh()->status);

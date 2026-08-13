@@ -51,7 +51,7 @@ class TripController extends Controller
 
     public function fork(Request $request, Trip $trip): JsonResponse
     {
-        abort(400, 'Direct trip forking is disabled. Please use the /api/v1/checkout/initiate endpoint to purchase a trip fork.');
+        abort(400, 'Direct trip forking is disabled. Please use the /api/checkout/initiate endpoint to purchase a trip fork.');
     }
 
     public function attach(Request $request, Trip $trip, string $type): JsonResponse

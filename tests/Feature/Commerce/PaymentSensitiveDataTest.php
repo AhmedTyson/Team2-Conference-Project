@@ -77,7 +77,7 @@ class PaymentSensitiveDataTest extends TestCase
     {
         [$order, $payment] = $this->makePendingPayment(User::factory()->create());
 
-        $this->postJson('/api/v1/paymob/webhook?hmac=valid', [
+        $this->postJson('/api/paymob/webhook?hmac=valid', [
             'obj' => [
                 'success' => true,
                 'order' => ['merchant_order_id' => $payment->paymob_transaction_id],
@@ -95,7 +95,7 @@ class PaymentSensitiveDataTest extends TestCase
     {
         [$order, $payment] = $this->makePendingPayment(User::factory()->create());
 
-        $this->postJson('/api/v1/paymob/webhook?hmac=valid', [
+        $this->postJson('/api/paymob/webhook?hmac=valid', [
             'obj' => [
                 'success' => true,
                 'order' => ['merchant_order_id' => $payment->paymob_transaction_id],
@@ -119,7 +119,7 @@ class PaymentSensitiveDataTest extends TestCase
             ],
         ];
 
-        $this->postJson('/api/v1/paymob/webhook?hmac=valid', $payload)->assertStatus(200);
+        $this->postJson('/api/paymob/webhook?hmac=valid', $payload)->assertStatus(200);
 
         $raw = DB::table('payments')->where('id', $payment->id)->value('raw_payload');
 
@@ -140,7 +140,7 @@ class PaymentSensitiveDataTest extends TestCase
         $user = User::factory()->create();
         $trip = $this->makeTrip($user);
 
-        $response = $this->actingAs($user, 'api')->postJson('/api/v1/checkout/initiate', [
+        $response = $this->actingAs($user, 'api')->postJson('/api/checkout/initiate', [
             'type' => 'trip_fork',
             'trip_id' => $trip->id,
         ]);
@@ -167,7 +167,7 @@ class PaymentSensitiveDataTest extends TestCase
 
         [$order, $payment] = $this->makePendingPayment(User::factory()->create());
 
-        $this->postJson('/api/v1/paymob/webhook?hmac=valid', [
+        $this->postJson('/api/paymob/webhook?hmac=valid', [
             'obj' => [
                 'success' => true,
                 'order' => ['merchant_order_id' => $payment->paymob_transaction_id],
@@ -195,7 +195,7 @@ class PaymentSensitiveDataTest extends TestCase
     {
         [$order, $payment] = $this->makePendingPayment(User::factory()->create());
 
-        $response = $this->postJson('/api/v1/paymob/webhook?hmac=valid', [
+        $response = $this->postJson('/api/paymob/webhook?hmac=valid', [
             'obj' => [
                 'success' => true,
                 'order' => ['merchant_order_id' => $payment->paymob_transaction_id],
@@ -220,7 +220,7 @@ class PaymentSensitiveDataTest extends TestCase
             'metadata' => ['purchase_type' => 'trip_fork'],
         ]);
 
-        $this->postJson('/api/v1/paymob/webhook?hmac=valid', [
+        $this->postJson('/api/paymob/webhook?hmac=valid', [
             'obj' => [
                 'success' => true,
                 'order' => ['merchant_order_id' => $payment->paymob_transaction_id],
