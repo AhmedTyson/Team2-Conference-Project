@@ -2,7 +2,7 @@
 
 namespace App\Support\Enums;
 
-final enum CheckoutType: string
+enum CheckoutType: string
 {
     case Pending = 'pending';
     case Paid = 'paid';

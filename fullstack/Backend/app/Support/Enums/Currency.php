@@ -2,7 +2,7 @@
 
 namespace App\Support\Enums;
 
-final enum Currency: string
+enum Currency: string
 {
     case EGP = 'EGP';
     case USD = 'USD';

@@ -2,7 +2,7 @@
 
 namespace App\Support\Enums;
 
-final enum BudgetTier: string
+enum BudgetTier: string
 {
     case Economy = 'economy';
     case Standard = 'standard';
