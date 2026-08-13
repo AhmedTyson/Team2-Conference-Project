@@ -129,7 +129,7 @@
   }
 
   It.app.boot(function(user, role) {
-    if (role !== 'admin' && role !== 'super_admin') {
+    if (!user || !It.session.isAdminRole(role)) {
       window.location.href = '../login.html';
       return;
     }

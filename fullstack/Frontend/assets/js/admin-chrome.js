@@ -754,7 +754,7 @@
           return;
         }
       } else {
-        if (role !== "super_admin") {
+        if (!It.session.isAdminRole(role)) {
           It.session.clearSession();
           It.session.redirectToLogin();
           return;

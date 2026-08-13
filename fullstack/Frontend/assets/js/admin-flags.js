@@ -78,9 +78,9 @@
       });
   }
 
-  It.app.boot(function(user) {
-    if (!user || user.role !== 'admin') {
-      window.location.href = '/login.html';
+  It.app.boot(function(user, role) {
+    if (!user || !It.session.isAdminRole(role)) {
+      window.location.href = '../login.html';
       return;
     }
     fetchFlags();
