@@ -75,7 +75,7 @@ class MapController extends Controller
                     return null;
                 }
 
-                // Attraction أو Restaurant أو أي موديل عنده الإحداثيات
+                // Attraction or Restaurant or any model with coordinates
                 if (
                     isset($item->itemable->latitude) &&
                     isset($item->itemable->longitude)
@@ -86,7 +86,7 @@ class MapController extends Controller
                     ];
                 }
 
-                // Hotel => خد الإحداثيات من الـ Destination
+                // Hotel: Get coordinates from the Destination
                 if (
                     $item->itemable instanceof Hotel &&
                     $item->itemable->destination

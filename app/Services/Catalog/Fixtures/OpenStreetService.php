@@ -126,7 +126,7 @@ class OpenStreetService
 
     public function getDirections(array $origin, array $destination, array $waypoints = []): array
     {
-        // OSRM بياخد الإحداثيات بترتيب lng,lat (مش lat,lng زي المعتاد!)
+        // OSRM takes coordinates in lng,lat order (not lat,lng like usual)
         $coordinates = collect([$origin, ...$waypoints, $destination])
             ->map(fn ($point) => "{$point['lng']},{$point['lat']}")
             ->implode(';');
@@ -158,7 +158,7 @@ class OpenStreetService
                 return [
                     'distance_km' => round($route['distance'] / 1000, 2),
                     'duration_minutes' => round($route['duration'] / 60, 2),
-                    'geometry' => $route['geometry'], // خط المسار على الخريطة (GeoJSON)
+                    'geometry' => $route['geometry'], // Route geometry on the map (GeoJSON)
                 ];
             }
         );
