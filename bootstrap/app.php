@@ -33,6 +33,9 @@ return Application::configure(basePath: dirname(__DIR__))
             PreventRequestsDuringMaintenance::class,
             SubstituteBindings::class,
             EnsureUserIsActive::class,
+            // SEC-16: global authenticated-API cap (60/min per user, IP fallback).
+            // Route-level throttles (login/ai/maps/checkout/...) still apply on top.
+            'throttle:api_authenticated',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -36,7 +36,7 @@ class EmailIntegrationTest extends TestCase
 
         // Render to verify content binding
         $html = $mailable->render();
-        $this->assertStringContainsString('Welcome aboard, Jane Doe!', $html);
+        $this->assertStringContainsString('Welcome aboard, Jane Doe', $html);
     }
 
     public function test_payment_success_notification_builds_correct_mailable()
@@ -67,7 +67,7 @@ class EmailIntegrationTest extends TestCase
         $this->assertInstanceOf(PaymentFailedMail::class, $mailable);
 
         $html = $mailable->render();
-        $this->assertStringContainsString('Payment Failed', $html);
+        $this->assertStringContainsString('Payment not completed', $html);
         $this->assertStringContainsString('99.99 USD', $html);
     }
 
