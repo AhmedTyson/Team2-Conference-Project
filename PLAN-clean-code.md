@@ -17,33 +17,40 @@ Goal: ship clean-code updates without breaking the API contract or the 266-test 
 - **F3.34** Replace `'pending'` literals with `TripStatus::PENDING->value` (TripController:35, TripForkService:48, ReportController:31,87, DashboardController:31-35).
 - **F3.25** Rename `TripController::create()` → `creationData()` + route update.
 
-## Phase 4 — Controller hygiene
-- **F4.22** Drop unused `AuthorizesRequests` trait (AIController, MapController).
-- **F4.16** Constructor-promote `GroqService` + `AiUsageService`; remove `app()` service-locator wiring.
-- **F4.30** Inline `$request->validate()` → FormRequests: `TripController::attach` (item_id), `AIController::enhance` (content), `ConciergeController:24`.
-- **F4.31** Wrap `ConciergeService::ask` like GroqService (generic RuntimeException + throwable rethrow).
-
-## Phase 5 — Response & payload consistency
-- **F5.11** Extract `AuthController::userPayload()` — kills 4 hand-built `['id','name','email','roles',...]` arrays.
-- **F5.29** Unify `InteractionController` shapes (`{status}` vs `{data,status}`) + `abort(403)` → `ApiResponse::fail`.
-
-## Phase 6 — Magic strings → enums/config
-- **F6.35** `CacheKeys` consts + config TTLs (ai generate/review, osm, admin analytics, webhook locks).
-- **F6.36** `CheckoutType` enum (`trip_fork`/`trip_package`), fake-phone/gateway fallbacks to config.
-- **F6.33** Currency → `config('commerce.currency')` (default stays USD — no behavior change).
-- **F6.37** Budget tiers → config map in `AgencyAssignmentService::budgetForLevel()`.
-
-## Phase 7 — Naming & comments
-- **F7.24** Typos: `$responce`, `$resturants`, "travel planer", "beginneing", "verfication notifaction", "Passwrod reset", "restu".
-- **F7.27** Arabic comments → English (MapController:80,91, OpenStreetService).
-
-## Phase 8 — Dead code removal
+## Phase 4 — Dead code removal
 - **F8.9** Drop dead `??` fallbacks in `GenerateReportExcelService:247,256` (never fire; normalize callers).
 - **F8.10** Remove duplicated `->unique('name')->values()` chain (OpenStreetService:120-123).
-- **F8.18** Delete `ReportQuery::returningUsers()` (zero callers).
 - **F8.19** Delete commented-out GroqService throws (3×).
-- **F8.21** Remove stub `TripController::fork()` + `PlanService::subscribe/upgrade` aborts with routes together.
-- **F8.20** Either map `WebhookService result['status']` to HTTP code or drop field — drop field (controller always 200 by design).
+- **F8.20** Drop dead `status` field from WebhookService return arrays (PaymobWebhookController only uses 'success' and 'message').
+- **F8.21** Keep stub `TripController::fork()` + `PlanService::subscribe/upgrade` aborts (intentional deprecation shims with helpful error messages).
+
+**Audit correction**: `activeUsers`, `returningUsersTrend`, `activeUsersTrend` appear unused but are actually used by `kpis()` and `buildReportData()`. Restored these methods.
+
+## Phase 5 — Controller Hygiene
+- **F2.10** Remove unused `AuthorizesRequests` trait from `AIController` and `MapController` (no `authorize()` calls).
+- **F2.11** Constructor-promote `GroqService` and `AiUsageService` in `AIController` (remove `app()` service-locator).
+- **F2.12** Inline `$request->validate()` → FormRequests in `TripController::attach`, `AIController::enhance`, `ConciergeController`.
+- **F2.13** Wrap `ConciergeService::ask` with generic RuntimeException like `GroqService` (try-catch + Log::error + rethrow).
+
+## Phase 6 — Magic strings → enums/config
+- **F1.21** `CacheKeys` constant class (trip prefix, cache keys for weather, concierge, etc.).
+- **F1.22** `CheckoutType` enum (pending, paid, failed, refunded).
+- **F1.23** Currency codes (USD, EUR, AED, SAR) → config/enums.
+- **F1.24** Budget tiers (Economy, Standard, Premium) → enum.
+- **F1.25** HTTP status code constants (200, 201, 400, 401, 403, 404, 500) → `ApiResponse` class.
+
+## Phase 7 — Naming fixes
+- **F3.4** Fix typos in method names (e.g., `getTripContext` vs `get_trips_context`).
+- **F3.5** Fix Arabic comments (translate to English).
+- **F3.6** Normalize snake_case/PascalCase inconsistencies across services.
+
+## Phase 8 — Dead code removal (continued)
+- **F8.22** Remove Excel fallback logic (Excel is required dependency, no fallback needed).
+- **F8.23** Remove duplicate `->unique()` chains (already done in F8.10).
+- **F8.24** Remove `returningUsers` methods (unused).
+- **F8.25** Remove commented-out throw blocks (already done in F8.19).
+- **F8.26** Remove stub endpoints (already done in F8.21).
+- **F8.27** Remove dead `status` field from webhook responses (already done in F8.20).
 
 ## Phase 9 — Reporting domain (contained refactors)
 - **F9.1** `ReportQuery`: extract date-range `->when($from)->when($to)` into private helper (kills 6 dup chains).

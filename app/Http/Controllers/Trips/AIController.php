@@ -8,31 +8,29 @@ use App\Models\Trips\Trip;
 use App\Services\GroqService;
 use App\Services\Trips\AiUsageService;
 use App\Support\ApiResponse;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 class AIController extends Controller
 {
-    use AuthorizesRequests;
+    public function __construct(
+        protected GroqService $groq,
+        protected AiUsageService $aiUsage
+    ) {}
 
     public function enhance(Request $request): JsonResponse
     {
         $request->validate(['content' => 'required|string']);
 
-        $groq = new GroqService(app(AiUsageService::class));
-
-        $enhancedContent = $groq->enhance($request->input('content'));
+        $enhancedContent = $this->groq->enhance($request->input('content'));
 
         return ApiResponse::success($enhancedContent, 'Content enhanced successfully');
     }
 
     public function generate(AiTripRequest $request): JsonResponse
     {
-        $groq = new GroqService(app(AiUsageService::class));
-
-        $result = $groq->generateAi($request);
+        $result = $this->groq->generateAi($request);
 
         $decoded = json_decode($result, true);
 

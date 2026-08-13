@@ -10,15 +10,12 @@ use App\Models\Catalog\Hotel;
 use App\Models\Trips\Trip;
 use App\Services\Catalog\Fixtures\OpenStreetService;
 use App\Support\ApiResponse;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 class MapController extends Controller
 {
-    use AuthorizesRequests;
-
     public function destination(Destination $destination, OpenStreetService $maps): JsonResponse
     {
         $missingCoordinates = ! $destination->latitude || ! $destination->longitude;
