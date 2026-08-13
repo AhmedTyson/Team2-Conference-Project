@@ -144,7 +144,9 @@ class AgencyAssignmentService
     private function assertStatus(AgencyAssignment $assignment, AgencyAssignmentStatus ...$expectedStatuses): void
     {
         if (! in_array($assignment->status, $expectedStatuses)) {
-            abort(409, 'Invalid assignment state transition. Current state: '.($assignment->status->value ?? 'unknown'));
+            throw new \App\Exceptions\InvalidStateTransitionException(
+                'Invalid assignment state transition. Current state: '.($assignment->status->value ?? 'unknown')
+            );
         }
     }
 

@@ -236,35 +236,11 @@ class GenerateReportExcelService
         $topRevenueDestinations = $this->reportQuery->topRevenueDestinations($from, $to);
         $peakBookingDays = $this->reportQuery->peakBookingDays($from, $to);
 
-        $writer->addRow($this->createRowWithStyle([''], $this->pageHeaderStyle(), 25.0));
-        $writer->addRow($this->createRowWithStyle(['Business Insights'], $this->titleStyle(), 15.0));
-        $writer->addRow($this->createRowWithStyle([''], $this->dataStyle(false), 15.0));
+        $this->writeTable($writer, 'Top Destinations', ['Destination', 'Bookings'], $topDestinations, fn ($row) => [$row->name, (int) $row->bookings_count]);
 
-        $writer->addRow($this->createRowWithStyle(['Top Destinations'], $this->sectionStyle(), 15.0));
-        $writer->addRow($this->createRowWithStyle(['Destination', 'Bookings'], $this->headerStyle(), 15.0));
-        $alt = false;
-        foreach ($topDestinations as $row) {
-            $writer->addRow($this->createRowWithStyle([$row->name, (int) $row->bookings_count], $this->dataStyle($alt), 15.0));
-            $alt = ! $alt;
-        }
+        $this->writeTable($writer, 'Top Revenue Destinations', ['Destination', 'Revenue (USD)'], $topRevenueDestinations, fn ($row) => [$row->name, (float) $row->revenue]);
 
-        $writer->addRow($this->createRowWithStyle([''], $this->dataStyle(false), 15.0));
-        $writer->addRow($this->createRowWithStyle(['Top Revenue Destinations'], $this->sectionStyle(), 15.0));
-        $writer->addRow($this->createRowWithStyle(['Destination', 'Revenue (USD)'], $this->headerStyle(), 15.0));
-        $alt = false;
-        foreach ($topRevenueDestinations as $row) {
-            $writer->addRow($this->createRowWithStyle([$row->name, (float) $row->revenue], $this->dataStyle($alt), 15.0));
-            $alt = ! $alt;
-        }
-
-        $writer->addRow($this->createRowWithStyle([''], $this->dataStyle(false), 15.0));
-        $writer->addRow($this->createRowWithStyle(['Peak Booking Days'], $this->sectionStyle(), 15.0));
-        $writer->addRow($this->createRowWithStyle(['Day', 'Bookings'], $this->headerStyle(), 15.0));
-        $alt = false;
-        foreach ($peakBookingDays as $row) {
-            $writer->addRow($this->createRowWithStyle([$row['day'] ?? $row->day, (int) ($row['bookings'] ?? $row->bookings)], $this->dataStyle($alt), 15.0));
-            $alt = ! $alt;
-        }
+        $this->writeTable($writer, 'Peak Booking Days', ['Day', 'Bookings'], $peakBookingDays, fn ($row) => [$row['day'] ?? $row->day, (int) ($row['bookings'] ?? $row->bookings)]);
     }
 
     // ── Helper methods ───────────────────────────────────────────────
@@ -272,6 +248,18 @@ class GenerateReportExcelService
     private function createRowWithStyle(array $values, Style $style, float $height = 15.0): Row
     {
         return Row::fromValuesWithStyle($values, $style, $height);
+    }
+
+    private function writeTable(Writer $writer, string $title, array $headers, array $data, callable $rowFormatter): void
+    {
+        $writer->addRow($this->createRowWithStyle([$title], $this->sectionStyle(), 15.0));
+        $writer->addRow($this->createRowWithStyle($headers, $this->headerStyle(), 15.0));
+
+        $alt = false;
+        foreach ($data as $row) {
+            $writer->addRow($this->createRowWithStyle($rowFormatter($row), $this->dataStyle($alt), 15.0));
+            $alt = ! $alt;
+        }
     }
 
     private function titleStyle(): Style
