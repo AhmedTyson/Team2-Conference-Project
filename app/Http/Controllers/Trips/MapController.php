@@ -58,8 +58,10 @@ class MapController extends Controller
 
     public function trip(Request $request, Trip $trip, OpenStreetService $osm)
     {
-        // Authorization happens BEFORE trip data is read or sent externally.
-        $this->authorize('view', $trip);
+        // SEC-02: ownership gate mirrors TripController::show — 404, no existence leak.
+        if ($trip->user_id !== $request->user()->id) {
+            return ApiResponse::fail('Trip not found', 'not_found', 404);
+        }
 
         $items = $trip->itineraryItems()
             ->with('itemable')

@@ -34,8 +34,10 @@ class AIController extends Controller
             return ApiResponse::fail('Trip not found', 'not_found', 404);
         }
 
-        // Authorization happens BEFORE any quota consumption or external AI call.
-        $this->authorize('view', $trip);
+        // SEC-02: ownership gate mirrors TripController::show — 404, no existence leak.
+        if ($trip->user_id !== $request->user()->id) {
+            return ApiResponse::fail('Trip not found', 'not_found', 404);
+        }
 
         $aiUsage = app(AiUsageService::class);
         $groq = new GroqService($aiUsage);

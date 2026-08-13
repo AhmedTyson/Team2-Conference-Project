@@ -8,18 +8,9 @@ use App\Models\Trips\Trip;
 class TripPolicy
 {
     /**
-     * A user may only access trips they own.
+     * Determine whether the user can fork the trip.
      *
-     * Phase 4 (D1) may extend this to public/shared trips via an is_public flag.
-     */
-    public function view(User $user, Trip $trip): bool
-    {
-        return $trip->user_id === $user->id;
-    }
-
-    /**
-     * SEC-04 (D1 — Option B): fork is allowed iff the trip is public OR the buyer owns it.
-     * Private trips remain owner-only even after payment is initiated.
+     * Forking is only allowed for public trips or the owner's own trip.
      */
     public function fork(User $user, Trip $trip): bool
     {

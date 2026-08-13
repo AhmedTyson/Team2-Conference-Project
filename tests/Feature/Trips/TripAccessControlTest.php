@@ -99,7 +99,7 @@ class TripAccessControlTest extends TestCase
 
         $this->actingAs($attacker, 'api')
             ->getJson("/api/review/{$trip->id}")
-            ->assertStatus(403);
+            ->assertStatus(404);
 
         // Authorization happened before quota consumption or any AI call.
         $this->assertEquals(0, $attacker->fresh()->ai_generations_count);
@@ -137,7 +137,7 @@ class TripAccessControlTest extends TestCase
 
         $this->actingAs($attacker, 'api')
             ->getJson("/api/v1/maps/trip/{$trip->id}")
-            ->assertStatus(403);
+            ->assertStatus(404);
 
         // No external map processing happened for the unauthorized request.
         Http::assertNothingSent();
