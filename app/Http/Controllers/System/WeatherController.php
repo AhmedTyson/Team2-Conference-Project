@@ -31,6 +31,6 @@ class WeatherController extends Controller
             );
         }
 
-        return response()->json($weatherData);
+        return ApiResponse::success($weatherData, 'Weather data retrieved successfully');
     }
 }

@@ -41,7 +41,11 @@ class AdminAnalyticsController extends Controller
 
             // Monthly Revenue breakdown (SQL aggregation for performance)
             $monthlyRevenue = Trip::whereIn('status', $bookedStatuses)
-                ->selectRaw('DATE(start_date) as month, SUM(budget) as total')
+                ->selectRaw(match (DB::getDriverName()) {
+                    'pgsql' => "to_char(start_date, 'YYYY-MM') as month, SUM(budget) as total",
+                    'sqlite' => "strftime('%Y-%m', start_date) as month, SUM(budget) as total",
+                    default => "DATE_FORMAT(start_date, '%Y-%m') as month, SUM(budget) as total",
+                })
                 ->groupBy('month')
                 ->orderBy('month')
                 ->pluck('total', 'month')
@@ -110,7 +114,11 @@ class AdminAnalyticsController extends Controller
 
         $monthly = User::query()
             ->where('created_at', '>=', $since)
-            ->selectRaw("strftime('%Y-%m', created_at) as month, COUNT(*) as total")
+            ->selectRaw(match (DB::getDriverName()) {
+                'pgsql' => "to_char(created_at, 'YYYY-MM') as month, COUNT(*) as total",
+                'sqlite' => "strftime('%Y-%m', created_at) as month, COUNT(*) as total",
+                default => "DATE_FORMAT(created_at, '%Y-%m') as month, COUNT(*) as total",
+            })
             ->groupBy('month')
             ->orderBy('month')
             ->pluck('total', 'month');
@@ -131,7 +139,11 @@ class AdminAnalyticsController extends Controller
 
         $monthly = Trip::query()
             ->where('created_at', '>=', $since)
-            ->selectRaw("strftime('%Y-%m', created_at) as month, SUM(COALESCE(estimated_cost, budget)) as total")
+            ->selectRaw(match (DB::getDriverName()) {
+                'pgsql' => "to_char(created_at, 'YYYY-MM') as month, SUM(COALESCE(estimated_cost, budget)) as total",
+                'sqlite' => "strftime('%Y-%m', created_at) as month, SUM(COALESCE(estimated_cost, budget)) as total",
+                default => "DATE_FORMAT(created_at, '%Y-%m') as month, SUM(COALESCE(estimated_cost, budget)) as total",
+            })
             ->groupBy('month')
             ->orderBy('month')
             ->pluck('total', 'month');
