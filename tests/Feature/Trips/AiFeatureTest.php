@@ -84,6 +84,20 @@ class AiFeatureTest extends TestCase
         $this->assertEquals(1, $user->fresh()->ai_generations_count);
     }
 
+    public function test_ai_review_route_enforces_request_validation(): void
+    {
+        $user = $this->subscription->user;
+        $user->givePermissionTo('generate ai itineraries');
+
+        $response = $this->actingAs($user, 'api')->postJson('/api/review', [
+            'destination_country_id' => Country::first()->id,
+        ]);
+
+        $response->assertStatus(422)
+            ->assertJsonPath('error.status', 422)
+            ->assertJsonPath('error.validation_errors.0.field', 'no_of_days');
+    }
+
     public function test_generate_ai_second_identical_call_is_cached_without_extra_groq_call(): void
     {
         $user = $this->subscription->user;
