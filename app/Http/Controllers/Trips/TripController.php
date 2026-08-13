@@ -21,14 +21,14 @@ class TripController extends Controller
         $this->tripService = $tripService;
     }
 
-    public function create(Request $request)
+    public function create(Request $request): JsonResponse
     {
         $data = $this->tripService->getCreationData();
 
         return ApiResponse::success($data, 'Trip creation data retrieved successfully');
     }
 
-    public function store(StoreTripRequest $request)
+    public function store(StoreTripRequest $request): JsonResponse
     {
         $trip = $this->tripService->store($request->validated() + [
             'user_id' => $request->user()->id,
@@ -38,7 +38,7 @@ class TripController extends Controller
         return ApiResponse::success(new TripResource($trip), 'Trip created successfully', 201);
     }
 
-    public function show(Request $request, Trip $trip)
+    public function show(Request $request, Trip $trip): JsonResponse
     {
         if (Gate::forUser($request->user())->denies('view', $trip)) {
             return ApiResponse::fail('Trip not found', 'not_found', 404);

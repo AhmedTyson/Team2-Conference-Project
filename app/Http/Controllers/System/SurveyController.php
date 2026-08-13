@@ -17,7 +17,7 @@ class SurveyController extends Controller
         $this->surveyService = $surveyService;
     }
 
-    public function index()
+    public function index(): JsonResponse
     {
         $surveys = $this->surveyService->getSurveyByUserId(auth()->id());
 
@@ -27,7 +27,7 @@ class SurveyController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreSurveyRequest $request)
+    public function store(StoreSurveyRequest $request): JsonResponse
     {
         $data = $request->validated();
         $data['user_id'] = auth()->id();
@@ -40,7 +40,7 @@ class SurveyController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $id): JsonResponse
     {
         $survey = $this->surveyService->getSurveyById($id, auth()->id());
 
@@ -50,7 +50,7 @@ class SurveyController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateSurveyRequest $request, string $id)
+    public function update(UpdateSurveyRequest $request, string $id): JsonResponse
     {
         $data = $request->validated();
 
@@ -62,7 +62,7 @@ class SurveyController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id): JsonResponse
     {
         $this->surveyService->deleteSurvey($id, auth()->id());
 

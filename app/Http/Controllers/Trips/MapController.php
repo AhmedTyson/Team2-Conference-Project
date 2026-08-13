@@ -18,7 +18,7 @@ class MapController extends Controller
 {
     use AuthorizesRequests;
 
-    public function destination(Destination $destination, OpenStreetService $maps)
+    public function destination(Destination $destination, OpenStreetService $maps): JsonResponse
     {
         $missingCoordinates = ! $destination->latitude || ! $destination->longitude;
 
@@ -57,7 +57,7 @@ class MapController extends Controller
         ], 'Destination map data retrieved successfully');
     }
 
-    public function trip(Request $request, Trip $trip, OpenStreetService $osm)
+    public function trip(Request $request, Trip $trip, OpenStreetService $osm): JsonResponse
     {
         // SEC-02: ownership gate mirrors TripController::show — 404, no existence leak.
         if (Gate::forUser($request->user())->denies('view', $trip)) {

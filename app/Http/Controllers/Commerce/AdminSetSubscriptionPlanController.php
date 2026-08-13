@@ -9,14 +9,14 @@ use App\Support\ApiResponse;
 
 class AdminSetSubscriptionPlanController extends Controller
 {
-    public function index()
+    public function index(): JsonResponse
     {
         $plans = Plan::all();
 
         return ApiResponse::success($plans, 'Subscription plans retrieved successfully');
     }
 
-    public function update(AdminSetSubscriptionPlanRequest $request)
+    public function update(AdminSetSubscriptionPlanRequest $request): JsonResponse
     {
         $data = $request->validated();
 

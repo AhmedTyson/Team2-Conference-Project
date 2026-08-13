@@ -16,12 +16,12 @@ class DestinationController extends Controller
         $this->destinationService = $destinationService;
     }
 
-    public function index()
+    public function index(): JsonResponse
     {
         return ApiResponse::success(DestinationResource::collection($this->destinationService->index()), 'Destinations fetched successfully');
     }
 
-    public function show($id)
+    public function show($id): JsonResponse
     {
         return ApiResponse::success(new DestinationResource($this->destinationService->show($id)), 'Destination fetched successfully');
     }

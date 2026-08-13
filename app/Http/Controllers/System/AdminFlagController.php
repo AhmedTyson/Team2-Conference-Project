@@ -19,7 +19,7 @@ class AdminFlagController extends Controller
         private FlagRepositoryInterface $repository
     ) {}
 
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         $this->authorize('review', Flag::class);
 
@@ -28,7 +28,7 @@ class AdminFlagController extends Controller
         return ApiResponse::success($flags, 'Flags retrieved successfully');
     }
 
-    public function approve(Request $request, Flag $flag)
+    public function approve(Request $request, Flag $flag): JsonResponse
     {
         $this->authorize('review', $flag);
 
@@ -37,7 +37,7 @@ class AdminFlagController extends Controller
         return ApiResponse::success($flag, 'Flag approved successfully');
     }
 
-    public function decline(Request $request, Flag $flag)
+    public function decline(Request $request, Flag $flag): JsonResponse
     {
         $this->authorize('review', $flag);
 

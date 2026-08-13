@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Storage;
 class AuthController extends Controller
 {
     // Register a new user
-    public function register(RegisterRequest $request)
+    public function register(RegisterRequest $request): JsonResponse
     {
 
         $role = Role::firstOrCreate(['name' => 'user']);
@@ -54,7 +54,7 @@ class AuthController extends Controller
     }
 
     // Verify email & login
-    public function login(LoginRequest $request)
+    public function login(LoginRequest $request): JsonResponse
     {
         $credentials = $request->only('email', 'password');
         $user = User::where('email', $request->email)->first();
@@ -94,7 +94,7 @@ class AuthController extends Controller
     }
 
     // Profile
-    public function me()
+    public function me(): JsonResponse
     {
         $user = auth('api')->user();
 
@@ -110,7 +110,7 @@ class AuthController extends Controller
     }
 
     // verfication notifaction
-    public function verificationNotice()
+    public function verificationNotice(): JsonResponse
     {
         return ApiResponse::fail(
             'Please verify your email address.',
@@ -120,7 +120,7 @@ class AuthController extends Controller
     }
 
     // verify Email
-    public function verifyEmail(Request $request, $id, $hash)
+    public function verifyEmail(Request $request, $id, $hash): JsonResponse
     {
         $user = User::findOrFail($id);
 
@@ -143,7 +143,7 @@ class AuthController extends Controller
     }
 
     // Resend the verification email
-    public function resendVerificationEmail(Request $request)
+    public function resendVerificationEmail(Request $request): JsonResponse
     {
         if ($request->user()->hasVerifiedEmail()) {
             return ApiResponse::success([], 'Email already verified.');
@@ -155,7 +155,7 @@ class AuthController extends Controller
     }
 
     // LOGOUT
-    public function logout()
+    public function logout(): JsonResponse
     {
         auth('api')->logout();
 
@@ -163,7 +163,7 @@ class AuthController extends Controller
     }
 
     // Refresh
-    public function refresh()
+    public function refresh(): JsonResponse
     {
         $token = auth('api')->refresh();
 
@@ -171,7 +171,7 @@ class AuthController extends Controller
     }
 
     // ForgetPass
-    public function forgetPassword(ForgotPasswordRequest $request)
+    public function forgetPassword(ForgotPasswordRequest $request): JsonResponse
     {
         $stat = Password::sendResetLink($request->only('email'));
 
@@ -183,7 +183,7 @@ class AuthController extends Controller
     }
 
     // ResetPass
-    public function resetPassword(ResetPasswordRequest $request)
+    public function resetPassword(ResetPasswordRequest $request): JsonResponse
     {
         $stat = Password::reset(
             $request->only(
@@ -208,7 +208,7 @@ class AuthController extends Controller
     }
 
     // Update the authenticated user's own profile
-    public function updateProfile(UpdateProfileRequest $request)
+    public function updateProfile(UpdateProfileRequest $request): JsonResponse
     {
         $user = auth('api')->user();
         $data = $request->validated();

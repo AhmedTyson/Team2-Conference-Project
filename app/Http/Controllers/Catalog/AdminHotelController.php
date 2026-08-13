@@ -47,7 +47,7 @@ class AdminHotelController extends Controller
         return new JsonResource($hotel);
     }
 
-    public function destroy($id)
+    public function destroy($id): JsonResponse
     {
         $hotel = Hotel::findOrFail($id);
         $hotel->delete();
@@ -55,7 +55,7 @@ class AdminHotelController extends Controller
         return ApiResponse::success(null, 'Hotel deleted successfully');
     }
 
-    public function restore($id)
+    public function restore($id): JsonResponse
     {
         Hotel::onlyTrashed()->findOrFail($id)->restore();
 

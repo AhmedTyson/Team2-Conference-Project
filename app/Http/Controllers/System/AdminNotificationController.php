@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class AdminNotificationController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         $query = Notification::with('user:id,name,email')->latest();
 

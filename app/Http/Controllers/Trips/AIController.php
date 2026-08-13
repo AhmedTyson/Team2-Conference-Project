@@ -17,7 +17,7 @@ class AIController extends Controller
 {
     use AuthorizesRequests;
 
-    public function enhance(Request $request)
+    public function enhance(Request $request): JsonResponse
     {
         $request->validate(['content' => 'required|string']);
 
@@ -41,7 +41,7 @@ class AIController extends Controller
 
     // review my trip
 
-    public function review(Request $request, string $id)
+    public function review(Request $request, string $id): JsonResponse
     {
         $trip = Trip::with(['itineraryItems.itemable', 'destinations'])->find($id);
 

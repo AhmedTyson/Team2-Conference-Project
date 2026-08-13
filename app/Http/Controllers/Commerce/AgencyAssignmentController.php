@@ -15,7 +15,7 @@ class AgencyAssignmentController extends Controller
 
     public function __construct(private AgencyAssignmentService $service) {}
 
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         $assignments = AgencyAssignment::where('agency_user_id', $request->user()->id)
             ->with(['customer', 'trips'])
@@ -24,7 +24,7 @@ class AgencyAssignmentController extends Controller
         return ApiResponse::success($assignments, 'Agency assignments retrieved successfully');
     }
 
-    public function myAssignments(Request $request)
+    public function myAssignments(Request $request): JsonResponse
     {
         $assignments = $this->service->listForCustomer($request->user()->id);
 
@@ -40,7 +40,7 @@ class AgencyAssignmentController extends Controller
         ]);
     }
 
-    public function cancel(Request $request, AgencyAssignment $assignment)
+    public function cancel(Request $request, AgencyAssignment $assignment): JsonResponse
     {
         $this->authorize('cancel', $assignment);
 
@@ -49,7 +49,7 @@ class AgencyAssignmentController extends Controller
         return ApiResponse::success($assignment, 'Agency assignment cancelled successfully');
     }
 
-    public function approve(Request $request, AgencyAssignment $assignment)
+    public function approve(Request $request, AgencyAssignment $assignment): JsonResponse
     {
         $this->authorize('respondAsAgency', $assignment);
 
@@ -58,7 +58,7 @@ class AgencyAssignmentController extends Controller
         return ApiResponse::success($assignment, 'Agency assignment approved successfully');
     }
 
-    public function decline(Request $request, AgencyAssignment $assignment)
+    public function decline(Request $request, AgencyAssignment $assignment): JsonResponse
     {
         $this->authorize('respondAsAgency', $assignment);
 
@@ -67,7 +67,7 @@ class AgencyAssignmentController extends Controller
         return ApiResponse::success($assignment, 'Agency assignment declined successfully');
     }
 
-    public function createTrip(Request $request, AgencyAssignment $assignment)
+    public function createTrip(Request $request, AgencyAssignment $assignment): JsonResponse
     {
         $this->authorize('view', $assignment);
 

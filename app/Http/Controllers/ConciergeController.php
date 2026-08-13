@@ -13,7 +13,7 @@ class ConciergeController extends Controller
         private ConciergeService $conciergeService
     ) {}
 
-    public function ask(Request $request, Trip $trip)
+    public function ask(Request $request, Trip $trip): JsonResponse
     {
 
         // Trip ownership

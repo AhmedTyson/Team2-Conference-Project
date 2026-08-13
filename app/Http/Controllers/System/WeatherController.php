@@ -16,7 +16,7 @@ class WeatherController extends Controller
         $this->weatherService = $weatherService;
     }
 
-    public function show(ShowWeatherRequest $request)
+    public function show(ShowWeatherRequest $request): JsonResponse
     {
         $lat = (float) $request->input('lat');
         $lon = (float) $request->input('lon');
@@ -31,6 +31,6 @@ class WeatherController extends Controller
             );
         }
 
-        return ApiResponse::success($weatherData, 'Weather data retrieved successfully');
+        return response()->json($weatherData);
     }
 }

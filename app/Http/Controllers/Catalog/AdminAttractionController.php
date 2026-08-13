@@ -47,14 +47,14 @@ class AdminAttractionController extends Controller
         return new JsonResource($attraction);
     }
 
-    public function destroy($id)
+    public function destroy($id): JsonResponse
     {
         $this->attractionService->destroy($id);
 
         return ApiResponse::success(null, 'Attraction deleted successfully');
     }
 
-    public function restore($id)
+    public function restore($id): JsonResponse
     {
         Attraction::onlyTrashed()->findOrFail($id)->restore();
 

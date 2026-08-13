@@ -14,12 +14,12 @@ class PaymobController extends Controller
      *
      * These legacy endpoints are superseded by /api/paymob/*.
      */
-    public function callback(Request $request)
+    public function callback(Request $request): JsonResponse
     {
         return ApiResponse::fail('Legacy callback endpoint. Payment confirmations arrive via POST /api/paymob/webhook.', 'legacy_endpoint', 404);
     }
 
-    public function process(Request $request)
+    public function process(Request $request): JsonResponse
     {
         return ApiResponse::fail('Legacy process endpoint. Use POST /api/checkout/initiate instead.', 'legacy_endpoint', 404);
     }

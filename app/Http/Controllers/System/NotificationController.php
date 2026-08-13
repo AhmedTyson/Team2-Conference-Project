@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Cache;
 
 class NotificationController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         $user = $request->user();
 
@@ -32,7 +32,7 @@ class NotificationController extends Controller
         ]);
     }
 
-    public function markAsRead(Request $request, Notification $notification)
+    public function markAsRead(Request $request, Notification $notification): JsonResponse
     {
         if ($notification->notifiable_id !== $request->user()->id || $notification->notifiable_type !== User::class) {
             return ApiResponse::fail('Unauthorized', 'unauthorized', 403);
@@ -48,7 +48,7 @@ class NotificationController extends Controller
         return ApiResponse::success($notification, 'Notification marked as read');
     }
 
-    public function markAllAsRead(Request $request)
+    public function markAllAsRead(Request $request): JsonResponse
     {
         $user = $request->user();
 

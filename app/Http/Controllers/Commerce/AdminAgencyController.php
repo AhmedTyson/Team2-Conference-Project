@@ -15,7 +15,7 @@ class AdminAgencyController extends Controller
 
     public function __construct(private AgencyAssignmentService $service) {}
 
-    public function adminIndex()
+    public function adminIndex(): JsonResponse
     {
         $page = request('page', 1);
         $perPage = request('per_page', 15);
@@ -34,7 +34,7 @@ class AdminAgencyController extends Controller
         ]);
     }
 
-    public function approve(Request $request, AgencyAssignment $assignment)
+    public function approve(Request $request, AgencyAssignment $assignment): JsonResponse
     {
         $this->authorize('approve', $assignment);
 

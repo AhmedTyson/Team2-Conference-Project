@@ -47,14 +47,14 @@ class AdminCountryController extends Controller
         return new JsonResource($country);
     }
 
-    public function destroy($id)
+    public function destroy($id): JsonResponse
     {
         $this->countryService->destroy($id);
 
         return ApiResponse::success(null, 'Country deleted successfully');
     }
 
-    public function restore(int $id)
+    public function restore(int $id): JsonResponse
     {
         Country::onlyTrashed()->findOrFail($id)->restore();
 

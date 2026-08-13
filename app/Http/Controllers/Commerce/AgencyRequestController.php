@@ -11,7 +11,7 @@ class AgencyRequestController extends Controller
 {
     public function __construct(private AgencyAssignmentService $service) {}
 
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'budget_level' => 'nullable|string|in:low,medium,high,luxury',

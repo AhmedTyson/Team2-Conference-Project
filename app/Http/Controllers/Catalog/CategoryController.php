@@ -17,12 +17,12 @@ class CategoryController extends Controller
         $this->categoryService = $categoryService;
     }
 
-    public function index()
+    public function index(): JsonResponse
     {
         return ApiResponse::success(CategoryResource::collection($this->categoryService->index()), 'Categories fetched successfully');
     }
 
-    public function show(Category $category)
+    public function show(Category $category): JsonResponse
     {
         return ApiResponse::success(new CategoryResource($this->categoryService->show($category)), 'Category fetched successfully');
     }

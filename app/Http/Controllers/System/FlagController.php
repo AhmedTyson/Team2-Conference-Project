@@ -16,7 +16,7 @@ class FlagController extends Controller
 
     public function __construct(private FlagService $service) {}
 
-    public function store(Request $request, AgencyAssignment $assignment)
+    public function store(Request $request, AgencyAssignment $assignment): JsonResponse
     {
         $this->authorize('createForAssignment', [Flag::class, $assignment]);
 

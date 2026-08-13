@@ -28,7 +28,7 @@ class PaymobWebhookController extends Controller
         ], 200);
     }
 
-    public function callback(Request $request)
+    public function callback(Request $request): JsonResponse
     {
         $success = $request->boolean('success');
         $merchantOrderId = $request->query('merchant_order_id');

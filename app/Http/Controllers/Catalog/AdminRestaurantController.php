@@ -47,14 +47,14 @@ class AdminRestaurantController extends Controller
         return new JsonResource($restaurant);
     }
 
-    public function destroy($id)
+    public function destroy($id): JsonResponse
     {
         $this->restaurantService->destroy($id);
 
         return ApiResponse::success(null, 'Restaurant deleted successfully');
     }
 
-    public function restore($id)
+    public function restore($id): JsonResponse
     {
         Restaurant::onlyTrashed()->findOrFail($id)->restore();
 

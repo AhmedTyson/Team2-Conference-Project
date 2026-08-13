@@ -18,7 +18,7 @@ class ReportController extends Controller
     public function generate(
         GenerateReportRequest $request,
         ReportQuery $reportQuery
-    ) {
+    ): JsonResponse {
         $from = $request->validated('from');
         $to = $request->validated('to');
         $format = $request->validated('format', 'pdf') ?? 'pdf';
@@ -51,7 +51,7 @@ class ReportController extends Controller
         ], 'Report generation queued', 202);
     }
 
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         $perPage = min((int) $request->query('per_page', 15), 100);
         $page = (int) $request->query('page', 1);
@@ -95,7 +95,7 @@ class ReportController extends Controller
         return Storage::disk('public')->download($report->file_path, basename($report->file_path));
     }
 
-    public function myReports(Request $request)
+    public function myReports(Request $request): JsonResponse
     {
         return ApiResponse::success(
             Report::where('user_id', $request->user()->id)

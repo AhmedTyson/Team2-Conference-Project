@@ -44,7 +44,7 @@ class AdminCategoryController extends Controller
         return new CategoryResource($category);
     }
 
-    public function destroy(Category $category)
+    public function destroy(Category $category): JsonResponse
     {
         $this->categoryService->destroy($category);
 
