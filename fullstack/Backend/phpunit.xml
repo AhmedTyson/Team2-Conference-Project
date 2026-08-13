@@ -32,5 +32,6 @@
         <env name="PULSE_ENABLED" value="true"/>
         <env name="TELESCOPE_ENABLED" value="true"/>
         <env name="NIGHTWATCH_ENABLED" value="true"/>
+        <env name="GROQ_API_KEY" value="gsk-test-mock-key"/>
     </php>
 </phpunit>
