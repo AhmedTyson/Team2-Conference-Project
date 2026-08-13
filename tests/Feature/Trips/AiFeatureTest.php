@@ -71,10 +71,10 @@ class AiFeatureTest extends TestCase
 
         $response = $this->actingAs($user, 'api')->postJson('/api/review', [
             'destination_country_id' => Country::first()->id,
-            'number_of_days' => 3,
+            'no_of_days' => 3,
             'budget' => 5000,
             'interests' => ['culture', 'food'],
-            'number_of_travelers' => 2,
+            'no_of_travelers' => 2,
             'travel_style' => 'adventure',
         ]);
 
@@ -93,10 +93,10 @@ class AiFeatureTest extends TestCase
 
         $payload = [
             'destination_country_id' => Country::first()->id,
-            'number_of_days' => 3,
+            'no_of_days' => 3,
             'budget' => 5000,
             'interests' => ['culture'],
-            'number_of_travelers' => 2,
+            'no_of_travelers' => 2,
             'travel_style' => 'relaxation',
         ];
 

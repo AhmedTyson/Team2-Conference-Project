@@ -26,10 +26,10 @@ class AiTripRequest extends FormRequest
         // number of days , budget , intersest , no of travel , travel style ,
         return [
             'destination_country_id' => 'required|numeric|exists:countries,id',
-            'number_of_days' => 'required|integer',
+            'no_of_days' => 'required|integer',
             'budget' => 'required|numeric',
             'interests' => 'required|array',
-            'number_of_travelers' => 'required|integer',
+            'no_of_travelers' => 'required|integer',
             'travel_style' => 'required|string',
         ];
     }
