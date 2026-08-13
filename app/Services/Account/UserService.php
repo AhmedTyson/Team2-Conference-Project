@@ -31,6 +31,8 @@ class UserService
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'is_active' => $data['is_active'] ?? 1,
+            // Admin-created accounts are vouched for by the admin — skip email verification.
+            'email_verified_at' => now(),
         ];
 
         return $this->userRepository->create($userData);

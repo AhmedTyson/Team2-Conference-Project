@@ -227,7 +227,18 @@ class AuthController extends Controller
             unset($data['password']);
         }
 
+        $emailChanged = isset($data['email']) && $data['email'] !== $user->email;
+
+        if ($emailChanged) {
+            // Not fillable — set explicitly to invalidate verification on email change.
+            $user->email_verified_at = null;
+        }
+
         $user->update($data);
+
+        if ($emailChanged) {
+            $user->sendEmailVerificationNotification();
+        }
 
         return ApiResponse::success([
             'user' => [
@@ -239,6 +250,8 @@ class AuthController extends Controller
                     : null,
                 'roles' => $user->getRoleNames(),
             ],
-        ], 'Profile updated successfully.');
+        ], $emailChanged
+            ? 'Profile updated successfully. A verification link was sent to your new email address.'
+            : 'Profile updated successfully.');
     }
 }
