@@ -254,7 +254,12 @@
   function unwrapData(res) {
     if (!res || !res.ok) return null;
     var body = res.body;
-    if (body && typeof body === "object" && "data" in body) return body.data;
+    if (body && typeof body === "object" && "data" in body) {
+      if (body.data && typeof body.data === "object" && Array.isArray(body.data.data)) {
+        return body.data.data;
+      }
+      return body.data;
+    }
     return body;
   }
 

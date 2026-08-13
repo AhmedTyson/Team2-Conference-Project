@@ -5,8 +5,19 @@
 (function (global) {
   "use strict";
 
+  function resolveApiBase() {
+    if (global.ITINARI_API_BASE) return global.ITINARI_API_BASE;
+    try {
+      var origin = global.location.origin;
+      if (origin && !origin.includes(":8080") && !origin.includes(":5500") && !origin.includes(":3000") && !origin.includes(":5173") && !origin.includes("null") && !origin.startsWith("file:")) {
+        return origin + "/api";
+      }
+    } catch (e) {}
+    return "http://127.0.0.1:8000/api";
+  }
+
   var CONFIG = {
-    apiBase: "http://127.0.0.1:8000/api",
+    apiBase: resolveApiBase(),
     // frontend static pages (served from this site's root, e.g. :8080)
     dashboardUrl: "/dashboard.html",
     adminUrl: "/admin/index.html",

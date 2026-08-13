@@ -7,6 +7,15 @@
 
   const It = global.Itinari;
 
+  /** Normalize API path: strips '/v1' prefix if present so all endpoints resolve cleanly. */
+  function normalizePath(path) {
+    if (!path) return "";
+    let p = String(path).trim();
+    if (p.startsWith("/v1/")) p = p.substring(3);
+    else if (p.startsWith("v1/")) p = "/" + p.substring(3);
+    return p.startsWith("/") ? p : "/" + p;
+  }
+
   /**
    * Core request. method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE".
    * opts.auth  → attach `Authorization: Bearer <token>` from storage (no-op if absent).
@@ -16,6 +25,7 @@
    */
   async function request(method, path, data, opts) {
     opts = opts || {};
+    const normalizedPath = normalizePath(path);
     const headers = Object.assign(
       { 
         Accept: "application/json",
@@ -35,7 +45,7 @@
 
     let res;
     try {
-      res = await fetch(It.CONFIG.apiBase + path, {
+      res = await fetch(It.CONFIG.apiBase + normalizedPath, {
         method: method,
         headers: headers,
         body: data !== undefined ? JSON.stringify(data) : undefined,
@@ -52,7 +62,7 @@
 
     // Centralized 401 Unauthorized interceptor
     if (res.status === 401 && It.session && typeof It.session.logout === "function") {
-      if (path !== It.CONFIG.routes.logout) {
+      if (normalizedPath !== It.CONFIG.routes.logout) {
         It.session.clearSession();
         It.session.redirectToLogin();
       }
@@ -95,9 +105,18 @@
     return null;
   }
 
-  /** The (errors) map is per-field arrays. Returns type JsonObject if present. */
-  function isFieldErrors(body) {
-    return !!(body && body.errors && typeof body.errors === "object");
+  /** Unwraps raw arrays, Laravel resource arrays, and paginated response objects */
+  function unwrapData(res) {
+    if (!res) return null;
+    const body = (res && res.body !== undefined) ? res.body : res;
+    if (!body || typeof body !== "object") return body;
+    if (body.data !== undefined) {
+      if (body.data && typeof body.data === "object" && Array.isArray(body.data.data)) {
+        return body.data.data;
+      }
+      return body.data;
+    }
+    return body;
   }
 
   It.apiPost = apiPost;
@@ -107,4 +126,6 @@
   It.apiDelete = apiDelete;
   It.extractToken = extractToken;
   It.isFieldErrors = isFieldErrors;
+  It.normalizePath = normalizePath;
+  It.unwrapData = unwrapData;
 })(window);
