@@ -19,21 +19,68 @@ class DatabaseSeeder extends Seeder
         // 1. Roles & Permissions (Zero Dependencies)
         $this->call(RoleAndPermissionSeeder::class);
 
-        // 2. Base Admin User
-        $admin = User::firstOrCreate(
+        // 2. Base Admin User & Demo Accounts
+        $superAdmin = User::firstOrCreate(
             ['email' => 'admin@threedos.com'],
             [
                 'name' => 'Super Admin',
                 'password' => bcrypt('password'),
+                'email_verified_at' => now(),
             ]
         );
-        if (! $admin->hasRole('super_admin')) {
-            $admin->assignRole('super_admin');
+        $superAdmin->email_verified_at = $superAdmin->email_verified_at ?? now();
+        $superAdmin->save();
+        if (! $superAdmin->hasRole('super_admin')) {
+            $superAdmin->assignRole('super_admin');
+        }
+
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@itinari.com'],
+            [
+                'name' => 'Admin User',
+                'password' => bcrypt('password'),
+                'email_verified_at' => now(),
+            ]
+        );
+        $admin->email_verified_at = $admin->email_verified_at ?? now();
+        $admin->save();
+        if (! $admin->hasRole('admin')) {
+            $admin->assignRole('admin');
+        }
+
+        $agency = User::firstOrCreate(
+            ['email' => 'agency@itinari.com'],
+            [
+                'name' => 'Agency Partner',
+                'password' => bcrypt('password'),
+                'email_verified_at' => now(),
+            ]
+        );
+        $agency->email_verified_at = $agency->email_verified_at ?? now();
+        $agency->save();
+        if (! $agency->hasRole('agency')) {
+            $agency->assignRole('agency');
+        }
+
+        $customer = User::firstOrCreate(
+            ['email' => 'customer@itinari.com'],
+            [
+                'name' => 'Customer Traveler',
+                'password' => bcrypt('password'),
+                'email_verified_at' => now(),
+            ]
+        );
+        $customer->email_verified_at = $customer->email_verified_at ?? now();
+        $customer->save();
+        if (! $customer->hasRole('user')) {
+            $customer->assignRole('user');
         }
 
         // Create 10 fake users for interactions
         if (app()->environment('local') && User::where('email', 'like', '%@example.com')->count() === 0) {
             User::factory(10)->create()->each(function ($user) {
+                $user->email_verified_at = now();
+                $user->save();
                 $user->assignRole('user');
             });
         }

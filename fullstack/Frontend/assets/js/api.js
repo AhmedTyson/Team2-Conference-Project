@@ -119,6 +119,11 @@
     return body;
   }
 
+  /** The (errors) map is per-field arrays. Returns boolean. */
+  function isFieldErrors(body) {
+    return !!(body && body.errors && typeof body.errors === "object");
+  }
+
   It.apiPost = apiPost;
   It.apiGet = apiGet;
   It.apiPut = apiPut;
