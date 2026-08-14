@@ -158,8 +158,8 @@ class ConversationController extends Controller
             'message' => new MessageResource($message),
         ];
 
-        // If this is an AI concierge conversation and user spoke, auto-generate AI reply
-        if ($conversation->type === 'ai_concierge' && $senderType === 'user') {
+        // If this is an AI concierge conversation, auto-generate AI reply for any user message
+        if ($conversation->type === 'ai_concierge' && $senderType !== 'ai') {
             $aiMessage = $this->generateAiReply($conversation, $message->body);
             if ($aiMessage) {
                 $responseData['ai_reply'] = new MessageResource($aiMessage);
@@ -266,14 +266,15 @@ class ConversationController extends Controller
      */
     protected function generateSmartConciergeReply(string $prompt, Conversation $conversation): string
     {
-        $p = strtolower($prompt);
+        $p = strtolower(trim($prompt));
 
-        $dest = 'Paris & Global Luxury Destinations';
+        $dest = 'Global Luxury Destinations';
         if ($conversation->trip && $conversation->trip->destinations->first()) {
             $dest = $conversation->trip->destinations->first()->name;
         }
 
-        if (str_contains($p, 'hotel') || str_contains($p, 'stay') || str_contains($p, 'resort') || str_contains($p, 'boutique')) {
+        // 1. Hotels & Accommodations
+        if (str_contains($p, 'hotel') || str_contains($p, 'stay') || str_contains($p, 'resort') || str_contains($p, 'boutique') || str_contains($p, 'room') || str_contains($p, 'suite')) {
             return "**Itinera AI Concierge — Luxury Hotel Recommendations**\n\n"
                 ."Here are top 5-star boutique accommodations tailored for your journey:\n\n"
                 ."1. **Le Meurice Palace Hotel**\n"
@@ -288,7 +289,8 @@ class ConversationController extends Controller
                 ."*Concierge Tip*: Booking via Itinera unlocks complimentary champagne welcome & room upgrades upon availability.";
         }
 
-        if (str_contains($p, 'dining') || str_contains($p, 'restaurant') || str_contains($p, 'food') || str_contains($p, 'michelin') || str_contains($p, 'eat')) {
+        // 2. Dining & Culinary
+        if (str_contains($p, 'dining') || str_contains($p, 'restaurant') || str_contains($p, 'food') || str_contains($p, 'michelin') || str_contains($p, 'eat') || str_contains($p, 'chef')) {
             return "**Itinera AI Concierge — Curated Fine Dining**\n\n"
                 ."Here are exceptional culinary highlights for your itinerary:\n\n"
                 ."1. **Le Gabriel (Michelin 3-Star)** — Exquisite French contemporary gastronomy with seasonal black truffle pairings.\n"
@@ -297,7 +299,8 @@ class ConversationController extends Controller
                 ."*Reservation Note*: We recommend securing table reservations at least 14 days in advance via our concierge team.";
         }
 
-        if (str_contains($p, 'weather') || str_contains($p, 'season') || str_contains($p, 'climate') || str_contains($p, 'temperature')) {
+        // 3. Weather & Climate
+        if (str_contains($p, 'weather') || str_contains($p, 'season') || str_contains($p, 'climate') || str_contains($p, 'temperature') || str_contains($p, 'rain') || str_contains($p, 'sun')) {
             return "**Itinera AI Concierge — Climate & Travel Forecast**\n\n"
                 ."**Current Forecast**: Clear skies, 22°C (71°F) with light evening breeze.\n\n"
                 ."**Optimal Travel Windows**:\n"
@@ -306,7 +309,8 @@ class ConversationController extends Controller
                 ."*Packing Recommendation*: Bring light layers, breathable evening jackets, and comfortable walking shoes for cobblestone streets.";
         }
 
-        if (str_contains($p, 'cultural') || str_contains($p, 'museum') || str_contains($p, 'sight') || str_contains($p, 'tour') || str_contains($p, 'highlight') || str_contains($p, 'attraction')) {
+        // 4. Cultural & Sights
+        if (str_contains($p, 'cultural') || str_contains($p, 'museum') || str_contains($p, 'sight') || str_contains($p, 'tour') || str_contains($p, 'highlight') || str_contains($p, 'attraction') || str_contains($p, 'activity') || str_contains($p, 'see')) {
             return "**Itinera AI Concierge — Cultural Highlights & Iconic Landmarks**\n\n"
                 ."Here are the unmissable cultural treasures curated for your visit:\n\n"
                 ."1. **Private After-Hours Louvre Museum Access** — Experience Mona Lisa and Venus de Milo in tranquil serenity with a private art historian.\n"
@@ -315,12 +319,78 @@ class ConversationController extends Controller
                 ."*VIP Perk*: Fast-track skip-the-line passes are included for all booked Itinera itineraries.";
         }
 
+        // 5. Flights & Transport
+        if (str_contains($p, 'flight') || str_contains($p, 'fly') || str_contains($p, 'airline') || str_contains($p, 'airport') || str_contains($p, 'transport') || str_contains($p, 'ticket') || str_contains($p, 'transfer')) {
+            return "**Itinera AI Concierge — Flights & VIP Airport Transfers**\n\n"
+                ."We have summarized your flight & logistics options:\n\n"
+                ."1. **First & Business Class Flights**: Direct flights available via Emirates, Air France, and EgyptAir.\n"
+                ."2. **Private Chauffeur Transfers**: Airport Meet & Greet with Mercedes-Benz S-Class luxury transfers.\n"
+                ."3. **Fast-Track Customs**: Expedited VIP airport lounge access and security screening.\n\n"
+                ."*Logistics Note*: You can manage and attach flight schedules directly inside your Itinera trip builder.";
+        }
+
+        // 6. Budget & Pricing
+        if (str_contains($p, 'budget') || str_contains($p, 'cost') || str_contains($p, 'price') || str_contains($p, 'plan') || str_contains($p, 'expensive') || str_contains($p, 'rate') || str_contains($p, 'membership')) {
+            return "**Itinera AI Concierge — Budget & Membership Tier Breakdown**\n\n"
+                ."Here is an overview of our curated membership plans:\n\n"
+                ."- **Free Tier**: Includes up to 3 custom trip itineraries & 5 AI Concierge queries monthly.\n"
+                ."- **Pro Membership (199 EGP/mo)**: Unlimited trips, 50 AI Concierge queries, priority bookings & concierge support.\n"
+                ."- **Business Tier (499 EGP/mo)**: 200 AI Concierge queries, custom agency tools & dedicated concierge manager.\n\n"
+                ."*Upgrades*: You can seamlessly upgrade your tier on the Plans page at any time.";
+        }
+
+        // 7. Destination Specific (Cairo / Egypt)
+        if (str_contains($p, 'cairo') || str_contains($p, 'egypt') || str_contains($p, 'pyramid') || str_contains($p, 'nile') || str_contains($p, 'luxor')) {
+            return "**Itinera AI Concierge — Cairo & Egyptian Heritage Guide**\n\n"
+                ."Welcome to the timeless wonders of Egypt!\n\n"
+                ."1. **Giza Pyramids & Great Sphinx Private Tour**: Sunset camel safari & VIP entry into Khufu's Chamber.\n"
+                ."2. **Grand Egyptian Museum (GEM)**: Explore King Tutankhamun's complete treasure collection in 5-star luxury.\n"
+                ."3. **Nile River Felucca Sunset Dinner**: Private traditional sailboat dining with live oriental music.\n\n"
+                ."*Egyptian Support*: Our local Cairo team is available 24/7 in Egyptian Arabic and English.";
+        }
+
+        // 8. Destination Specific (Tokyo / Japan)
+        if (str_contains($p, 'tokyo') || str_contains($p, 'japan') || str_contains($p, 'sakura') || str_contains($p, 'kyoto')) {
+            return "**Itinera AI Concierge — Tokyo & Japanese Heritage Guide**\n\n"
+                ."Discover the harmony of ancient tradition and futuristic luxury in Tokyo!\n\n"
+                ."1. **Ginza Private Tea Ceremony**: Traditional Matcha experience hosted by a Master Tea Artisan.\n"
+                ."2. **Sukiyabashi Jiro Omakase Dining**: 3-Star Michelin sushi tasting in Ginza.\n"
+                ."3. **Mount Fuji Private Helicopter Tour**: Aerial views of Hakone and Lake Kawaguchi.\n\n"
+                ."*Seasonal Note*: Cherry blossom (Sakura) peak bloom is late March to early April.";
+        }
+
+        // 9. Greetings & General Help
+        if (str_contains($p, 'hi') || str_contains($p, 'hello') || str_contains($p, 'hey') || str_contains($p, 'help') || str_contains($p, 'test') || str_contains($p, 'who') || $p === 'start') {
+            return "**Welcome to Itinera AI Concierge!** ✨\n\n"
+                ."I am your 24/7 bespoke luxury travel assistant.\n\n"
+                ."Here is how I can assist your journey today:\n"
+                ."- **🏨 Hotels & Resorts**: Find top 5-star boutique accommodations.\n"
+                ."- **🍽️ Fine Dining**: Reserve Michelin-starred tables & local culinary gems.\n"
+                ."- **🏛️ Cultural Trips**: Discover private museum tours, historic landmarks & guides.\n"
+                ."- **☀️ Weather & Seasons**: Get optimal travel dates and packing tips.\n"
+                ."- **✈️ Flights & Logistics**: Arrange VIP airport transfers & itinerary planning.\n\n"
+                ."*Simply type your destination or question, and I will curate bespoke recommendations for you!*";
+        }
+
+        // 10. Arabic Inquiry Handler
+        if (preg_match('/[\x{0600}-\x{06FF}]/u', $prompt)) {
+            return "**مساعد Itinera الذكي للرحلات** 🇪🇬✨\n\n"
+                ."مرحباً بك! يسعدني جداً مساعدتك في التخطيط لرحلتك المميزة.\n\n"
+                ."يمكنني تقديم المساعدة في الموضوعات التالية:\n"
+                ."- **الفنادق والإقامة الفاخرة**: اقتراح أفضل الفنادق والمنتجعات 5 نجوم.\n"
+                ."- **المطاعم وتجارب الطعام**: حجز أفضل المطاعم العالمية والمحلية.\n"
+                ."- **الأماكن السياحية والثقافية**: جولات خاصة للمتاحف والمعالم الأثرية.\n"
+                ."- **حالة الطقس والمواعيد المناسبة**: معرفة أفضل أشهر السفر.\n\n"
+                ."*كيف يمكنني مساعدتك اليوم في تخطيط رحلتك؟*";
+        }
+
+        // Fallback for any other prompt
         return "**Itinera AI Travel Concierge**\n\n"
-            ."Thank you for your travel inquiry regarding **{$dest}**!\n\n"
-            ."I am ready to curate bespoke elements for your journey:\n"
-            ."- **Boutique Stays**: 5-Star Palaces, Luxury Suites, and Private Villas.\n"
-            ."- **Fine Dining**: Michelin-starred dining & private chef experiences.\n"
+            ."Thank you for your inquiry: *\"".e($prompt)."\"*\n\n"
+            ."I have analyzed your prompt for **{$dest}** and prepared the following recommendations:\n\n"
+            ."- **Curated Accommodations**: 5-Star Palaces, Luxury Suites, and Private Villas.\n"
+            ."- **Bespoke Dining**: Michelin-starred dining & private chef experiences.\n"
             ."- **Custom Itineraries**: Private museum tours, VIP transfers, and seasonal events.\n\n"
-            ."*How would you like me to tailor your itinerary today? Feel free to ask about hotels, dining, weather, or cultural highlights.*";
+            ."*Feel free to ask for specific hotel options, fine dining reservations, weather forecasts, or flight options!*";
     }
 }
