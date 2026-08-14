@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme-luxury>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -14,9 +14,14 @@
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
+  <!-- WebSocket Reverb / Echo Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/pusher-js@8.3.0/dist/web/pusher.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.16.1/dist/echo.iife.js"></script>
+
   <!-- Design System Tokens & Custom Chat Styles -->
   <link rel="stylesheet" href="../assets/css/tokens.css" />
   <link rel="stylesheet" href="../assets/css/chat.css" />
+  <link rel="stylesheet" href="../assets/css/luxury-theme.css" />
 
   <script>/* FOUC prevention — default dark */
     (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
@@ -70,9 +75,9 @@
       <div class="chat-sidebar-header flex items-center justify-between">
         <div>
           <h2 class="font-bold text-base text-white tracking-tight">Conversations</h2>
-          <p class="text-xs text-white/50">AI Concierge & Agency Channels</p>
+          <p class="text-xs text-white/50">AI Concierge & Agency Support</p>
         </div>
-        <button type="button" id="newChatBtn" class="px-3 py-1.5 rounded-lg bg-white text-black text-xs font-bold hover:scale-105 transition flex items-center gap-1.5 shadow-sm">
+        <button type="button" id="newChatBtn" class="px-3 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-black text-xs font-bold hover:scale-105 transition flex items-center gap-1.5 shadow-sm">
           <i class="fas fa-plus text-xs"></i> New Chat
         </button>
       </div>
@@ -80,8 +85,8 @@
       <!-- Channel Filters -->
       <div class="chat-filter-pills">
         <button type="button" class="filter-pill active" data-filter="all">All</button>
-        <button type="button" class="filter-pill" data-filter="ai_concierge">AI Concierge</button>
-        <button type="button" class="filter-pill" data-filter="agency_inquiry">Agencies</button>
+        <button type="button" class="filter-pill" data-filter="ai_concierge"><i class="fas fa-robot mr-1 text-amber-400"></i> AI</button>
+        <button type="button" class="filter-pill" data-filter="agency_inquiry"><i class="fas fa-briefcase mr-1 text-emerald-400"></i> خدمة العملاء</button>
         <button type="button" class="filter-pill" data-filter="direct_support">Support</button>
       </div>
 
@@ -99,26 +104,36 @@
       <!-- Empty state when no chat selected -->
       <div id="chatEmptyState" class="hidden flex-1 flex flex-col items-center justify-center p-8 text-center">
         <div class="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-2xl mb-4">
-          <i class="fas fa-robot"></i>
+          <i class="fas fa-headset"></i>
         </div>
-        <h3 class="text-xl font-bold text-white mb-2">Welcome to Itinera Travel Concierge</h3>
+        <h3 class="text-xl font-bold text-white mb-2">Itinera Travel Assistant & خدمة العملاء</h3>
         <p class="text-sm text-white/60 max-w-md mb-6 leading-relaxed">
-          Ask your bespoke AI Concierge to curate boutique stays, optimize trip budgets, or connect directly with our luxury travel agencies.
+          Switch seamlessly between our instant AI Concierge for bespoke itineraries and direct Egyptian Customer Support (خدمة العملاء المصرية) for booking assistance.
         </p>
       </div>
 
       <!-- Active Chat Container -->
       <div id="chatActiveStage" class="flex flex-col h-full">
         
-        <!-- Chat Header -->
-        <div class="chat-stage-header">
+        <!-- Chat Header with Mode Switcher Widget -->
+        <div class="chat-stage-header flex items-center justify-between flex-wrap gap-3">
           <div>
-            <h3 class="font-bold text-base text-white tracking-tight" id="chatActiveTitle">Itinera AI Concierge</h3>
+            <div class="flex items-center gap-2">
+              <h3 class="font-bold text-base text-white tracking-tight" id="chatActiveTitle">Itinera AI Concierge</h3>
+              <span id="wsStatusBadge" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Reverb Live
+              </span>
+            </div>
             <p class="text-xs text-white/50" id="chatActiveSubtitle">AI Travel Assistant · Always Active</p>
           </div>
-          <div class="flex items-center gap-2">
-            <button type="button" class="p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition text-xs" title="Refresh conversation" onclick="window.location.reload();">
-              <i class="fas fa-rotate-right"></i>
+
+          <!-- Channel / Agent Mode Switcher (AI ⇄ خدمة العملاء المصرية) -->
+          <div class="flex items-center gap-2 bg-white/5 p-1 rounded-xl border border-white/10">
+            <button type="button" id="switchAiModeBtn" class="px-3 py-1 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 bg-amber-500 text-black shadow">
+              <i class="fas fa-robot text-xs"></i> <span>AI Concierge</span>
+            </button>
+            <button type="button" id="switchAgencyModeBtn" class="px-3 py-1 rounded-lg text-xs font-semibold text-white/70 hover:text-white transition flex items-center gap-1.5">
+              <span>🇪🇬</span> <span>خدمة العملاء المصرية</span>
             </button>
           </div>
         </div>
@@ -130,8 +145,8 @@
           </div>
         </div>
 
-        <!-- Quick Prompts Bar -->
-        <div class="quick-prompts">
+        <!-- Quick Prompts Bar (Dynamically updated based on active mode) -->
+        <div class="quick-prompts" id="quickPromptsContainer">
           <button type="button" class="prompt-chip"><i class="fas fa-sparkles text-amber-400 mr-1"></i> Recommend top 3 cultural highlights</button>
           <button type="button" class="prompt-chip"><i class="fas fa-utensils text-amber-400 mr-1"></i> Suggest Michelin fine dining</button>
           <button type="button" class="prompt-chip"><i class="fas fa-hotel text-amber-400 mr-1"></i> Find 5-star boutique hotels</button>
@@ -141,7 +156,7 @@
         <!-- Message Composer -->
         <div class="chat-composer-wrap">
           <form id="chatForm" class="chat-composer">
-            <textarea id="chatInput" rows="1" class="chat-textarea" placeholder="Ask your AI Concierge or message your agency consultant... (Press Enter to send)"></textarea>
+            <textarea id="chatInput" rows="1" class="chat-textarea" placeholder="Ask your AI Concierge or message Egyptian Customer Support (خدمة العملاء)... (Press Enter to send)"></textarea>
             <button type="submit" id="sendBtn" class="btn-send" title="Send message" aria-label="Send message">
               <i class="fas fa-paper-plane text-xs"></i>
             </button>
@@ -163,27 +178,27 @@
 
       <form id="createConvForm" class="space-y-4">
         <div>
-          <label class="block text-xs font-semibold text-white/70 mb-1.5">Channel Type</label>
+          <label class="block text-xs font-semibold text-white/70 mb-1.5">Channel / Support Type</label>
           <select id="newConvType" class="w-full bg-black/50 border border-white/15 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-400">
-            <option value="ai_concierge">🤖 Itinera AI Travel Concierge</option>
-            <option value="agency_inquiry">💼 Travel Agency Consultation</option>
-            <option value="direct_support">🎧 Traveler Concierge Support</option>
+            <option value="ai_concierge">🤖 Itinera AI Travel Concierge (Instant AI)</option>
+            <option value="agency_inquiry">🇪🇬 خدمة العملاء المصرية (Egyptian Customer Support & Agency)</option>
+            <option value="direct_support">💬 General Traveler Support</option>
           </select>
         </div>
 
         <div>
           <label class="block text-xs font-semibold text-white/70 mb-1.5">Topic / Title</label>
-          <input type="text" id="newConvTitle" placeholder="e.g. Kyoto 5-Day Cultural Itinerary" class="w-full bg-black/50 border border-white/15 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-400" required />
+          <input type="text" id="newConvTitle" placeholder="e.g. استفسار عن حجز رحلة القاهرة والاقصر" class="w-full bg-black/50 border border-white/15 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-400" required />
         </div>
 
         <div>
           <label class="block text-xs font-semibold text-white/70 mb-1.5">Initial Question / Request</label>
-          <textarea id="newConvMsg" rows="3" placeholder="Describe your travel dreams, dates, or destination inquiries..." class="w-full bg-black/50 border border-white/15 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-400"></textarea>
+          <textarea id="newConvMsg" rows="3" placeholder="Describe your travel question, dates, or booking inquiries..." class="w-full bg-black/50 border border-white/15 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-400"></textarea>
         </div>
 
         <div class="flex justify-end gap-3 pt-2">
           <button type="button" onclick="document.getElementById('newChatModal').classList.add('hidden');" class="px-4 py-2 rounded-xl border border-white/15 text-xs font-semibold text-white/70 hover:text-white">Cancel</button>
-          <button type="submit" class="px-5 py-2 rounded-xl bg-white text-black text-xs font-bold hover:scale-105 transition">Start Chat</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-amber-500 text-black text-xs font-bold hover:scale-105 transition">Start Chat</button>
         </div>
       </form>
     </div>

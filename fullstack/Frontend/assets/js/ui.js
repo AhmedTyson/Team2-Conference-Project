@@ -74,78 +74,99 @@ const Ui = (() => {
     return base + '/' + path.replace(/^\/+/, '');
   }
 
-  const curatedImages = {
-    paris: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=80',
-    tokyo: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&q=80',
-    shinjuku: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&q=80',
-    cairo: 'https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=800&q=80',
-    egypt: 'https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=800&q=80',
-    bali: 'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800&q=80',
-    london: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=80',
-    newyork: 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800&q=80',
-    rome: 'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800&q=80',
-    dubai: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&q=80'
-  };
-
   const hotelImages = [
     'https://images.unsplash.com/photo-1566073171639-4d8ef58f4a13?w=800&q=80',
     'https://images.unsplash.com/photo-1551882547-ff40c0d83b44?w=800&q=80',
     'https://images.unsplash.com/photo-1542314831-c6a4d142104d?w=800&q=80',
     'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80',
-    'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80'
+    'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=80',
+    'https://images.unsplash.com/photo-1621293954908-907159247fc8?w=800&q=80',
+    'https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=800&q=80',
+    'https://images.unsplash.com/photo-1590490360182-c33d57733427?w=800&q=80',
   ];
 
   const restaurantImages = [
     'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80',
     'https://images.unsplash.com/photo-1550966871-3ed3cdb5ed0c?w=800&q=80',
     'https://images.unsplash.com/photo-1559339352-11d035aa65de?w=800&q=80',
-    'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=800&q=80'
+    'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=800&q=80',
+    'https://images.unsplash.com/photo-1424847651672-bf20a4b0982b?w=800&q=80',
+    'https://images.unsplash.com/photo-1502301103405-2d8e898e3235?w=800&q=80',
   ];
 
   const attractionImages = [
     'https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=800&q=80',
     'https://images.unsplash.com/photo-1518391846015-55a9cc003b25?w=800&q=80',
     'https://images.unsplash.com/photo-1533929736458-ca588d08c8be?w=800&q=80',
-    'https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=800&q=80'
+    'https://images.unsplash.com/photo-1501504905252-473c47e087f8?w=800&q=80',
+    'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80',
+    'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=80',
+    'https://images.unsplash.com/photo-1512100356356-de1b84283e18?w=800&q=80',
+    'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=800&q=80',
   ];
 
-  function getCuratedImage(query) {
-    var q = (query || '').toLowerCase();
-    for (var key in curatedImages) {
-      if (q.includes(key) || q.replace(/[^a-z]/g, '').includes(key)) return curatedImages[key];
-    }
+  const destinationImages = [
+    'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=80',
+    'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800&q=80',
+    'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&q=80',
+    'https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=800&q=80',
+    'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&q=80',
+    'https://images.unsplash.com/photo-1572252009286-268acec5ca0a?w=800&q=80',
+    'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800&q=80',
+    'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80',
+    'https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=800&q=80',
+    'https://images.unsplash.com/photo-1543785734-4b6e564642f8?w=800&q=80',
+  ];
+
+  function getCuratedImage(query, entityType) {
+    var q = (query || '').trim();
     var hash = 0;
     for (var i = 0; i < q.length; i++) {
       hash = q.charCodeAt(i) + ((hash << 5) - hash);
     }
     hash = Math.abs(hash);
 
-    if (q.includes('hotel') || q.includes('resort') || q.includes('lodge') || q.includes('inn') || q.includes('apa') || q.includes('motel') || q.includes('suites')) return hotelImages[hash % hotelImages.length];
-    if (q.includes('restaurant') || q.includes('cafe') || q.includes('dining') || q.includes('grill') || q.includes('bistro') || q.includes('steak') || q.includes('food')) return restaurantImages[hash % restaurantImages.length];
-    if (q.includes('museum') || q.includes('park') || q.includes('tower') || q.includes('square') || q.includes('palace') || q.includes('temple')) return attractionImages[hash % attractionImages.length];
-    
-    var travelImages = [].concat(attractionImages, hotelImages);
-    return travelImages[hash % travelImages.length];
+    var t = (entityType || '').toLowerCase();
+    var ql = q.toLowerCase();
+
+    if (t === 'hotel' || ql.includes('hotel') || ql.includes('resort') || ql.includes('lodge') || ql.includes('inn') || ql.includes('motel') || ql.includes('suites')) {
+      return hotelImages[hash % hotelImages.length];
+    }
+    if (t === 'restaurant' || ql.includes('restaurant') || ql.includes('cafe') || ql.includes('bistro') || ql.includes('grill') || ql.includes('dining')) {
+      return restaurantImages[hash % restaurantImages.length];
+    }
+    if (t === 'attraction' || ql.includes('museum') || ql.includes('park') || ql.includes('tower') || ql.includes('palace') || ql.includes('temple') || ql.includes('beach')) {
+      return attractionImages[hash % attractionImages.length];
+    }
+    if (t === 'destination') {
+      return destinationImages[hash % destinationImages.length];
+    }
+
+    var allImages = [].concat(destinationImages, hotelImages, attractionImages, restaurantImages);
+    return allImages[hash % allImages.length];
   }
 
-  function bindImage(img) {
+  function bindImage(img, entityType) {
+    img.style.objectFit = 'cover';
+    img.style.objectPosition = 'center';
+    
     var src = img.src || '';
-    var isPlaceholder = src === PLACEHOLDER_URL || 
-                        src.includes('placeholder') || 
-                        src.endsWith('/null') || 
+    var isPlaceholder = src === PLACEHOLDER_URL ||
+                        src.includes('placeholder') ||
+                        src.endsWith('/null') ||
                         src.endsWith('/undefined') ||
                         src.trim() === '';
-                        
+
     if (isPlaceholder && !img.dataset.fallback) {
       img.dataset.fallback = '1';
-      img.src = getCuratedImage(img.alt || img.title || '');
+      img.src = getCuratedImage(img.alt || img.dataset.name || img.title || img.id || '', entityType || img.dataset.type || '');
     }
 
     img.addEventListener('error', () => {
       if (img.dataset.fallback === '2') return;
       if (!img.dataset.fallback) {
         img.dataset.fallback = '1';
-        img.src = getCuratedImage(img.alt || img.title || '');
+        img.src = getCuratedImage(img.alt || img.dataset.name || img.title || img.id || '', entityType || img.dataset.type || '');
       } else if (img.dataset.fallback === '1') {
         img.dataset.fallback = '2';
         img.src = PLACEHOLDER_URL;

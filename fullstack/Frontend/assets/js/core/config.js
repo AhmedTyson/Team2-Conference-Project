@@ -111,6 +111,7 @@
   global.APP_CONFIG = {
     API_BASE_URL: CONFIG.apiBase,
     ASSET_BASE_URL: CONFIG.apiBase.replace('/api', ''),
+    REVERB_APP_KEY: 'app-key',
     TOKEN_KEY: CONFIG.tokenKey,
     USER_KEY: CONFIG.userKey,
     PAGINATION_PER_PAGE: 12

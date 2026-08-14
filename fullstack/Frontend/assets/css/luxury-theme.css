@@ -1,0 +1,149 @@
+/* ==========================================================================
+   luxury-theme.css — Additive visual theme, inspired by the uploaded
+   "Itinera Luxury AI Trip Planner" React mockup.
+
+   HOW THIS FILE WORKS:
+   - Loaded LAST, after tokens.css/app.css/components.css — only overrides
+     the specific custom-property values needed for the amber/luxury look.
+   - Does NOT redefine --radius, --glass-*, --space-*, or any structural
+     token — those are reused as-is from tokens.css.
+   - 100% reversible: remove the <link> tag and the page returns exactly
+     to its current charcoal-primary look. No HTML/JS was changed to
+     support this file — every class it styles already exists.
+   ========================================================================== */
+
+[data-theme-luxury] {
+  /* Amber/luxury accent — HSL, matching tokens.css's own H S% L% format */
+  --primary:               38 92% 50%;   /* #f0b429-ish amber */
+  --primary-foreground:    24 10% 8%;    /* near-black, for text on amber */
+  --luxury-amber-dim:      38 70% 40%;
+  --luxury-serif:          "Fraunces", var(--font-display, serif);
+}
+
+html.dark[data-theme-luxury] {
+  --background:            240 6% 5%;    /* near-black luxury dark, not navy */
+  --card:                  240 6% 8%;
+  --primary:               38 92% 55%;
+  --primary-foreground:    240 6% 6%;
+}
+
+/* ---- Luxury KPI / stat card — targets dashboard.html's REAL class
+   (.stat-card-glass, confirmed by direct inspection), only adds the
+   amber-accent border + serif number. No new class introduced, no
+   HTML change needed to apply this. ---- */
+[data-theme-luxury] .stat-card-glass {
+  border-left: 3px solid hsl(var(--primary));
+}
+[data-theme-luxury] .stat-card-glass__value {
+  font-family: var(--luxury-serif);
+  color: hsl(var(--primary));
+}
+
+/* ---- Luxury primary button — same shape/radius tokens as .btn-primary,
+   amber fill instead of charcoal. Opt-in via extra class, does not
+   replace .btn-primary anywhere it's already used. ---- */
+[data-theme-luxury] .btn-luxury {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border-radius: var(--r-md);
+  font-weight: 700;
+  transition: background var(--dur-fast, 150ms) var(--ease-out, ease);
+}
+[data-theme-luxury] .btn-luxury:hover {
+  background: hsl(var(--luxury-amber-dim));
+}
+
+/* ---- Luxury glass panel — thin wrapper around the existing glass
+   tokens, adds the amber-tinted border the mockup used. ---- */
+[data-theme-luxury] .luxury-glass {
+  background: hsl(var(--card) / 0.7);
+  backdrop-filter: blur(var(--glass-blur-md)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur-md)) saturate(var(--glass-saturate));
+  border: 1px solid hsl(var(--primary) / 0.2);
+  border-radius: var(--r-xl);
+  box-shadow: var(--glass-shadow-dark, var(--glass-shadow));
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .luxury-glass {
+    background: hsl(var(--card) / 0.92); /* solid fallback, no blur dependency for legibility */
+  }
+}
+
+/* ---- Wizard step indicator ----
+   NOTE ON APPLICABILITY: trip-form.html (the real Planner page) is a
+   SINGLE-PAGE FORM, not a multi-step wizard — confirmed by direct
+   inspection (.form__card, .field, .chip-row, one .btn-row at the
+   bottom). The mockup's 5-step wizard concept has no matching markup
+   here. This class is defined for future use if the form is ever
+   converted to a wizard, but nothing in trip-form.html references it
+   today — do not assume it's wired in. */
+[data-theme-luxury] .luxury-step {
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--r-full);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: 1px solid hsl(var(--border));
+  color: hsl(var(--muted-foreground));
+}
+[data-theme-luxury] .luxury-step[data-state="active"] {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border-color: hsl(var(--primary));
+}
+[data-theme-luxury] .luxury-step[data-state="done"] {
+  background: hsl(var(--primary) / 0.15);
+  border-color: hsl(var(--primary));
+  color: hsl(var(--primary));
+}
+
+/* ---- Planner form — REAL classes on trip-form.html, styled directly.
+   This is what actually applies today, unlike the wizard steps above. ---- */
+[data-theme-luxury] .form__card {
+  border: 1px solid hsl(var(--primary) / 0.15);
+}
+[data-theme-luxury] .btn--primary {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+[data-theme-luxury] .btn--primary:hover {
+  background: hsl(var(--luxury-amber-dim));
+}
+[data-theme-luxury] .page-header__eyebrow {
+  color: hsl(var(--primary));
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* ---- Luxury status badges — reuse existing --ok/--warn/--danger tokens,
+   just add the luxury serif treatment for the headline text. ---- */
+[data-theme-luxury] .luxury-status-title {
+  font-family: var(--luxury-serif);
+  font-weight: 600;
+}
+
+/* ---- checkout.html — REAL classes on the actual plans-checkout page.
+   NOTE ON APPLICABILITY: the mockup imagined a multi-step Paymob flow
+   with a countdown timer, HMAC-failure state, and card/wallet/kiosk
+   method switcher. None of that markup exists in the real checkout.html
+   (confirmed by direct inspection) — it's a single-screen plan-purchase
+   page (.section-title, .btn-outline, .btn-white, standard nav-pill
+   header). Styled what's actually there; did not invent a fake wizard
+   to match the mockup. ---- */
+[data-theme-luxury] .section-title {
+  font-family: var(--luxury-serif);
+  color: hsl(var(--primary, 38 92% 55%));
+}
+[data-theme-luxury] .btn-outline {
+  border-color: hsl(var(--primary, 38 92% 55%) / 0.4);
+  color: hsl(var(--primary, 38 92% 55%));
+}
+[data-theme-luxury] .btn-outline:hover {
+  background: hsl(var(--primary, 38 92% 55%) / 0.1);
+}
+
+/* prefers-reduced-motion respected — no motion defined in this file that isn't already gated globally in app.css */
