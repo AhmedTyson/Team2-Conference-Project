@@ -48,11 +48,10 @@ html.dark .app__header {
   place-items: center;
   width: 30px;
   height: 30px;
-  border-radius: 9px;
-  background: hsl(var(--primary));
-  color: hsl(var(--primary-foreground));
-  font-family: var(--font-display);
-  font-size: 16px;
+  border-radius: 8px;
+  background: url('../../branc-assets/Logo_without_name.png') center/contain no-repeat !important;
+  color: transparent !important;
+  font-size: 0;
 }
 
 .nav {
