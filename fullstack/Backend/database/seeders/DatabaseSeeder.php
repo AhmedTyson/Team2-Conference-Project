@@ -105,6 +105,7 @@ class DatabaseSeeder extends Seeder
             TripSeeder::class,
             AddressSeeder::class,
             AgencyAssignmentSeeder::class,
+            ContactMessageSeeder::class,
             PaymentSeeder::class,
             BudgetSnapshotSeeder::class,
             NotificationSeeder::class,

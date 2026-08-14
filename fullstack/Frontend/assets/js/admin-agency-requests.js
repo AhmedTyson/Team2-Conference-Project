@@ -200,7 +200,7 @@
         const btn = document.createElement("button");
         btn.type = "button";
         btn.className = "btn-sm btn-primary";
-        btn.textContent = "Approve";
+        btn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-inline-end: 0.25rem;"><polyline points="20 6 9 17 4 12"/></svg>Approve';
         btn.style.marginInlineStart = "0.5rem";
         btn.addEventListener("click", function () { approve(r.id, select); });
 

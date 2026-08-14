@@ -37,7 +37,7 @@
     
     var brand = el("app-brand");
     if (brand) {
-      brand.href = p + "public/index.html";
+      brand.href = p + "index.html";
       brand.innerHTML = 
         '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="brand-logo" aria-hidden="true" style="margin-right: 8px; flex-shrink: 0;">' +
           '<path d="M12 2C12 2 13 8 18 12C13 16 12 22 12 22C12 22 11 16 6 12C11 8 12 2 12 2Z" fill="currentColor"/>' +

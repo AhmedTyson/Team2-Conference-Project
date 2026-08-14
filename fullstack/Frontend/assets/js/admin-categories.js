@@ -128,10 +128,8 @@
           '</div>' +
           '<p style="margin:0; font-size:0.85rem; color:hsl(var(--muted-foreground)); font-family:var(--font-mono, monospace);">slug: ' + It.app.esc(c.slug || "–") + '</p>' +
         '</div>' +
-        '<div style="display:flex; gap:0.5rem;">' +
-          '<button type="button" class="btn-sm btn-secondary edit-btn" data-id="' + c.id + '" data-name="' + It.app.esc(c.name) + '" data-slug="' + It.app.esc(c.slug) + '" data-type="' + It.app.esc(c.type) + '">Edit</button>' +
-          '<button type="button" class="btn-sm btn-ghost text-error delete-btn" data-id="' + c.id + '" style="color:hsl(var(--destructive));">Delete</button>' +
-        '</div>' +
+          '<button type="button" class="btn-icon btn-ghost btn-sm edit-btn" data-id="' + c.id + '" data-name="' + It.app.esc(c.name) + '" data-slug="' + It.app.esc(c.slug) + '" data-type="' + It.app.esc(c.type) + '" title="Edit Category" aria-label="Edit Category"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg></button>' +
+          '<button type="button" class="btn-icon btn-ghost btn-sm delete-btn" data-id="' + c.id + '" title="Delete Category" aria-label="Delete Category" style="color:hsl(var(--destructive));"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button>' +
       '</div>';
     }).join('');
 

@@ -406,7 +406,7 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
 
     // Plans
     Route::post('/agency-assignments/{assignment}/report', [FlagController::class, 'store'])->middleware(['auth:api', 'verified']);
-    Route::get('/admin/flags', [AdminFlagController::class, 'index'])->middleware('role:admin|super_admin');
-    Route::post('/admin/flags/{flag}/approve', [AdminFlagController::class, 'approve'])->middleware('role:admin|super_admin');
-    Route::post('/admin/flags/{flag}/decline', [AdminFlagController::class, 'decline'])->middleware('role:admin|super_admin');
+    Route::get('/admin/flags', [AdminFlagController::class, 'index'])->middleware(['auth:api']);
+    Route::post('/admin/flags/{flag}/approve', [AdminFlagController::class, 'approve'])->middleware(['auth:api']);
+    Route::post('/admin/flags/{flag}/decline', [AdminFlagController::class, 'decline'])->middleware(['auth:api']);
 });

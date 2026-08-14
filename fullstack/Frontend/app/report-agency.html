@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Report Agency · Travel Planner</title>
+  <title>Report Agency · Itinera Travel Planner</title>
   <link rel="stylesheet" href="../assets/css/tokens.css" />
   <link rel="stylesheet" href="../assets/css/app.css" />
   <script>/* FOUC prevention — default dark */
@@ -12,11 +12,12 @@
       document.documentElement.classList.add("dark","fouc-ready");
     else document.documentElement.classList.add("fouc-ready");
     })();
-  </script></head>
+  </script>
+</head>
 <body data-page="report-agency" class="is-booting" data-layout="app">
   <div class="app">
     <header class="app__header">
-      <a id="app-brand" class="app__brand" href="/home.html"></a>
+      <a id="app-brand" class="app__brand" href="/index.html"></a>
       <nav id="app-nav" class="nav" aria-label="Main navigation"></nav>
       <div id="app-user" class="app__user">
         <button id="theme-toggle" type="button" class="btn btn--ghost" aria-label="Toggle theme">◐</button>
@@ -24,29 +25,33 @@
     </header>
 
     <main class="app__main">
-      <div class="page container" style="max-width: 600px; margin-top: var(--sp-10);">
-        <header class="page-header" style="text-align: center;">
-          <p class="page-header__eyebrow">Customer Support</p>
-          <h1 class="page-header__title">Report an Issue</h1>
-          <p class="page-header__lead">If you had a poor experience with your assigned agency, please file a report below.</p>
+      <div class="page container" style="max-width: 620px; margin-top: var(--space-8); margin-bottom: var(--space-12);">
+        <header class="page-header" style="text-align: center; margin-bottom: var(--space-6);">
+          <p class="label-eyebrow" style="color: hsl(var(--primary)); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em;">Customer Support & Moderation</p>
+          <h1 class="page-header__title" style="font-size: 2rem; font-weight: 700; margin-top: 0.25rem;">Report an Agency Issue</h1>
+          <p class="page-header__lead" style="color: hsl(var(--muted-foreground)); font-size: 0.95rem;">If you experienced service quality issues or disputes with an assigned travel agency, file a formal complaint below.</p>
         </header>
 
-        <form id="report-form" class="card" style="padding: var(--sp-6);">
-          <div class="form-group" style="margin-bottom: var(--sp-4);">
-            <label for="assignment_id" style="display: block; margin-bottom: var(--sp-2); font-weight: 500;">Assignment ID / Booking Reference</label>
-            <input type="text" id="assignment_id" name="assignment_id" class="form-control" style="width: 100%; padding: var(--sp-3); border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface);" required placeholder="e.g. 12345">
+        <form id="report-form" class="card" style="padding: 2rem; background: hsl(var(--card)); border: 1px solid hsl(var(--border) / 0.6); border-radius: var(--radius-lg, 12px); box-shadow: 0 8px 30px rgba(0,0,0,0.12);">
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label for="assignment_id" style="display: block; margin-bottom: 0.4rem; font-weight: 600; font-size: 0.9rem;">Assignment ID / Booking Reference *</label>
+            <input type="text" id="assignment_id" name="assignment_id" class="form-control" style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid hsl(var(--border)); border-radius: var(--radius-md, 6px); background: hsl(var(--background)); color: hsl(var(--foreground)); font-size: 0.95rem;" required placeholder="e.g. 1, 2, 5...">
           </div>
-          <div class="form-group" style="margin-bottom: var(--sp-6);">
-            <label for="reason" style="display: block; margin-bottom: var(--sp-2); font-weight: 500;">Reason for Report</label>
-            <textarea id="reason" name="reason" class="form-control" style="width: 100%; padding: var(--sp-3); border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); min-height: 120px;" required placeholder="Please describe the issue in detail..."></textarea>
+          <div class="form-group" style="margin-bottom: 1.25rem;">
+            <label for="reason" style="display: block; margin-bottom: 0.4rem; font-weight: 600; font-size: 0.9rem;">Reason for Report *</label>
+            <input type="text" id="reason" name="reason" class="form-control" style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid hsl(var(--border)); border-radius: var(--radius-md, 6px); background: hsl(var(--background)); color: hsl(var(--foreground)); font-size: 0.95rem;" required placeholder="e.g. Unresponsive service, itinerary deviation, billing dispute">
           </div>
-          <button type="submit" id="submit-btn" class="btn btn--primary" style="width: 100%;">Submit Report</button>
+          <div class="form-group" style="margin-bottom: 1.75rem;">
+            <label for="details" style="display: block; margin-bottom: 0.4rem; font-weight: 600; font-size: 0.9rem;">Additional Details (Optional)</label>
+            <textarea id="details" name="details" class="form-control" style="width: 100%; padding: 0.65rem 0.85rem; border: 1px solid hsl(var(--border)); border-radius: var(--radius-md, 6px); background: hsl(var(--background)); color: hsl(var(--foreground)); font-size: 0.95rem; min-height: 120px; resize: vertical;" placeholder="Provide additional background context or details regarding your complaint..."></textarea>
+          </div>
+          <button type="submit" id="submit-btn" class="btn btn--primary" style="width: 100%; padding: 0.75rem; font-weight: 600; font-size: 1rem; border-radius: var(--radius-md, 6px); background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border: none; cursor: pointer;">Submit Report</button>
         </form>
       </div>
     </main>
 
-    <footer class="app__footer">
-      <span>Travel Planner</span>
+    <footer class="app__footer" style="text-align: center; padding: 2rem 0; color: hsl(var(--muted-foreground)); font-size: 0.85rem; border-top: 1px solid hsl(var(--border) / 0.4);">
+      <span>Itinera Travel Planner</span>
       <span>•</span>
       <span>Plan. Explore. Remember.</span>
     </footer>

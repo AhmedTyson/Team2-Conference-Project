@@ -59,7 +59,7 @@
         { key: "price_per_night", label: "Price / night (USD)", type: "number", step: "0.01" },
         { key: "stars", label: "Stars", type: "number", min: "1", max: "5" },
         { key: "rating", label: "Rating", type: "number", step: "0.1", min: "0", max: "5" },
-        { key: "availability", label: "Availability", type: "text" },
+        { key: "availability", label: "Availability", type: "select", options: [{id: 1, name: "Available"}, {id: 0, name: "Unavailable"}], optionLabel: "name", required: true },
         { key: "image", label: "Image URL", type: "text" },
       ],
     },
@@ -159,8 +159,13 @@
         { key: "name", label: "Name", type: "text", required: true },
         { key: "email", label: "Email", type: "email", required: true },
         { key: "password", label: "Password (leave blank to keep current)", type: "password" },
+        { key: "role", label: "Role & Privileges", type: "select", options: [{id: "admin", name: "Sub-Admin / Manager"}, {id: "super_admin", name: "Super Admin"}, {id: "agency", name: "Agency Partner"}, {id: "user", name: "Customer Passenger"}], optionLabel: "name" },
         { key: "is_active", label: "Status", type: "select", options: [{id: 1, name: "Active"}, {id: 0, name: "Blocked"}], optionLabel: "name" },
       ],
+      fill: function (row) {
+        var r = (row.roles && row.roles[0] && row.roles[0].name) || row.role || "user";
+        return { name: row.name, email: row.email, role: r, is_active: row.is_active };
+      },
     },
     trips: {
       url: "/admin/trips",
@@ -557,10 +562,13 @@
     const td = function (content, label) {
       const c = document.createElement("td");
       if (label) c.dataset.label = label;
-      if (typeof content === "number") c.classList.add("text-right");
-      const node = typeof content === "string" ? document.createTextNode(content)
-        : (content instanceof Node ? content : document.createTextNode(String(content)));
-      c.appendChild(node);
+      if (typeof content === "string" && (content.indexOf("<") !== -1 || content.indexOf("&") !== -1)) {
+        c.innerHTML = content;
+      } else {
+        const node = typeof content === "string" ? document.createTextNode(content)
+          : (content instanceof Node ? content : document.createTextNode(String(content)));
+        c.appendChild(node);
+      }
       return c;
     };
     const sel = document.createElement("td");
@@ -604,16 +612,33 @@
     const cell = document.createElement("td");
     cell.className = "td-actions";
     cell.dataset.label = "Actions";
+
     const editBtn = document.createElement("button");
     editBtn.type = "button";
-    editBtn.className = "btn-ghost btn-sm";
-    editBtn.textContent = "Edit";
+    editBtn.className = "btn-icon btn-ghost btn-sm";
+    editBtn.title = "Edit " + mod.singular;
+    editBtn.setAttribute("aria-label", "Edit " + mod.singular);
+    editBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>';
     editBtn.addEventListener("click", function () { openModal("edit", row); });
+
     const delBtn = document.createElement("button");
     delBtn.type = "button";
-    delBtn.className = "btn-ghost btn-sm is-danger-text";
-    delBtn.textContent = "Delete";
+    delBtn.className = "btn-icon btn-ghost btn-sm is-danger-text";
+    delBtn.title = "Delete " + mod.singular;
+    delBtn.setAttribute("aria-label", "Delete " + mod.singular);
+    delBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>';
     delBtn.addEventListener("click", function () { removeRow(row.id); });
+
+    if (moduleName === "users") {
+      const viewBtn = document.createElement("a");
+      viewBtn.href = "user-details.html?id=" + row.id;
+      viewBtn.className = "btn-icon btn-ghost btn-sm";
+      viewBtn.title = "View Passenger Profile";
+      viewBtn.setAttribute("aria-label", "View Passenger Profile");
+      viewBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+      cell.appendChild(viewBtn);
+    }
+
     cell.appendChild(editBtn);
     cell.appendChild(delBtn);
     tr.appendChild(cell);

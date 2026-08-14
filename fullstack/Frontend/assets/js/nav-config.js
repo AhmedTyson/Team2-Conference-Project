@@ -67,6 +67,7 @@
       { to: "/app/flight-booking.html", label: "Flights", icon: "bookings" },
       { to: "/app/chat.html", label: "AI Concierge", icon: "reviews" },
       { to: "/app/favourites.html", label: "Favourites", icon: "favourites" },
+      { to: "/app/report-agency.html", label: "Report Agency", icon: "contacts" },
       { to: "/weather.html", label: "Weather", icon: "weather" },
       { to: "/about.html", label: "About", icon: "about" },
       { to: "/contact.html", label: "Contact", icon: "contact" },

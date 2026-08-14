@@ -25,8 +25,13 @@ class FlightSeeder extends Seeder
         $flights = json_decode(file_get_contents($path), true);
         $insertData = [];
 
-        foreach ($flights as $flight) {
+        $airlines = ['Emirates', 'Qatar Airways', 'EgyptAir', 'Air France', 'British Airways', 'Lufthansa', 'Etihad Airways', 'Turkish Airlines'];
+        foreach ($flights as $index => $flight) {
+            $airline = $flight['airline'] ?? $airlines[$index % count($airlines)];
+            $flightNum = $flight['flight_number'] ?? (strtoupper(substr($airline, 0, 2)) . '-' . (100 + ($index % 900)));
             $insertData[] = [
+                'airline' => $airline,
+                'flight_number' => $flightNum,
                 'departure_airport' => $flight['departure_airport'],
                 'arrival_airport' => $flight['arrival_airport'],
                 'departure_date' => $flight['departure_date'],

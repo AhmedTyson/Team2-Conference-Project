@@ -389,7 +389,7 @@
     // Header
     var header = doc.createElement('div');
     header.className = 'mobile-nav-overlay__header';
-    header.innerHTML = '<a href="' + prefix + 'public/index.html" class="mobile-nav-overlay__brand">' +
+    header.innerHTML = '<a href="' + prefix + 'index.html" class="mobile-nav-overlay__brand">' +
       '<span class="brand-mark" style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#1c1917,#292524);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:900;">IT</span>' +
       '<span>Itinera</span></a>' +
       '<button class="mobile-nav-overlay__close" aria-label="Close navigation" id="mobile-nav-close">✕</button>';

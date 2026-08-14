@@ -55,17 +55,10 @@ class ReportController extends Controller
     public function index(Request $request): JsonResponse
     {
         $perPage = min((int) $request->query('per_page', 15), 100);
-        $page = (int) $request->query('page', 1);
 
-        $reports = Cache::remember(
-            "reports_page_{$page}_{$perPage}",
-            now()->addMinutes(10),
-            function () use ($perPage) {
-                return Report::with('user:id,name')
-                    ->latest()
-                    ->paginate($perPage);
-            }
-        );
+        $reports = Report::with('user:id,name')
+            ->latest()
+            ->paginate($perPage);
 
         return ApiResponse::success($reports, 'Reports fetched successfully', 200, [
             'meta' => [

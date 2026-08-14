@@ -95,16 +95,17 @@
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Target Agency</th>
-                <th>Reported By</th>
+                <th>Consumer / Reporter</th>
+                <th>Target / Assignment</th>
                 <th>Reason</th>
                 <th>Status</th>
+                <th>Date</th>
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody id="admin-flags-tbody">
+            <tbody id="consumer-reports-tbody">
               <tr>
-                <td colspan="6" style="text-align: center; padding: 20px;">Loading reports...</td>
+                <td colspan="7" style="text-align: center; padding: 20px;">Loading reports...</td>
               </tr>
             </tbody>
           </table>
@@ -119,6 +120,8 @@
     </main>
   </div>
 
+  <div id="modal-root"></div>
+
   <div id="site-banner" role="status">
     <span id="site-banner-msg"></span><span id="site-banner-drain" aria-hidden="true"></span>
   </div>
@@ -128,7 +131,7 @@
   <script src="../assets/js/session.js"></script>
   <script src="../assets/js/nav-config.js"></script>
   <script src="../assets/js/admin-chrome.js"></script>
-  <script src="../assets/js/admin-flags.js"></script>
+  <script src="../assets/js/admin-consumer-reports.js"></script>
   <script src="../assets/js/core/topbar.js"></script>
   <script src="../assets/js/core/theme.js"></script>
 </body>
