@@ -110,72 +110,36 @@
         <h1 id="hero-title">NEW YORK</h1>
       </div>
 
-      <!-- Top Navigation Bar -->
-      <div class="content-layer">
-        <nav class="flex flex-col lg:flex-row justify-between items-center gap-4 w-full pt-2">
-          
-          <!-- Logo & Live Weather Pill -->
-          <div class="flex items-center gap-4">
-            <a href="index.html" class="flex items-center gap-2.5 text-xl font-bold tracking-tight text-white group">
-              <span class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center font-black text-sm group-hover:scale-105 transition">IT</span>
-              <span>Itinera</span>
-            </a>
-
-            <!-- Weather Station Pill -->
-            <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-xs text-white/80">
-              <i class="fas fa-cloud-sun text-amber-300"></i>
-              <span id="weatherHeroCity">New York</span>
-              <span class="text-white/40">•</span>
-              <span id="weatherHeroTemp" class="font-semibold text-white">22°C</span>
-              <span class="text-white/40 hidden md:inline">•</span>
-              <span id="weatherHeroDesc" class="text-white/60 hidden md:inline">Clear sky</span>
-            </div>
-          </div>
-
-          <!-- Main Nav Links -->
-          <div class="nav-pill flex items-center gap-1">
-            <a href="index.html" class="nav-link active">
-              <i class="fas fa-house"></i>
-              <span class="nav-text">Home</span>
-            </a>
-            <a href="explore.html" class="nav-link">
-              <i class="fas fa-compass"></i>
-              <span class="nav-text">Explore</span>
-            </a>
-            <a href="weather.html" class="nav-link">
-              <i class="fas fa-cloud-sun"></i>
-              <span class="nav-text">Weather</span>
-            </a>
-            <a href="plans.html" class="nav-link">
-              <i class="fas fa-crown"></i>
-              <span class="nav-text">Plans</span>
-            </a>
-            <a href="about.html" class="nav-link">
-              <i class="fas fa-circle-info"></i>
-              <span class="nav-text">About</span>
-            </a>
-            <a href="contact.html" class="nav-link">
-              <i class="fas fa-envelope"></i>
-              <span class="nav-text">Contact</span>
-            </a>
-            <a href="help.html" class="nav-link">
-              <i class="fas fa-circle-question"></i>
-              <span class="nav-text">Help</span>
-            </a>
-          </div>
-
-          <!-- User Auth Container -->
-          <div id="navAuthContainer" class="flex items-center gap-2">
-            <button type="button" id="theme-toggle" class="icon-btn theme-toggle" aria-label="Toggle theme">
-              <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.9" y1="4.9" x2="6.3" y2="6.3"/><line x1="17.7" y1="17.7" x2="19.1" y2="19.1"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.9" y1="19.1" x2="6.3" y2="17.7"/><line x1="17.7" y1="6.3" x2="19.1" y2="4.9"/></svg>
-              <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
-            </button>
-            <button class="guest-actions" onclick="openAuthModal('login')">
-              <span>Sign in</span>
-              <i class="fas fa-arrow-right text-xs"></i>
-            </button>
-          </div>
-        </nav>
+      <!-- Top Navigation Header -->
+  <div class="content-layer">
+          <!-- Top Navigation Header -->
+  <header class="app-nav-header">
+    <div class="app-nav-container">
+      <a href="../public/index.html" class="app-brand">
+        <span class="brand-mark">IT</span>
+        <span class="brand-name">Itinera</span>
+      </a>
+      <nav class="app-nav-links" aria-label="Public Navigation">
+        <a href="../public/index.html" class="app-nav-link"><i class="fas fa-home"></i> <span>Home</span></a>
+        <a href="../public/explore.html" class="app-nav-link"><i class="fas fa-compass"></i> <span>Explore</span></a>
+        <a href="../public/weather.html" class="app-nav-link"><i class="fas fa-cloud-sun"></i> <span>Weather</span></a>
+        <a href="../public/plans.html" class="app-nav-link"><i class="fas fa-crown"></i> <span>Plans</span></a>
+        <a href="../public/about.html" class="app-nav-link"><i class="fas fa-info-circle"></i> <span>About</span></a>
+        <a href="../public/contact.html" class="app-nav-link"><i class="fas fa-envelope"></i> <span>Contact</span></a>
+        <a href="../public/help.html" class="app-nav-link"><i class="fas fa-circle-question"></i> <span>Help</span></a>
+      </nav>
+      <div class="topbar-right" id="navAuthContainer">
+        <button type="button" id="theme-toggle" class="icon-btn theme-toggle" aria-label="Toggle theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.9" y1="4.9" x2="6.3" y2="6.3"/><line x1="17.7" y1="17.7" x2="19.1" y2="19.1"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.9" y1="19.1" x2="6.3" y2="17.7"/><line x1="17.7" y1="6.3" x2="19.1" y2="4.9"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+        </button>
+        <a href="../auth/login.html" class="guest-actions">
+          <span>Sign in</span>
+          <i class="fas fa-arrow-right text-xs"></i>
+        </a>
+      </div>
+    </div>
+  </header>
 
         <!-- Hero Main Content Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end pb-8">
@@ -480,8 +444,7 @@
   <script src="../assets/js/core/config.js"></script>
   <script src="../assets/js/core/api.js"></script>
   <script src="../assets/js/core/session.js"></script>
-  <script src="../assets/js/core/nav-config.js"></script>
-  <script src="../assets/js/modules/public/public-home.js"></script>
+    <script src="../assets/js/modules/public/public-home.js"></script>
   <script src="../assets/js/core/topbar.js"></script>
   <script src="../assets/js/core/theme.js"></script>
 </body>

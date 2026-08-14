@@ -31,52 +31,106 @@
     card.classList.remove("skeleton");
   }
 
-  function buildCard(title, meta) {
+  function escapeHtml(str) {
+    if (!str) return "";
+    return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  function buildTripCard(t) {
     const div = document.createElement("div");
-    div.className = "feed-item";
-    const h = document.createElement("h3");
-    h.textContent = title || "Untitled";
-    const p = document.createElement("p");
-    p.textContent = meta || "";
-    div.appendChild(h);
-    div.appendChild(p);
+    div.className = "feed-card feed-card--trip";
+    const title = t.destination_name || t.title || t.destination || "Bespoke Journey";
+    const status = (t.status || "Planned").toLowerCase();
+    const statusLabel = status.charAt(0).toUpperCase() + status.slice(1);
+    const dateStr = t.start_date ? t.start_date.split('T')[0] : "Flexible Dates";
+    const tripId = t.id || "";
+
+    let badgeClass = "badge--subtle";
+    if (status === "booked" || status === "confirmed") badgeClass = "badge--ok";
+    else if (status === "planning" || status === "in_progress") badgeClass = "badge--accent";
+    else if (status === "pending") badgeClass = "badge--warn";
+
+    div.innerHTML = `
+      <div class="feed-card__icon" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">
+        <i class="fas fa-plane-departure"></i>
+      </div>
+      <div class="feed-card__content">
+        <div class="feed-card__header">
+          <h4 class="feed-card__title">${escapeHtml(title)}</h4>
+          <span class="badge ${badgeClass}">${statusLabel}</span>
+        </div>
+        <p class="feed-card__meta"><i class="far fa-calendar-alt"></i> ${escapeHtml(dateStr)}</p>
+      </div>
+      <a href="trips.html${tripId ? '?id=' + tripId : ''}" class="feed-card__action" aria-label="View trip details">
+        <i class="fas fa-arrow-right"></i>
+      </a>
+    `;
+    return div;
+  }
+
+  function buildFavCard(f) {
+    const div = document.createElement("div");
+    div.className = "feed-card feed-card--fav";
+    const details = f.item || f;
+    const name = details.name || details.title || details.destination || "Saved Gem";
+    const loc = details.address || details.city || details.location || "Curated Spot";
+    const cat = details.category || details.type || "Favorite";
+
+    div.innerHTML = `
+      <div class="feed-card__icon" style="background: rgba(239, 68, 68, 0.12); color: #ef4444;">
+        <i class="fas fa-heart"></i>
+      </div>
+      <div class="feed-card__content">
+        <div class="feed-card__header">
+          <h4 class="feed-card__title">${escapeHtml(name)}</h4>
+          <span class="badge badge--subtle">${escapeHtml(cat)}</span>
+        </div>
+        <p class="feed-card__meta"><i class="fas fa-map-marker-alt"></i> ${escapeHtml(loc)}</p>
+      </div>
+      <a href="favourites.html" class="feed-card__action" aria-label="View favorite">
+        <i class="fas fa-arrow-right"></i>
+      </a>
+    `;
+    return div;
+  }
+
+  function buildNotifCard(n) {
+    const div = document.createElement("div");
+    div.className = "feed-card feed-card--notif";
+    const msg = n.message || (n.data && n.data.message) || n.title || "Concierge Notification";
+    const time = n.created_at ? n.created_at.split('T')[0] : "Recent";
+
+    div.innerHTML = `
+      <div class="feed-card__icon" style="background: rgba(56, 189, 248, 0.12); color: #38bdf8;">
+        <i class="fas fa-bell"></i>
+      </div>
+      <div class="feed-card__content">
+        <h4 class="feed-card__title" style="font-weight: 500; font-size: 0.9rem;">${escapeHtml(msg)}</h4>
+        <p class="feed-card__meta"><i class="far fa-clock"></i> ${escapeHtml(time)}</p>
+      </div>
+    `;
     return div;
   }
 
   function renderTrips(items) {
-    return items.map(function (t) {
-      return buildCard(
-        t.destination_name || t.title || t.destination || "Trip",
-        "Status: " + (t.status || "Planned") + (t.start_date ? " · " + t.start_date.split('T')[0] : "")
-      );
-    });
+    return items.map(buildTripCard);
   }
 
   function renderFavs(items) {
-    return items.map(function (f) {
-      const details = f.item || f;
-      return buildCard(
-        details.name || details.title || details.destination || "Place",
-        details.address || details.city || details.category || ""
-      );
-    });
+    return items.map(buildFavCard);
   }
 
   function renderNotifications(items) {
-    return items.map(function (n) {
-      return buildCard(
-        n.message || (n.data && n.data.message) || n.title || "Alert",
-        n.created_at ? "Received: " + n.created_at.split('T')[0] : "Received: Recent"
-      );
-    });
+    return items.map(buildNotifCard);
   }
 
   function setFeed(listEl, items, emptyMsg, render) {
+    if (!listEl) return;
     listEl.textContent = "";
     if (!items || !items.length) {
       const empty = document.createElement("div");
-      empty.className = "empty";
-      empty.textContent = emptyMsg;
+      empty.className = "empty-state-glass";
+      empty.innerHTML = `<i class="fas fa-inbox" style="font-size:24px;opacity:0.4;margin-bottom:8px;"></i><p style="margin:0;font-size:0.88rem;color:hsl(var(--muted-foreground));">${escapeHtml(emptyMsg)}</p>`;
       listEl.appendChild(empty);
       return;
     }
@@ -691,15 +745,22 @@
   // Load State
   // -------------------------------------------------------------
   function renderProfile(user) {
-    el("user-display-name").textContent = user.name;
-    el("user-display-role").textContent = It.session.roleOf(user).replace(/_/g, ' ').toUpperCase();
+    if (!user) return;
+    const nameEl = el("user-display-name");
+    if (nameEl) nameEl.textContent = user.name || "Traveler";
 
-    const letters = user.name.split(" ").map(n => n[0]).join("").toUpperCase().substring(0, 2);
-    el("avatar-letters").textContent = letters || "U";
+    const roleEl = el("user-display-role");
+    if (roleEl) roleEl.textContent = It.session.roleOf(user).replace(/_/g, ' ').toUpperCase();
 
-    const first = user.name.split(" ")[0].replace(/[.]+$/, "") || "there";
-    el("greet").textContent = "Welcome back, " + first + ".";
-    el("greet-sub").textContent = "Here's what's happening with your travels.";
+    const letters = (user.name || "U").split(" ").map(n => n[0]).join("").toUpperCase().substring(0, 2);
+    const avEl = el("avatar-letters");
+    if (avEl) avEl.textContent = letters || "U";
+
+    const first = (user.name || "there").split(" ")[0].replace(/[.]+$/, "") || "there";
+    const greetEl = el("greet");
+    if (greetEl) greetEl.textContent = "Welcome back, " + first + ".";
+    const greetSubEl = el("greet-sub");
+    if (greetSubEl) greetSubEl.textContent = "Here's what's happening with your travels.";
   }
 
   function load(user) {

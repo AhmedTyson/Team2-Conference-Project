@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard · Itinera Travel</title>
+  <title>Traveler Hub & Dashboard · Itinera</title>
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -18,6 +18,385 @@
   <link rel="stylesheet" href="../assets/css/app.css" />
   <link rel="stylesheet" href="../assets/css/components.css" />
 
+  <style>
+    /* ============================================================
+       DASHBOARD LUXURY REFINEMENTS & GLASSMORPHISM
+       ============================================================ */
+    .dashboard-shell {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: var(--space-6) var(--space-4) var(--space-12);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+    }
+
+    /* --- Hero Welcome Banner --- */
+    .dash-hero {
+      background: linear-gradient(135deg, hsl(var(--card) / 0.85) 0%, hsl(var(--card) / 0.5) 100%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius-xl, 20px);
+      padding: var(--space-6) var(--space-8);
+      box-shadow: 
+        inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.4),
+        0 12px 36px -6px rgba(0, 0, 0, 0.06);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: var(--space-6);
+      flex-wrap: wrap;
+      position: relative;
+      overflow: hidden;
+    }
+
+    html.dark .dash-hero {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%), hsl(var(--card) / 0.7);
+      box-shadow: 
+        inset 0 1px 1px 0 rgba(255, 255, 255, 0.15),
+        0 16px 40px -8px rgba(0, 0, 0, 0.55);
+    }
+
+    .dash-hero__eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      background: hsl(var(--accent) / 0.15);
+      color: hsl(var(--accent));
+      border: 1px solid hsl(var(--accent) / 0.25);
+      margin-bottom: var(--space-2);
+    }
+
+    .dash-hero__title {
+      font-size: 1.85rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: hsl(var(--foreground));
+      margin: 0 0 var(--space-2);
+      line-height: 1.2;
+    }
+
+    .dash-hero__lead {
+      color: hsl(var(--muted-foreground));
+      font-size: 0.95rem;
+      max-width: 580px;
+      margin: 0 0 var(--space-5);
+      line-height: 1.5;
+    }
+
+    .dash-hero__actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      flex-wrap: wrap;
+    }
+
+    /* --- Weather Concierge Card Widget --- */
+    .weather-card-glass {
+      background: hsl(var(--card) / 0.6);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius-lg, 16px);
+      padding: var(--space-4) var(--space-5);
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      box-shadow: var(--shadow-sm);
+      min-width: 260px;
+    }
+
+    .weather-card-glass__icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: hsl(var(--accent) / 0.15);
+      color: hsl(var(--accent));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      flex-shrink: 0;
+    }
+
+    /* --- Refined Glass KPI Stat Cards --- */
+    .stat-grid-refined {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: var(--space-4);
+    }
+
+    .stat-card-glass {
+      background: hsl(var(--card) / 0.75);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius-lg, 16px);
+      padding: var(--space-4) var(--space-5);
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 4px 16px -2px rgba(0, 0, 0, 0.04);
+      position: relative;
+    }
+
+    .stat-card-glass:hover {
+      transform: translateY(-2px);
+      border-color: hsl(var(--accent) / 0.4);
+      box-shadow: 0 10px 24px -4px rgba(0, 0, 0, 0.08);
+    }
+
+    .stat-card-glass__icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      flex-shrink: 0;
+    }
+
+    .stat-card-glass__content {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-card-glass__label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: hsl(var(--muted-foreground));
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .stat-card-glass__value {
+      font-size: 1.65rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: hsl(var(--foreground));
+      font-variant-numeric: tabular-nums;
+      line-height: 1.2;
+    }
+
+    /* --- AI Concierge Spotlight Bar --- */
+    .concierge-spotlight {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.08) 0%, rgba(217, 119, 6, 0.02) 100%), hsl(var(--card) / 0.7);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      border: 1px solid hsl(var(--accent) / 0.35);
+      border-radius: var(--radius-xl, 20px);
+      padding: var(--space-5) var(--space-6);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      flex-wrap: wrap;
+      box-shadow: 0 8px 30px -4px rgba(245, 158, 11, 0.1);
+    }
+
+    .concierge-spotlight__info {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .concierge-spotlight__badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: hsl(var(--accent));
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      font-weight: 900;
+      box-shadow: 0 0 16px hsl(var(--accent) / 0.4);
+    }
+
+    .concierge-spotlight__prompts {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .prompt-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.3rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: hsl(var(--muted-foreground));
+      background: hsl(var(--card));
+      border: 1px solid hsl(var(--border));
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .prompt-chip:hover {
+      color: hsl(var(--foreground));
+      border-color: hsl(var(--accent));
+      background: hsl(var(--accent) / 0.1);
+      transform: translateY(-1px);
+    }
+
+    /* --- Showcase Grid (Trips & Favorites) --- */
+    .dash-showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: var(--space-6);
+    }
+
+    .dash-panel {
+      background: hsl(var(--card) / 0.75);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius-xl, 20px);
+      padding: var(--space-5) var(--space-6);
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+
+    .dash-panel__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: var(--space-3);
+      border-bottom: 1px solid hsl(var(--border));
+    }
+
+    .dash-panel__title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: hsl(var(--foreground));
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .dash-panel__link {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: hsl(var(--muted-foreground));
+      text-decoration: none;
+      transition: color 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .dash-panel__link:hover {
+      color: hsl(var(--accent));
+    }
+
+    /* --- Feed Cards (Structured Trip & Favorite Cards) --- */
+    .feed-card {
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      padding: var(--space-3) var(--space-4);
+      background: hsl(var(--card));
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius-md, 12px);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      margin-bottom: var(--space-2);
+    }
+
+    .feed-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .feed-card:hover {
+      transform: translateY(-1.5px);
+      border-color: hsl(var(--accent) / 0.4);
+      box-shadow: 0 4px 14px -2px rgba(0, 0, 0, 0.06);
+    }
+
+    .feed-card__icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .feed-card__content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .feed-card__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .feed-card__title {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: hsl(var(--foreground));
+      margin: 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .feed-card__meta {
+      font-size: 0.78rem;
+      color: hsl(var(--muted-foreground));
+      margin: 0.2rem 0 0;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .feed-card__action {
+      color: hsl(var(--muted-foreground));
+      font-size: 0.85rem;
+      padding: 0.35rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .feed-card:hover .feed-card__action {
+      color: hsl(var(--accent));
+      transform: translateX(2px);
+    }
+
+    .empty-state-glass {
+      text-align: center;
+      padding: var(--space-8) var(--space-4);
+      color: hsl(var(--muted-foreground));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+
   <script>/* FOUC prevention — default dark */
     (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
     if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
@@ -30,80 +409,142 @@
   <a href="#main-content-target" class="skip-link">Skip to main content</a>
 
   <div class="app">
-    <!-- Top Navigation Header (Unified App Shell) -->
-    <header class="app__header">
-      <a id="app-brand" class="app__brand" href="../public/index.html">
-        <span class="brand-mark">IT</span>
-        <span class="brand-name">Itinera</span>
-      </a>
-      <nav id="app-nav" class="nav" aria-label="Main navigation"></nav>
-      <div id="app-user" class="app__user">
-        <button id="theme-toggle" type="button" class="btn btn--ghost" aria-label="Toggle theme">◐</button>
+    <!-- Top Navigation Header (Universal Glassmorphism Header) -->
+    <header class="app-nav-header">
+      <div class="app-nav-container">
+        <a href="../public/index.html" class="app-brand">
+          <span class="brand-mark">IT</span>
+          <span class="brand-name">Itinera</span>
+        </a>
+        <nav class="app-nav-links" aria-label="Customer Navigation">
+          <a href="dashboard.html" class="app-nav-link active"><i class="fas fa-chart-pie"></i> <span>Dashboard</span></a>
+          <a href="trips.html" class="app-nav-link"><i class="fas fa-plane-departure"></i> <span>My Trips</span></a>
+          <a href="planner.html" class="app-nav-link"><i class="fas fa-route"></i> <span>Planner</span></a>
+          <a href="chat.html" class="app-nav-link"><i class="fas fa-sparkles text-amber-400"></i> <span>AI Concierge</span></a>
+          <a href="favourites.html" class="app-nav-link"><i class="fas fa-heart"></i> <span>Saved</span></a>
+          <a href="../public/explore.html" class="app-nav-link"><i class="fas fa-compass"></i> <span>Explore</span></a>
+        </nav>
+        <div class="topbar-right" id="navAuthContainer">
+          <button type="button" id="theme-toggle" class="icon-btn theme-toggle" aria-label="Toggle theme">
+            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.9" y1="4.9" x2="6.3" y2="6.3"/><line x1="17.7" y1="17.7" x2="19.1" y2="19.1"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.9" y1="19.1" x2="6.3" y2="17.7"/><line x1="17.7" y1="6.3" x2="19.1" y2="4.9"/></svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+          </button>
+        </div>
       </div>
     </header>
 
     <!-- Main Content -->
     <main class="app__main" id="main-content-target">
-      <div class="page">
+      <div class="dashboard-shell">
         
-        <!-- Welcome Hero Header -->
-        <header class="page-header" style="display:flex;justify-content:space-between;align-items:flex-end;gap:var(--space-4);flex-wrap:wrap;">
+        <!-- Welcome Hero Section -->
+        <section class="dash-hero">
           <div>
-            <p class="page-header__eyebrow">Traveler Hub · Overview</p>
-            <h1 class="page-header__title" id="welcome-title">Welcome back, <span id="user-display-name">Traveler</span></h1>
-            <p class="page-header__lead">Here is an overview of your upcoming trips, saved places, and concierge reservations.</p>
+            <div class="dash-hero__eyebrow"><i class="fas fa-compass"></i> Traveler Hub · Live Portal</div>
+            <h1 class="dash-hero__title" id="welcome-title">Welcome back, <span id="user-display-name">Traveler</span></h1>
+            <p class="dash-hero__lead" id="greet-sub">Here is your live itinerary telemetry, active bookings, and AI concierge assistance.</p>
+            
+            <div class="dash-hero__actions">
+              <a href="planner.html" class="btn btn--primary" style="border-radius:9999px;padding:0.5rem 1.25rem;">
+                <i class="fas fa-plus mr-1"></i> Plan New Trip
+              </a>
+              <a href="chat.html" class="btn btn--secondary" style="border-radius:9999px;padding:0.5rem 1.25rem;background:hsl(var(--accent)/0.15);color:hsl(var(--accent));border-color:hsl(var(--accent)/0.3);">
+                <i class="fas fa-sparkles mr-1"></i> AI Concierge
+              </a>
+              <a href="../public/explore.html" class="btn btn--ghost" style="border-radius:9999px;padding:0.5rem 1.15rem;">
+                <i class="fas fa-compass mr-1"></i> Explore Spots
+              </a>
+            </div>
           </div>
-          <div style="display:flex;gap:var(--space-2);flex-wrap:wrap;">
-            <a href="planner.html" class="btn btn--primary"><i class="fas fa-plus"></i> Plan new trip</a>
-            <a href="../public/explore.html" class="btn btn--outline"><i class="fas fa-compass"></i> Explore spots</a>
-          </div>
-        </header>
 
-        <!-- KPI Summary Stats Grid -->
-        <section class="stat-grid" aria-label="Trip statistics" style="margin-bottom:var(--space-6);">
-          <div class="stat-card" id="stat-total">
-            <span class="stat-label">Total trips</span>
-            <span class="stat-value" id="stat-val-trips">0</span>
-          </div>
-          <div class="stat-card" id="stat-pending">
-            <span class="stat-label">Pending</span>
-            <span class="stat-value" id="stat-val-pending">0</span>
-          </div>
-          <div class="stat-card" id="stat-booked">
-            <span class="stat-label">Booked</span>
-            <span class="stat-value" id="stat-val-booked">0</span>
-          </div>
-          <div class="stat-card" id="stat-favs">
-            <span class="stat-label">Saved Favourites</span>
-            <span class="stat-value" id="stat-val-favs">0</span>
-          </div>
-        </section>
-
-        <!-- Weather Concierge Card -->
-        <section class="card card--flat" id="weather-widget" style="margin-bottom:var(--space-6);display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);flex-wrap:wrap;">
-          <div style="display:flex;align-items:center;gap:var(--space-4);">
-            <div style="width:48px;height:48px;border-radius:50%;background:rgba(245,158,11,0.15);display:flex;align-items:center;justify-content:center;color:#f59e0b;font-size:24px;">
+          <!-- Weather Concierge Widget -->
+          <div class="weather-card-glass" id="weather-widget">
+            <div class="weather-card-glass__icon">
               <i class="fas fa-cloud-sun"></i>
             </div>
             <div>
-              <h3 style="margin:0;font-size:1.05rem;font-weight:700;">Weather Concierge</h3>
-              <p style="margin:0;color:hsl(var(--muted-foreground));font-size:0.88rem;" id="weather-location">Fetching location weather...</p>
+              <div style="font-size:0.75rem;font-weight:700;text-transform:uppercase;color:hsl(var(--accent));">Atmospheric Radar</div>
+              <h4 style="margin:0.1rem 0;font-size:1.05rem;font-weight:700;color:hsl(var(--foreground));" id="weather-location">Cairo, Egypt</h4>
+              <p style="margin:0;font-size:0.82rem;color:hsl(var(--muted-foreground));"><span id="weather-temp" style="font-weight:700;color:hsl(var(--foreground));">22°C</span> · <span id="weather-desc">Clear skies</span></p>
             </div>
-          </div>
-          <div style="text-align:right;">
-            <span style="font-size:1.6rem;font-weight:800;display:block;" id="weather-temp">22°C</span>
-            <span style="font-size:0.85rem;color:hsl(var(--muted-foreground));" id="weather-desc">Clear sky</span>
           </div>
         </section>
 
-        <!-- Two Column Dashboard Layout -->
-        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:var(--space-6);margin-bottom:var(--space-6);">
+        <!-- KPI Summary Stats Grid -->
+        <section class="stat-grid-refined" aria-label="Trip statistics">
+          
+          <div class="stat-card-glass" id="stat-total">
+            <div class="stat-card-glass__icon" style="background:rgba(56,189,248,0.12);color:#38bdf8;">
+              <i class="fas fa-plane-departure"></i>
+            </div>
+            <div class="stat-card-glass__content">
+              <span class="stat-card-glass__label">Total Trips</span>
+              <span class="stat-card-glass__value" id="stat-val-trips">0</span>
+            </div>
+          </div>
+
+          <div class="stat-card-glass" id="stat-planning">
+            <div class="stat-card-glass__icon" style="background:rgba(16,185,129,0.12);color:#10b981;">
+              <i class="fas fa-map-location-dot"></i>
+            </div>
+            <div class="stat-card-glass__content">
+              <span class="stat-card-glass__label">Draft Itineraries</span>
+              <span class="stat-card-glass__value" id="stat-val-planning">0</span>
+            </div>
+          </div>
+
+          <div class="stat-card-glass" id="stat-booked">
+            <div class="stat-card-glass__icon" style="background:rgba(245,158,11,0.12);color:#f59e0b;">
+              <i class="fas fa-circle-check"></i>
+            </div>
+            <div class="stat-card-glass__content">
+              <span class="stat-card-glass__label">Booked Stays</span>
+              <span class="stat-card-glass__value" id="stat-val-booked">0</span>
+            </div>
+          </div>
+
+          <div class="stat-card-glass" id="stat-favs">
+            <div class="stat-card-glass__icon" style="background:rgba(239,68,68,0.12);color:#ef4444;">
+              <i class="fas fa-heart"></i>
+            </div>
+            <div class="stat-card-glass__content">
+              <span class="stat-card-glass__label">Saved Wishlist</span>
+              <span class="stat-card-glass__value" id="stat-val-favs">0</span>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- AI Concierge Spotlight Banner -->
+        <section class="concierge-spotlight">
+          <div class="concierge-spotlight__info">
+            <div class="concierge-spotlight__badge">
+              <i class="fas fa-robot"></i>
+            </div>
+            <div>
+              <h3 style="margin:0;font-size:1rem;font-weight:700;color:hsl(var(--foreground));">24/7 AI Travel Concierge Ready</h3>
+              <p style="margin:0;font-size:0.82rem;color:hsl(var(--muted-foreground));">Instant bespoke itinerary generation, local culinary tips, and hotel assistance.</p>
+            </div>
+          </div>
+
+          <div class="concierge-spotlight__prompts">
+            <a href="chat.html?prompt=Plan+a+4-day+scenic+itinerary+in+Kyoto" class="prompt-chip">🇯🇵 4-Day Kyoto Itinerary</a>
+            <a href="chat.html?prompt=Find+top+romantic+dining+spots+in+Paris" class="prompt-chip">🇫🇷 Romantic Paris Dining</a>
+            <a href="chat.html?prompt=Suggest+luxury+chalets+in+Swiss+Alps" class="prompt-chip">🇨🇭 Swiss Alps Chalets</a>
+            <a href="chat.html" class="btn btn--primary btn--sm" style="border-radius:9999px;margin-left:0.5rem;">
+              <span>Open Chat</span> <i class="fas fa-arrow-right text-xs"></i>
+            </a>
+          </div>
+        </section>
+
+        <!-- Two Column Showcase Grid (Trips & Favorites) -->
+        <div class="dash-showcase-grid">
           
           <!-- Column 1: Recent Trips -->
-          <section class="card card--flat">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-4);padding-bottom:var(--space-3);border-bottom:1px solid hsl(var(--border));">
-              <h2 style="margin:0;font-size:1.15rem;font-weight:700;"><i class="fas fa-plane-departure" style="color:var(--accent);margin-right:6px;"></i> My Trips</h2>
-              <a href="trips.html" class="btn btn--sm btn--ghost">View all →</a>
+          <section class="dash-panel">
+            <div class="dash-panel__header">
+              <h2 class="dash-panel__title"><i class="fas fa-plane-departure text-amber-400"></i> My Active Trips</h2>
+              <a href="trips.html" class="dash-panel__link"><span>View all</span> <i class="fas fa-arrow-right text-xs"></i></a>
             </div>
             <div id="trips-list" class="feed" aria-live="polite">
               <div class="skeleton skeleton--card"></div>
@@ -112,10 +553,10 @@
           </section>
 
           <!-- Column 2: Saved Places -->
-          <section class="card card--flat">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-4);padding-bottom:var(--space-3);border-bottom:1px solid hsl(var(--border));">
-              <h2 style="margin:0;font-size:1.15rem;font-weight:700;"><i class="fas fa-heart" style="color:#ef4444;margin-right:6px;"></i> Saved Places</h2>
-              <a href="favourites.html" class="btn btn--sm btn--ghost">View all →</a>
+          <section class="dash-panel">
+            <div class="dash-panel__header">
+              <h2 class="dash-panel__title"><i class="fas fa-heart text-rose-500"></i> Saved Gems & Wishlist</h2>
+              <a href="favourites.html" class="dash-panel__link"><span>View all</span> <i class="fas fa-arrow-right text-xs"></i></a>
             </div>
             <div id="favs-list" class="feed" aria-live="polite">
               <div class="skeleton skeleton--card"></div>
@@ -126,10 +567,10 @@
         </div>
 
         <!-- Section 3: Notifications & Concierge Alerts -->
-        <section class="card card--flat">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-4);padding-bottom:var(--space-3);border-bottom:1px solid hsl(var(--border));">
-            <h2 style="margin:0;font-size:1.15rem;font-weight:700;"><i class="fas fa-bell" style="color:#f59e0b;margin-right:6px;"></i> Notifications & Activity</h2>
-            <a href="notifications.html" class="btn btn--sm btn--ghost">All alerts →</a>
+        <section class="dash-panel">
+          <div class="dash-panel__header">
+            <h2 class="dash-panel__title"><i class="fas fa-bell text-sky-400"></i> Recent Notifications & Activity</h2>
+            <a href="notifications.html" class="dash-panel__link"><span>All alerts</span> <i class="fas fa-arrow-right text-xs"></i></a>
           </div>
           <div id="notifications-list" class="feed" aria-live="polite">
             <div class="skeleton skeleton--line skeleton--wide"></div>
@@ -142,7 +583,7 @@
 
     <!-- Footer -->
     <footer class="app__footer">
-      <span>Itinera · Luxury Travel & Concierge</span>
+      <span>Itinera · Luxury Travel & AI Concierge</span>
       <span>•</span>
       <span>Plan. Explore. Remember.</span>
     </footer>

@@ -346,13 +346,171 @@
       wrap.innerHTML = '<a href="' + prefix + 'auth/login.html" class="guest-actions">' +
         '<span>Sign in</span>' +
         '<i class="fas fa-arrow-right" style="font-size:0.75rem;margin-left:4px;"></i>' +
-      '</a>';
+        '</a>';
     } else {
-      wrap.innerHTML = '<a href="' + prefix + 'auth/login.html" class="btn btn--ghost btn--login-nav" style="padding:0.4rem 0.85rem;font-size:0.85rem;">Log in</a>' +
+      wrap.innerHTML =
+        '<a href="' + prefix + 'auth/login.html" class="btn btn--ghost btn--login-nav" style="padding:0.4rem 0.85rem;font-size:0.85rem;">Log in</a>' +
         '<a href="' + prefix + 'auth/register.html" class="btn btn--primary btn--signup-nav" style="padding:0.4rem 0.95rem;font-size:0.85rem;border-radius:9999px;">Sign up</a>';
     }
 
     return wrap;
+  }
+
+  /* ── Build Mobile Navigation (hamburger + slide-over) ── */
+  function buildMobileNav(user, layout) {
+    // Only inject for public / auth layouts
+    if (layout === 'admin' || layout === 'agency') return;
+
+    // Remove previous overlay
+    var old = doc.querySelector('.mobile-nav-overlay');
+    if (old) old.remove();
+
+    var prefix = getBasePrefix();
+
+    // Collect links from the page nav
+    var desktopLinks = doc.querySelectorAll('.app-nav-link, .auth-nav-link');
+    if (!desktopLinks.length) return;
+
+    var currPath = (global.location.pathname || '').split('/').pop() || 'index.html';
+
+    // Build overlay
+    var overlay = doc.createElement('div');
+    overlay.className = 'mobile-nav-overlay';
+    overlay.setAttribute('role', 'dialog');
+    overlay.setAttribute('aria-modal', 'true');
+    overlay.setAttribute('aria-label', 'Mobile navigation');
+
+    var backdrop = doc.createElement('div');
+    backdrop.className = 'mobile-nav-overlay__backdrop';
+
+    var panel = doc.createElement('div');
+    panel.className = 'mobile-nav-overlay__panel';
+
+    // Header
+    var header = doc.createElement('div');
+    header.className = 'mobile-nav-overlay__header';
+    header.innerHTML = '<a href="' + prefix + 'public/index.html" class="mobile-nav-overlay__brand">' +
+      '<span class="brand-mark" style="width:26px;height:26px;border-radius:7px;background:linear-gradient(135deg,#1c1917,#292524);color:#fff;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:900;">IT</span>' +
+      '<span>Itinera</span></a>' +
+      '<button class="mobile-nav-overlay__close" aria-label="Close navigation" id="mobile-nav-close">✕</button>';
+
+    // Links
+    var linksEl = doc.createElement('div');
+    linksEl.className = 'mobile-nav-overlay__links';
+
+    desktopLinks.forEach(function(a) {
+      var link = doc.createElement('a');
+      link.href = a.href;
+      link.className = 'mobile-nav-link';
+      var icon = a.querySelector('i');
+      if (icon) {
+        var ic = doc.createElement('i');
+        ic.className = icon.className;
+        link.appendChild(ic);
+      }
+      var textSpan = a.querySelector('span') || a;
+      var label = doc.createElement('span');
+      label.textContent = (a.querySelector('span') ? a.querySelector('span').textContent : a.textContent).trim();
+      link.appendChild(label);
+      var hrefPath = (a.getAttribute('href') || '').split('/').pop();
+      if (hrefPath === currPath) link.classList.add('active');
+      linksEl.appendChild(link);
+    });
+
+    // Auth state row
+    var divider = doc.createElement('div');
+    divider.className = 'mobile-nav-divider';
+    linksEl.appendChild(divider);
+
+    if (user) {
+      var name = user.name || user.email || 'Traveler';
+      var dashLink = doc.createElement('a');
+      dashLink.href = prefix + 'app/dashboard.html';
+      dashLink.className = 'mobile-nav-link';
+      dashLink.innerHTML = '<i class="fas fa-gauge-high"></i><span>My Dashboard</span>';
+      linksEl.appendChild(dashLink);
+
+      var logoutBtn = doc.createElement('button');
+      logoutBtn.type = 'button';
+      logoutBtn.className = 'mobile-nav-link mobile-nav-link--logout';
+      logoutBtn.style.cssText = 'width:100%;text-align:left;border:none;background:none;cursor:pointer;color:hsl(var(--destructive,0 84% 60%));';
+      logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i><span>Log Out</span>';
+      logoutBtn.addEventListener('click', function() {
+        if (global.Itinari && global.Itinari.session && global.Itinari.session.logout) {
+          global.Itinari.session.logout();
+        } else {
+          try { global.localStorage.removeItem('itinari_token'); global.localStorage.removeItem('itinari_user'); } catch(e) {}
+          global.location.href = prefix + 'auth/login.html';
+        }
+      });
+      linksEl.appendChild(logoutBtn);
+    } else {
+      var signInLink = doc.createElement('a');
+      signInLink.href = prefix + 'auth/login.html';
+      signInLink.className = 'mobile-nav-link mobile-nav-link--cta';
+      signInLink.innerHTML = '<i class="fas fa-sign-in-alt"></i><span>Sign in</span>';
+      linksEl.appendChild(signInLink);
+    }
+
+    panel.appendChild(header);
+    panel.appendChild(linksEl);
+    overlay.appendChild(backdrop);
+    overlay.appendChild(panel);
+    doc.body.appendChild(overlay);
+
+    function openMenu() {
+      overlay.classList.add('is-open');
+      doc.body.style.overflow = 'hidden';
+    }
+
+    function closeMenu() {
+      overlay.classList.remove('is-open');
+      doc.body.style.overflow = '';
+    }
+
+    // Wire close button
+    var closeBtn = overlay.querySelector('#mobile-nav-close');
+    if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+    backdrop.addEventListener('click', closeMenu);
+    doc.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeMenu();
+    });
+
+    // Create / wire hamburger button
+    var container = doc.querySelector('.app-nav-container, .auth-nav-container');
+    if (!container) return;
+
+    var existingBurger = container.querySelector('.nav-hamburger');
+    if (!existingBurger) {
+      var burger = doc.createElement('button');
+      burger.type = 'button';
+      burger.className = 'nav-hamburger';
+      burger.setAttribute('aria-label', 'Open navigation menu');
+      burger.setAttribute('aria-expanded', 'false');
+      burger.innerHTML = '<span></span><span></span><span></span>';
+
+      burger.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var isOpen = overlay.classList.contains('is-open');
+        if (isOpen) {
+          closeMenu();
+          burger.classList.remove('is-open');
+          burger.setAttribute('aria-expanded', 'false');
+        } else {
+          openMenu();
+          burger.classList.add('is-open');
+          burger.setAttribute('aria-expanded', 'true');
+        }
+      });
+
+      overlay.addEventListener('click', function() {
+        burger.classList.remove('is-open');
+        burger.setAttribute('aria-expanded', 'false');
+      });
+
+      // Insert burger at end of container (after topbar-right)
+      container.appendChild(burger);
+    }
   }
 
   /* ── Main Render Function ── */
@@ -422,6 +580,20 @@
         btn.classList.toggle("is-dark", isDark);
       }
     }
+
+    /* 6. Auto-highlight active navigation link */
+    var currPath = (global.location.pathname || "").split("/").pop() || "index.html";
+    var navLinks = doc.querySelectorAll(".app-nav-link, .auth-nav-link, .nav-link");
+    for (var i = 0; i < navLinks.length; i++) {
+      var lnk = navLinks[i];
+      var href = (lnk.getAttribute("href") || "").split("/").pop();
+      if (href && (href === currPath || (currPath === "" && href === "index.html"))) {
+        lnk.classList.add("active");
+      }
+    }
+
+    /* 7. Mobile navigation overlay (hamburger menu) */
+    buildMobileNav(user, layout);
   }
 
   /* Execute on DOM ready and custom events */
@@ -437,3 +609,4 @@
   global.ItTopbar = { render: render, getUser: getCurrentUser };
 
 }(window));
+

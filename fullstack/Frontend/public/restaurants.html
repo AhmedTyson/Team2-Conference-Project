@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script>(function(){try{if(localStorage.getItem('itinera_theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
+<script>(function(){try{if(localStorage.getItem('itinera_theme')==='dark')document.documentElement.classList.add('dark');}catch(e){}})();</script>
   <link rel="stylesheet" href="../assets/css/tokens.css">
   <link rel="stylesheet" href="../assets/css/base.css">
   <link rel="stylesheet" href="../assets/css/layout.css">
@@ -22,16 +22,38 @@
       document.documentElement.classList.add("dark","fouc-ready");
     else document.documentElement.classList.add("fouc-ready");
     })();
-  </script></head>
+  </script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
 <body data-page="restaurants" class="is-booting" data-layout="public">
   <div class="app">
-    <header class="app__header">
-      <a id="app-brand" class="app__brand" href="index.html"></a>
-      <nav id="app-nav" class="nav" aria-label="Main navigation"></nav>
-      <div id="app-user" class="app__user">
-        <button id="theme-toggle" type="button" class="btn btn--ghost" aria-label="Toggle theme">◐</button>
+      <!-- Top Navigation Header -->
+  <header class="app-nav-header">
+    <div class="app-nav-container">
+      <a href="../public/index.html" class="app-brand">
+        <span class="brand-mark">IT</span>
+        <span class="brand-name">Itinera</span>
+      </a>
+      <nav class="app-nav-links" aria-label="Public Navigation">
+        <a href="../public/index.html" class="app-nav-link"><i class="fas fa-home"></i> <span>Home</span></a>
+        <a href="../public/explore.html" class="app-nav-link"><i class="fas fa-compass"></i> <span>Explore</span></a>
+        <a href="../public/weather.html" class="app-nav-link"><i class="fas fa-cloud-sun"></i> <span>Weather</span></a>
+        <a href="../public/plans.html" class="app-nav-link"><i class="fas fa-crown"></i> <span>Plans</span></a>
+        <a href="../public/about.html" class="app-nav-link"><i class="fas fa-info-circle"></i> <span>About</span></a>
+        <a href="../public/contact.html" class="app-nav-link"><i class="fas fa-envelope"></i> <span>Contact</span></a>
+        <a href="../public/help.html" class="app-nav-link"><i class="fas fa-circle-question"></i> <span>Help</span></a>
+      </nav>
+      <div class="topbar-right" id="navAuthContainer">
+        <button type="button" id="theme-toggle" class="icon-btn theme-toggle" aria-label="Toggle theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.9" y1="4.9" x2="6.3" y2="6.3"/><line x1="17.7" y1="17.7" x2="19.1" y2="19.1"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.9" y1="19.1" x2="6.3" y2="17.7"/><line x1="17.7" y1="6.3" x2="19.1" y2="4.9"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+        </button>
+        <a href="../auth/login.html" class="guest-actions">
+          <span>Sign in</span>
+          <i class="fas fa-arrow-right text-xs"></i>
+        </a>
       </div>
-    </header>
+    </div>
+  </header>
 
     <main class="app__main">
 
@@ -83,17 +105,12 @@
   <script src="../assets/js/core/config.js"></script>
   <script src="../assets/js/core/api.js"></script>
   <script src="../assets/js/core/session.js"></script>
-  <script src="../assets/js/core/nav-config.js"></script>
-  <script src="../assets/js/core/app-shell.js"></script>
-  <script src="../assets/js/core/config.js"></script>
-  <script src="../assets/js/core/api.js"></script>
-  <script src="../assets/js/core/session.js"></script>
+      
+  
+  
   <script src="../assets/js/components/ui.js"></script>
   <script src="../assets/js/pages/restaurants.js"></script>
-  <script>
-    It.app.boot();
-  </script>
-  <script src="../assets/js/core/theme.js"></script>
+    <script src="../assets/js/core/theme.js"></script>
   <script src="../assets/js/core/topbar.js"></script>
 </body>
 </html>

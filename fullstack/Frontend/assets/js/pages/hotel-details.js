@@ -47,7 +47,7 @@
   function hydrate(root) {
     root.querySelectorAll('img[data-src]').forEach((img) => {
       img.src = Ui.imgSrc(img.dataset.src) || Ui.PLACEHOLDER_URL;
-      Ui.bindImage(img);
+      Ui.bindImage(img, 'hotel');
     });
     root.querySelectorAll('[data-fav-type]').forEach((el) => {
       el.replaceWith(Ui.favButton(el.dataset.favType, Number(el.dataset.favId), {

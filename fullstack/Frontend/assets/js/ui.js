@@ -66,7 +66,11 @@ const Ui = (() => {
     if (!path) return null;
     if (/^(https?:)?\/\//.test(path)) return path;
     if (path.startsWith('data:')) return path;
-    const base = APP_CONFIG.ASSET_BASE_URL.replace(/\/+$/, '');
+    var baseUrl = (APP_CONFIG && APP_CONFIG.ASSET_BASE_URL) || '';
+    if (!baseUrl) {
+      baseUrl = (APP_CONFIG && APP_CONFIG.API_BASE_URL) ? APP_CONFIG.API_BASE_URL.replace('/api', '') : '';
+    }
+    var base = baseUrl.replace(/\/+$/, '');
     return base + '/' + path.replace(/^\/+/, '');
   }
 
