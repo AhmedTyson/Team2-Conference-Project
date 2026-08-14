@@ -201,27 +201,17 @@
   async function loadPlans() {
     if (!gridEl) return;
 
-    // Check if user is authenticated first
-    if (!PC.isMember()) {
-      renderAuthRequired("Authentication required. Please sign in to view and purchase membership plans.");
-      return;
-    }
-
     gridEl.innerHTML =
       '<div class="skeleton-card"></div>' +
       '<div class="skeleton-card"></div>' +
       '<div class="skeleton-card"></div>';
 
     try {
+      const userIsMember = PC.isMember();
       const [plansRes, currentSub] = await Promise.all([
         PC.fetchPlans(),
-        PC.fetchSubscription()
+        userIsMember ? PC.fetchSubscription() : Promise.resolve(null)
       ]);
-
-      if (plansRes.status === 401) {
-        renderAuthRequired(plansRes.message);
-        return;
-      }
 
       if (!plansRes.ok) {
         renderError(plansRes.message);

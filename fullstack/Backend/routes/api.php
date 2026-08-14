@@ -300,15 +300,15 @@ Route::middleware(['auth:api', 'verified'])->prefix('admin')->name('admin.')->gr
 // COMMERCE
 // ============================================================
 
-// ---- Plans & subscriptions
+// ---- Public Plans
+Route::get('/plans', [PlanController::class, 'index']);
+Route::get('/plans/{id}', [PlanController::class, 'show']);
+
+// ---- Authenticated Plans & subscriptions
 Route::middleware(['auth:api', 'verified'])->name('plans.')->group(function () {
     Route::post('/admin/set-plans', [PlanController::class, 'setPlans'])
         ->middleware('permission:manage plans');
 
-    Route::get('/plans', [PlanController::class, 'index'])
-        ->middleware('permission:get plans');
-    Route::get('/plans/{id}', [PlanController::class, 'show'])
-        ->middleware('permission:get plans');
     Route::post('/me/subscribe', [PlanController::class, 'subscribe'])
         ->middleware('permission:subscribe to plans');
     Route::post('/me/upgrade', [PlanController::class, 'upgrade'])
