@@ -16,7 +16,7 @@
   }
 
   function fetchReports() {
-    It.apiGet('/v1/admin/reports', { auth: true })
+    It.apiGet('/admin/reports', { auth: true })
       .then(function(res) {
         var reports = It.app.unwrapData(res) || [];
         renderReports(reports);
@@ -108,7 +108,7 @@
         submitBtn.disabled = true;
         submitBtn.textContent = 'Generating...';
 
-        It.apiPost('/v1/admin/reports/generate', {
+        It.apiPost('/admin/reports/generate', {
           type: type,
           format: format,
           from: fromStr,

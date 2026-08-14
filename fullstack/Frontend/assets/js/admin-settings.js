@@ -206,7 +206,10 @@
   }
 
   // ── boot ──────────────────────────────────────────────────────────────────
+  var isBooted = false;
   function boot(user) {
+    if (isBooted) return;
+    isBooted = true;
     initSectionNav();
 
     var pricingForm = el("form-pricing");
@@ -221,4 +224,19 @@
   document.addEventListener("itinari:ready", function(e) {
     boot(e.detail);
   });
+
+  function tryDirectBoot() {
+    if (isBooted) return;
+    if (global.Itinari && global.Itinari.session && global.Itinari.session.hasToken()) {
+      global.Itinari.session.currentUser().then(function (user) {
+        if (user) boot(user);
+      });
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", tryDirectBoot);
+  } else {
+    setTimeout(tryDirectBoot, 50);
+  }
 })(window);

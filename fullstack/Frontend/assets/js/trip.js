@@ -114,7 +114,7 @@
         '<a href="/trips.html" class="btn btn--primary">Back to trips</a></div>';
       return;
     }
-    It.apiGet("/v1/trips/" + id, { auth: true }).then(function (res) {
+    It.apiGet("/trips/" + id, { auth: true }).then(function (res) {
       var trip = It.app.unwrapData(res);
       if (!res.ok || !trip) {
         page.innerHTML = '<div class="card card--flat"><h2 class="page-section__title">Trip not found.</h2>' +

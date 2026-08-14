@@ -29,7 +29,7 @@
   };
 
   function respond(assignment, action) {
-    It.apiPost("/v1/agency/assignments/" + assignment.id + "/" + action, {}, { auth: true })
+    It.apiPost("/agency/assignments/" + assignment.id + "/" + action, {}, { auth: true })
       .then(function () {
         It.feedback.banner(
           action === "approve" ? "Assignment accepted." : "Assignment declined.",
@@ -106,7 +106,7 @@
   }
 
   function load() {
-    It.apiGet("/v1/agency/assignments", { auth: true }).then(function (res) {
+    It.apiGet("/agency/assignments", { auth: true }).then(function (res) {
       const rows = (res && res.data) || res || [];
       renderTable(rows);
     }).catch(function () {

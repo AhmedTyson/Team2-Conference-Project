@@ -114,7 +114,7 @@
         '<a href="/trips.html" class="btn btn--primary">Back to trips</a></div>';
       return;
     }
-    It.apiGet("/v1/trips/" + id, { auth: true }).then(function (res) {
+    It.apiGet("/trips/" + id, { auth: true }).then(function (res) {
       var trip = It.app.unwrapData(res);
       if (!res.ok || !trip) {
         page.innerHTML = '<div class="card card--flat"><h2 class="page-section__title">Trip not found.</h2>' +
@@ -154,7 +154,7 @@
           var pivotId = btn.dataset.pivot;
           if (!global.confirm('Remove "' + btn.dataset.title + '" from this trip?')) return;
           btn.disabled = true;
-          It.apiDelete("/v1/trips/" + id + "/detach/" + pivotId, { auth: true }).then(function (res) {
+          It.apiDelete("/trips/" + id + "/detach/" + pivotId, { auth: true }).then(function (res) {
             if (res.ok) {
               It.app.showToast("Item removed from the trip.", "info");
               var list = page.querySelector(".item-list");

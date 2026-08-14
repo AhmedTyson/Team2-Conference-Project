@@ -118,7 +118,7 @@
   }
 
   function respond(id, verb) {
-    It.apiPost("/v1/agency/assignments/" + id + "/" + verb, {}, { auth: true }).then(function () {
+    It.apiPost("/agency/assignments/" + id + "/" + verb, {}, { auth: true }).then(function () {
       It.feedback.banner(verb === "approve" ? "Assignment accepted." : "Assignment declined.", "is-ok");
       load();
     }).catch(function () {
@@ -127,7 +127,7 @@
   }
 
   function load() {
-    It.apiGet("/v1/agency/assignments", { auth: true }).then(function (res) {
+    It.apiGet("/agency/assignments", { auth: true }).then(function (res) {
       const rows = (res && res.data) || [];
       setKpi("kpi-total", rows.length);
       setKpi("kpi-awaiting", rows.filter(function (a) { return a.status === "admin_approved"; }).length);

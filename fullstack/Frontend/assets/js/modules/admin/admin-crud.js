@@ -16,7 +16,7 @@
 
   const MODULES = {
     destinations: {
-      url: "/v1/admin/destinations",
+      url: "/admin/destinations",
       listLabel: "destinations",
       singular: "destination",
       sortable: { ID: "id", Name: "name", City: "city_name", Country: "country_id", Created: "created_at" },
@@ -29,7 +29,7 @@
       fields: [
         { key: "name", label: "Name", type: "text", required: true },
         { key: "city_name", label: "City", type: "text", required: true },
-        { key: "country_id", label: "Country", type: "select", optionsUrl: "/v1/admin/countries", optionLabel: "name" },
+        { key: "country_id", label: "Country", type: "select", optionsUrl: "/admin/countries", optionLabel: "name" },
         { key: "description", label: "Description", type: "textarea" },
         { key: "latitude", label: "Latitude", type: "number", step: "0.000001" },
         { key: "longitude", label: "Longitude", type: "number", step: "0.000001" },
@@ -37,7 +37,7 @@
       ],
     },
     hotels: {
-      url: "/v1/admin/hotels",
+      url: "/admin/hotels",
       listLabel: "hotels",
       singular: "hotel",
       sortable: {
@@ -54,7 +54,7 @@
       ],
       fields: [
         { key: "name", label: "Name", type: "text", required: true },
-        { key: "destination_id", label: "Destination", type: "select", optionsUrl: "/v1/admin/destinations", optionLabel: "name", required: true },
+        { key: "destination_id", label: "Destination", type: "select", optionsUrl: "/admin/destinations", optionLabel: "name", required: true },
         { key: "address", label: "Address", type: "text" },
         { key: "price_per_night", label: "Price / night (USD)", type: "number", step: "0.01" },
         { key: "stars", label: "Stars", type: "number", min: "1", max: "5" },
@@ -64,7 +64,7 @@
       ],
     },
     restaurants: {
-      url: "/v1/admin/restaurants",
+      url: "/admin/restaurants",
       listLabel: "restaurants",
       singular: "restaurant",
       sortable: {
@@ -81,7 +81,7 @@
       ],
       fields: [
         { key: "name", label: "Name", type: "text", required: true },
-        { key: "destination_id", label: "Destination", type: "select", optionsUrl: "/v1/admin/destinations", optionLabel: "name", required: true },
+        { key: "destination_id", label: "Destination", type: "select", optionsUrl: "/admin/destinations", optionLabel: "name", required: true },
         { key: "cuisine", label: "Cuisine", type: "text" },
         { key: "price_range", label: "Price range", type: "text" },
         { key: "rating", label: "Rating", type: "number", step: "0.1", min: "0", max: "5" },
@@ -90,7 +90,7 @@
       ],
     },
     countries: {
-      url: "/v1/admin/countries",
+      url: "/admin/countries",
       listLabel: "countries",
       singular: "country",
       sortable: { ID: "id", Name: "name", ISO: "iso_code", Capital: "capital", Currency: "currency" },

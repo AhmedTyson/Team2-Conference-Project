@@ -179,11 +179,11 @@
   It.app.boot(function (user) {
     if (!user) return;
     Promise.all([
-      It.apiGet("/v1/dashboard", { auth: true }),
-      It.apiGet("/v1/dashboard/trips", { auth: true }),
-      It.apiGet("/v1/dashboard/favourites", { auth: true }),
-      It.apiGet("/v1/me/reviews", { auth: true }),
-      It.apiGet("/v1/surveys", { auth: true })
+      It.apiGet("/stats/summary", { auth: true }),
+      It.apiGet("/dashboard/trips", { auth: true }),
+      It.apiGet("/dashboard/favourites", { auth: true }),
+      It.apiGet("/me/reviews", { auth: true }),
+      It.apiGet("/surveys", { auth: true })
     ]).then(function (results) {
       var stats = It.app.unwrapData(results[0]) || {};
       var trips = It.app.unwrapData(results[1]);

@@ -1,254 +1,200 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Chat AI · Itinera</title>
+  <title>Itinera Concierge & Messages · Luxury Travel Assistance</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
 
-  <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-
-  <!-- Font Awesome 6 (free) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-
-  <!-- GSAP -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-
-  <!-- Shared styles -->
+  <!-- Design System Tokens & Custom Chat Styles -->
   <link rel="stylesheet" href="../assets/css/tokens.css" />
-  <link rel="stylesheet" href="../assets/css/app.css" />
+  <link rel="stylesheet" href="../assets/css/chat.css" />
 
-
-  <script>window.APP_URL = ".";</script>
-  <script src="../assets/js/config.js?v=1786177601"></script>
-  <script src="../assets/js/api.js"></script>
-  <script src="../assets/js/session.js"></script>
-  <script>window.Itinari && (window.Itinari.CONFIG.publicPage = true);</script>
   <script>/* FOUC prevention — default dark */
     (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
     if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
       document.documentElement.classList.add("dark","fouc-ready");
     else document.documentElement.classList.add("fouc-ready");
     })();
-  </script></head>
-<body data-layout="app">
+  </script>
+</head>
+<body data-layout="app" class="bg-black text-white min-h-screen flex flex-col font-sans">
 
-  <div class="toast" id="toast">
-  <i class="fas fa-check-circle text-green-400" aria-hidden="true"></i>
-  <span id="toastMessage">Success</span>
-</div>
-  <div class="modal-overlay" id="authModal">
-  <div class="modal-box">
-    <div class="flex justify-between items-center mb-4">
-      <h3 class="text-xl font-bold" id="authTitle">Welcome to Itinera</h3>
-      <button type="button" class="text-white/50 hover:text-white text-xl cursor-pointer" id="authCloseBtn" title="Close modal" aria-label="Close modal">
-        <i class="fas fa-times" aria-hidden="true"></i>
-      </button>
-    </div>
-    <div class="auth-tabs flex border border-white/10 rounded-full overflow-hidden mb-4">
-      <button type="button" id="tabLogin" class="on">Log in</button>
-      <button type="button" id="tabRegister">Sign up</button>
+  <!-- Top Navigation Bar -->
+  <header class="border-b border-white/10 bg-black/40 backdrop-blur-xl px-6 py-4 flex items-center justify-between sticky top-0 z-50">
+    <div class="flex items-center gap-6">
+      <a href="dashboard.html" class="flex items-center gap-2.5 text-xl font-bold tracking-tight text-white group">
+        <span class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center font-black text-sm group-hover:scale-105 transition">IT</span>
+        <span>Itinera</span>
+      </a>
+      <div class="hidden md:flex items-center gap-1.5 text-xs text-white/50">
+        <span>Workspace</span>
+        <span>/</span>
+        <span class="text-white font-medium">Concierge & Real-Time Messaging</span>
+      </div>
     </div>
 
-    <form id="loginForm" novalidate>
-      <label for="loginEmail"><i class="fas fa-envelope mr-1" aria-hidden="true"></i>Email</label>
-      <input type="email" id="loginEmail" placeholder="you@example.com" required />
-      <label for="loginPassword"><i class="fas fa-lock mr-1" aria-hidden="true"></i>Password</label>
-      <input type="password" id="loginPassword" placeholder="••••••••" required />
-      <button type="submit" class="btn-white w-full mt-4 flex items-center justify-center gap-2">
-        <i class="fas fa-arrow-right" aria-hidden="true"></i>Log in
+    <!-- Navigation links -->
+    <nav class="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs font-medium">
+      <a href="dashboard.html" class="px-3 py-1 rounded-full text-white/70 hover:text-white transition"><i class="fas fa-chart-line mr-1"></i> Dashboard</a>
+      <a href="trips.html" class="px-3 py-1 rounded-full text-white/70 hover:text-white transition"><i class="fas fa-map-location-dot mr-1"></i> Trips</a>
+      <a href="chat.html" class="px-3 py-1 rounded-full bg-white text-black font-semibold"><i class="fas fa-comments mr-1"></i> Concierge</a>
+      <a href="profile.html" class="px-3 py-1 rounded-full text-white/70 hover:text-white transition"><i class="fas fa-user-circle mr-1"></i> Profile</a>
+    </nav>
+
+    <!-- Topbar Right Controls -->
+    <div class="flex items-center gap-3" id="navAuthContainer">
+      <button type="button" id="theme-toggle" class="icon-btn theme-toggle" aria-label="Toggle theme">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.9" y1="4.9" x2="6.3" y2="6.3"/><line x1="17.7" y1="17.7" x2="19.1" y2="19.1"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.9" y1="19.1" x2="6.3" y2="17.7"/><line x1="17.7" y1="6.3" x2="19.1" y2="4.9"/></svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
       </button>
-      <p class="text-sm mt-2 text-white/40" id="loginStatus" role="status"></p>
-      <p class="text-xs text-white/30 mt-3 pt-3 border-t border-white/10">
-        <i class="fas fa-info-circle mr-1" aria-hidden="true"></i>Demo: <span class="text-white/60">admin@example.com</span> / <span class="text-white/60">password</span>
-      </p>
-    </form>
+      <a href="dashboard.html" class="px-3 py-1.5 rounded-lg border border-white/15 bg-white/5 hover:bg-white/10 text-xs font-semibold text-white transition flex items-center gap-2">
+        <i class="fas fa-arrow-left text-xs"></i> Back
+      </a>
+    </div>
+  </header>
 
-    <form id="registerForm" style="display:none;" novalidate>
-      <label for="regName"><i class="fas fa-user mr-1" aria-hidden="true"></i>Full name</label>
-      <input type="text" id="regName" placeholder="Jane Doe" required />
-      <label for="regEmail"><i class="fas fa-envelope mr-1" aria-hidden="true"></i>Email</label>
-      <input type="email" id="regEmail" placeholder="you@example.com" required />
-      <label for="regPhone"><i class="fas fa-phone mr-1" aria-hidden="true"></i>Phone</label>
-      <input type="tel" id="regPhone" placeholder="+1 555 000 0000" />
-      <label for="regPassword"><i class="fas fa-lock mr-1" aria-hidden="true"></i>Password</label>
-      <input type="password" id="regPassword" placeholder="Min. 8 characters" required minlength="8" />
-      <button type="submit" class="btn-white w-full mt-4 flex items-center justify-center gap-2">
-        <i class="fas fa-user-plus" aria-hidden="true"></i>Create account
-      </button>
-      <p class="text-sm mt-2 text-white/40" id="registerStatus" role="status"></p>
-    </form>
-  </div>
-</div>
-
-    <div class="page-scroll">
-    <div class="giant-text"><h1>CHAT AI</h1></div>
-    <div class="content-layer">
-
-      <nav class="flex flex-col lg:flex-row justify-between items-center gap-4 w-full">
-  <a href="index.html" class="flex items-center gap-2 text-white no-underline">
-    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" class="text-red-500 flex-shrink-0" aria-hidden="true">
-      <path d="M12 2C12 2 13 8 18 12C13 16 12 22 12 22C12 22 11 16 6 12C11 8 12 2 12 2Z" fill="currentColor" />
-    </svg>
-    <span class="text-xl font-semibold tracking-wide">Itinera</span>
-  </a>
-
-  <div class="flex items-center justify-center flex-wrap gap-x-2 gap-y-1 px-4 py-2 rounded-full nav-pill text-sm font-medium">
-    <a href="index.html" class="nav-link ">
-      <i class="fas fa-home" aria-hidden="true"></i><span class="nav-text">Home</span>
-    </a>
-    <a href="about.html" class="nav-link ">
-      <i class="fas fa-info-circle" aria-hidden="true"></i><span class="nav-text">About</span>
-    </a>
-    <a href="explore.html" class="nav-link ">
-      <i class="fas fa-compass" aria-hidden="true"></i><span class="nav-text">Explore</span>
-    </a>
-    <a href="plans.html" class="nav-link ">
-      <i class="fas fa-tags" aria-hidden="true"></i><span class="nav-text">Plans</span>
-    </a>
-    <a href="contact.html" class="nav-link ">
-      <i class="fas fa-envelope" aria-hidden="true"></i><span class="nav-text">Contact</span>
-    </a>
-    <a href="booking.html" class="nav-link ">
-      <i class="fas fa-plane" aria-hidden="true"></i><span class="nav-text">Booking</span>
-    </a>
-    <a href="surveys.html" class="nav-link ">
-      <i class="fas fa-clipboard-list" aria-hidden="true"></i><span class="nav-text">Surveys</span>
-    </a>
-    <a href="chat.html" class="nav-link active">
-      <i class="fas fa-robot" aria-hidden="true"></i><span class="nav-text">AI</span>
-    </a>
-    <button type="button" class="guest-actions btn-login">
-      <i class="fas fa-sign-in-alt" aria-hidden="true"></i>Log in
-    </button>
-  </div>
-
-  <div class="flex items-center gap-4 text-sm font-medium">
-    <div class="user-chip-area hidden">
-      <div class="flex items-center gap-3 bg-white/10 border border-white/20 rounded-full pl-1.5 pr-2 py-1">
-        <span class="user-avatar w-8 h-8 rounded-full bg-white text-black flex items-center justify-center font-bold text-sm">?</span>
-        <span class="user-name text-sm font-medium">—</span>
-        <button type="button" class="btn-logout text-white/60 hover:text-white text-xs px-1" title="Log out" aria-label="Log out">
-          <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+  <!-- Main Split Chat Workspace -->
+  <main class="chat-container">
+    
+    <!-- Left Sidebar: Conversations List -->
+    <aside class="chat-sidebar">
+      <div class="chat-sidebar-header flex items-center justify-between">
+        <div>
+          <h2 class="font-bold text-base text-white tracking-tight">Conversations</h2>
+          <p class="text-xs text-white/50">AI Concierge & Agency Channels</p>
+        </div>
+        <button type="button" id="newChatBtn" class="px-3 py-1.5 rounded-lg bg-white text-black text-xs font-bold hover:scale-105 transition flex items-center gap-1.5 shadow-sm">
+          <i class="fas fa-plus text-xs"></i> New Chat
         </button>
       </div>
-    </div>
-  </div>
-</nav>
 
-      <div class="max-w-6xl mx-auto w-full mt-10 grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6">
-
-        <div class="glass-card chat-shell">
-          <div class="chat-head flex items-center justify-between px-5 py-3 border-b border-white/10">
-            <div class="flex items-center gap-2.5">
-              <span class="w-9 h-9 rounded-full bg-red-500/20 border border-red-500/30 text-red-400 flex items-center justify-center">
-                <i class="fas fa-robot" aria-hidden="true"></i>
-              </span>
-              <div>
-                <div class="text-sm font-bold">Itinera Assistant</div>
-                <div class="text-[11px] text-white/40" id="chatStatusDot">
-                  <span class="inline-block w-1.5 h-1.5 rounded-full bg-green-400 mr-1" aria-hidden="true"></span>ready
-                </div>
-              </div>
-            </div>
-            <a href="help.html" class="text-xs text-white/40 hover:text-white transition flex items-center gap-1.5">
-              <i class="fas fa-book" aria-hidden="true"></i>Help
-            </a>
-          </div>
-
-          <div class="chat-scroll" id="chatScroll" aria-live="polite"></div>
-
-          <div class="px-4 py-3 border-t border-white/10">
-            <div class="flex flex-wrap gap-2 mb-3" id="suggestionChips">
-              <button type="button" class="chip on" data-suggest="tips"><i class="fas fa-lightbulb" aria-hidden="true"></i>Trip tips</button>
-              <button type="button" class="chip" data-suggest="build"><i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i>Build an itinerary</button>
-              <button type="button" class="chip" data-suggest="review"><i class="fas fa-clipboard-check" aria-hidden="true"></i>Review my plans</button>
-            </div>
-            <div class="flex items-end gap-2">
-              <input type="text" id="chatInput" class="field-input flex-1" placeholder="Ask anything about your trip…" maxlength="500" autocomplete="off" />
-              <button type="button" class="btn-primary !px-4" id="chatSend" aria-label="Send message"><i class="fas fa-paper-plane" aria-hidden="true"></i></button>
-            </div>
-          </div>
-        </div>
-
-        <div class="flex flex-col gap-5">
-          <div class="glass-card p-5">
-            <h3 class="text-sm font-bold mb-3 flex items-center gap-2"><i class="fas fa-sparkles text-red-400" aria-hidden="true"></i>What I can do</h3>
-            <ul class="space-y-3 text-sm text-white/55">
-              <li class="flex gap-2.5"><i class="fas fa-lightbulb text-white/30 mt-0.5" aria-hidden="true"></i><span><b class="text-white/85">Trip tips</b> — offline guide content, always available.</span></li>
-              <li class="flex gap-2.5"><i class="fas fa-wand-magic-sparkles text-white/30 mt-0.5" aria-hidden="true"></i><span><b class="text-white/85">Build an itinerary</b> — AI draft via Groq (members with permission).</span></li>
-              <li class="flex gap-2.5"><i class="fas fa-clipboard-check text-white/30 mt-0.5" aria-hidden="true"></i><span><b class="text-white/85">Review my plans</b> — real context from your saved trips.</span></li>
-            </ul>
-          </div>
-          <div class="glass-card p-5">
-            <h3 class="text-sm font-bold mb-3 flex items-center gap-2"><i class="fas fa-shield-halved text-white/30" aria-hidden="true"></i>Status</h3>
-            <p class="text-xs text-white/45 leading-relaxed" id="chatServiceStatus">Checking the AI service…</p>
-          </div>
-          <a href="help.html" class="glass-card p-5 hover:border-white/25 transition group">
-            <div class="flex items-center justify-between">
-              <h3 class="text-sm font-bold flex items-center gap-2"><i class="fas fa-book text-white/30" aria-hidden="true"></i>Offline help</h3>
-              <i class="fas fa-arrow-right text-white/30 group-hover:text-white transition" aria-hidden="true"></i>
-            </div>
-            <p class="text-xs text-white/45 mt-2 leading-relaxed">Docs, FAQs and a "we reply within 2 hours" contact shortcut — no connection needed.</p>
-          </a>
-        </div>
+      <!-- Channel Filters -->
+      <div class="chat-filter-pills">
+        <button type="button" class="filter-pill active" data-filter="all">All</button>
+        <button type="button" class="filter-pill" data-filter="ai_concierge">AI Concierge</button>
+        <button type="button" class="filter-pill" data-filter="agency_inquiry">Agencies</button>
+        <button type="button" class="filter-pill" data-filter="direct_support">Support</button>
       </div>
 
-      <footer class="footer relative z-10 mt-12">
-  <div class="max-w-6xl mx-auto px-6 py-10">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-      <div class="md:col-span-2">
-        <a href="index.html" class="flex items-center gap-2 no-underline text-white">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="text-red-500 flex-shrink-0" aria-hidden="true">
-            <path d="M12 2C12 2 13 8 18 12C13 16 12 22 12 22C12 22 11 16 6 12C11 8 12 2 12 2Z" fill="currentColor" />
-          </svg>
-          <span class="text-lg font-semibold tracking-wide">Itinera</span>
-        </a>
-        <p class="text-white/45 text-sm leading-relaxed mt-3 max-w-sm">
-          Plan it. Live it. From iconic cities to hidden gems — expert-crafted journeys with 24/7 support.
+      <!-- Conversation Items List -->
+      <div class="conversation-list" id="conversationList">
+        <div class="flex items-center justify-center py-12 text-white/40 text-xs gap-2">
+          <i class="fas fa-spinner fa-spin"></i> Loading conversations...
+        </div>
+      </div>
+    </aside>
+
+    <!-- Right Main Stage: Active Chat Stream -->
+    <section class="chat-stage">
+      
+      <!-- Empty state when no chat selected -->
+      <div id="chatEmptyState" class="hidden flex-1 flex flex-col items-center justify-center p-8 text-center">
+        <div class="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-2xl mb-4">
+          <i class="fas fa-robot"></i>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-2">Welcome to Itinera Travel Concierge</h3>
+        <p class="text-sm text-white/60 max-w-md mb-6 leading-relaxed">
+          Ask your bespoke AI Concierge to curate boutique stays, optimize trip budgets, or connect directly with our luxury travel agencies.
         </p>
       </div>
-      <div>
-        <h5 class="font-semibold text-sm mb-3 flex items-center gap-2"><i class="fas fa-compass text-white/30" aria-hidden="true"></i>Explore</h5>
-        <ul class="space-y-2 text-sm text-white/50">
-          <li><a href="about.html" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]" aria-hidden="true"></i>About Us</a></li>
-          <li><a href="explore.html" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]" aria-hidden="true"></i>Explore</a></li>
-          <li><a href="plans.html" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]" aria-hidden="true"></i>Pricing</a></li>
-          <li><a href="booking.html" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]" aria-hidden="true"></i>Booking</a></li>
-          <li><a href="help.html" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]" aria-hidden="true"></i>Offline Help</a></li>
-        </ul>
-      </div>
-      <div>
-        <h5 class="font-semibold text-sm mb-3 flex items-center gap-2"><i class="fas fa-phone text-white/30" aria-hidden="true"></i>Contact</h5>
-        <ul class="space-y-2 text-sm text-white/50">
-          <li class="flex items-center gap-2"><i class="fas fa-envelope w-4 text-white/30" aria-hidden="true"></i>help@itinera.travel</li>
-          <li class="flex items-center gap-2"><i class="fas fa-phone w-4 text-white/30" aria-hidden="true"></i>+1 (555) 123-4567</li>
-          <li class="flex items-center gap-2"><i class="fas fa-map-marker-alt w-4 text-white/30" aria-hidden="true"></i>Cairo, Egypt</li>
-        </ul>
-        <div class="flex gap-3 mt-4">
-          <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition" title="X" aria-label="X"><i class="fab fa-x-twitter text-white/60" aria-hidden="true"></i></a>
-          <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition" title="Instagram" aria-label="Instagram"><i class="fab fa-instagram text-white/60" aria-hidden="true"></i></a>
-          <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition" title="Facebook" aria-label="Facebook"><i class="fab fa-facebook-f text-white/60" aria-hidden="true"></i></a>
+
+      <!-- Active Chat Container -->
+      <div id="chatActiveStage" class="flex flex-col h-full">
+        
+        <!-- Chat Header -->
+        <div class="chat-stage-header">
+          <div>
+            <h3 class="font-bold text-base text-white tracking-tight" id="chatActiveTitle">Itinera AI Concierge</h3>
+            <p class="text-xs text-white/50" id="chatActiveSubtitle">AI Travel Assistant · Always Active</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" class="p-2 rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition text-xs" title="Refresh conversation" onclick="window.location.reload();">
+              <i class="fas fa-rotate-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Messages Stream -->
+        <div class="messages-stream" id="messagesStream">
+          <div class="flex items-center justify-center py-12 text-white/40 text-xs gap-2">
+            <i class="fas fa-spinner fa-spin"></i> Loading messages...
+          </div>
+        </div>
+
+        <!-- Quick Prompts Bar -->
+        <div class="quick-prompts">
+          <button type="button" class="prompt-chip"><i class="fas fa-sparkles text-amber-400 mr-1"></i> Recommend top 3 cultural highlights</button>
+          <button type="button" class="prompt-chip"><i class="fas fa-utensils text-amber-400 mr-1"></i> Suggest Michelin fine dining</button>
+          <button type="button" class="prompt-chip"><i class="fas fa-hotel text-amber-400 mr-1"></i> Find 5-star boutique hotels</button>
+          <button type="button" class="prompt-chip"><i class="fas fa-sun text-amber-400 mr-1"></i> Check seasonal weather</button>
+        </div>
+
+        <!-- Message Composer -->
+        <div class="chat-composer-wrap">
+          <form id="chatForm" class="chat-composer">
+            <textarea id="chatInput" rows="1" class="chat-textarea" placeholder="Ask your AI Concierge or message your agency consultant... (Press Enter to send)"></textarea>
+            <button type="submit" id="sendBtn" class="btn-send" title="Send message" aria-label="Send message">
+              <i class="fas fa-paper-plane text-xs"></i>
+            </button>
+          </form>
         </div>
       </div>
-    </div>
-    <div class="flex flex-col sm:flex-row justify-between items-center gap-2 mt-8 pt-6 border-t border-white/10 text-xs text-white/35">
-      <span>&copy; <span id="footerYear"></span> Itinera · Team 2 Conference Project</span>
-      <span class="flex items-center gap-1.5">Made with <i class="fas fa-heart text-red-400" aria-hidden="true"></i> in Egypt</span>
-    </div>
-  </div>
-</footer>
+    </section>
+  </main>
+
+  <!-- New Chat Modal Dialog -->
+  <div id="newChatModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="bg-zinc-900 border border-white/15 rounded-2xl max-w-md w-full p-6 shadow-2xl">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-bold text-white tracking-tight">Start New Conversation</h3>
+        <button type="button" id="closeNewChatModal" class="text-white/40 hover:text-white text-lg">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <form id="createConvForm" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-white/70 mb-1.5">Channel Type</label>
+          <select id="newConvType" class="w-full bg-black/50 border border-white/15 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-400">
+            <option value="ai_concierge">🤖 Itinera AI Travel Concierge</option>
+            <option value="agency_inquiry">💼 Travel Agency Consultation</option>
+            <option value="direct_support">🎧 Traveler Concierge Support</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-white/70 mb-1.5">Topic / Title</label>
+          <input type="text" id="newConvTitle" placeholder="e.g. Kyoto 5-Day Cultural Itinerary" class="w-full bg-black/50 border border-white/15 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-400" required />
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-white/70 mb-1.5">Initial Question / Request</label>
+          <textarea id="newConvMsg" rows="3" placeholder="Describe your travel dreams, dates, or destination inquiries..." class="w-full bg-black/50 border border-white/15 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-amber-400"></textarea>
+        </div>
+
+        <div class="flex justify-end gap-3 pt-2">
+          <button type="button" onclick="document.getElementById('newChatModal').classList.add('hidden');" class="px-4 py-2 rounded-xl border border-white/15 text-xs font-semibold text-white/70 hover:text-white">Cancel</button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-white text-black text-xs font-bold hover:scale-105 transition">Start Chat</button>
+        </div>
+      </form>
     </div>
   </div>
 
-  <!-- Shared application bootstrap (session restore, auth modal wiring, session UI) -->
-  <script type="module" src="../js/app.js"></script>
-  <script src="../js/chat.js?v=2026081001"></script>
-
-  <script src="../assets/js/core/topbar.js"></script>
+  <!-- Core Scripts -->
+  <script src="../assets/js/core/config.js"></script>
+  <script src="../assets/js/core/api.js"></script>
+  <script src="../assets/js/core/session.js"></script>
   <script src="../assets/js/core/theme.js"></script>
+  <script src="../assets/js/core/topbar.js"></script>
+  <script src="../assets/js/modules/customer/chat.js"></script>
 </body>
 </html>

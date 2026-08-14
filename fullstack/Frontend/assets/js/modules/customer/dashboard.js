@@ -9,10 +9,10 @@
   const fb = It.feedback;
 
   const DASH = {
-    stats: "/v1/dashboard",
-    trips: "/v1/dashboard/trips",
-    favs: "/v1/dashboard/favourites",
-    notifs: "/v1/notifications"
+    stats: "/stats/summary",
+    trips: "/dashboard/trips",
+    favs: "/dashboard/favourites",
+    notifs: "/notifications"
   };
 
   const mockTransactions = [
@@ -169,7 +169,7 @@
     if (!listEl) return;
     listEl.innerHTML = `<div class="skeleton"></div><div class="skeleton"></div>`;
 
-    It.apiGet('/v1/me/reports', { auth: true })
+    It.apiGet('/me/reports', { auth: true })
       .then(function(res) {
         const reports = res.data || res.body?.data || [];
         listEl.innerHTML = "";
@@ -258,7 +258,7 @@
     if (!grid) return;
     grid.innerHTML = `<div class="skeleton" style="min-height:160px; grid-column:1/-1;"></div>`;
 
-    It.apiGet("/v1/dashboard/trips", { auth: true }).then(function (res) {
+    It.apiGet("/dashboard/trips", { auth: true }).then(function (res) {
       if (res.ok && res.body && res.body.data) {
         tripsDataList = res.body.data;
         
@@ -349,7 +349,7 @@
 
     fb.banner("Saving trip to database...", "is-info");
 
-    It.apiPost("/v1/trips", postBody, { auth: true }).then(function (res) {
+    It.apiPost("/trips", postBody, { auth: true }).then(function (res) {
       if (res.ok && res.body && res.body.data) {
         fb.banner("Trip created successfully!", "is-ok");
         activeTripId = res.body.data.id;
@@ -775,7 +775,7 @@
     // Fetch Weather
     // We'll use a fixed lat/lon for demo purposes (e.g. Cairo) if browser geolocation is not available immediately
     // or just call the backend endpoint.
-    It.apiGet('/v1/weather?lat=30.0444&lon=31.2357', { auth: true })
+    It.apiGet('/weather?lat=30.0444&lon=31.2357', { auth: true })
       .then(res => {
         if (res.ok && res.body && res.body.data) {
           const w = res.body.data;
@@ -869,7 +869,7 @@
       }
       const role = It.session.roleOf(user);
       if (It.session.isAdminRole(role)) {
-        global.location.replace(It.CONFIG.role.admin);
+        global.location.replace((It.CONFIG.roleUrl && It.CONFIG.roleUrl.admin) || "/admin/index.html");
         return;
       }
       load(user);

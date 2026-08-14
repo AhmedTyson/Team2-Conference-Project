@@ -103,8 +103,8 @@
   function load() {
     showSkeleton();
     Promise.all([
-      It.apiGet("/v1/admin/reviews?per_page=20", { auth: true }),
-      It.apiGet("/v1/admin/contacts?per_page=20", { auth: true })
+      It.apiGet("/admin/reviews?per_page=20", { auth: true }),
+      It.apiGet("/admin/contacts?per_page=20", { auth: true })
     ]).then(function (results) {
       var events = [];
 

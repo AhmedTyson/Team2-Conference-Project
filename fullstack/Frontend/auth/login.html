@@ -4,7 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Log in · Itinera</title>
+  
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../assets/css/tokens.css" />
   <link rel="stylesheet" href="../assets/css/auth.css" />
+
   <script>/* FOUC prevention — default dark */
     (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
     if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
@@ -14,70 +21,102 @@
   </script>
 </head>
 <body data-page="login" data-layout="auth">
-  <main class="auth-shell">
-    <section class="auth-visual">
-      <div class="auth-slides">
-        <div class="auth-slide active" style="background-image: url('../assets/img/slide1.png');"></div>
-        <div class="auth-slide" style="background-image: url('../assets/img/slide2.png');"></div>
-        <div class="auth-slide" style="background-image: url('../assets/img/slide3.png');"></div>
+  <a href="#main-content-target" class="skip-link">Skip to main content</a>
+
+  <!-- Top Navigation Header -->
+  <header class="auth-nav-header">
+    <div class="auth-nav-container">
+      <a href="../public/index.html" class="auth-brand">
+        <span class="brand-mark">IT</span>
+        <span>Itinera</span>
+      </a>
+      <nav class="auth-nav-links" aria-label="Public Navigation">
+        <a href="../public/index.html" class="auth-nav-link"><i class="fas fa-home"></i> <span>Home</span></a>
+        <a href="../public/explore.html" class="auth-nav-link"><i class="fas fa-compass"></i> <span>Explore</span></a>
+        <a href="../public/plans.html" class="auth-nav-link"><i class="fas fa-ticket-alt"></i> <span>Plans</span></a>
+        <a href="../public/about.html" class="auth-nav-link"><i class="fas fa-info-circle"></i> <span>About</span></a>
+        <a href="../public/contact.html" class="auth-nav-link"><i class="fas fa-envelope"></i> <span>Contact</span></a>
+      </nav>
+      <div class="topbar-right" id="navAuthContainer">
+        <!-- Injected dynamically by topbar.js: Command Palette, Theme Switcher, CTA -->
       </div>
-      <div class="brand">Itinera</div>
-      <div>
-        <h1>Welcome back.</h1>
-        <p>Discover places the locals love, from people who call them home.</p>
-      </div>
-    </section>
+    </div>
+  </header>
 
-    <section class="auth-form-side">
-      <div class="auth-card">
-        <h2>Log in</h2>
-        <p class="sub">Use your Itinera account to continue.</p>
-
-        <form id="auth-form" novalidate>
-          <div class="field">
-            <label for="email">Email</label>
-            <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" />
-            <p class="field-hint" id="hint-email" role="alert"></p>
-          </div>
-
-          <div class="field">
-            <label for="password">Password</label>
-            <div class="input-wrap">
-              <input id="password" name="password" type="password" autocomplete="current-password" placeholder="••••••••" />
-              <button type="button" class="pw-toggle" data-pw-toggle aria-label="Show password" aria-pressed="false">👁</button>
-            </div>
-            <p class="field-hint" id="hint-password" role="alert"></p>
-          </div>
-
-          <button type="submit" class="btn-primary">
-            <span class="spinner"></span>
-            <span class="btn-label">Log in</span>
-          </button>
-
-          <div class="success-note" id="li-success-note"></div>
-        </form>
-
-        <div class="auth-links">
-          No account? <a href="register.html">Create one</a>
-          <span class="sep">·</span>
-          <a href="forgot.html">Forgot password?</a>
+  <!-- Main Auth Container -->
+  <div class="auth-main-wrapper" id="main-content-target">
+    <main class="auth-shell">
+      <section class="auth-visual">
+        <div class="auth-slides">
+          <div class="auth-slide active" style="background-image: url('../assets/img/slide1.png');"></div>
+          <div class="auth-slide" style="background-image: url('../assets/img/slide2.png');"></div>
+          <div class="auth-slide" style="background-image: url('../assets/img/slide3.png');"></div>
         </div>
-      </div>
-    </section>
-  </main>
+        <div class="brand">Itinera</div>
+        <div>
+          <h1>Welcome back.</h1>
+          <p>Discover places the locals love, from people who call them home.</p>
+        </div>
+      </section>
+
+      <section class="auth-form-side">
+        <div class="auth-card">
+          <h2>Log in</h2>
+          <p class="sub">Use your Itinera account to continue.</p>
+
+          <form id="auth-form" novalidate>
+            <div class="field">
+              <label for="email">Email</label>
+              <input id="email" name="email" type="email" autocomplete="email" placeholder="you@example.com" />
+              <p class="field-hint" id="hint-email" role="alert"></p>
+            </div>
+
+            <div class="field">
+              <label for="password">Password</label>
+              <div class="input-wrap">
+                <input id="password" name="password" type="password" autocomplete="current-password" placeholder="••••••••" />
+                <button type="button" class="pw-toggle" data-pw-toggle aria-label="Show password" aria-pressed="false">👁</button>
+              </div>
+              <p class="field-hint" id="hint-password" role="alert"></p>
+            </div>
+
+            <button type="submit" class="btn-primary">
+              <span class="spinner"></span>
+              <span class="btn-label">Log in</span>
+            </button>
+
+            <div class="success-note" id="li-success-note"></div>
+          </form>
+
+          <div class="auth-links">
+            <a href="forgot.html">Forgot password?</a>
+            <span>•</span>
+            <a href="register.html">Create an account</a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="auth-footer">
+    <span>Itinera · Luxury Travel & Concierge</span>
+    <span>•</span>
+    <span>Plan. Explore. Remember.</span>
+  </footer>
 
   <div id="site-banner" role="status">
     <span id="site-banner-msg"></span><span id="site-banner-drain" aria-hidden="true"></span>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script src="../assets/js/config.js?v=1786177601"></script>
-  <script src="../assets/js/api.js"></script>
-  <script src="../assets/js/validation.js"></script>
-  <script src="../assets/js/animations.js"></script>
-  <script src="../assets/js/session.js"></script>
-  <script src="../assets/js/password-toggle.js"></script>
-  <script src="../assets/js/auth.js"></script>
+  <script src="../assets/js/core/config.js"></script>
+  <script src="../assets/js/core/api.js"></script>
+  <script src="../assets/js/utils/validation.js"></script>
+  <script src="../assets/js/core/animations.js"></script>
+  <script src="../assets/js/core/session.js"></script>
+  <script src="../assets/js/utils/password-toggle.js"></script>
+  <script src="../assets/js/pages/auth/auth.js"></script>
   <script src="../assets/js/core/topbar.js"></script>
   <script src="../assets/js/core/theme.js"></script>
 </body>

@@ -137,7 +137,7 @@
   function load() {
     renderChartSkeleton(el("chart-users"));
     renderChartSkeleton(el("chart-revenue"));
-    It.apiGet("/v1/admin/analytics", { auth: true }).then(function (res) {
+    It.apiGet("/admin/analytics", { auth: true }).then(function (res) {
       if (!res.ok) return;
       const d = res.body.data || {};
       const users = d.users || {};
@@ -149,7 +149,7 @@
       renderChart("chart-revenue", revenue.chart || []);
     });
 
-    It.apiGet("/v1/admin/analytics/revenue", { auth: true }).then(function (res) {
+    It.apiGet("/admin/analytics/revenue", { auth: true }).then(function (res) {
       if (!res.ok) return;
       const d = res.body.data || {};
       if (d.total_revenue !== undefined) kpi("kpi-rev", money(d.total_revenue));

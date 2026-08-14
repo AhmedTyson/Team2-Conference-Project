@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Attraction Details — Itinera</title>
+  <meta name="description" content="Attraction details from the Itinera travel planner.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>(function(){try{if(localStorage.getItem('itinera_theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/base.css">
+  <link rel="stylesheet" href="../assets/css/layout.css">
+  <link rel="stylesheet" href="../assets/css/components.css">
+  <link rel="stylesheet" href="../assets/css/pages.css">
+  <link rel="stylesheet" href="../assets/css/tokens.css">
+  <link rel="stylesheet" href="../assets/css/app.css">
+  <script>/* FOUC prevention — default dark */
+    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+    if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
+      document.documentElement.classList.add("dark","fouc-ready");
+    else document.documentElement.classList.add("fouc-ready");
+    })();
+  </script></head>
+<body data-page="attractions" class="is-booting" data-layout="public">
+  <div class="app">
+    <header class="app__header">
+      <a id="app-brand" class="app__brand" href="index.html"></a>
+      <nav id="app-nav" class="nav" aria-label="Main navigation"></nav>
+      <div id="app-user" class="app__user">
+        <button id="theme-toggle" type="button" class="btn btn--ghost" aria-label="Toggle theme">◐</button>
+      </div>
+    </header>
+
+    <main class="app__main">
+
+  <main id="main">
+    <div class="container">
+      <nav class="breadcrumbs" aria-label="Breadcrumb">
+        <a href="attractions.html">Attractions</a><span class="sep">/</span><span class="crumb-current" id="crumbCurrent">…</span>
+      </nav>
+    </div>
+    <div id="detail"></div>
+    <div class="state-host" id="stateHost" aria-live="polite"></div>
+  </main>
+
+    </main>
+
+    <footer class="app__footer"></footer>
+  </div>
+
+  <div class="toast-host" id="toastHost" aria-live="assertive"></div>
+  <div class="modal" id="modalHost" hidden></div>
+
+  <script src="../assets/js/core/config.js"></script>
+  <script src="../assets/js/core/api.js"></script>
+  <script src="../assets/js/core/session.js"></script>
+  <script src="../assets/js/core/nav-config.js"></script>
+  <script src="../assets/js/core/app-shell.js"></script>
+  <script src="../assets/js/core/config.js"></script>
+  <script src="../assets/js/core/api.js"></script>
+  <script src="../assets/js/core/session.js"></script>
+  <script src="../assets/js/components/ui.js"></script>
+  <script src="../assets/js/pages/attraction-details.js"></script>
+  <script>
+    It.app.boot();
+  </script>
+  <script src="../assets/js/core/theme.js"></script>
+  <script src="../assets/js/core/topbar.js"></script>
+</body>
+</html>

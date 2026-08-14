@@ -33,9 +33,11 @@
   }
 
   function initHeader(user) {
+    var p = (global.location.pathname.indexOf("/app/") !== -1 || global.location.pathname.indexOf("/admin/") !== -1 || global.location.pathname.indexOf("/agency/") !== -1 || global.location.pathname.indexOf("/auth/") !== -1 || global.location.pathname.indexOf("/public/") !== -1) ? "../" : "";
+    
     var brand = el("app-brand");
     if (brand) {
-      brand.href = "/home.html";
+      brand.href = p + "public/index.html";
       brand.innerHTML = 
         '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="brand-logo" aria-hidden="true" style="margin-right: 8px; flex-shrink: 0;">' +
           '<path d="M12 2C12 2 13 8 18 12C13 16 12 22 12 22C12 22 11 16 6 12C11 8 12 2 12 2Z" fill="currentColor"/>' +
@@ -45,100 +47,25 @@
 
     var nav = el("app-nav");
     if (nav) {
-      nav.innerHTML = ""; // Clear center nav entirely to keep space clean
+      nav.innerHTML = "";
+      var role = user ? It.session.roleOf(user) : "customer";
+      var items = topItems(role);
+      var cur = (global.location.pathname.split("/").pop() || "dashboard.html").split("?")[0];
+
+      items.forEach(function (item) {
+        if (item.cta) return;
+        var a = document.createElement("a");
+        var dest = item.to.startsWith("/") ? p + item.to.slice(1) : item.to;
+        a.href = dest;
+        a.className = "nav-link" + (dest.indexOf(cur) !== -1 ? " active" : "");
+        a.textContent = item.label;
+        nav.appendChild(a);
+      });
     }
 
     var userWrap = el("app-user");
-    if (userWrap) {
-      var toggle = el("theme-toggle");
-      userWrap.innerHTML = "";
-
-      // 1. Create Hamburger Button and place it on the side (far right next to user controls)
-      var burgerBtn = document.createElement("button");
-      burgerBtn.type = "button";
-      burgerBtn.className = "burger-btn";
-      burgerBtn.setAttribute("aria-label", "Toggle navigation menu");
-      burgerBtn.innerHTML = "<span></span><span></span><span></span>";
-      userWrap.appendChild(burgerBtn);
-
-      // 2. Append Theme toggle
-      if (toggle) userWrap.appendChild(toggle);
-
-      // Always show Log in and Sign up buttons, even if logged in, as requested
-      var loginLink = document.createElement("a");
-      loginLink.href = "/login.html";
-      loginLink.className = "btn btn--ghost btn--login-nav";
-      loginLink.textContent = "Log in";
-      userWrap.appendChild(loginLink);
-
-      var signupLink = document.createElement("a");
-      signupLink.href = "/register.html";
-      signupLink.className = "btn btn--primary btn--signup-nav";
-      signupLink.textContent = "Sign up";
-      userWrap.appendChild(signupLink);
-
-      // 5. Create Hamburger Menu Overlay
-      var overlay = document.getElementById("app-burger-menu");
-      if (!overlay) {
-        overlay = document.createElement("div");
-        overlay.id = "app-burger-menu";
-        overlay.className = "burger-menu-overlay";
-        document.body.appendChild(overlay);
-      }
-
-      var content = document.createElement("div");
-      content.className = "burger-menu-content";
-      
-      var menuNav = document.createElement("nav");
-      menuNav.className = "burger-menu-nav";
-
-      var path = (global.location.pathname.split("/").pop() || "home.html").split("?")[0];
-      topItems(user && It.session.roleOf(user)).forEach(function (item) {
-        if (item.cta) return; // skip sign in link inside burger
-        var a = document.createElement("a");
-        a.href = item.to;
-        a.className = "burger-menu-link" + (item.to === "/" + path ? " burger-menu-link--active" : "");
-        
-        var iconHtml = "";
-        if (item.icon && It.nav.ICONS && It.nav.ICONS[item.icon]) {
-          iconHtml = '<span class="burger-menu-icon">' + It.nav.ICONS[item.icon] + '</span>';
-        }
-        
-        a.innerHTML = iconHtml + '<span class="burger-menu-label">' + item.label + '</span>';
-        menuNav.appendChild(a);
-      });
-
-      // ONLY show Admin Portal to super_admin!
-      if (user && It.session.roleOf(user) === "super_admin") {
-        var admin = document.createElement("a");
-        admin.href = "/admin/index.html";
-        admin.className = "burger-menu-link";
-        
-        var adminIconHtml = "";
-        if (It.nav.ICONS && It.nav.ICONS.portal) {
-          adminIconHtml = '<span class="burger-menu-icon">' + It.nav.ICONS.portal + '</span>';
-        }
-        
-        admin.innerHTML = adminIconHtml + '<span class="burger-menu-label">Admin Portal</span>';
-        menuNav.appendChild(admin);
-      }
-
-      content.appendChild(menuNav);
-      overlay.innerHTML = ""; // clear old content if any
-      overlay.appendChild(content);
-
-      // Wire burger click
-      burgerBtn.addEventListener("click", function () {
-        var open = burgerBtn.classList.toggle("is-open");
-        overlay.classList.toggle("is-open", open);
-      });
-
-      overlay.addEventListener("click", function (e) {
-        if (e.target === overlay || e.target.closest("a")) {
-          burgerBtn.classList.remove("is-open");
-          overlay.classList.remove("is-open");
-        }
-      });
+    if (userWrap && global.ItTopbar && global.ItTopbar.render) {
+      global.ItTopbar.render();
     }
   }
 

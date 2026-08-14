@@ -107,7 +107,7 @@
     });
 
     if (isEdit) {
-      It.apiGet("/v1/surveys/" + id, { auth: true }).then(function (res) {
+      It.apiGet("/surveys/" + id, { auth: true }).then(function (res) {
         var s = It.app.unwrapData(res);
         if (!res.ok || !s) {
           form.style.display = "none";
@@ -169,8 +169,8 @@
       submit.textContent = "Saving…";
 
       var request = isEdit
-        ? It.apiPut("/v1/surveys/" + id, payload, { auth: true })
-        : It.apiPost("/v1/surveys", payload, { auth: true });
+        ? It.apiPut("/surveys/" + id, payload, { auth: true })
+        : It.apiPost("/surveys", payload, { auth: true });
 
       request.then(function (res) {
         if (res.ok) {

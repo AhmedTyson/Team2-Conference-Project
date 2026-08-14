@@ -24,8 +24,8 @@
   }
 
   It.app.boot(function () {
-    It.apiGet("/v1/dashboard/favourites", { auth: true }).then(function (res) {
-      var items = It.app.unwrapData(res);
+    It.apiGet("/dashboard/favourites", { auth: true }).then(function (res) {
+      var items = (It.unwrapData && It.unwrapData(res)) || (It.app && It.app.unwrapData && It.app.unwrapData(res)) || [];
       if (!Array.isArray(items)) items = [];
       if (!items.length) {
         grid.innerHTML = '<div class="empty" style="grid-column:1/-1;">' +
@@ -57,7 +57,7 @@
           var type = btn.dataset.type;
           var fid = btn.dataset.fid;
           btn.disabled = true;
-          It.apiPost("/v1/favourites/" + type + "/" + fid, {}, { auth: true }).then(function (res) {
+          It.apiPost("/favourites/" + type + "/" + fid, {}, { auth: true }).then(function (res) {
             var status = res.body && res.body.status;
             if (status === "removed") {
               It.app.showToast("Removed from favourites.", "success");

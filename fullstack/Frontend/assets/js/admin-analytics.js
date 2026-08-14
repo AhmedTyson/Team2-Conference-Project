@@ -137,9 +137,9 @@
   function load() {
     renderChartSkeleton(el("chart-users"));
     renderChartSkeleton(el("chart-revenue"));
-    It.apiGet("/v1/admin/analytics", { auth: true }).then(function (res) {
+    It.apiGet("/admin/analytics", { auth: true }).then(function (res) {
       if (!res.ok) return;
-      const d = res.body.data || {};
+      const d = (res.body && res.body.data) || {};
       const users = d.users || {};
       const revenue = d.revenue || {};
       if (users.total_users !== undefined) kpi("kpi-users", Number(users.total_users).toLocaleString());
@@ -149,9 +149,9 @@
       renderChart("chart-revenue", revenue.chart || []);
     });
 
-    It.apiGet("/v1/admin/analytics/revenue", { auth: true }).then(function (res) {
+    It.apiGet("/admin/analytics/revenue", { auth: true }).then(function (res) {
       if (!res.ok) return;
-      const d = res.body.data || {};
+      const d = (res.body && res.body.data) || {};
       if (d.total_revenue !== undefined) kpi("kpi-rev", money(d.total_revenue));
       if (d.average_booking_value !== undefined) kpi("kpi-avg", money(d.average_booking_value));
       renderStyleSplit(d.revenue_by_travel_style || {});

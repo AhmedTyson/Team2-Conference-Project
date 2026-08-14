@@ -27,7 +27,7 @@
   }
 
   It.app.boot(function (user) {
-    It.apiGet("/v1/surveys", { auth: true }).then(function (res) {
+    It.apiGet("/surveys", { auth: true }).then(function (res) {
       var items = It.app.unwrapData(res);
       if (!Array.isArray(items)) items = [];
       if (stats && items.length) {

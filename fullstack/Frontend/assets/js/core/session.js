@@ -54,21 +54,23 @@
 
   /** First meaningful role from a user's roles list. */
   function roleOf(user) {
-    if (!user) return null;
+    if (!user) return "customer";
     if (user.user && typeof user.user === "object") user = user.user;
+    if (user.data && typeof user.data === "object") user = user.data;
     let list = user.roles || user.role;
     if (typeof list === "string") list = [list];
-    if (Array.isArray(list) && list.length && typeof list[0] === "object" && list[0].name) {
+    if (Array.isArray(list) && list.length && typeof list[0] === "object") {
       list = list.map(function (r) {
-        return typeof r === "object" ? r.name : r;
+        return (r && (r.name || r.role || r.slug)) || "";
       });
     }
-    list = list || [];
-    if (list.indexOf("super_admin") !== -1) return "super_admin";
-    if (list.indexOf("admin") !== -1) return "admin";
-    if (list.indexOf("agency") !== -1) return "agency";
-    if (list.indexOf("user") !== -1 || list.indexOf("customer") !== -1) return "customer";
-    return list.length ? list[0] : null;
+    list = (list || []).map(function (r) { return String(r).trim().toLowerCase(); });
+    
+    if (list.indexOf("super_admin") !== -1 || list.indexOf("superadmin") !== -1) return "super_admin";
+    if (list.indexOf("admin") !== -1 || list.indexOf("administrator") !== -1) return "admin";
+    if (list.indexOf("agency") !== -1 || list.indexOf("agency_manager") !== -1 || list.indexOf("agent") !== -1) return "agency";
+    if (list.indexOf("user") !== -1 || list.indexOf("customer") !== -1 || list.indexOf("traveler") !== -1) return "customer";
+    return list.length && list[0] ? list[0] : "customer";
   }
 
   function isAdminRole(role) {
@@ -76,12 +78,23 @@
   }
 
   function getRedirectPath(role) {
+    var cur = (global.location.pathname || "").toLowerCase();
+    var isAuthDir = cur.indexOf("/auth/") !== -1;
+    var isRoot = !isAuthDir && cur.indexOf("/app/") === -1 && cur.indexOf("/admin/") === -1 && cur.indexOf("/agency/") === -1 && cur.indexOf("/public/") === -1;
+
     if (role === "super_admin" || role === "admin") {
+      if (isAuthDir) return "../admin/index.html";
+      if (isRoot) return "admin/index.html";
       return (It.CONFIG && It.CONFIG.adminUrl) || "/admin/index.html";
     }
-    if (role === "agency") {
-      return (It.CONFIG && It.CONFIG.agencyUrl) || "/agency/index.html";
+    if (role === "agency" || role === "agency_manager" || role === "agent") {
+      if (isAuthDir) return "../agency/assignments.html";
+      if (isRoot) return "agency/assignments.html";
+      return (It.CONFIG && It.CONFIG.agencyUrl) || "/agency/assignments.html";
     }
+    // Default user / traveler
+    if (isAuthDir) return "../app/dashboard.html";
+    if (isRoot) return "app/dashboard.html";
     return (It.CONFIG && It.CONFIG.dashboardUrl) || "/app/dashboard.html";
   }
 

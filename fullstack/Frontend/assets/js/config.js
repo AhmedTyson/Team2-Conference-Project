@@ -1,6 +1,7 @@
 /**
- * config.js — global constants + token helpers. No DOM, no animation.
- * Load this before api.js / auth.js.
+ * assets/js/config.js — global constants + token & user session helpers.
+ * Source of truth for client network configuration and session storage keys.
+ * Load this before api.js / session.js / auth.js.
  */
 (function (global) {
   "use strict";
@@ -18,12 +19,11 @@
 
   var CONFIG = {
     apiBase: resolveApiBase(),
-    // frontend static pages (served from this site's root, e.g. :8080)
     dashboardUrl: "/app/dashboard.html",
     adminUrl: "/admin/index.html",
     agencyUrl: "/agency/index.html",
     tokenKey: "itinari_token",
-    // token persistence: "localStorage" | "memory"
+    userKey: "itinari_user",
     tokenStorage: "localStorage",
     routes: {
       login: "/login",
@@ -33,25 +33,33 @@
       resend: "/email/resend",
       me: "/user",
       logout: "/logout",
+      trips: "/trips",
+      stats: "/stats/summary",
+      notifications: "/notifications",
+      weather: "/weather"
     },
-    // role → landing/gate mapping
     roleUrl: {
       super_admin: "/admin/index.html",
       admin: "/admin/index.html",
-      agency: "/agency/index.html",
+      agency_manager: "/agency/assignments.html",
+      agency: "/agency/assignments.html",
       user: "/app/dashboard.html",
-      customer: "/app/dashboard.html",
-    },
+      customer: "/app/dashboard.html"
+    }
   };
 
   var memoryToken = null;
+  var memoryUser = null;
 
   function storeToken(tok) {
     if (CONFIG.tokenStorage === "memory") {
       memoryToken = tok;
       return;
     }
-    try { localStorage.setItem(CONFIG.tokenKey, tok); } catch (e) { /* private mode */ }
+    try {
+      if (tok) localStorage.setItem(CONFIG.tokenKey, tok);
+      else localStorage.removeItem(CONFIG.tokenKey);
+    } catch (e) {}
   }
 
   function readToken() {
@@ -64,10 +72,45 @@
     try { localStorage.removeItem(CONFIG.tokenKey); } catch (e) {}
   }
 
+  function storeUser(user) {
+    if (CONFIG.tokenStorage === "memory") {
+      memoryUser = user;
+      return;
+    }
+    try {
+      if (user) localStorage.setItem(CONFIG.userKey, typeof user === "string" ? user : JSON.stringify(user));
+      else localStorage.removeItem(CONFIG.userKey);
+    } catch (e) {}
+  }
+
+  function readUser() {
+    if (CONFIG.tokenStorage === "memory") return memoryUser;
+    try {
+      var raw = localStorage.getItem(CONFIG.userKey);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function clearUser() {
+    memoryUser = null;
+    try { localStorage.removeItem(CONFIG.userKey); } catch (e) {}
+  }
+
   global.Itinari = global.Itinari || {};
   global.Itinari.CONFIG = CONFIG;
   global.Itinari.storeToken = storeToken;
   global.Itinari.readToken = readToken;
   global.Itinari.clearToken = clearToken;
+  global.Itinari.storeUser = storeUser;
+  global.Itinari.readUser = readUser;
+  global.Itinari.clearUser = clearUser;
+
   global.It = global.Itinari;
+  global.APP_CONFIG = {
+    API_BASE_URL: CONFIG.apiBase,
+    TOKEN_KEY: CONFIG.tokenKey,
+    USER_KEY: CONFIG.userKey
+  };
 })(window);

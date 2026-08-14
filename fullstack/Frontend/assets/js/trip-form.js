@@ -83,7 +83,7 @@
   }
 
   It.app.boot(function () {
-    It.apiGet("/v1/trips/create", { auth: true }).then(function (res) {
+    It.apiGet("/trips/create", { auth: true }).then(function (res) {
       var data = It.app.unwrapData(res);
       var styles = data && Array.isArray(data.travel_styles) && data.travel_styles.length
         ? data.travel_styles : DEFAULT_STYLES;

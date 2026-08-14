@@ -24,7 +24,7 @@
         '<a href="/surveys.html" class="btn btn--primary">Back to surveys</a></div>';
       return;
     }
-    It.apiGet("/v1/surveys/" + id, { auth: true }).then(function (res) {
+    It.apiGet("/surveys/" + id, { auth: true }).then(function (res) {
       var s = It.app.unwrapData(res);
       if (!res.ok || !s) {
         page.innerHTML = '<div class="card card--flat"><h2 class="page-section__title">Survey not found.</h2>' +
@@ -60,7 +60,7 @@
           if (!global.confirm("Delete this survey for good?")) return;
           del.disabled = true;
           del.textContent = "Deleting…";
-          It.apiDelete("/v1/surveys/" + id, { auth: true }).then(function (res) {
+          It.apiDelete("/surveys/" + id, { auth: true }).then(function (res) {
             if (res.ok) {
               It.app.showToast("Survey deleted.", "info");
               global.location.href = "/surveys.html";

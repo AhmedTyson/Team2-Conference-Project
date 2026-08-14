@@ -93,7 +93,7 @@
     }
     resultsEl.innerHTML = Ui.skeletonGrid(6);
     try {
-      const body = await Api.get('/v1/dashboard/favourites', null, { auth: true });
+      const body = await Api.get('/dashboard/favourites', null, { auth: true });
       const favs = Array.isArray(body.data.data) ? body.data.data : [];
       Ui.Favourites.setList(favs);
       const order = ['destination', 'hotel', 'restaurant', 'attraction'];

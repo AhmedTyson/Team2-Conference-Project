@@ -66,7 +66,7 @@
         const grid = el("trip-grid-container");
         grid.innerHTML = `<div class="skeleton" style="min-height:160px; grid-column:1/-1;"></div>`;
 
-        It.apiGet("/v1/dashboard/trips", { auth: true }).then(function (res) {
+        It.apiGet("/dashboard/trips", { auth: true }).then(function (res) {
             if (res.ok && res.body && res.body.data) {
                 trips = res.body.data;
                 
@@ -161,7 +161,7 @@
 
         fb.banner("Saving trip to database...", "is-info");
 
-        It.apiPost("/v1/trips", postBody, { auth: true }).then(function (res) {
+        It.apiPost("/trips", postBody, { auth: true }).then(function (res) {
             if (res.ok && res.body && res.body.data) {
                 fb.banner("Trip created successfully!", "is-ok");
                 activeTripId = res.body.data.id;

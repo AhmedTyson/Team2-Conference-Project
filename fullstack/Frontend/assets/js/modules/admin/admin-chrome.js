@@ -545,7 +545,7 @@
       }
       moduleCache = [];
       PALETTE_MODULES.forEach(function (mod) {
-        global.Itinari.apiGet("/v1/admin/" + mod.key, { auth: true }).then(function (res) {
+        global.Itinari.apiGet("/admin/" + mod.key, { auth: true }).then(function (res) {
           let list = [];
           if (res && res.ok && res.body) {
             if (Array.isArray(res.body)) list = res.body;

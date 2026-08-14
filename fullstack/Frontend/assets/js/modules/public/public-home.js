@@ -465,24 +465,8 @@
   // ── Synchronize Auth State in Top Navigation ──
   function syncAuthState() {
     It.session.bootAuth().then(function (auth) {
-      var container = el("navAuthContainer");
-      if (!container) return;
-      if (auth && auth.user) {
-        var user = auth.user;
-        var name = user.name || user.email || "Traveler";
-        var redirect = It.session.getRedirectPath(auth.role);
-        container.innerHTML =
-          '<a href="' + redirect + '" class="user-profile-chip">' +
-            '<span class="w-6 h-6 rounded-full bg-white text-black font-bold flex items-center justify-center text-xs">' + name.charAt(0).toUpperCase() + '</span>' +
-            '<span class="font-medium">' + name + '</span>' +
-          '</a>' +
-          '<button class="text-xs text-white/50 hover:text-white transition ml-2" onclick="Itinari.session.logout()">Sign out</button>';
-      } else {
-        container.innerHTML =
-          '<button class="guest-actions" onclick="openAuthModal(\'login\')">' +
-            '<span>Sign in</span>' +
-            '<i class="fas fa-arrow-right text-xs"></i>' +
-          '</button>';
+      if (global.ItTopbar && global.ItTopbar.render) {
+        global.ItTopbar.render();
       }
     });
   }

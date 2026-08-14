@@ -1,482 +1,349 @@
 /**
- * chat.js — Chat AI (chat.html).
- *
- * Custom chat UI with three skills:
- *  1. Trip tips          — local curated content (offline by design, tagged).
- *  2. Build an itinerary — POST /api/review { destination_country_id,
- *     number_of_days, budget, interests[], number_of_travelers, travel_style }
- *     (auth + permission "generate ai itineraries") → AI JSON draft.
- *  3. Review my plans    — member-only; real trip context from
- *     GET /api/v1/dashboard/trips, then GET /api/review/{tripId}.
- *
- * Backend honesty rules (same as the rest of the app):
- *  - No tips endpoint exists → tips are local help content, clearly tagged.
- *  - AI service down / no GROQ key / 403 → offline fallback message + help link.
- *  - Nothing is faked as AI output.
+ * chat.js — Real-Time Messaging & AI Travel Concierge Client
+ * Handles live messaging, AI interactions, agency inquiries, and active stream syncing.
+ * 
+ * @module modules/customer/chat
  */
 (function (global) {
-  "use strict";
+  'use strict';
 
-  const It = global.Itinari;
-  if (!It) return;
+  var currentConversationId = null;
+  var conversations = [];
+  var messages = [];
+  var pollTimer = null;
+  var isSending = false;
 
-  const apiBase = It.CONFIG.apiBase; // e.g. http://127.0.0.1:8000/api
-  const ROUTES = {
-    generate: "/review",
-    review: function (id) { return "/review/" + encodeURIComponent(id); },
-    trips: "/v1/dashboard/trips",
-    destinations: "/v1/destinations",
-  };
+  var elements = {};
 
-  const TRAVEL_STYLES = ["adventure", "cultural", "relaxation", "business", "family", "solo", "culinary", "nature"];
-  const INTERESTS = [
-    "food", "museums", "history", "nature", "beaches", "hiking", "shopping",
-    "nightlife", "art", "culture", "adventure", "photography", "wellness",
-    "family", "sports", "architecture",
-  ];
-
-  const TIPS = [
-    { icon: "fa-passport", title: "Documents first", text: "Check passport validity (6+ months) and visa rules for every country you touch — including transit layovers." },
-    { icon: "fa-suitcase-rolling", title: "Pack light, layer smart", text: "Stick to a carry-on when possible: 7–10 days is doable in one bag. Roll clothes, pack a light layer for planes and evenings." },
-    { icon: "fa-sack-dollar", title: "Budget buffers", text: "Add 15–20% on top of your estimate for the things that always surprise: airport food, sim cards, tips, and transport hiccups." },
-    { icon: "fa-plane-departure", title: "Book the odd times", text: "Red-eye departures and Tuesday–Thursday flights are cheaper and airports are calmer. Compare with return dates before paying." },
-    { icon: "fa-umbrella-beach", title: "Weather-proof your plan", text: "Check the forecast at your destination before finalising outdoor days — swap museum days in for rainy ones." },
-    { icon: "fa-shield-heart", title: "Insurance is not optional", text: "Medical coverage plus trip cancellation protection. It costs a few dollars a day and can save a whole trip." },
-    { icon: "fa-map-location-dot", title: "One city, one base", text: "Stay in one neighbourhood per city and use day trips. Repacking every night wastes half a day each move." },
-    { icon: "fa-mobile-screen", title: "Offline essentials", text: "Download maps, translations and your booking confirmations before you leave the airport wifi." },
-  ];
-
-  const scrollEl = document.getElementById("chatScroll");
-  const inputEl = document.getElementById("chatInput");
-  const sendBtn = document.getElementById("chatSend");
-  const statusEl = document.getElementById("chatServiceStatus");
-
-  let serviceReachable = null; // true | false | null(unknown)
-  let destinations = [];       // live country options for the build form
-
-  function esc(s) {
-    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
-      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
-    });
+  function init() {
+    cacheElements();
+    attachEvents();
+    loadConversations();
+    startPolling();
   }
 
-  function isMember() {
-    return !!(It.session && It.session.hasToken());
+  function cacheElements() {
+    elements.convList = document.getElementById('conversationList');
+    elements.activeTitle = document.getElementById('chatActiveTitle');
+    elements.activeSubtitle = document.getElementById('chatActiveSubtitle');
+    elements.messagesStream = document.getElementById('messagesStream');
+    elements.chatForm = document.getElementById('chatForm');
+    elements.chatInput = document.getElementById('chatInput');
+    elements.sendBtn = document.getElementById('sendBtn');
+    elements.emptyState = document.getElementById('chatEmptyState');
+    elements.chatActiveStage = document.getElementById('chatActiveStage');
+    elements.newChatBtn = document.getElementById('newChatBtn');
+    elements.newChatModal = document.getElementById('newChatModal');
+    elements.closeNewChatModal = document.getElementById('closeNewChatModal');
+    elements.createConvForm = document.getElementById('createConvForm');
   }
 
-  function scrollBottom() {
-    if (scrollEl) scrollEl.scrollTop = scrollEl.scrollHeight;
-  }
+  function attachEvents() {
+    // Message input auto-expand & submit
+    if (elements.chatInput) {
+      elements.chatInput.addEventListener('input', function () {
+        this.style.height = 'auto';
+        this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+      });
 
-  function bubble(role, html, cls) {
-    const wrap = document.createElement("div");
-    wrap.className = "chat-msg " + role;
-    wrap.innerHTML =
-      '<span class="chat-avatar" aria-hidden="true"><i class="fas ' +
-      (role === "user" ? "fa-user" : "fa-robot") + '"></i></span>' +
-      '<div class="chat-bubble' + (cls ? " " + cls : "") + '">' + html + "</div>";
-    scrollEl.appendChild(wrap);
-    scrollBottom();
-    return wrap;
-  }
-
-  function say(html, cls) { return bubble("bot", html, cls); }
-  function userSay(text) {
-    return bubble("user", '<span class="plain">' + esc(text) + "</span>");
-  }
-
-  function typing(on) {
-    let el = document.getElementById("chatTyping");
-    if (on && !el) {
-      el = bubble("bot", '<span class="chat-typing" id="chatTyping" aria-label="Assistant is typing"><i></i><i></i><i></i></span>');
-    } else if (!on && el) {
-      el.remove();
+      elements.chatInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          if (elements.chatForm) elements.chatForm.dispatchEvent(new Event('submit'));
+        }
+      });
     }
-    scrollBottom();
-  }
 
-  function offlineNote(msg) {
-    say(
-      '<i class="fas fa-wifi mr-1" aria-hidden="true"></i>' + esc(msg || "The AI service is offline right now.") +
-      ' Showing offline help instead — <a href="help.html">open the help page</a> for docs and FAQs.',
-      "offline-note"
-    );
-  }
-
-  function fmtMoney(n) {
-    const v = Number(n);
-    if (isNaN(v)) return String(n == null ? "" : n);
-    return "$" + v.toLocaleString("en");
-  }
-
-  /* ── AI response rendering ─────────────────────────────────── */
-
-  function renderItinerary(data) {
-    if (!data || typeof data !== "object") {
-      say("The assistant replied, but the response could not be read. Try again or <a href='help.html'>read the help page</a>.");
-      return;
+    if (elements.chatForm) {
+      elements.chatForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        sendMessage();
+      });
     }
-    const sec = function (icon, title, content) {
-      if (!content) return "";
-      const items = Array.isArray(content)
-        ? content.map(function (x) { return "<li>" + esc(String(x)) + "</li>"; }).join("")
-        : "<p>" + esc(String(content)).replace(/\n/g, "<br>") + "</p>";
-      return (
-        '<div class="ai-section"><h5><i class="fas ' + icon + '" aria-hidden="true"></i>' + esc(title) + "</h5>" +
-        (Array.isArray(content) ? "<ul>" + items + "</ul>" : items) +
-        "</div>"
-      );
-    };
 
-    let html = "";
-    html += sec("fa-route", "Itinerary", data.itinerary);
-    html += sec("fa-bus-simple", "Transportation tips", data.transportation_tips);
-    html += sec("fa-sack-dollar", "Estimated costs", data.estimated_costs);
-    html += sec("fa-map-pin", "Recommended attractions", data.recommended_attractions);
-    html += sec("fa-utensils", "Recommended restaurants", data.recommended_restaurants);
-    html += sec("fa-bed", "Recommended hotels", data.recommended_hotels);
-    if (!html) html = "<p>No readable sections came back from the assistant.</p>";
-    say("<div class='ai-tag'><i class='fas fa-wand-magic-sparkles' aria-hidden='true'></i>AI draft</div>" + html);
-  }
-
-  function renderReview(data) {
-    const d = data && typeof data === "object" ? data : {};
-    const summary = d.review_summary || d.summary || "";
-    const suggestions = d.suggestions || [];
-    let html =
-      '<div class="ai-tag"><i class="fas fa-clipboard-check" aria-hidden="true"></i>AI review</div>';
-    if (summary) html += '<div class="ai-section"><h5><i class="fas fa-file-lines" aria-hidden="true"></i>Review summary</h5><p>' + esc(summary).replace(/\n/g, "<br>") + "</p></div>";
-    if (Array.isArray(suggestions) && suggestions.length) {
-      html += '<div class="ai-section"><h5><i class="fas fa-list-check" aria-hidden="true"></i>Suggestions</h5><ul>' +
-        suggestions.map(function (s) { return "<li>" + esc(String(s)) + "</li>"; }).join("") + "</ul></div>";
-    } else if (suggestions && typeof suggestions === "string") {
-      html += '<div class="ai-section"><h5><i class="fas fa-list-check" aria-hidden="true"></i>Suggestions</h5><p>' + esc(suggestions).replace(/\n/g, "<br>") + "</p></div>";
-    }
-    if (!summary && !suggestions) html += "<p>No readable review came back from the assistant.</p>";
-    say(html);
-  }
-
-  /* ── Skill: trip tips (offline content) ────────────────────── */
-
-  function tipsSkill() {
-    const rows = TIPS.map(function (t) {
-      return '<div class="ai-section"><h5><i class="fas ' + t.icon + '" aria-hidden="true"></i>' + esc(t.title) + "</h5><p>" + esc(t.text) + "</p></div>";
-    }).join("");
-    say(
-      '<div class="ai-tag"><i class="fas fa-book" aria-hidden="true"></i>Offline help</div>' +
-      "<p>Here are my tried-and-true trip tips (bundled, no connection needed):</p>" + rows
-    );
-  }
-
-  /* ── Skill: build an itinerary ─────────────────────────────── */
-
-  function buildFormCard() {
-    const countryOpts = destinations.length
-      ? destinations.map(function (c) {
-          return '<option value="' + c.id + '">' + esc(c.name) + "</option>";
-        }).join("")
-      : '<option value="">Loading countries…</option>';
-
-    const styleOpts = TRAVEL_STYLES.map(function (s) {
-      return '<option value="' + s + '">' + esc(s.charAt(0).toUpperCase() + s.slice(1)) + "</option>";
-    }).join("");
-
-    const interestChips = INTERESTS.map(function (i) {
-      return '<button type="button" class="chip" data-interest="' + i + '">' + esc(i) + "</button>";
-    }).join("");
-
-    say(
-      '<div class="ai-tag"><i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i>AI generator</div>' +
-      '<p class="mb-3">Tell me where and how you travel and I will draft an itinerary.</p>' +
-      '<div class="chat-card" id="buildCard">' +
-      '<div class="chat-tool-row two">' +
-      "<div><label for=\"bCountry\">Country</label><select class=\"field-input\" id=\"bCountry\">" + countryOpts + "</select></div>" +
-      "<div><label for=\"bDays\">Days</label><input type=\"number\" class=\"field-input\" id=\"bDays\" min=\"1\" max=\"30\" value=\"5\" /></div>" +
-      "</div>" +
-      '<div class="chat-tool-row two">' +
-      "<div><label for=\"bBudget\">Budget (USD)</label><input type=\"number\" class=\"field-input\" id=\"bBudget\" min=\"50\" value=\"1500\" /></div>" +
-      "<div><label for=\"bTravelers\">Travelers</label><input type=\"number\" class=\"field-input\" id=\"bTravelers\" min=\"1\" max=\"20\" value=\"2\" /></div>" +
-      "</div>" +
-      '<div class="chat-tool-row">' +
-      "<div><label for=\"bStyle\">Travel style</label><select class=\"field-input\" id=\"bStyle\">" + styleOpts + "</select></div>" +
-      "</div>" +
-      '<div class="mb-1"><label>Interests <span class="text-white/30 font-normal normal-case tracking-normal">(pick any)</span></label>' +
-      '<div class="flex flex-wrap gap-2 mt-1.5" id="bInterests">' + interestChips + "</div></div>" +
-      '<p class="text-red-400 text-xs mt-2 hidden" id="buildErr" role="alert"></p>' +
-      '<div class="flex items-center justify-between gap-3 mt-4 flex-wrap">' +
-      '<span class="text-xs text-white/35"><i class="fas fa-hourglass-half mr-1" aria-hidden="true"></i>One AI call per draft — results are cached.</span>' +
-      '<button type="button" class="btn-primary" id="buildGo"><i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i>Generate</button>' +
-      "</div></div>"
-    );
-
-    const card = document.getElementById("buildCard");
-    const errEl = document.getElementById("buildErr");
-    const goBtn = document.getElementById("buildGo");
-    const selected = new Set();
-    card.querySelectorAll("[data-interest]").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        const v = btn.dataset.interest;
-        if (selected.has(v)) selected.delete(v); else selected.add(v);
-        btn.classList.toggle("on", selected.has(v));
+    // Filter pills
+    var filterPills = document.querySelectorAll('.filter-pill');
+    filterPills.forEach(function (pill) {
+      pill.addEventListener('click', function () {
+        filterPills.forEach(function (p) { p.classList.remove('active'); });
+        this.classList.add('active');
+        var filter = this.getAttribute('data-filter');
+        renderConversations(filter);
       });
     });
 
-    if (!destinations.length) {
-      // Country list failed to load — try once more live.
-      It.apiGet(ROUTES.destinations).then(function (res) {
-        if (res.ok && res.body) {
-          destinations = countryOptions(res.body);
-          const sel = document.getElementById("bCountry");
-          if (sel && destinations.length) {
-            sel.innerHTML = destinations.map(function (c) {
-              return '<option value="' + c.id + '">' + esc(c.name) + "</option>";
-            }).join("");
-          }
+    // Quick prompt chips
+    var promptChips = document.querySelectorAll('.prompt-chip');
+    promptChips.forEach(function (chip) {
+      chip.addEventListener('click', function () {
+        if (elements.chatInput) {
+          elements.chatInput.value = this.textContent.trim();
+          elements.chatInput.focus();
         }
-      }).catch(function () { /* stays on loading note */ });
+      });
+    });
+
+    // New Chat Modal
+    if (elements.newChatBtn && elements.newChatModal) {
+      elements.newChatBtn.addEventListener('click', function () {
+        elements.newChatModal.classList.remove('hidden');
+      });
     }
 
-    goBtn.addEventListener("click", function () {
-      errEl.classList.add("hidden");
-      const countryId = document.getElementById("bCountry").value;
-      const days = parseInt(document.getElementById("bDays").value, 10);
-      const budget = parseFloat(document.getElementById("bBudget").value);
-      const travelers = parseInt(document.getElementById("bTravelers").value, 10);
-      const style = document.getElementById("bStyle").value;
-      const interests = Array.from(selected);
+    if (elements.closeNewChatModal && elements.newChatModal) {
+      elements.closeNewChatModal.addEventListener('click', function () {
+        elements.newChatModal.classList.add('hidden');
+      });
+    }
 
-      let firstErr = null;
-      if (!countryId) firstErr = "Pick a country.";
-      else if (!days || days < 1 || days > 30) firstErr = "Days must be between 1 and 30.";
-      else if (!budget || budget < 50) firstErr = "Budget must be at least $50.";
-      else if (!travelers || travelers < 1) firstErr = "Travelers must be at least 1.";
-      else if (!style) firstErr = "Pick a travel style.";
-      else if (!interests.length) firstErr = "Pick at least one interest.";
-      if (firstErr) {
-        errEl.textContent = firstErr;
-        errEl.classList.remove("hidden");
-        return;
+    if (elements.createConvForm) {
+      elements.createConvForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        createConversation();
+      });
+    }
+  }
+
+  async function loadConversations() {
+    try {
+      var res = await global.It.apiGet('/conversations', { auth: true });
+      var data = res.body && res.body.data ? res.body.data : (res.data || []);
+      conversations = Array.isArray(data) ? data : [];
+      renderConversations('all');
+
+      // Auto-select first conversation if not already selected
+      if (!currentConversationId && conversations.length > 0) {
+        selectConversation(conversations[0].id);
       }
-
-      goBtn.disabled = true;
-      goBtn.innerHTML = '<i class="fas fa-spinner fa-spin" aria-hidden="true"></i> Generating…';
-      typing(true);
-
-      It.apiPost(ROUTES.generate, {
-        destination_country_id: countryId,
-        number_of_days: days,
-        budget: budget,
-        interests: interests,
-        number_of_travelers: travelers,
-        travel_style: style,
-      }, { auth: true }).then(function (res) {
-        typing(false);
-        goBtn.disabled = false;
-        goBtn.innerHTML = '<i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i>Generate';
-        if (res.ok) {
-          renderItinerary(res.body && res.body.data);
-          return;
-        }
-        const body = res.body || {};
-        if (res.status === 403) {
-          errEl.textContent = "Your account does not have permission to generate itineraries yet.";
-          errEl.classList.remove("hidden");
-          offlineNote("The AI generator is restricted to approved accounts — you can still read the offline help.");
-          return;
-        }
-        let msg = null;
-        if (body.error && Array.isArray(body.error.validation_errors)) {
-          msg = body.error.validation_errors.map(function (v) { return v.message; }).join(" ");
-        }
-        if (!msg && body.error && body.error.message) msg = body.error.message;
-        if (!msg && body.errors) msg = (Array.isArray(body.errors) ? body.errors : JSON.stringify(body.errors));
-        errEl.textContent = msg || "The AI service could not generate a draft right now.";
-        errEl.classList.remove("hidden");
-        if (res.status === 402) {
-          errEl.innerHTML = msg + ' <a href="plans.html" style="color:#fff;text-decoration:underline;font-weight:600;">View plans</a>';
-        }
-        offlineNote("The AI generator is unreachable — showing offline help instead.");
-      }).catch(function () {
-        typing(false);
-        goBtn.disabled = false;
-        goBtn.innerHTML = '<i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i>Generate';
-        errEl.textContent = "Could not reach the AI service. Please try again.";
-        errEl.classList.remove("hidden");
-        offlineNote("The server is unreachable — showing offline help instead.");
-      });
-    });
+    } catch (err) {
+      console.error('Failed to load conversations:', err);
+    }
   }
 
-  /* ── Skill: review my plans ────────────────────────────────── */
+  function renderConversations(filter) {
+    if (!elements.convList) return;
 
-  function reviewSkill() {
-    if (!isMember()) {
-      say("Your saved trips power this — sign in first and I will pull the real context.");
-      if (typeof global.openAuthModal === "function") {
-        global.openAuthModal("login", "Sign in to have your saved trips reviewed.");
+    var filtered = conversations;
+    if (filter && filter !== 'all') {
+      filtered = conversations.filter(function (c) { return c.type === filter; });
+    }
+
+    if (filtered.length === 0) {
+      elements.convList.innerHTML = '<div class="text-center py-8 text-white/40 text-xs">No conversations found. Start a new chat!</div>';
+      return;
+    }
+
+    var html = '';
+    filtered.forEach(function (conv) {
+      var isActive = conv.id === currentConversationId;
+      var avatarClass = conv.type === 'ai_concierge' ? 'ai' : (conv.type === 'agency_inquiry' ? 'agency' : '');
+      var icon = conv.type === 'ai_concierge' ? '<i class="fas fa-robot"></i>' : (conv.type === 'agency_inquiry' ? '<i class="fas fa-briefcase"></i>' : '<i class="fas fa-headset"></i>');
+      var excerpt = conv.latest_message ? conv.latest_message.body : 'No messages yet';
+      if (excerpt.length > 45) excerpt = excerpt.substring(0, 42) + '...';
+
+      html += '<div class="conversation-item ' + (isActive ? 'active' : '') + '" data-id="' + conv.id + '">';
+      html += '  <div class="chat-avatar ' + avatarClass + '">' + icon + '</div>';
+      html += '  <div class="flex-1 min-w-0">';
+      html += '    <div class="flex items-center justify-between gap-1">';
+      html += '      <span class="font-semibold text-sm truncate text-white">' + escapeHtml(conv.title || 'Itinera Concierge') + '</span>';
+      if (conv.unread_count > 0) {
+        html += '      <span class="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500 text-black">' + conv.unread_count + '</span>';
       }
-      return;
-    }
-    typing(true);
-    It.apiGet(ROUTES.trips, { auth: true })
-      .then(function (res) {
-        typing(false);
-        const trips = (res.ok && res.body && Array.isArray(res.body.data)) ? res.body.data : [];
-        if (!trips.length) {
-          say(
-            '<div class="ai-tag"><i class="fas fa-clipboard-check" aria-hidden="true"></i>Review my plans</div>' +
-            "<p>You have no saved trips yet, so there is nothing to review.</p>" +
-            '<div class="mt-4"><a href="booking.html" class="btn-outline"><i class="fas fa-plane" aria-hidden="true"></i>Plan a trip</a></div>'
-          );
-          return;
-        }
-        const rows = trips.map(function (t) {
-          const meta = [t.travel_style, t.no_of_days ? t.no_of_days + "d" : "", t.budget != null ? fmtMoney(t.budget) : ""].filter(Boolean).join(" · ");
-          return '<button type="button" class="chat-trip-btn" data-trip="' + t.id + '">' +
-            '<i class="fas fa-suitcase text-white/40" aria-hidden="true"></i>' +
-            "<span>" + esc(t.title || "Untitled trip") + "</span>" +
-            (meta ? '<span class="t-meta">' + esc(meta) + "</span>" : "") +
-            "</button>";
-        }).join("");
-        say(
-          '<div class="ai-tag"><i class="fas fa-clipboard-check" aria-hidden="true"></i>Review my plans</div>' +
-          "<p>Pick a saved trip and I will review it against your real itinerary items:</p>" +
-          '<div class="chat-card flex flex-col gap-2">' + rows + "</div>"
-        );
-        document.querySelectorAll(".chat-trip-btn").forEach(function (btn) {
-          btn.addEventListener("click", function () {
-            const tripId = btn.dataset.trip;
-            const trip = trips.find(function (t) { return String(t.id) === String(tripId); });
-            reviewTrip(trip);
-          });
-        });
-      })
-      .catch(function () {
-        typing(false);
-        offlineNote("Could not load your trips — the server is unreachable. Showing offline help instead.");
+      html += '    </div>';
+      html += '    <p class="text-xs text-white/50 truncate mt-0.5">' + escapeHtml(excerpt) + '</p>';
+      html += '  </div>';
+      html += '</div>';
+    });
+
+    elements.convList.innerHTML = html;
+
+    // Attach click handlers
+    elements.convList.querySelectorAll('.conversation-item').forEach(function (item) {
+      item.addEventListener('click', function () {
+        var id = parseInt(this.getAttribute('data-id'), 10);
+        selectConversation(id);
       });
+    });
   }
 
-  function reviewTrip(trip) {
-    userSay("Review: " + (trip && trip.title ? trip.title : "my trip"));
-    typing(true);
-    It.apiGet(ROUTES.review(trip.id), { auth: true })
-      .then(function (res) {
-        typing(false);
-        if (res.ok) {
-          renderReview(res.body && res.body.data);
-          return;
-        }
-        const body = res.body || {};
-        if (res.status === 404) {
-          offlineNote((body.message || "That trip could not be found.") + " It may have been deleted, or it belongs to another account.");
-          return;
-        }
-        if (res.status === 402 && body.error && body.error.message) {
-          offlineNote(body.error.message + ' <a href="plans.html" style="text-decoration:underline;">View plans</a>');
-          return;
-        }
-        offlineNote((body.message || "The AI review service is unavailable right now.") + " Showing offline help instead.");
-      })
-      .catch(function () {
-        typing(false);
-        offlineNote("The AI review service is unreachable — showing offline help instead.");
-      });
-  }
+  async function selectConversation(id) {
+    currentConversationId = id;
+    renderConversations();
 
-  /* ── Free-text input (offline keyword replies) ─────────────── */
-
-  function freeText(text) {
-    const t = text.toLowerCase();
-    if (/(tip|advice|hint|suggest.*(pack|book|save|visit))/.test(t)) return tipsSkill();
-    if (/(build|generate|make|create).*(itinerar|plan|trip)|itinerar/.test(t)) return buildFormCard();
-    if (/(review|check|improve).*(plan|trip|itinerar)|review/.test(t)) return reviewSkill();
-    if (/(budget|cost|price|money|expensive)/.test(t)) {
-      say("Budget-wise, add a 15–20% buffer on top of your estimate and book early for the best rates. Want me to draft an itinerary with a budget cap? Use <b>Build an itinerary</b>.");
-      return;
-    }
-    if (/(visa|passport|document)/.test(t)) {
-      say("Check passport validity (6+ months) and visa rules for every country you touch — including transit layovers. The full list is on the <a href='help.html'>help page</a>.");
-      return;
-    }
-    if (/(pack|luggage|bag)/.test(t)) {
-      say("Pack light, layer smart: 7–10 days fits in a carry-on. Roll clothes and always pack a light layer for planes. See <b>Trip tips</b> for more.");
-      return;
-    }
-    if (/(help|offline|faq|doc)/.test(t)) {
-      say("I am running in offline-help mode right now. The full FAQ and docs live on the <a href='help.html'>help page</a>.");
-      return;
-    }
-    say(
-      "I can help with trip tips, building an itinerary, or reviewing your saved plans — try the suggestion buttons above." +
-      (serviceReachable === false ? ' <a href="help.html">Offline help</a> is always available.' : "")
-    );
-  }
-
-  /* ── Boot ──────────────────────────────────────────────────── */
-
-  function countryOptions(body) {
-    const list = (body && Array.isArray(body.data)) ? body.data : [];
-    const map = {};
-    list.forEach(function (d) {
-      if (d.country && d.country.id) {
-        map[d.country.id] = { id: d.country.id, name: d.country.name || "Country " + d.country.id };
+    var conv = conversations.find(function (c) { return c.id === id; });
+    if (conv) {
+      if (elements.emptyState) elements.emptyState.classList.add('hidden');
+      if (elements.chatActiveStage) elements.chatActiveStage.classList.remove('hidden');
+      if (elements.activeTitle) elements.activeTitle.textContent = conv.title || 'Itinera Concierge';
+      if (elements.activeSubtitle) {
+        var sub = conv.type === 'ai_concierge' ? 'AI Travel Assistant · Always Active' : (conv.type === 'agency_inquiry' ? 'Dedicated Agency Consultant' : 'Traveler Support');
+        if (conv.trip) sub += ' · Trip: ' + conv.trip.title;
+        elements.activeSubtitle.textContent = sub;
       }
-    });
-    return Object.keys(map).map(function (k) { return map[k]; })
-      .sort(function (a, b) { return a.name.localeCompare(b.name); });
+    }
+
+    await loadMessages(id);
+    markAsRead(id);
   }
 
-  function greet() {
-    say(
-      "Hi — I am the Itinera assistant. I can share <b>trip tips</b>, <b>build an itinerary draft</b>, or <b>review your saved plans</b> with real context from the Trip Planner." +
-      (isMember() ? "" : " Sign in for itinerary building and plan review.")
-    );
+  async function loadMessages(id) {
+    if (!elements.messagesStream) return;
+    try {
+      var res = await global.It.apiGet('/conversations/' + id + '/messages', { auth: true });
+      var data = res.body && res.body.data ? res.body.data : (res.data || []);
+      messages = Array.isArray(data) ? data : [];
+      renderMessages();
+    } catch (err) {
+      console.error('Failed to load messages:', err);
+    }
   }
 
-  document.addEventListener("itinera:auth", function () { /* session changed — nothing pending to resume */ });
+  function renderMessages() {
+    if (!elements.messagesStream) return;
 
-  document.querySelectorAll("#suggestionChips .chip").forEach(function (chip) {
-    chip.addEventListener("click", function () {
-      document.querySelectorAll("#suggestionChips .chip").forEach(function (c) { c.classList.remove("on"); });
-      chip.classList.add("on");
-      const mode = chip.dataset.suggest;
-      if (mode === "tips") { userSay("Trip tips"); tipsSkill(); }
-      else if (mode === "build") { userSay("Build an itinerary"); buildFormCard(); }
-      else { userSay("Review my plans"); reviewSkill(); }
+    if (messages.length === 0) {
+      elements.messagesStream.innerHTML = '<div class="text-center py-12 text-white/40 text-sm"><i class="fas fa-sparkles text-amber-400 mb-2 text-xl block"></i>Start the conversation with your AI Concierge or Agency!</div>';
+      return;
+    }
+
+    var html = '';
+    messages.forEach(function (msg) {
+      var isUser = msg.sender_type === 'user';
+      var avatarClass = msg.sender_type === 'ai' ? 'ai' : (msg.sender_type === 'agency' ? 'agency' : '');
+      var icon = msg.sender_type === 'ai' ? '<i class="fas fa-robot"></i>' : (msg.sender_type === 'agency' ? '<i class="fas fa-briefcase"></i>' : '<i class="fas fa-user"></i>');
+      var time = msg.created_at ? new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+
+      html += '<div class="message-row ' + msg.sender_type + '">';
+      if (!isUser) {
+        html += '  <div class="chat-avatar ' + avatarClass + '">' + icon + '</div>';
+      }
+      html += '  <div class="message-bubble">';
+      html += '    <div class="message-text">' + formatMessageBody(msg.body) + '</div>';
+      html += '    <div class="message-meta"><span>' + escapeHtml(msg.sender_name || 'User') + '</span><span>•</span><span>' + time + '</span></div>';
+      html += '  </div>';
+      html += '</div>';
     });
-  });
 
-  function submitText() {
-    const text = inputEl.value.trim();
+    elements.messagesStream.innerHTML = html;
+    elements.messagesStream.scrollTop = elements.messagesStream.scrollHeight;
+  }
+
+  async function sendMessage() {
+    if (!currentConversationId || isSending) return;
+    var text = elements.chatInput ? elements.chatInput.value.trim() : '';
     if (!text) return;
-    inputEl.value = "";
-    userSay(text);
-    typing(true);
-    global.setTimeout(function () {
-      typing(false);
-      freeText(text);
-    }, 450);
+
+    isSending = true;
+    if (elements.sendBtn) elements.sendBtn.disabled = true;
+    if (elements.chatInput) {
+      elements.chatInput.value = '';
+      elements.chatInput.style.height = 'auto';
+    }
+
+    // Optimistic UI append
+    messages.push({
+      sender_type: 'user',
+      sender_name: 'You',
+      body: text,
+      created_at: new Date().toISOString()
+    });
+    renderMessages();
+
+    // Show AI typing indicator if AI conversation
+    var conv = conversations.find(function (c) { return c.id === currentConversationId; });
+    var typingEl = null;
+    if (conv && conv.type === 'ai_concierge') {
+      typingEl = document.createElement('div');
+      typingEl.className = 'message-row ai typing-indicator';
+      typingEl.innerHTML = '<div class="chat-avatar ai"><i class="fas fa-robot"></i></div><div class="message-bubble text-amber-400 text-xs flex items-center gap-2"><i class="fas fa-spinner fa-spin"></i> Itinera AI Concierge is curating your response...</div>';
+      elements.messagesStream.appendChild(typingEl);
+      elements.messagesStream.scrollTop = elements.messagesStream.scrollHeight;
+    }
+
+    try {
+      var res = await global.It.apiPost('/conversations/' + currentConversationId + '/messages', { body: text }, { auth: true });
+      if (typingEl && typingEl.parentNode) typingEl.parentNode.removeChild(typingEl);
+
+      await loadMessages(currentConversationId);
+      loadConversations();
+    } catch (err) {
+      if (typingEl && typingEl.parentNode) typingEl.parentNode.removeChild(typingEl);
+      console.error('Failed to send message:', err);
+    } finally {
+      isSending = false;
+      if (elements.sendBtn) elements.sendBtn.disabled = false;
+    }
   }
 
-  sendBtn.addEventListener("click", submitText);
-  inputEl.addEventListener("keydown", function (e) {
-    if (e.key === "Enter") { e.preventDefault(); submitText(); }
-  });
+  async function createConversation() {
+    var type = document.getElementById('newConvType').value;
+    var title = document.getElementById('newConvTitle').value.trim();
+    var msg = document.getElementById('newConvMsg').value.trim();
 
-  // Service status probe (read-only; AI availability is only known per-call).
-  It.apiGet(ROUTES.destinations)
-    .then(function (res) {
-      serviceReachable = res.ok;
-      statusEl.innerHTML = res.ok
-        ? '<i class="fas fa-circle-check text-green-400 mr-1" aria-hidden="true"></i>Backend reachable — AI replies depend on the Groq key and your permissions.'
-        : '<i class="fas fa-triangle-exclamation text-amber-400 mr-1" aria-hidden="true"></i>Backend responding, but with errors — AI replies may fail.';
-      if (res.ok && res.body) destinations = countryOptions(res.body);
-    })
-    .catch(function () {
-      serviceReachable = false;
-      statusEl.innerHTML = '<i class="fas fa-wifi text-amber-400 mr-1" aria-hidden="true"></i>Backend unreachable — showing offline help.';
-    });
+    try {
+      var res = await global.It.apiPost('/conversations', {
+        type: type,
+        title: title || (type === 'ai_concierge' ? 'AI Concierge Session' : 'Travel Inquiry'),
+        initial_message: msg || undefined
+      }, { auth: true });
 
-  greet();
-})(window);
+      var newConv = res.body && res.body.data ? res.body.data : res.data;
+      if (elements.newChatModal) elements.newChatModal.classList.add('hidden');
+      if (elements.createConvForm) elements.createConvForm.reset();
+
+      await loadConversations();
+      if (newConv && newConv.id) {
+        selectConversation(newConv.id);
+      }
+    } catch (err) {
+      console.error('Failed to create conversation:', err);
+    }
+  }
+
+  async function markAsRead(id) {
+    try {
+      await global.It.apiPatch('/conversations/' + id + '/read', {}, { auth: true });
+      var conv = conversations.find(function (c) { return c.id === id; });
+      if (conv) conv.unread_count = 0;
+      renderConversations();
+    } catch (e) {}
+  }
+
+  function startPolling() {
+    if (pollTimer) clearInterval(pollTimer);
+    pollTimer = setInterval(function () {
+      if (currentConversationId && !isSending) {
+        loadMessages(currentConversationId);
+      }
+      loadConversations();
+    }, 6000);
+  }
+
+  function formatMessageBody(text) {
+    if (!text) return '';
+    var safe = escapeHtml(text);
+    // Simple markdown formatting (bold, lists, linebreaks)
+    safe = safe.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    safe = safe.replace(/\*(.*?)\*/g, '<em>$1</em>');
+    safe = safe.replace(/\n\n/g, '<br/><br/>');
+    safe = safe.replace(/\n/g, '<br/>');
+    return safe;
+  }
+
+  function escapeHtml(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  // Self-init on DOM load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+})(typeof window !== 'undefined' ? window : this);

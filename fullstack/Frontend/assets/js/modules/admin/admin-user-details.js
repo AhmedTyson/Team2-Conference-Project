@@ -85,7 +85,7 @@
       return;
     }
 
-    It.apiGet("/v1/admin/users/" + encodeURIComponent(id), { auth: true }).then(function (res) {
+    It.apiGet("/admin/users/" + encodeURIComponent(id), { auth: true }).then(function (res) {
       if (!res.ok) {
         el("user-details-content").innerHTML = '<div class="kit-error">Could not load details.</div>';
         It.feedback.banner("Failed to fetch user.", "is-error");

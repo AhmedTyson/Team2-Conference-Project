@@ -16,7 +16,7 @@
   }
 
   function fetchAdminNotifications() {
-    It.apiGet('/v1/admin/notifications', { auth: true })
+    It.apiGet('/admin/notifications', { auth: true })
       .then(function(res) {
         var items = It.app.unwrapData(res) || [];
         var tbody = el('admin-notifications-tbody');

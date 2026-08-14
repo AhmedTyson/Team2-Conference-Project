@@ -204,7 +204,7 @@ window.addEventListener('tp:init', async function () {
     var id = TP.getActiveTripId();
     if (!id) { renderEmpty(); return; }
     try {
-        var res = await TP.api('/v1/trips/' + id);
+        var res = await TP.api('/trips/' + id);
         state.trip = res.data;
         state.tripItems = state.trip.itinerary_items || [];
 

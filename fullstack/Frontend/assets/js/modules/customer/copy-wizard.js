@@ -111,7 +111,7 @@ nextBtn.addEventListener('click', async function () {
         nextBtn.innerHTML = '<span class="spinner"></span> Redirecting to Checkout…';
         try {
             // Forking a trip requires purchasing it via checkout.
-            var res = await TP.api('/v1/checkout/initiate', { 
+            var res = await TP.api('/checkout/initiate', { 
                 method: 'POST', 
                 body: JSON.stringify({ type: 'trip', trip_id: sourceTripId }) 
             });
@@ -140,7 +140,7 @@ wizardSteps.forEach(function (stepEl, index) {
 window.addEventListener('tp:init', async function () {
     updateWizard(0);
     try {
-        var res = await TP.api('/v1/trips');
+        var res = await TP.api('/trips');
         trips = res.data || [];
     } catch (err) {
         trips = [];

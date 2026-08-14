@@ -22,7 +22,7 @@ class DestinationDetailResource extends JsonResource
             'name' => $this->name,
             'city_name' => $this->city_name,
             'description' => $this->description,
-            'image' => $this->image,
+            'image' => $this->image ?: 'https://image.pollinations.ai/prompt/' . urlencode(($this->name ?: $this->city_name ?: 'travel') . ' destination luxury photography') . '?width=1200&height=800&nologo=true',
             'latitude' => $this->latitude ? (float) $this->latitude : null,
             'longitude' => $this->longitude ? (float) $this->longitude : null,
             'country_id' => $this->country_id,

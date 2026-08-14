@@ -50,7 +50,7 @@
   }
 
   function fetchNotifications() {
-    It.apiGet('/v1/notifications', { auth: true })
+    It.apiGet('/notifications', { auth: true })
       .then(function(res) {
         var items = It.app.unwrapData(res) || [];
         renderNotifications(items);
@@ -63,7 +63,7 @@
   }
 
   function markAsRead(id) {
-    It.apiPatch('/v1/notifications/' + id + '/read', null, { auth: true })
+    It.apiPatch('/notifications/' + id + '/read', null, { auth: true })
       .then(function() {
         fetchNotifications();
       })
@@ -73,7 +73,7 @@
   }
 
   function markAllAsRead() {
-    It.apiPatch('/v1/notifications/read-all', null, { auth: true })
+    It.apiPatch('/notifications/read-all', null, { auth: true })
       .then(function() {
         It.app.toast('All notifications marked as read', 'success');
         fetchNotifications();

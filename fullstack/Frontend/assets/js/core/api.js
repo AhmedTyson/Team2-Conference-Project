@@ -8,12 +8,46 @@
 
   const It = global.Itinari || (global.Itinari = {});
 
-  /** Normalize API path: strips '/v1' prefix if present so all endpoints resolve cleanly. */
+  /**
+   * Normalize API path:
+   * 1. Strips duplicate leading '/api/' or 'api/'
+   * 2. Maps legacy dashboard route aliases cleanly
+   * 3. Ensures single leading slash
+   */
   function normalizePath(path) {
     if (!path) return "";
     let p = String(path).trim();
-    if (p.startsWith("/v1/")) p = p.substring(3);
-    else if (p.startsWith("v1/")) p = "/" + p.substring(3);
+    // Strip redundant leading /api/ or api/
+    if (p.startsWith("/api/")) p = p.substring(4);
+    else if (p.startsWith("api/")) p = p.substring(4);
+    else if (p === "/api" || p === "api") p = "";
+
+    // Normalize dashboard endpoint aliases
+    if (p === "/v1/dashboard/trips" || p === "v1/dashboard/trips") p = "/dashboard/trips";
+    if (p === "/v1/dashboard/favourites" || p === "v1/dashboard/favourites") p = "/dashboard/favourites";
+    if (p === "/v1/dashboard" || p === "v1/dashboard") p = "/stats/summary";
+    if (p === "/admin/regions" || p === "/v1/admin/regions" || p === "admin/regions" || p === "v1/admin/regions") p = "/regions";
+
+    // Strip legacy /v1/ or v1/ from routes that are non-versioned in Laravel backend (admin, agency, me, etc.)
+    if (
+      p.startsWith("/v1/admin/") || p.startsWith("v1/admin/") ||
+      p.startsWith("/v1/agency/") || p.startsWith("v1/agency/") ||
+      p.startsWith("/v1/me/") || p.startsWith("v1/me/") ||
+      p.startsWith("/v1/notifications") || p.startsWith("v1/notifications") ||
+      p.startsWith("/v1/trips") || p.startsWith("v1/trips") ||
+      p.startsWith("/v1/favourites") || p.startsWith("v1/favourites") ||
+      p.startsWith("/v1/surveys") || p.startsWith("v1/surveys") ||
+      p.startsWith("/v1/reports") || p.startsWith("v1/reports") ||
+      p.startsWith("/v1/settings") || p.startsWith("v1/settings") ||
+      p.startsWith("/v1/reviews") || p.startsWith("v1/reviews") ||
+      p.startsWith("/v1/orders") || p.startsWith("v1/orders") ||
+      p.startsWith("/v1/plans") || p.startsWith("v1/plans") ||
+      p.startsWith("/v1/checkout") || p.startsWith("v1/checkout") ||
+      p.startsWith("/v1/weather") || p.startsWith("v1/weather")
+    ) {
+      p = p.replace(/^\/?v1\//, "/");
+    }
+
     return p.startsWith("/") ? p : "/" + p;
   }
 
@@ -33,10 +67,11 @@
   }
 
   async function refreshToken() {
-    const currentTok = It.readToken();
+    const currentTok = (It.readToken && It.readToken()) || localStorage.getItem("itinari_token");
     if (!currentTok) throw new Error("No token to refresh");
 
-    const res = await fetch(It.CONFIG.apiBase + "/refresh", {
+    const base = (It.CONFIG && It.CONFIG.apiBase) || (global.APP_CONFIG && global.APP_CONFIG.API_BASE_URL) || "http://127.0.0.1:8000/api";
+    const res = await fetch(base.replace(/\/$/, "") + "/refresh", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -53,7 +88,8 @@
     const newToken = extractToken(data);
     if (!newToken) throw new Error("No token in refresh response");
 
-    It.storeToken(newToken);
+    if (It.storeToken) It.storeToken(newToken);
+    else localStorage.setItem("itinari_token", newToken);
     return newToken;
   }
 
@@ -66,6 +102,8 @@
   async function request(method, path, data, opts) {
     opts = opts || {};
     const normalizedPath = normalizePath(path);
+    const apiBase = (It.CONFIG && It.CONFIG.apiBase) ? It.CONFIG.apiBase.replace(/\/$/, "") : "http://127.0.0.1:8000/api";
+    
     const headers = Object.assign(
       {
         Accept: "application/json",
@@ -78,14 +116,14 @@
     if (data !== undefined) headers["Content-Type"] = "application/json";
 
     // Auto-attach token if available
-    const token = It.readToken();
+    const token = (It.readToken && It.readToken()) || localStorage.getItem("itinari_token");
     if (token && !headers["Authorization"]) {
       headers["Authorization"] = "Bearer " + token;
     }
 
     let res;
     try {
-      res = await fetch(It.CONFIG.apiBase + normalizedPath, {
+      res = await fetch(apiBase + normalizedPath, {
         method: method,
         headers: headers,
         body: data !== undefined ? JSON.stringify(data) : undefined,
@@ -106,17 +144,17 @@
       normalizedPath !== "/login" &&
       normalizedPath !== "/register" &&
       normalizedPath !== "/refresh" &&
-      normalizedPath !== (It.CONFIG.routes && It.CONFIG.routes.logout ? It.CONFIG.routes.logout : "/logout")
+      normalizedPath !== (It.CONFIG && It.CONFIG.routes && It.CONFIG.routes.logout ? It.CONFIG.routes.logout : "/logout")
     ) {
       if (token) {
         if (isRefreshing) {
-          return new Promise(function (resolve, reject) {
+          return new Promise(function (resolve) {
             refreshQueue.push({
               resolve: function (newTok) {
                 opts.headers = Object.assign({}, opts.headers, { Authorization: "Bearer " + newTok });
                 resolve(request(method, path, data, opts));
               },
-              reject: function (err) {
+              reject: function () {
                 resolve({ ok: false, status: 401, body: body });
               },
             });
@@ -201,6 +239,22 @@
     return body;
   }
 
+  /** Extract pagination metadata (current_page, last_page, total, per_page) */
+  function parseMeta(res) {
+    if (!res) return { current_page: 1, last_page: 1, total: 0, per_page: 15 };
+    const body = res.body !== undefined ? res.body : res;
+    if (!body || typeof body !== "object") return { current_page: 1, last_page: 1, total: 0, per_page: 15 };
+    if (body.meta) return body.meta;
+    if (body.pagination) return body.pagination;
+    if (body.data && body.data.meta) return body.data.meta;
+    return {
+      current_page: body.current_page || 1,
+      last_page: body.last_page || 1,
+      total: body.total || 0,
+      per_page: body.per_page || 15
+    };
+  }
+
   /** The (errors) map is per-field arrays. Returns boolean. */
   function isFieldErrors(body) {
     return !!(body && body.errors && typeof body.errors === "object");
@@ -215,5 +269,104 @@
   It.isFieldErrors = isFieldErrors;
   It.normalizePath = normalizePath;
   It.unwrapData = unwrapData;
+  It.parseMeta = parseMeta;
   It.refreshToken = refreshToken;
+
+  function esc(value) {
+    return String(value === null || value === undefined ? "" : value)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
+
+  function money(cents, currency) {
+    if (cents === null || cents === undefined || isNaN(cents)) return "–";
+    var num = Number(cents);
+    if (num > 500 && num % 1 === 0 && cents > 1000) num = num / 100; // detect cents vs dollars
+    return (currency ? currency + " " : "$") + num.toLocaleString(undefined, {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    });
+  }
+
+  function starsHtml(rating) {
+    var r = Number(rating) || 0;
+    var out = '<span class="stars" aria-label="' + r + ' out of 5">';
+    for (var i = 1; i <= 5; i++) out += i <= Math.round(r) ? "★" : "☆";
+    out += "</span>";
+    return out;
+  }
+
+  function badgeHtml(status) {
+    var cls = "badge";
+    var s = String(status || "").toLowerCase();
+    if (s === "completed" || s === "approved" || s === "read" || s === "active" || s === "confirmed") cls += " badge--ok";
+    else if (s === "pending" || s === "planning" || s === "unread") cls += " badge--warn";
+    else if (s === "cancelled" || s === "rejected" || s === "past_due" || s === "blocked") cls += " badge--danger";
+    return '<span class="' + cls + '">' + esc(String(status).replace(/_/g, " ")) + "</span>";
+  }
+
+  function imageHtml(src, name, cls, type) {
+    var safeName = esc(name || '');
+    var isPlaceholder = !src || src.indexOf('placeholder') > -1 || src.indexOf('null') > -1 || src.indexOf('undefined') > -1 || src.indexOf('loremflickr') > -1;
+    var prompt = name || 'beautiful travel destination';
+    if (type === 'destinations') prompt += ' city skyline landmark high quality photography';
+    else if (type === 'hotels') prompt += ' luxury hotel resort exterior high quality photography';
+    else if (type === 'restaurants') prompt += ' luxury restaurant interior dining high quality photography';
+    else if (type === 'attractions') prompt += ' famous attraction landmark high quality photography';
+    else prompt += ' beautiful travel photography';
+
+    var aiUrl = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=800&height=600&nologo=true';
+    var finalSrc = isPlaceholder ? aiUrl : src;
+    return '<img class="' + (cls || '') + '" src="' + esc(finalSrc) + '" alt="' + safeName + '" loading="lazy" onerror="this.onerror=null; this.src=\'' + aiUrl + '\';">';
+  }
+
+  function appBoot(callback) {
+    if (!It.session) return;
+    if (!It.session.hasToken()) {
+      It.session.redirectToLogin();
+      return;
+    }
+    It.session.currentUser().then(function (user) {
+      if (!user) {
+        It.session.clearSession();
+        It.session.redirectToLogin();
+        return;
+      }
+      var role = It.session.roleOf(user);
+      if (callback) callback(user, role);
+    });
+  }
+
+  // Helper object fallback for standalone modules
+  It.app = It.app || {};
+  It.app.esc = It.app.esc || esc;
+  It.app.showToast = It.app.showToast || function (msg, type) {
+    if (It.toast) return It.toast(msg, type);
+    if (global.ItTheme && global.ItTheme.toast) return global.ItTheme.toast(msg, type);
+    console.log("[Toast " + type + "]:", msg);
+  };
+  It.app.toast = It.app.toast || It.app.showToast;
+  It.app.money = It.app.money || money;
+  It.app.starsHtml = It.app.starsHtml || starsHtml;
+  It.app.badgeHtml = It.app.badgeHtml || badgeHtml;
+  It.app.imageHtml = It.app.imageHtml || imageHtml;
+  It.app.unwrapData = It.app.unwrapData || unwrapData;
+  It.app.boot = It.app.boot || appBoot;
+
+  It.feedback = It.feedback || {
+    banner: function (msg, cls) {
+      var box = document.getElementById("site-banner");
+      var text = document.getElementById("site-banner-msg");
+      if (!box || !text) return;
+      text.textContent = msg || "";
+      box.className = cls || "";
+      box.classList.add("is-visible");
+      setTimeout(function () { box.classList.remove("is-visible"); }, 4000);
+    },
+    toast: function (msg, type) {
+      if (It.app && It.app.showToast) It.app.showToast(msg, type);
+    }
+  };
+
+  global.Api = It.api;
 })(window);

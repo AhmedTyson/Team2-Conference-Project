@@ -127,7 +127,7 @@ document.getElementById('attachBtn').addEventListener('click', async function ()
     if (!id) { TP.toast('Pick an item to attach', true); return; }
     if (!state.trip) { TP.toast('No trip selected', true); return; }
     try {
-        await TP.api('/v1/trips/' + state.trip.id + '/attach/' + type, {
+        await TP.api('/trips/' + state.trip.id + '/attach/' + type, {
             method: 'POST',
             body: JSON.stringify({ id: parseInt(id, 10) })
         });
@@ -139,7 +139,7 @@ document.getElementById('attachBtn').addEventListener('click', async function ()
 window.detachItem = async function (attachId) {
     if (!state.trip) return;
     try {
-        await TP.api('/v1/trips/' + state.trip.id + '/detach/' + attachId, { method: 'DELETE' });
+        await TP.api('/trips/' + state.trip.id + '/detach/' + attachId, { method: 'DELETE' });
         await loadTripData(state.trip.id);
         TP.toast('Item detached from trip.');
     } catch (err) { TP.toast(err.message, true); }
@@ -147,7 +147,7 @@ window.detachItem = async function (attachId) {
 
 /* ----- Load trip ----- */
 async function loadTripData(id) {
-    var res = await TP.api('/v1/trips/' + id);
+    var res = await TP.api('/trips/' + id);
     state.trip = res.data;
     state.tripItems = state.trip.itinerary_items || [];
     renderHeader();

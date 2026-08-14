@@ -1,11 +1,14 @@
+@import url("tokens.css");
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+    font-family: var(--font-body, 'Inter', -apple-system, sans-serif);
 }
 body {
-    background: #f4f7fc;
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
     display: flex;
     justify-content: center;
     padding: 2rem 1rem;
@@ -14,9 +17,11 @@ body {
 .app-container {
     max-width: 1200px;
     width: 100%;
-    background: white;
+    background: hsl(var(--card));
+    color: hsl(var(--card-foreground));
+    border: 1px solid hsl(var(--border));
     border-radius: 32px;
-    box-shadow: 0 20px 40px rgba(0,20,40,0.08);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
     overflow: hidden;
     padding: 1.5rem 2rem 2.5rem;
     align-self: flex-start;
@@ -31,13 +36,13 @@ body {
     gap: 1rem;
 }
 .app-header h1 {
-    font-weight: 600;
+    font-weight: 700;
     font-size: 1.8rem;
-    color: #0b1a33;
+    color: hsl(var(--foreground));
     letter-spacing: -0.5px;
 }
 .app-header h1 i {
-    color: #3b7cff;
+    color: var(--accent);
     margin-right: 10px;
 }
 .user-badge {

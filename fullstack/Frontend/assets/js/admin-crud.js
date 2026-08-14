@@ -16,7 +16,7 @@
 
   const MODULES = {
     destinations: {
-      url: "/v1/admin/destinations",
+      url: "/admin/destinations",
       listLabel: "destinations",
       singular: "destination",
       sortable: { ID: "id", Name: "name", City: "city_name", Country: "country_id", Created: "created_at" },
@@ -29,7 +29,7 @@
       fields: [
         { key: "name", label: "Name", type: "text", required: true },
         { key: "city_name", label: "City", type: "text", required: true },
-        { key: "country_id", label: "Country", type: "select", optionsUrl: "/v1/admin/countries", optionLabel: "name" },
+        { key: "country_id", label: "Country", type: "select", optionsUrl: "/admin/countries", optionLabel: "name" },
         { key: "description", label: "Description", type: "textarea" },
         { key: "latitude", label: "Latitude", type: "number", step: "0.000001" },
         { key: "longitude", label: "Longitude", type: "number", step: "0.000001" },
@@ -37,7 +37,7 @@
       ],
     },
     hotels: {
-      url: "/v1/admin/hotels",
+      url: "/admin/hotels",
       listLabel: "hotels",
       singular: "hotel",
       sortable: {
@@ -54,7 +54,7 @@
       ],
       fields: [
         { key: "name", label: "Name", type: "text", required: true },
-        { key: "destination_id", label: "Destination", type: "select", optionsUrl: "/v1/admin/destinations", optionLabel: "name", required: true },
+        { key: "destination_id", label: "Destination", type: "select", optionsUrl: "/admin/destinations", optionLabel: "name", required: true },
         { key: "address", label: "Address", type: "text" },
         { key: "price_per_night", label: "Price / night (USD)", type: "number", step: "0.01" },
         { key: "stars", label: "Stars", type: "number", min: "1", max: "5" },
@@ -64,7 +64,7 @@
       ],
     },
     restaurants: {
-      url: "/v1/admin/restaurants",
+      url: "/admin/restaurants",
       listLabel: "restaurants",
       singular: "restaurant",
       sortable: {
@@ -81,7 +81,7 @@
       ],
       fields: [
         { key: "name", label: "Name", type: "text", required: true },
-        { key: "destination_id", label: "Destination", type: "select", optionsUrl: "/v1/admin/destinations", optionLabel: "name", required: true },
+        { key: "destination_id", label: "Destination", type: "select", optionsUrl: "/admin/destinations", optionLabel: "name", required: true },
         { key: "cuisine", label: "Cuisine", type: "text" },
         { key: "price_range", label: "Price range", type: "text" },
         { key: "rating", label: "Rating", type: "number", step: "0.1", min: "0", max: "5" },
@@ -90,7 +90,7 @@
       ],
     },
     countries: {
-      url: "/v1/admin/countries",
+      url: "/admin/countries",
       listLabel: "countries",
       singular: "country",
       sortable: { ID: "id", Name: "name", ISO: "iso_code", Capital: "capital", Currency: "currency" },
@@ -207,6 +207,30 @@
       ],
       fields: [
         { key: "status", label: "Status", type: "select", options: [{id: "pending", name: "Pending"}, {id: "approved", name: "Approved"}, {id: "rejected", name: "Rejected"}], optionLabel: "name" },
+      ],
+    },
+    flights: {
+      url: "/admin/flights",
+      listLabel: "flights",
+      singular: "flight",
+      sortable: { ID: "id", Airline: "airline", Number: "flight_number", Origin: "departure_airport", Destination: "arrival_airport", Price: "price", Created: "created_at" },
+      cols: ["ID", "Airline", "Flight #", "Route", "Departure", "Price", "Actions"],
+      cells: [
+        function (row) { return row.airline || "–"; },
+        function (row) { return '<span class="badge badge-warn">' + esc(row.flight_number || "–") + '</span>'; },
+        function (row) { return esc(row.departure_airport || "–") + " → " + esc(row.arrival_airport || "–"); },
+        function (row) { return row.departure_date ? row.departure_date.split('T')[0] : "–"; },
+        function (row) { return row.price == null ? "–" : "$" + Number(row.price).toLocaleString(); },
+      ],
+      fields: [
+        { key: "airline", label: "Airline", type: "text", required: true },
+        { key: "flight_number", label: "Flight Number", type: "text", required: true },
+        { key: "departure_airport", label: "Origin Airport (e.g. CAI)", type: "text", required: true },
+        { key: "arrival_airport", label: "Destination Airport (e.g. DXB)", type: "text", required: true },
+        { key: "departure_date", label: "Departure Date/Time", type: "text", required: true },
+        { key: "arrival_date", label: "Arrival Date/Time", type: "text" },
+        { key: "price", label: "Price (USD)", type: "number", step: "0.01" },
+        { key: "booking_status", label: "Status", type: "select", options: [{id: "confirmed", name: "Confirmed"}, {id: "pending", name: "Pending"}, {id: "cancelled", name: "Cancelled"}], optionLabel: "name" },
       ],
     },
   };
@@ -1069,7 +1093,10 @@
       });
   }
 
+    let isBooted = false;
     function boot(user) {
+      if (isBooted) return;
+      isBooted = true;
       const btnNew = el("btn-new");
       if (btnNew) btnNew.addEventListener("click", openNew);
       document.addEventListener("admin:search", function (e) { setSearch(e.detail); });
@@ -1079,4 +1106,19 @@
     document.addEventListener("itinari:ready", function(e) {
       boot(e.detail);
     });
+
+    function tryDirectBoot() {
+      if (isBooted) return;
+      if (global.Itinari && global.Itinari.session && global.Itinari.session.hasToken()) {
+        global.Itinari.session.currentUser().then(function (user) {
+          if (user) boot(user);
+        });
+      }
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", tryDirectBoot);
+    } else {
+      setTimeout(tryDirectBoot, 50);
+    }
   })(window);

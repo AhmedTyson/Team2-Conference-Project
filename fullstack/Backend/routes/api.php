@@ -245,6 +245,16 @@ Route::middleware(['auth:api', 'verified', 'throttle:ai'])->group(function () {
     Route::post('/trips/{trip}/concierge', [ConciergeController::class, 'ask']);
 });
 
+// ---- Real-Time Messaging & Conversations (Travelers, Agencies, AI Concierge)
+Route::middleware(['auth:api', 'verified'])->group(function () {
+    Route::get('/conversations', [\App\Http\Controllers\Chat\ConversationController::class, 'index']);
+    Route::post('/conversations', [\App\Http\Controllers\Chat\ConversationController::class, 'store']);
+    Route::get('/conversations/{conversation}', [\App\Http\Controllers\Chat\ConversationController::class, 'show']);
+    Route::get('/conversations/{conversation}/messages', [\App\Http\Controllers\Chat\ConversationController::class, 'messages']);
+    Route::post('/conversations/{conversation}/messages', [\App\Http\Controllers\Chat\ConversationController::class, 'sendMessage']);
+    Route::patch('/conversations/{conversation}/read', [\App\Http\Controllers\Chat\ConversationController::class, 'markAsRead']);
+});
+
 // ---- Interaction & reviews
 Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::post('/favourites/{type}/{id}', [InteractionController::class, 'toggleFavourite']);

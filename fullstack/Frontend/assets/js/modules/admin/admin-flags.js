@@ -10,7 +10,7 @@
   function el(id) { return document.getElementById(id); }
 
   function fetchFlags() {
-    It.apiGet('/v1/admin/flags', { auth: true })
+    It.apiGet('/admin/flags', { auth: true })
       .then(function(res) {
         var items = It.app.unwrapData(res) || [];
         var tbody = el('admin-flags-tbody');
@@ -68,7 +68,7 @@
   function processFlag(id, action) {
     if (!confirm('Are you sure you want to ' + action + ' this report?')) return;
     
-    It.apiPost('/v1/admin/flags/' + id + '/' + action, null, { auth: true })
+    It.apiPost('/admin/flags/' + id + '/' + action, null, { auth: true })
       .then(function() {
         It.app.toast('Report successfully ' + action + 'd', 'success');
         fetchFlags();

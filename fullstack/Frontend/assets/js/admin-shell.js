@@ -58,10 +58,10 @@
 
   function loadDashboard() {
     Promise.all([
-      It.apiGet("/v1/admin/analytics", { auth: true }),
-      It.apiGet("/v1/admin/analytics/revenue", { auth: true }),
-      It.apiGet("/v1/admin/users", { auth: true }),
-      It.apiGet("/v1/admin/trips", { auth: true }),
+      It.apiGet("/admin/analytics", { auth: true }),
+      It.apiGet("/admin/analytics/revenue", { auth: true }),
+      It.apiGet("/admin/users", { auth: true }),
+      It.apiGet("/admin/trips", { auth: true }),
     ]).then(function (results) {
       const [analytics, revenue, users, trips] = results;
 

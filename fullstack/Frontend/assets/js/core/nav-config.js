@@ -93,6 +93,7 @@
         { href: "hotels.html", label: "Hotels", icon: "hotels" },
         { href: "restaurants.html", label: "Restaurants", icon: "restaurants" },
         { href: "attractions.html", label: "Attractions", icon: "attractions" },
+        { href: "flights.html", label: "Flights", icon: "bookings" },
         { href: "categories.html", label: "Categories", icon: "explore" },
         { href: "countries.html", label: "Countries", icon: "countries" },
       ],

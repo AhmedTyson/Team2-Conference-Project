@@ -1,369 +1,164 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard · Itinari</title>
-  <link rel="stylesheet" href="../assets/css/dashboard.css?v=2" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <title>Dashboard · Itinera Travel</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome 6 Free -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../assets/css/tokens.css" />
+  <link rel="stylesheet" href="../assets/css/app.css" />
+  <link rel="stylesheet" href="../assets/css/components.css" />
+
   <script>/* FOUC prevention — default dark */
     (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
     if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
       document.documentElement.classList.add("dark","fouc-ready");
     else document.documentElement.classList.add("fouc-ready");
     })();
-  </script></head>
-<body data-page="dashboard" data-layout="app">
+  </script>
+</head>
+<body data-page="dashboard" class="is-booting" data-layout="app">
   <a href="#main-content-target" class="skip-link">Skip to main content</a>
 
-  <div class="app-container">
-    
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar">
-      <div class="logo-section">
-        <span class="logo-icon"></span>
-        <span>Itinari</span>
+  <div class="app">
+    <!-- Top Navigation Header (Unified App Shell) -->
+    <header class="app__header">
+      <a id="app-brand" class="app__brand" href="../public/index.html">
+        <span class="brand-mark">IT</span>
+        <span class="brand-name">Itinera</span>
+      </a>
+      <nav id="app-nav" class="nav" aria-label="Main navigation"></nav>
+      <div id="app-user" class="app__user">
+        <button id="theme-toggle" type="button" class="btn btn--ghost" aria-label="Toggle theme">◐</button>
       </div>
-      <ul class="nav-menu">
-        <li class="nav-item">
-          <a class="nav-link active" onclick="switchTab('overview')">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right:14px; width:20px; height:20px; stroke-width:2.2;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z"></path></svg>
-            Dashboard
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" onclick="switchTab('planner')">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right:14px; width:20px; height:20px; stroke-width:2.2;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
-            Trip Planner
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" onclick="switchTab('transactions')">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right:14px; width:20px; height:20px; stroke-width:2.2;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
-            Transactions
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" onclick="switchTab('reports')">
-            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="margin-right:14px; width:20px; height:20px; stroke-width:2.2;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z"></path></svg>
-            My Reports
-          </a>
-        </li>
-      </ul>
-      <div class="user-profile">
-        <div class="avatar" id="avatar-letters">U</div>
-        <div class="user-info">
-          <h4 id="user-display-name">Loading...</h4>
-          <p id="user-display-role">User</p>
-        </div>
-      </div>
-    </aside>
+    </header>
 
-    <!-- Main Content Area -->
-    <main class="main-content" id="main-content-target">
-      <header class="top-bar" style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 3rem;">
-        <h2 id="page-title" style="margin: 0;">Dashboard</h2>
-        <div class="flex" style="gap: 1rem; align-items: center;">
-          <button type="button" id="theme-toggle" class="btn-outline" aria-pressed="false" aria-label="Toggle theme" style="padding: 6px; border-radius: 40px; border: 1px solid var(--border); display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px;">
-            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="width:16px; height:16px;"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.9" y1="4.9" x2="6.3" y2="6.3"/><line x1="17.7" y1="17.7" x2="19.1" y2="19.1"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.9" y1="19.1" x2="6.3" y2="17.7"/><line x1="17.7" y1="6.3" x2="19.1" y2="4.9"/></svg>
-            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:16px; height:16px; display:none;"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
-          </button>
-          <button type="button" id="logout-btn" class="btn-outline" style="padding: 6px 14px; font-size: 12px; border-radius: 40px;">Log out</button>
-        </div>
-      </header>
+    <!-- Main Content -->
+    <main class="app__main" id="main-content-target">
+      <div class="page">
+        
+        <!-- Welcome Hero Header -->
+        <header class="page-header" style="display:flex;justify-content:space-between;align-items:flex-end;gap:var(--space-4);flex-wrap:wrap;">
+          <div>
+            <p class="page-header__eyebrow">Traveler Hub · Overview</p>
+            <h1 class="page-header__title" id="welcome-title">Welcome back, <span id="user-display-name">Traveler</span></h1>
+            <p class="page-header__lead">Here is an overview of your upcoming trips, saved places, and concierge reservations.</p>
+          </div>
+          <div style="display:flex;gap:var(--space-2);flex-wrap:wrap;">
+            <a href="planner.html" class="btn btn--primary"><i class="fas fa-plus"></i> Plan new trip</a>
+            <a href="../public/explore.html" class="btn btn--outline"><i class="fas fa-compass"></i> Explore spots</a>
+          </div>
+        </header>
 
-      <!-- 1. OVERVIEW VIEWPORT -->
-      <section id="tab-overview" class="tab-content active">
-        <div class="greet">
-          <h1 id="greet">Loading your dashboard…</h1>
-          <p class="sub" id="greet-sub"></p>
-        </div>
-
-        <section class="stats" aria-label="Trip statistics">
-          <div class="stat-card skeleton" id="stat-total">
+        <!-- KPI Summary Stats Grid -->
+        <section class="stat-grid" aria-label="Trip statistics" style="margin-bottom:var(--space-6);">
+          <div class="stat-card" id="stat-total">
             <span class="stat-label">Total trips</span>
-            <span class="stat-value">–</span>
+            <span class="stat-value" id="stat-val-trips">0</span>
           </div>
           <div class="stat-card" id="stat-pending">
             <span class="stat-label">Pending</span>
-            <span class="stat-value">–</span>
-          </div>
-          <div class="stat-card" id="stat-planning">
-            <span class="stat-label">Planning</span>
-            <span class="stat-value">–</span>
+            <span class="stat-value" id="stat-val-pending">0</span>
           </div>
           <div class="stat-card" id="stat-booked">
             <span class="stat-label">Booked</span>
-            <span class="stat-value">–</span>
-          </div>
-          <div class="stat-card" id="stat-completed">
-            <span class="stat-label">Completed</span>
-            <span class="stat-value">–</span>
-          </div>
-          <div class="stat-card" id="stat-cancelled">
-            <span class="stat-label">Cancelled</span>
-            <span class="stat-value">–</span>
+            <span class="stat-value" id="stat-val-booked">0</span>
           </div>
           <div class="stat-card" id="stat-favs">
-            <span class="stat-label">Favourites</span>
-            <span class="stat-value">–</span>
+            <span class="stat-label">Saved Favourites</span>
+            <span class="stat-value" id="stat-val-favs">0</span>
           </div>
         </section>
 
-        <section class="weather-widget" style="margin-bottom: 2rem; background: var(--bg-card); border-radius: 20px; padding: 1.5rem; border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: space-between;">
-          <div style="display:flex; align-items:center; gap: 1rem;">
-            <i class="fas fa-cloud-sun" style="font-size: 2.5rem; color: #facc15;"></i>
+        <!-- Weather Concierge Card -->
+        <section class="card card--flat" id="weather-widget" style="margin-bottom:var(--space-6);display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:var(--space-4);">
+            <div style="width:48px;height:48px;border-radius:50%;background:rgba(245,158,11,0.15);display:flex;align-items:center;justify-content:center;color:#f59e0b;font-size:24px;">
+              <i class="fas fa-cloud-sun"></i>
+            </div>
             <div>
-              <h3 style="margin: 0; font-size: 1.1rem; color: var(--text-primary);">Current Weather</h3>
-              <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;" id="weather-location">Loading location...</p>
+              <h3 style="margin:0;font-size:1.05rem;font-weight:700;">Weather Concierge</h3>
+              <p style="margin:0;color:hsl(var(--muted-foreground));font-size:0.88rem;" id="weather-location">Fetching location weather...</p>
             </div>
           </div>
-          <div style="text-align: right;">
-            <h2 style="margin: 0; font-size: 1.8rem; color: var(--text-primary);" id="weather-temp">--°C</h2>
-            <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;" id="weather-desc">Loading...</p>
+          <div style="text-align:right;">
+            <span style="font-size:1.6rem;font-weight:800;display:block;" id="weather-temp">22°C</span>
+            <span style="font-size:0.85rem;color:hsl(var(--muted-foreground));" id="weather-desc">Clear sky</span>
           </div>
         </section>
 
-        <section class="columns">
-          <div class="panel">
-            <h2>My trips</h2>
+        <!-- Two Column Dashboard Layout -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:var(--space-6);margin-bottom:var(--space-6);">
+          
+          <!-- Column 1: Recent Trips -->
+          <section class="card card--flat">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-4);padding-bottom:var(--space-3);border-bottom:1px solid hsl(var(--border));">
+              <h2 style="margin:0;font-size:1.15rem;font-weight:700;"><i class="fas fa-plane-departure" style="color:var(--accent);margin-right:6px;"></i> My Trips</h2>
+              <a href="trips.html" class="btn btn--sm btn--ghost">View all →</a>
+            </div>
             <div id="trips-list" class="feed" aria-live="polite">
-              <div class="skeleton"></div>
-              <div class="skeleton"></div>
+              <div class="skeleton skeleton--card"></div>
+              <div class="skeleton skeleton--card"></div>
             </div>
-          </div>
-          <div class="panel">
-            <h2>Favourite places</h2>
+          </section>
+
+          <!-- Column 2: Saved Places -->
+          <section class="card card--flat">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-4);padding-bottom:var(--space-3);border-bottom:1px solid hsl(var(--border));">
+              <h2 style="margin:0;font-size:1.15rem;font-weight:700;"><i class="fas fa-heart" style="color:#ef4444;margin-right:6px;"></i> Saved Places</h2>
+              <a href="favourites.html" class="btn btn--sm btn--ghost">View all →</a>
+            </div>
             <div id="favs-list" class="feed" aria-live="polite">
-              <div class="skeleton"></div>
-              <div class="skeleton"></div>
+              <div class="skeleton skeleton--card"></div>
+              <div class="skeleton skeleton--card"></div>
             </div>
+          </section>
+
+        </div>
+
+        <!-- Section 3: Notifications & Concierge Alerts -->
+        <section class="card card--flat">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-4);padding-bottom:var(--space-3);border-bottom:1px solid hsl(var(--border));">
+            <h2 style="margin:0;font-size:1.15rem;font-weight:700;"><i class="fas fa-bell" style="color:#f59e0b;margin-right:6px;"></i> Notifications & Activity</h2>
+            <a href="notifications.html" class="btn btn--sm btn--ghost">All alerts →</a>
           </div>
-          <div class="panel">
-            <h2>Notifications</h2>
-            <div id="notifications-list" class="feed" aria-live="polite">
-              <div class="skeleton"></div>
-              <div class="skeleton"></div>
-            </div>
-          </div>
-        </section>
-      </section>
-
-      <!-- 2. TRIP PLANNER VIEWPORT -->
-      <section id="tab-planner" class="tab-content">
-        <!-- Sub navigation pills -->
-        <div class="nav-pills" id="navPills" style="margin-bottom: 2.2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.8rem; display: flex; gap: 0.8rem;">
-            <button class="active" onclick="switchPlannerSubTab('page-trips')" class="planner-tab"><i class="fas fa-list-ul"></i> My Trips</button>
-            <button onclick="switchPlannerSubTab('page-create')" class="planner-tab"><i class="fas fa-plus-circle"></i> Create Trip</button>
-            <button onclick="switchPlannerSubTab('page-details')" id="tab-details-btn" class="planner-tab"><i class="fas fa-map-pin"></i> Trip Details</button>
-            <button onclick="switchPlannerSubTab('page-schedule')" id="tab-schedule-btn" class="planner-tab"><i class="fas fa-calendar-alt"></i> Schedule</button>
-            <button onclick="switchPlannerSubTab('page-checkout')" id="tab-checkout-btn" class="planner-tab"><i class="fas fa-credit-card"></i> Checkout</button>
-        </div>
-
-        <!-- 2.1 My Trips List -->
-        <div id="page-trips" class="planner-sub-page" style="display: block;">
-            <div class="flex" style="justify-content: space-between; margin-bottom: 0.5rem; display: flex; align-items: center;">
-                <h2 style="color:var(--text-primary); font-family:'Outfit'; font-size:20px;">✈️ My Trips</h2>
-                <button class="btn-primary" onclick="switchPlannerSubTab('page-create')" style="background: var(--primary-accent); border: none; padding: 0.6rem 1.6rem; border-radius: 40px; color: white; font-weight: 500; cursor: pointer;"><i class="fas fa-plus"></i> New Trip</button>
-            </div>
-            <div class="trip-grid" id="trip-grid-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px,1fr)); gap: 1.5rem; margin-top: 0.8rem;">
-                <!-- Injected dynamically from database -->
-            </div>
-            <p class="text-muted" style="margin-top: 1.5rem; color: var(--text-muted);" id="trips-count-meta"><i class="fas fa-info-circle"></i> 0 trips · last updated today</p>
-        </div>
-
-        <!-- 2.2 Create Trip -->
-        <div id="page-create" class="planner-sub-page" style="display: none;">
-            <h2 style="color:var(--text-primary); margin-bottom: 1.2rem; font-family:'Outfit'; font-size:20px;"><i class="fas fa-pencil-alt"></i> Create new trip</h2>
-            <div class="create-form" style="background: var(--bg-card); border-radius: 28px; padding: 2rem 1.8rem; border: 1px solid var(--border-color); max-width: 700px;">
-                <div class="form-group" style="margin-bottom: 1.5rem;">
-                    <label style="font-weight: 500; color: var(--text-secondary); display: block; margin-bottom: 6px;">Trip name</label>
-                    <input type="text" id="trip-title-input" placeholder="e.g. Japan Adventure" value="Kyoto & Tokyo" style="width: 100%; padding: 0.8rem 1rem; border-radius: 40px; border: 1px solid var(--border-color); font-size: 1rem; background: white; outline: none;">
-                </div>
-                <div class="form-row" style="display: flex; gap: 1.2rem; flex-wrap: wrap;">
-                    <div class="form-group" style="flex: 1; min-width: 150px;">
-                        <label style="font-weight: 500; color: var(--text-secondary); display: block; margin-bottom: 6px;">Start</label>
-                        <input type="date" id="trip-start-input" value="2026-09-10" style="width: 100%; padding: 0.8rem 1rem; border-radius: 40px; border: 1px solid var(--border-color); font-size: 1rem; background: white; outline: none;">
-                    </div>
-                    <div class="form-group" style="flex: 1; min-width: 150px;">
-                        <label style="font-weight: 500; color: var(--text-secondary); display: block; margin-bottom: 6px;">End</label>
-                        <input type="date" id="trip-end-input" value="2026-09-20" style="width: 100%; padding: 0.8rem 1rem; border-radius: 40px; border: 1px solid var(--border-color); font-size: 1rem; background: white; outline: none;">
-                    </div>
-                </div>
-                <div class="form-group" style="margin-bottom: 1.5rem; margin-top: 1.5rem;">
-                    <label style="font-weight: 500; color: var(--text-secondary); display: block; margin-bottom: 6px;">Travelers</label>
-                    <input type="number" id="trip-travelers-input" value="2" min="1" style="width: 100%; padding: 0.8rem 1rem; border-radius: 40px; border: 1px solid var(--border-color); font-size: 1rem; background: white; outline: none;">
-                </div>
-                <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem;">
-                    <button class="btn-primary" onclick="saveNewTripToDb()" style="background: var(--primary-accent); border: none; padding: 0.6rem 1.6rem; border-radius: 40px; color: white; font-weight: 500; cursor: pointer;"><i class="fas fa-save"></i> Save Trip</button>
-                    <button class="btn-outline" onclick="switchPlannerSubTab('page-trips')">Cancel</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- 2.3 Trip Details -->
-        <div id="page-details" class="planner-sub-page" style="display: none;">
-            <div class="detail-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; margin-bottom: 1.8rem; gap: 1rem;">
-                <h2 id="details-trip-title" style="font-family:'Outfit'; font-size:22px;"><i class="fas fa-map-marked-alt"></i> No Trip Selected</h2>
-                <div style="display: flex; gap: 0.5rem; align-items: center;">
-                    <button class="btn-primary" style="padding:0.4rem 1.2rem; background: var(--primary-accent); border:none; color:white; border-radius:40px; font-weight:600;" onclick="enhanceTrip()"><i class="fas fa-magic"></i> Enhance</button>
-                    <button class="btn-outline" style="padding:0.4rem 1.2rem; border-radius:40px;" onclick="reviewTrip()"><i class="fas fa-robot"></i> Review</button>
-                    <button class="btn-outline" style="padding:0.4rem 1.2rem; border-radius:40px;" onclick="switchPlannerSubTab('page-trips')"><i class="fas fa-arrow-left"></i> Back</button>
-                </div>
-            </div>
-            <div class="timeline-map" style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 2rem;">
-                <div>
-                    <h4 style="margin-bottom: 0.8rem; color:var(--text-primary); font-family:'Outfit'; font-size:16px;"><i class="fas fa-clock"></i> Timeline</h4>
-                    <div id="timeline-container">
-                        <!-- Injected itinerary nodes -->
-                    </div>
-                </div>
-                <div>
-                    <h4 style="margin-bottom: 0.8rem; color:var(--text-primary); font-family:'Outfit'; font-size:16px;"><i class="fas fa-map"></i> Map Route</h4>
-                    <div class="map-placeholder" id="map-canvas-container" style="background: var(--bg-card); border-radius: 20px; height: 180px; display: flex; align-items: center; justify-content: center; color: var(--primary-accent); font-weight: 500; border: 2px dashed var(--border-color); position: relative; overflow: hidden;">
-                        <!-- Dynamic SVG route map -->
-                    </div>
-                    <!-- attach/detach modal simulation -->
-                    <div class="modal-card" style="margin-top: 1.2rem; background: white; border-radius: 28px; padding: 1.8rem; border: 1px solid var(--border-color); box-shadow: 0 6px 14px rgba(0,0,0,0.02);">
-                        <h4 style="color:var(--text-primary); font-family:'Outfit'; font-size:15px;"><i class="fas fa-paperclip"></i> Attach / Detach items</h4>
-                        <div style="display: flex; gap: 8px; margin-bottom: 15px;">
-                            <select id="modal-item-select" style="flex-grow: 1; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border-color); outline: none;">
-                                <!-- Option values populated dynamically -->
-                            </select>
-                            <button class="btn-primary" style="padding: 4px 14px; font-size: 13px; background: var(--primary-accent); color:white; border-radius:40px;" onclick="addSelectedItemToTrip()">Attach</button>
-                        </div>
-                        <div id="attached-items-list">
-                            <!-- Injected attached rows -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- AI Concierge Chat Widget -->
-            <div class="concierge-widget" style="margin-top: 2rem; background: var(--bg-card); border-radius: 24px; padding: 1.5rem; border: 1px solid var(--border-color);">
-                <h4 style="margin-bottom: 1rem; color:var(--text-primary); font-family:'Outfit'; font-size:16px;"><i class="fas fa-robot"></i> Trip Concierge AI</h4>
-                <div id="concierge-chat-history" style="height: 200px; overflow-y: auto; background: rgba(0,0,0,0.02); border-radius: 12px; padding: 1rem; margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.8rem;">
-                    <div style="align-self: flex-start; background: var(--bg-surface); padding: 0.8rem 1rem; border-radius: 12px 12px 12px 0; border: 1px solid var(--border-color); font-size: 0.9rem;">
-                        Hi! I'm your AI concierge for this trip. How can I help you?
-                    </div>
-                </div>
-                <div style="display: flex; gap: 0.8rem;">
-                    <input type="text" id="concierge-input" placeholder="Ask about this trip..." style="flex-grow: 1; padding: 0.8rem 1.2rem; border-radius: 40px; border: 1px solid var(--border-color); font-size: 0.95rem; outline: none;">
-                    <button class="btn-primary" onclick="sendConciergeMessage()" style="background: var(--primary-accent); color: white; border: none; border-radius: 40px; padding: 0 1.5rem;"><i class="fas fa-paper-plane"></i></button>
-                </div>
-            </div>
-        </div>
-
-        <!-- 2.4 Schedule -->
-        <div id="page-schedule" class="planner-sub-page" style="display: none;">
-            <h2 style="color:var(--text-primary); font-family:'Outfit'; font-size:20px;" id="schedule-trip-title"><i class="fas fa-calendar-check"></i> Schedule</h2>
-            <div class="calendar-grid" id="calendar-days-container" style="display: grid; grid-template-columns: repeat(7,1fr); gap: 8px; margin: 1rem 0 1.5rem;">
-                <!-- Calendar days generated dynamically -->
-            </div>
-            <div class="schedule-list" id="schedule-items-list">
-                <!-- Injected time slots -->
-            </div>
-        </div>
-
-        <!-- 2.5 Checkout -->
-        <div id="page-checkout" class="planner-sub-page" style="display: none;">
-            <h2 style="color:var(--text-primary); font-family:'Outfit'; font-size:20px;"><i class="fas fa-receipt"></i> Checkout · Booking summary</h2>
-            <div class="checkout-summary" id="checkout-summary-container" style="background: var(--bg-card); border-radius: 28px; padding: 2rem; border: 1px solid var(--border-color); max-width: 600px;">
-                <!-- Itemized invoices injected dynamically -->
-            </div>
-        </div>
-      </section>
-
-      <!-- 3. TRANSACTIONS VIEWPORT -->
-      <section id="tab-transactions" class="tab-content">
-        <div class="greet">
-          <h1>Transaction History</h1>
-          <p class="sub">View and download invoices or receipts of your settled bookings.</p>
-        </div>
-
-        <section class="stats" aria-label="Transaction statistics" style="max-width: 600px;">
-          <div class="stat-card" style="min-width: 140px;">
-            <span class="stat-label">Total Spent</span>
-            <span class="stat-value" id="stat-tx-spent">$1,210.00</span>
-          </div>
-          <div class="stat-card" style="min-width: 140px;">
-            <span class="stat-label">Payment Gateway</span>
-            <span class="stat-value" style="font-size: 16px; margin-top: 8px; font-weight:700;">Paymob Egypt</span>
-          </div>
-          <div class="stat-card" style="min-width: 140px;">
-            <span class="stat-label">Security Lock</span>
-            <span class="stat-value" style="font-size: 16px; margin-top: 8px; font-weight:700; color:var(--success-accent);"><i class="fas fa-lock"></i> 3D Secure</span>
+          <div id="notifications-list" class="feed" aria-live="polite">
+            <div class="skeleton skeleton--line skeleton--wide"></div>
+            <div class="skeleton skeleton--line skeleton--wide"></div>
           </div>
         </section>
 
-        <div class="tx-table-container">
-          <h2>All Settlements</h2>
-          <div id="transactions-list-feed">
-            <!-- Dynamically injected payment entries -->
-          </div>
-        </div>
-      </section>
-
-      <!-- 4. REPORTS VIEWPORT -->
-      <section id="tab-reports" class="tab-content">
-        <div class="greet">
-          <h1>My Reports</h1>
-          <p class="sub">A history of reports you have filed against agencies.</p>
-        </div>
-
-        <div class="panel" style="max-width: 800px; margin-top: 1rem;">
-          <div id="dashboard-reports-list" class="feed" aria-live="polite">
-            <div class="skeleton"></div>
-            <div class="skeleton"></div>
-          </div>
-        </div>
-      </section>
-
+      </div>
     </main>
+
+    <!-- Footer -->
+    <footer class="app__footer">
+      <span>Itinera · Luxury Travel & Concierge</span>
+      <span>•</span>
+      <span>Plan. Explore. Remember.</span>
+    </footer>
   </div>
 
-  <!-- Detailed Receipt Modal Popup -->
-  <div id="receipt-modal-backdrop" class="modal-backdrop" onclick="closeReceiptModal()">
-    <div class="receipt-modal" onclick="event.stopPropagation()">
-      <div class="receipt-header">
-        <div class="receipt-brand">Itinari</div>
-        <div class="receipt-status">Paid</div>
-      </div>
-      <div class="receipt-row">
-        <span class="lbl">Receipt ID</span>
-        <span class="val" id="rec-id">#REC-8749-X</span>
-      </div>
-      <div class="receipt-row">
-        <span class="lbl">Transaction Date</span>
-        <span class="val" id="rec-date">2026-08-08</span>
-      </div>
-      <div class="receipt-row">
-        <span class="lbl">Payment Provider</span>
-        <span class="val">Paymob Egypt</span>
-      </div>
-      <div class="receipt-row">
-        <span class="lbl">Itemized Billing</span>
-        <span class="val" id="rec-details">Bali Escape Packages</span>
-      </div>
-      <div class="receipt-total">
-        <span>Settled Total</span>
-        <span id="rec-total">$1,210.00</span>
-      </div>
-      <button type="button" class="btn-outline" style="width: 100%; margin-top: 24px; padding: 10px; border-radius:12px;" onclick="closeReceiptModal()">Dismiss Statement</button>
-    </div>
-  </div>
-
-  <!-- Toast banners -->
   <div id="site-banner" role="status">
     <span id="site-banner-msg"></span><span id="site-banner-drain" aria-hidden="true"></span>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script src="../assets/js/config.js?v=1786177601"></script>
-  <script src="../assets/js/api.js?v=2"></script>
-  <script src="../assets/js/animations.js"></script>
-  <script src="../assets/js/session.js?v=2"></script>
-  <script src="../assets/js/dashboard.js?v=2"></script>
+  <!-- Core Scripts -->
+  <script src="../assets/js/core/config.js"></script>
+  <script src="../assets/js/core/api.js"></script>
+  <script src="../assets/js/core/session.js"></script>
+  <script src="../assets/js/core/nav-config.js"></script>
+  <script src="../assets/js/core/app-shell.js"></script>
+  <script src="../assets/js/modules/customer/dashboard.js"></script>
   <script src="../assets/js/core/topbar.js"></script>
   <script src="../assets/js/core/theme.js"></script>
 </body>

@@ -63,7 +63,7 @@
           if (!global.confirm("Cancel your subscription?")) return;
           cancel.disabled = true;
           cancel.textContent = "Cancelling…";
-          It.apiPost("/v1/me/subscription/cancel", {}, { auth: true }).then(function (res) {
+          It.apiPost("/me/subscription/cancel", {}, { auth: true }).then(function (res) {
             if (res.ok) {
               It.app.showToast("Subscription cancelled — you keep access until renewal.", "info");
               global.location.reload();
@@ -93,7 +93,7 @@
         var isUpgrade = current && current.status === "active" && current.plan_id !== planId;
         btn.disabled = true;
         btn.textContent = "Working…";
-        var request = It.apiPost("/v1/checkout/initiate", {
+        var request = It.apiPost("/checkout/initiate", {
           type: "subscription",
           plan_id: planId
         }, { auth: true });
@@ -117,8 +117,8 @@
   }
 
   It.app.boot(function (user) {
-    var reqs = [It.apiGet("/v1/plans")];
-    if (user) reqs.push(It.apiGet("/v1/me/subscription", { auth: true }));
+    var reqs = [It.apiGet("/plans")];
+    if (user) reqs.push(It.apiGet("/me/subscription", { auth: true }));
 
     Promise.all(reqs).then(function (results) {
       var plans = It.app.unwrapData(results[0]);

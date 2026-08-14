@@ -183,7 +183,7 @@
       });
     }
 
-    It.apiGet("/v1/dashboard/trips", { auth: true }).then(function (res) {
+    It.apiGet("/dashboard/trips", { auth: true }).then(function (res) {
       var trips = It.app.unwrapData(res);
       if (!Array.isArray(trips)) return;
       var sel = el("trip-select");
@@ -205,7 +205,7 @@
         if (!sel.value) return;
         var btn = this;
         btn.disabled = true;
-        It.apiPost("/v1/trips/" + sel.value + "/attach/" + ATTACH_TYPE[type], { id: id }, { auth: true }).then(function (res) {
+        It.apiPost("/trips/" + sel.value + "/attach/" + ATTACH_TYPE[type], { id: id }, { auth: true }).then(function (res) {
           if (res.ok) {
             It.app.showToast("Added to your trip.", "success");
             sel.value = "";
@@ -224,7 +224,7 @@
     el("fav-btn").addEventListener("click", function () {
       var btn = this;
       btn.disabled = true;
-      It.apiPost("/v1/favourites/" + type + "/" + id, {}, { auth: true }).then(function (res) {
+      It.apiPost("/favourites/" + type + "/" + id, {}, { auth: true }).then(function (res) {
         var status = res.body && res.body.status;
         if (status === "added" || status === "removed") {
           btn.textContent = status === "added" ? "♥ Saved" : "♡ Save to favourites";
@@ -247,7 +247,7 @@
       }
       var btn = this;
       btn.disabled = true;
-      It.apiPost("/v1/reviews/" + type + "/" + id, {
+      It.apiPost("/reviews/" + type + "/" + id, {
         rating: rating,
         comment: el("review-comment").value.trim() || undefined,
       }, { auth: true }).then(function (res) {

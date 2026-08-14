@@ -12,7 +12,7 @@
   function el(id) { return document.getElementById(id); }
 
   function loadAgencyUsers() {
-    return It.apiGet("/v1/admin/users", { auth: true }).then(function (res) {
+    return It.apiGet("/admin/users", { auth: true }).then(function (res) {
       const rows = (res && res.data) || res || [];
       agencyUsers = rows.filter(function (u) {
         return Array.isArray(u.roles) && u.roles.indexOf("agency") !== -1;
@@ -48,7 +48,7 @@
       It.feedback.banner("Choose an agency first.", "is-error");
       return;
     }
-    It.apiPost("/v1/admin/agency-requests/" + requestId + "/approve", { agency_user_id: Number(agencyUserId) }, { auth: true })
+    It.apiPost("/admin/agency-requests/" + requestId + "/approve", { agency_user_id: Number(agencyUserId) }, { auth: true })
       .then(function () {
         It.feedback.banner("Request assigned to agency.", "is-ok");
         load();
@@ -103,7 +103,7 @@
   }
 
   function load() {
-    It.apiGet("/v1/admin/agency-requests", { auth: true }).then(function (res) {
+    It.apiGet("/admin/agency-requests", { auth: true }).then(function (res) {
       const rows = (res && res.data) || res || [];
       renderTable(rows);
     }).catch(function () {

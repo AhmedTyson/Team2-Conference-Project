@@ -1,157 +1,118 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Verify your email · Itinera</title>
+
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../assets/css/tokens.css" />
   <link rel="stylesheet" href="../assets/css/auth.css" />
+
   <script>/* FOUC prevention — default dark */
     (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
     if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
       document.documentElement.classList.add("dark","fouc-ready");
     else document.documentElement.classList.add("fouc-ready");
     })();
-  </script></head>
+  </script>
+</head>
 <body data-page="email-notice" data-layout="auth">
-  <main class="auth-shell">
-    <section class="auth-visual">
-      <div class="brand">Itinera</div>
-      <div>
-        <h1>Confirm<br />your email.</h1>
-        <p>Open the signed link we sent you — it activates your account so you can plan trips and book stays.</p>
+  <a href="#main-content-target" class="skip-link">Skip to main content</a>
+
+  <!-- Top Navigation Header -->
+  <header class="auth-nav-header">
+    <div class="auth-nav-container">
+      <a href="../public/index.html" class="auth-brand">
+        <span class="brand-mark">IT</span>
+        <span>Itinera</span>
+      </a>
+      <nav class="auth-nav-links" aria-label="Public Navigation">
+        <a href="../public/index.html" class="auth-nav-link"><i class="fas fa-home"></i> <span>Home</span></a>
+        <a href="../public/explore.html" class="auth-nav-link"><i class="fas fa-compass"></i> <span>Explore</span></a>
+        <a href="../public/plans.html" class="auth-nav-link"><i class="fas fa-ticket-alt"></i> <span>Plans</span></a>
+        <a href="../public/about.html" class="auth-nav-link"><i class="fas fa-info-circle"></i> <span>About</span></a>
+        <a href="../public/contact.html" class="auth-nav-link"><i class="fas fa-envelope"></i> <span>Contact</span></a>
+      </nav>
+      <div class="topbar-right" id="navAuthContainer">
+        <!-- Injected dynamically by topbar.js: Command Palette, Theme Switcher, CTA -->
       </div>
-    </section>
+    </div>
+  </header>
 
-    <section class="auth-form-side">
-      <div class="auth-card">
-        <h2>Check your inbox</h2>
-        <p class="sub">Your account is pending email verification. The link expires once used, and each resend is throttled to one per minute.</p>
-
-        <div class="field" style="display:none;">
-          <input type="hidden" id="v-email-src" />
+  <!-- Main Auth Container -->
+  <div class="auth-main-wrapper" id="main-content-target">
+    <main class="auth-shell">
+      <section class="auth-visual">
+        <div class="auth-slides">
+          <div class="auth-slide active" style="background-image: url('../assets/img/slide1.png');"></div>
+          <div class="auth-slide" style="background-image: url('../assets/img/slide2.png');"></div>
+          <div class="auth-slide" style="background-image: url('../assets/img/slide3.png');"></div>
         </div>
-
-        <div class="glass-note" id="notice-box">
-          <p class="notice-title"><i class="fas fa-paper-plane" aria-hidden="true"></i> What happens next</p>
-          <ol class="notice-steps">
-            <li>Open the verification email from Itinera.</li>
-            <li>Click the <strong>Verify email address</strong> button (signed URL).</li>
-            <li>Return here and sign in — your dashboard unlocks.</li>
-          </ol>
-          <p class="notice-tip" id="notice-tip">No email yet? Check spam, or resend below (one per minute).</p>
+        <div class="brand">Itinera</div>
+        <div>
+          <h1>Confirm<br />your email.</h1>
+          <p>Open the signed link we sent you — it activates your account so you can plan trips and book stays.</p>
         </div>
+      </section>
 
-        <button type="button" id="v-resend" class="btn-primary" style="margin-top:1.1rem;">
-          <span class="spinner"></span>
-          <span class="btn-label">Resend verification email</span>
-        </button>
-        <p class="resend-count" id="resend-count" role="status" aria-live="polite"></p>
+      <section class="auth-form-side">
+        <div class="auth-card">
+          <h2>Check your inbox</h2>
+          <p class="sub">Your account is pending email verification. The link expires once used, and each resend is throttled to one per minute.</p>
 
-        <div class="auth-links">
-          <a href="login.html">Back to log in</a>
-          <span class="sep">·</span>
-          <a href="index.html">Home</a>
+          <div class="field" style="display:none;">
+            <input type="hidden" id="v-email-src" />
+          </div>
+
+          <div class="glass-note" id="notice-box">
+            <p class="notice-title"><i class="fas fa-paper-plane" aria-hidden="true"></i> What happens next</p>
+            <ol class="notice-steps">
+              <li>Open the verification email from Itinera.</li>
+              <li>Click the <strong>Verify email address</strong> button (signed URL).</li>
+              <li>Return here and sign in — your dashboard unlocks.</li>
+            </ol>
+            <p class="notice-tip" id="notice-tip">No email yet? Check spam, or resend below (one per minute).</p>
+          </div>
+
+          <button type="button" id="v-resend" class="btn-primary" style="margin-top:1.1rem;">
+            <span class="spinner"></span>
+            <span class="btn-label">Resend verification email</span>
+          </button>
+          <p class="resend-count" id="resend-count" role="status" aria-live="polite"></p>
+
+          <div class="auth-links">
+            <a href="login.html">Back to log in</a>
+            <span class="sep">·</span>
+            <a href="../public/index.html">Home</a>
+          </div>
         </div>
-      </div>
-    </section>
-  </main>
+      </section>
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="auth-footer">
+    <span>Itinera · Luxury Travel & Concierge</span>
+    <span>•</span>
+    <span>Plan. Explore. Remember.</span>
+  </footer>
 
   <div id="site-banner" role="status">
     <span id="site-banner-msg"></span><span id="site-banner-drain" aria-hidden="true"></span>
   </div>
 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <style>
-    .glass-note {
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 1rem;
-      padding: 1.1rem 1.2rem;
-    }
-    .notice-title { margin: 0 0 0.6rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
-    .notice-title i { color: rgba(255, 255, 255, 0.4); }
-    .notice-steps { margin: 0; padding-left: 1.2rem; font-size: 0.85rem; color: rgba(255, 255, 255, 0.7); display: grid; gap: 0.35rem; }
-    .notice-tip { margin: 0.75rem 0 0; font-size: 0.78rem; color: rgba(255, 255, 255, 0.45); }
-    .resend-count { min-height: 1.2rem; margin: 0.5rem 0 0; font-size: 0.78rem; color: rgba(255, 255, 255, 0.5); text-align: center; }
-  </style>
-
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script src="../assets/js/config.js?v=1786177601"></script>
-  <script src="../assets/js/api.js"></script>
-  <script src="../assets/js/animations.js"></script>
-  <script src="../assets/js/session.js"></script>
-  <script>
-  /* Email-Notice page — signed-verify explainer + throttled resend (60 s). */
-  (function () {
-    'use strict';
-    const It = window.Itinari;
-    const btn = document.getElementById('v-resend');
-    const countEl = document.getElementById('resend-count');
-    const COOLDOWN_KEY = 'itinera_resend_until';
-    const COOLDOWN_MS = 60 * 1000;
-
-    const q = new URLSearchParams(window.location.search);
-    const email = q.get('email');
-    if (email) {
-      const tip = document.getElementById('notice-tip');
-      if (tip) tip.textContent = 'We sent the link to ' + email + '. No email yet? Check spam, or resend below (one per minute).';
-    }
-
-    function remaining() {
-      const until = parseInt(localStorage.getItem(COOLDOWN_KEY) || '0', 10);
-      return Math.max(0, until - Date.now());
-    }
-
-    function startCooldown() {
-      localStorage.setItem(COOLDOWN_KEY, String(Date.now() + COOLDOWN_MS));
-    }
-
-    function renderCountdown() {
-      const left = remaining();
-      if (left > 0) {
-        const secs = Math.ceil(left / 1000);
-        countEl.textContent = 'Resend available in 0:' + String(secs).padStart(2, '0');
-        btn.disabled = true;
-      } else {
-        countEl.textContent = '';
-        btn.disabled = false;
-      }
-    }
-
-    setInterval(renderCountdown, 500);
-    renderCountdown();
-
-    btn.addEventListener('click', async function () {
-      if (remaining() > 0) { renderCountdown(); return; }
-      const token = It.readToken();
-      if (!token) {
-        It.feedback.banner('No active session. Log in, then resend verification.', 'is-error');
-        return;
-      }
-      It.feedback.loading(btn, true);
-      try {
-        const res = await It.apiPost(It.CONFIG.routes.resend, {}, { headers: { Authorization: 'Bearer ' + token } });
-        if (res.ok) {
-          startCooldown();
-          renderCountdown();
-          It.feedback.banner((res.body && res.body.message) || 'Verification link sent — check your inbox.', 'is-ok');
-        } else if (res.status === 429) {
-          startCooldown();
-          renderCountdown();
-          It.feedback.banner('Too many requests — try again in a minute.', 'is-error');
-        } else {
-          It.feedback.banner((res.body && res.body.message) || 'Could not send the link.', 'is-error');
-        }
-      } catch (err) {
-        It.feedback.banner(err.message || 'Could not reach the server.', 'is-error');
-      } finally {
-        It.feedback.loading(btn, false);
-      }
-    });
-  })();
-  </script>
+  <script src="../assets/js/core/config.js"></script>
+  <script src="../assets/js/core/api.js"></script>
+  <script src="../assets/js/utils/validation.js"></script>
+  <script src="../assets/js/core/animations.js"></script>
+  <script src="../assets/js/core/session.js"></script>
+  <script src="../assets/js/utils/password-toggle.js"></script>
+  <script src="../assets/js/pages/auth/auth.js"></script>
   <script src="../assets/js/core/topbar.js"></script>
   <script src="../assets/js/core/theme.js"></script>
 </body>

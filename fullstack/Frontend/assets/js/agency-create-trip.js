@@ -47,7 +47,7 @@
           currency: 'USD'
         };
 
-        It.apiPost('/v1/agency/assignments/' + encodeURIComponent(assignmentId) + '/trips', payload)
+        It.apiPost('/agency/assignments/' + encodeURIComponent(assignmentId) + '/trips', payload)
           .then(function() {
             It.app.showToast('Trip proposal created successfully!', 'success');
             setTimeout(function() {

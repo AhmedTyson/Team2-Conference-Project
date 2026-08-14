@@ -20,7 +20,7 @@
   };
 
   It.app.boot(function () {
-    It.apiGet("/v1/me/reviews", { auth: true }).then(function (res) {
+    It.apiGet("/me/reviews", { auth: true }).then(function (res) {
       var items = It.app.unwrapData(res);
       if (!Array.isArray(items)) items = [];
       if (!items.length) {
@@ -51,7 +51,7 @@
         btn.addEventListener("click", function () {
           if (!global.confirm("Delete this review?")) return;
           btn.disabled = true;
-          It.apiDelete("/v1/reviews/" + btn.dataset.id, { auth: true }).then(function (res) {
+          It.apiDelete("/reviews/" + btn.dataset.id, { auth: true }).then(function (res) {
             if (res.ok) {
               It.app.showToast("Review deleted.", "info");
               var row = btn.closest(".review-row");

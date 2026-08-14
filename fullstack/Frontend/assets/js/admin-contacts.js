@@ -159,10 +159,9 @@
 
   function load(page) {
     state.page = page;
-    It.apiGet("/v1/admin/contacts?page=" + page, { auth: true }).then(function (res) {
-      var data = (res && res.body) || {};
-      state.rows = data.data || [];
-      state.meta = data.meta || null;
+    It.apiGet("/admin/contacts?page=" + page, { auth: true }).then(function (res) {
+      state.rows = It.unwrapData(res) || [];
+      state.meta = It.parseMeta(res);
       applyFilter();
     }).catch(function () {
       It.feedback.banner("Could not load contacts.", "is-error");
@@ -184,7 +183,7 @@
   }
 
   function markRead(id) {
-    It.apiPatch("/v1/admin/contacts/" + id + "/read", undefined, { auth: true }).then(function (res) {
+    It.apiPatch("/admin/contacts/" + id + "/read", undefined, { auth: true }).then(function (res) {
       if (res && res.ok) {
         It.feedback.banner("Contact marked as read.", "is-ok");
         load(state.page);
@@ -197,7 +196,7 @@
   }
 
   function markResolved(id) {
-    It.apiPatch("/v1/admin/contacts/" + id + "/resolve", undefined, { auth: true }).then(function (res) {
+    It.apiPatch("/admin/contacts/" + id + "/resolve", undefined, { auth: true }).then(function (res) {
       if (res && res.ok) {
         It.feedback.banner("Contact marked as resolved.", "is-ok");
         load(state.page);
