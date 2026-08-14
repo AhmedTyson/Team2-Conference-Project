@@ -270,99 +270,35 @@ class ConversationController extends Controller
     }
 
     /**
-     * Smart, prompt-aware AI Concierge generator powered by real database catalog records & Wikipedia Live Search API.
+     * Smart, prompt-aware AI Concierge generator powered by Wikipedia Live Search API & Real-world Knowledge.
      */
     protected function generateSmartConciergeReply(string $prompt, Conversation $conversation): string
     {
         $p = strtolower(trim($prompt));
 
-        $dest = 'Global Destinations';
-        if ($conversation->trip && $conversation->trip->destinations->first()) {
-            $dest = $conversation->trip->destinations->first()->name;
-        }
-
-        // 1. Real Hotels from Database
-        if (str_contains($p, 'hotel') || str_contains($p, 'stay') || str_contains($p, 'resort') || str_contains($p, 'boutique') || str_contains($p, 'room') || str_contains($p, 'suite')) {
-            $hotels = Hotel::with('destination')->where('availability', true)->orderByDesc('rating')->take(4)->get();
-            if ($hotels->isEmpty()) {
-                $hotels = Hotel::with('destination')->take(4)->get();
-            }
-
-            if ($hotels->isNotEmpty()) {
-                $out = "**Itinera AI Concierge — Real Database Hotel Recommendations**\n\n";
-                $out .= "Here are top luxury accommodations retrieved live from our database:\n\n";
-                foreach ($hotels as $idx => $h) {
-                    $destName = $h->destination ? $h->destination->name : $dest;
-                    $stars = $h->stars ? str_repeat('⭐', $h->stars) : '5-Star';
-                    $out .= ($idx + 1) . ". **{$h->name}** ({$destName})\n";
-                    $out .= "   - *Rating*: {$h->rating}/5.0 {$stars} · *Address*: " . ($h->address ?: 'Prime Location') . "\n";
-                    $out .= "   - *Nightly Rate*: \${$h->price_per_night} / night\n\n";
-                }
-                $out .= "*Database Sync*: All prices and availability are synced live with our booking engine.";
-                return $out;
-            }
-        }
-
-        // 2. Real Restaurants from Database
-        if (str_contains($p, 'dining') || str_contains($p, 'restaurant') || str_contains($p, 'food') || str_contains($p, 'michelin') || str_contains($p, 'eat') || str_contains($p, 'chef')) {
-            $restaurants = Restaurant::with('destination')->orderByDesc('rating')->take(4)->get();
-
-            if ($restaurants->isNotEmpty()) {
-                $out = "**Itinera AI Concierge — Verified Fine Dining & Culinary Highlights**\n\n";
-                $out .= "Here are top-rated dining venues retrieved live from our database:\n\n";
-                foreach ($restaurants as $idx => $r) {
-                    $destName = $r->destination ? $r->destination->name : $dest;
-                    $out .= ($idx + 1) . ". **{$r->name}** ({$r->cuisine} Cuisine, {$destName})\n";
-                    $out .= "   - *Rating*: {$r->rating}/5.0 · *Price Category*: " . ($r->price_range ?: '$$$') . "\n";
-                    if ($r->address) {
-                        $out .= "   - *Address*: {$r->address}\n";
-                    }
-                    $out .= "\n";
-                }
-                $out .= "*Concierge Tip*: Table reservations can be booked directly through your Itinera trip manager.";
-                return $out;
-            }
-        }
-
-        // 3. Real Flights from Database
-        if (str_contains($p, 'flight') || str_contains($p, 'fly') || str_contains($p, 'airline') || str_contains($p, 'airport') || str_contains($p, 'transport') || str_contains($p, 'ticket') || str_contains($p, 'transfer')) {
-            $flights = Flight::orderBy('price', 'asc')->take(4)->get();
-
-            if ($flights->isNotEmpty()) {
-                $out = "**Itinera AI Concierge — Live Verified Flight Schedules**\n\n";
-                $out .= "Here are live flight schedules available in our database:\n\n";
-                foreach ($flights as $idx => $f) {
-                    $status = is_object($f->booking_status) && isset($f->booking_status->value) ? $f->booking_status->value : 'Available';
-                    $out .= ($idx + 1) . ". **{$f->airline}** (Flight `{$f->flight_number}`)\n";
-                    $out .= "   - *Route*: **{$f->departure_airport}** ➔ **{$f->arrival_airport}**\n";
-                    $out .= "   - *Price*: \${$f->price} · *Status*: {$status}\n\n";
-                }
-                $out .= "*Logistics*: You can attach flight segments directly into your trip itinerary.";
-                return $out;
-            }
-        }
-
-        // 4. Try Wikipedia Live Real Facts API for destination/travel questions
+        // 1. Query Wikipedia Live Real-World Search API for true travel facts
         try {
             $wikiUrl = 'https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=' . urlencode($prompt) . '&format=json';
-            $res = Http::withHeaders(['User-Agent' => 'ItineraApp/1.0'])->timeout(4)->get($wikiUrl);
+            $res = Http::withHeaders(['User-Agent' => 'ItineraApp/1.0'])->timeout(5)->get($wikiUrl);
             $items = $res->json('query.search') ?? [];
 
             if (!empty($items)) {
-                $out = "**Itinera AI Concierge — Live Real Facts for \"{$prompt}\"**\n\n";
-                $out .= "Here are verified live facts retrieved for your query:\n\n";
+                $out = "**Itinera AI Concierge — Real-World Travel Information**\n\n";
+                $out .= "Here are authentic real-world travel facts & recommendations for: *\"" . e($prompt) . "\"*\n\n";
                 $count = 0;
                 foreach (array_slice($items, 0, 4) as $item) {
-                    $title = $item['title'] ?? 'Travel Insight';
-                    $snippet = strip_tags($item['snippet'] ?? '');
-                    if (!empty($snippet)) {
+                    $title = $item['title'] ?? '';
+                    $snippet = html_entity_decode(strip_tags($item['snippet'] ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+                    // Remove citation brackets
+                    $snippet = preg_replace('/\[\d+\]/', '', $snippet);
+                    if (!empty($title) && !empty($snippet)) {
                         $count++;
                         $out .= "{$count}. **{$title}**\n";
                         $out .= "   - {$snippet}...\n\n";
                     }
                 }
                 if ($count > 0) {
-                    $out .= "*Verified Knowledge*: Retrieved live from public travel databases.";
+                    $out .= "*Verified Real-World Data*: Retrieved live for your travel query.";
                     return $out;
                 }
             }
@@ -370,15 +306,26 @@ class ConversationController extends Controller
             Log::info('Wikipedia Live Search API notice: '.$e->getMessage());
         }
 
-        // Fallback querying real top database entries
-        $topHotels = Hotel::orderByDesc('rating')->take(2)->get();
-        $hotelList = $topHotels->pluck('name')->implode(', ');
+        // 2. Real Flights from Database if specific to flights
+        if (str_contains($p, 'flight') || str_contains($p, 'fly') || str_contains($p, 'airline')) {
+            $flights = Flight::orderBy('price', 'asc')->take(4)->get();
 
+            if ($flights->isNotEmpty()) {
+                $out = "**Itinera AI Concierge — Verified Live Flight Schedules**\n\n";
+                foreach ($flights as $idx => $f) {
+                    $status = is_object($f->booking_status) && isset($f->booking_status->value) ? $f->booking_status->value : 'Available';
+                    $out .= ($idx + 1) . ". **{$f->airline}** (Flight `{$f->flight_number}`)\n";
+                    $out .= "   - *Route*: **{$f->departure_airport}** ➔ **{$f->arrival_airport}**\n";
+                    $out .= "   - *Price*: \${$f->price} · *Status*: {$status}\n\n";
+                }
+                return $out;
+            }
+        }
+
+        // 3. Fallback Overview
         return "**Itinera AI Travel Concierge**\n\n"
-            ."Thank you for your inquiry: *\"".e($prompt)."\"*\n\n"
-            ."I have cross-referenced our live database for **{$dest}**:\n\n"
-            ."- **Featured Database Hotels**: " . ($hotelList ?: 'Le Meurice, Hotel Plaza Athenee') . "\n"
-            ."- **Live Database Catalog**: " . Destination::count() . " Destinations, " . Hotel::count() . " Hotels, " . Flight::count() . " Flights.\n\n"
-            ."*Feel free to ask for specific hotel options, fine dining reservations, weather forecasts, or flight options!*";
+            ."I have analyzed your query: *\"".e($prompt)."\"*\n\n"
+            ."For the most comprehensive AI generation with Llama 3.3 70B, make sure your `GROQ_API_KEY` is configured in `.env`.\n\n"
+            ."*Feel free to ask about specific cities, hotels, fine dining, or flight options!*";
     }
 }
