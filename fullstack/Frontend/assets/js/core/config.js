@@ -10,11 +10,11 @@
     if (global.ITINARI_API_BASE) return global.ITINARI_API_BASE;
     try {
       var origin = global.location.origin;
-      if (origin && !origin.includes(":8080") && !origin.includes(":5500") && !origin.includes(":3000") && !origin.includes(":5173") && !origin.includes("null") && !origin.startsWith("file:")) {
+      if (origin && !origin.includes(":8080") && !origin.includes(":5500") && !origin.includes(":3000") && !origin.includes(":5173") && !origin.includes("null") && !origin.startsWith("file:") && !origin.includes("127.0.0.1") && !origin.includes("localhost")) {
         return origin + "/api";
       }
     } catch (e) {}
-    return "http://127.0.0.1:8000/api";
+    return "https://itinari.up.railway.app/api";
   }
 
   var CONFIG = {

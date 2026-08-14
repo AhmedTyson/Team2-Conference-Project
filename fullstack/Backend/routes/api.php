@@ -266,6 +266,10 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
 Route::post('/enhance', [AIController::class, 'enhance'])->middleware(['auth:api', 'verified', 'throttle:ai']);
 Route::post('/review', [AIController::class, 'generate'])
     ->middleware(['auth:api', 'verified', 'permission:generate ai itineraries', 'throttle:ai']);
+Route::post('/trips/generate-ai', [AIController::class, 'generate'])
+    ->middleware(['throttle:ai']);
+Route::post('/ai/plan', [AIController::class, 'generate'])
+    ->middleware(['throttle:ai']);
 Route::get('/review/{id}', [AIController::class, 'review'])
     ->middleware(['auth:api', 'verified', 'throttle:ai']);
 

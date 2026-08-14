@@ -1,150 +1,265 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" data-theme-luxury>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>✈️ Trip Planning Engine · Hana</title>
-    <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <link rel="stylesheet" href="../assets/css/planner.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Trip Planner · Itinera Luxury Travel</title>
+
+  <!-- Google Fonts: Fraunces (Luxury Serif) & Plus Jakarta Sans / Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..800;1,9..144,400..800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Core & Luxury CSS -->
+  <link rel="stylesheet" href="../assets/css/tokens.css" />
+  <link rel="stylesheet" href="../assets/css/app.css" />
+  <link rel="stylesheet" href="../assets/css/luxury-theme.css" />
+  <link rel="stylesheet" href="../assets/css/planner.css" />
+
   <script>/* FOUC prevention — default dark */
     (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
     if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
       document.documentElement.classList.add("dark","fouc-ready");
     else document.documentElement.classList.add("fouc-ready");
     })();
-  </script></head>
-<body data-layout="app">
-<div class="app-container">
-    <!-- header -->
-    <div class="app-header">
-        <h1><i class="fas fa-plane-departure"></i> Trip Planner · Hana</h1>
-        <div class="flex" style="gap: 1rem;">
-            <div class="user-badge"><i class="fas fa-user-circle"></i> Loading...</div>
-            <button type="button" id="logout-btn" class="btn-outline" style="padding: 0.4rem 1rem; font-size: 0.85rem; border-radius: 40px;">Log out</button>
+  </script>
+</head>
+<body class="planner-body" data-page="planner" data-layout="app">
+
+  <div class="planner-container">
+    
+    <!-- Top Navigation Header (Matching Screenshot 1) -->
+    <header class="itinera-topbar">
+      <a href="../public/index.html" class="itinera-logo">
+        <span class="itinera-logo-badge">IT</span>
+        <span>Itinera</span>
+      </a>
+
+      <nav class="itinera-nav-pills" aria-label="Planner Main Navigation">
+        <a href="dashboard.html" class="itinera-nav-link"><i class="fas fa-compass"></i> <span>Dashboard</span></a>
+        <a href="planner.html" class="itinera-nav-link active"><i class="fas fa-sparkles"></i> <span>Planner</span></a>
+        <a href="trips.html" class="itinera-nav-link"><i class="fas fa-paper-plane"></i> <span>My Trips</span> <span class="nav-counter-badge" id="my-trips-count-badge">1</span></a>
+        <a href="chat.html" class="itinera-nav-link"><i class="fas fa-comment-dots"></i> <span>AI Concierge</span></a>
+      </nav>
+
+      <div class="itinera-topbar-right">
+        <button type="button" class="search-command-btn" id="cmd-search-btn" aria-label="Search and commands">
+          <i class="fas fa-search"></i>
+          <span>Search</span>
+          <kbd>Ctrl k</kbd>
+        </button>
+        <div class="quota-indicator" id="quota-display" title="AI Generation Usage Quota">
+          <i class="fas fa-bolt"></i> Quota: 499/500
         </div>
-    </div>
+        <button type="button" class="topbar-icon-btn" id="topbar-bell-btn" aria-label="Notifications">
+          <i class="fas fa-bell"></i>
+        </button>
+        <button type="button" class="topbar-icon-btn" id="theme-toggle-btn" aria-label="Toggle theme">
+          <i class="fas fa-sun"></i>
+        </button>
+        <a href="profile.html" class="user-avatar-badge" title="User Profile">A</a>
+      </div>
+    </header>
 
-    <!-- navigation -->
-    <div class="nav-pills" id="navPills">
-        <button class="active" data-page="page-trips"><i class="fas fa-list-ul"></i> My Trips</button>
-        <button data-page="page-create"><i class="fas fa-plus-circle"></i> Create Trip</button>
-        <button data-page="page-details" id="tab-details-btn"><i class="fas fa-map-pin"></i> Trip Details</button>
-        <button data-page="page-schedule" id="tab-schedule-btn"><i class="fas fa-calendar-alt"></i> Schedule</button>
-        <button data-page="page-checkout" id="tab-checkout-btn"><i class="fas fa-credit-card"></i> Checkout</button>
-    </div>
+    <!-- STEP 1: DESTINATION, DURATION, START DATE, TRAVEL PARTY -->
+    <section id="planner-step-1">
+      <div class="planner-section-header">
+        <h2 class="planner-section-title">Where would you like to travel?</h2>
+        <p class="planner-section-desc">Select a curated destination or type any city in the world to unleash the AI Master Plan.</p>
+      </div>
 
-    <!-- ========= PAGES ========= -->
+      <!-- Curated Destination Cards (Tokyo, Zurich, Rome, etc.) -->
+      <div class="destination-cards-grid" id="dest-cards-container">
+        <!-- Injected dynamically via JS -->
+      </div>
 
-    <!-- 1. My Trips List -->
-    <div id="page-trips" class="page active">
-        <div class="flex" style="justify-content: space-between; margin-bottom: 0.5rem;">
-            <h2 style="color:var(--foreground);">✈️ My Trips</h2>
-            <button class="btn-primary" onclick="navigateTo('page-create')"><i class="fas fa-plus"></i> New Trip</button>
+      <!-- Custom City & Parameters Form Card -->
+      <div class="form-card-container">
+        <div class="field-group">
+          <label class="field-label" for="custom-city-input">Or enter custom destination city:</label>
+          <div class="input-with-icon">
+            <i class="fas fa-map-marker-alt input-icon-prefix"></i>
+            <input type="text" id="custom-city-input" class="luxury-input" value="Rome, Italy" placeholder="e.g. Rome, Italy or Kyoto, Japan" />
+          </div>
         </div>
-        <div class="trip-grid" id="trip-grid-container">
-            <!-- Injected dynamically from database -->
-        </div>
-        <p class="text-muted" style="margin-top: 1.5rem;" id="trips-count-meta"><i class="fas fa-info-circle"></i> 0 trips · last updated today</p>
-    </div>
 
-    <!-- 2. Create Trip -->
-    <div id="page-create" class="page">
-        <h2 style="color:var(--foreground); margin-bottom: 1.2rem;"><i class="fas fa-pencil-alt"></i> Create new trip</h2>
-        <div class="create-form">
-            <div class="form-group">
-                <label>Trip name</label>
-                <input type="text" id="trip-title-input" placeholder="e.g. Japan Adventure" value="Kyoto & Tokyo">
+        <div class="form-grid-three">
+          <div class="field-group">
+            <label class="field-label" for="duration-input">Duration (Days)</label>
+            <div class="input-with-icon">
+              <i class="fas fa-clock input-icon-prefix"></i>
+              <input type="number" id="duration-input" class="luxury-input" value="4" min="1" max="30" />
             </div>
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Start</label>
-                    <input type="date" id="trip-start-input" value="2026-09-10">
-                </div>
-                <div class="form-group">
-                    <label>End</label>
-                    <input type="date" id="trip-end-input" value="2026-09-20">
-                </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="start-date-input">Start Date</label>
+            <div class="input-with-icon">
+              <i class="fas fa-calendar-alt input-icon-prefix"></i>
+              <input type="date" id="start-date-input" class="luxury-input" value="2026-09-15" />
             </div>
-            <div class="form-group">
-                <label>Travelers</label>
-                <input type="number" id="trip-travelers-input" value="2" min="1">
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="party-select">Travel Party</label>
+            <div class="input-with-icon">
+              <i class="fas fa-users input-icon-prefix"></i>
+              <select id="party-select" class="luxury-select">
+                <option value="Couple / Romantic" selected>Couple / Romantic</option>
+                <option value="Solo Traveler">Solo Traveler</option>
+                <option value="Family Vacation">Family Vacation</option>
+                <option value="Friends Trip">Friends Trip</option>
+                <option value="Business / VIP">Business / VIP</option>
+              </select>
             </div>
-            <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 0.5rem;">
-                <button class="btn-primary" onclick="saveNewTripToDb()"><i class="fas fa-save"></i> Save Trip</button>
-                <button class="btn-outline" onclick="navigateTo('page-trips')">Cancel</button>
-            </div>
+          </div>
         </div>
+
+        <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+          <button type="button" id="btn-proceed-budget" class="btn-amber-proceed">
+            <span>Proceed to Budget & Style</span>
+            <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- STEP 2: BUDGET TIER & DESIRED EXPERIENCES -->
+    <section id="planner-step-2" style="display: none;">
+      <div class="planner-section-header">
+        <h2 class="planner-section-title">Budget Tier & Desired Experience</h2>
+        <p class="planner-section-desc">Fine-tune the tier and focus areas for our AI Concierge to curate your bespoke master plan.</p>
+      </div>
+
+      <div class="form-card-container">
+        <!-- Budget Tier Cards -->
+        <label class="field-label">Select Budget Tier:</label>
+        <div class="budget-tier-grid">
+          <div class="tier-card" data-tier="Budget" data-base-cost="250">
+            <h4 class="tier-title">Budget / Backpacker</h4>
+            <div class="tier-cost">~$250 / day</div>
+            <p class="tier-desc">Authentic street food, boutique hostels, and public transit highlights.</p>
+          </div>
+          <div class="tier-card" data-tier="Comfort" data-base-cost="650">
+            <h4 class="tier-title">Comfort / Moderate</h4>
+            <div class="tier-cost">~$650 / day</div>
+            <p class="tier-desc">4-star boutique hotels, top-rated bistros, and small group tours.</p>
+          </div>
+          <div class="tier-card selected" data-tier="Luxury" data-base-cost="1975">
+            <h4 class="tier-title">Luxury / Upscale ⭐</h4>
+            <div class="tier-cost">~$1,975 / day</div>
+            <p class="tier-desc">5-star luxury suites, Michelin-starred dining, and private docent tours.</p>
+          </div>
+          <div class="tier-card" data-tier="Ultra-Luxury" data-base-cost="4500">
+            <h4 class="tier-title">Ultra-Luxury / VIP 💎</h4>
+            <div class="tier-cost">~$4,500+ / day</div>
+            <p class="tier-desc">Palatial penthouses, private helicopter charters, and VIP after-hours access.</p>
+          </div>
+        </div>
+
+        <!-- Experience Chips -->
+        <label class="field-label">Desired Travel Experiences & Focus Areas:</label>
+        <div class="experience-chips-container">
+          <div class="exp-chip selected" data-value="History & Culture"><i class="fas fa-landmark"></i> History & Culture</div>
+          <div class="exp-chip selected" data-value="Michelin Dining"><i class="fas fa-utensils"></i> Michelin Dining</div>
+          <div class="exp-chip selected" data-value="Art & High Fashion"><i class="fas fa-palette"></i> Art & High Fashion</div>
+          <div class="exp-chip" data-value="Wellness & Spa"><i class="fas fa-spa"></i> Wellness & Spa</div>
+          <div class="exp-chip" data-value="Private Vintage Tours"><i class="fas fa-motorcycle"></i> Private Vintage Tours</div>
+          <div class="exp-chip" data-value="Wine Tasting & Gastronomy"><i class="fas fa-wine-glass-alt"></i> Wine Tasting & Gastronomy</div>
+          <div class="exp-chip" data-value="Luxury Boutiques & Shopping"><i class="fas fa-shopping-bag"></i> Luxury Boutiques & Shopping</div>
+          <div class="exp-chip" data-value="Scenic Yacht & Cruises"><i class="fas fa-ship"></i> Scenic Yacht & Cruises</div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <button type="button" id="btn-back-step1" class="btn-save-trips">
+            <i class="fas fa-arrow-left"></i> Back to Destination
+          </button>
+          <button type="button" id="btn-generate-plan" class="btn-amber-proceed">
+            <i class="fas fa-sparkles"></i>
+            <span>Generate AI Master Plan ⚡</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SYNTHESIS LOADING MODAL -->
+    <div id="synthesis-modal" class="ai-synthesizing-modal">
+      <div class="spinner-glow"></div>
+      <h3 class="synthesis-status-text" id="synthesis-status-text">Analyzing destination landmarks & topography...</h3>
+      <p class="synthesis-subtext">Curating bespoke Michelin dining, verifying logistics, and assembling your master timeline.</p>
     </div>
 
-    <!-- 3. Trip Details (Timeline, Map, Attach/Detach modal) -->
-    <div id="page-details" class="page">
-        <div class="detail-header">
-            <h2 id="details-trip-title"><i class="fas fa-map-marked-alt"></i> No Trip Selected</h2>
-            <span><button class="btn-outline" style="padding:0.4rem 1.2rem;" onclick="navigateTo('page-trips')"><i class="fas fa-arrow-left"></i> Back</button></span>
+    <!-- AI GENERATED MASTER PLAN PRESENTATION (MATCHING SCREENSHOTS 2, 3, 4, 5, 6) -->
+    <section id="master-plan-output" class="master-plan-output">
+      
+      <!-- Master Plan Card -->
+      <div class="master-plan-card">
+        <div class="master-plan-badge">
+          <i class="fas fa-sparkles"></i> AI GENERATED MASTER PLAN
         </div>
-        <div class="timeline-map">
-            <div>
-                <h4 style="margin-bottom: 0.8rem;"><i class="fas fa-clock"></i> Timeline</h4>
-                <div id="timeline-container">
-                    <!-- Injected itinerary nodes -->
-                </div>
-            </div>
-            <div>
-                <h4 style="margin-bottom: 0.8rem;"><i class="fas fa-map"></i> Map Route</h4>
-                <div class="map-placeholder" id="map-canvas-container">
-                    <!-- Dynamic SVG route map -->
-                </div>
-                <!-- attach/detach modal simulation -->
-                <div class="modal-card" style="margin-top: 1.2rem;">
-                    <h4><i class="fas fa-paperclip"></i> Attach / Detach items</h4>
-                    <div style="display: flex; gap: 8px; margin-bottom: 15px;">
-                        <select id="modal-item-select" style="flex-grow: 1; padding: 6px 12px; border-radius: 20px; border: 1px solid hsl(var(--border)); outline: none;">
-                            <!-- Option values populated dynamically -->
-                        </select>
-                        <button class="btn-primary" style="padding: 4px 14px; font-size: 13px;" onclick="addSelectedItemToTrip()">Attach</button>
-                    </div>
-                    <div id="attached-items-list">
-                        <!-- Injected attached rows -->
-                    </div>
-                </div>
-            </div>
+
+        <div class="master-plan-header-row">
+          <div>
+            <h1 class="master-plan-title" id="mp-title">4-Day Luxury Rome, Italy Experience</h1>
+            <p class="master-plan-subtitle" id="mp-meta">4 Days • Rome, Italy • Couple • Luxury</p>
+          </div>
+
+          <div class="master-plan-actions">
+            <button type="button" id="btn-book-paymob" class="btn-book-paymob">
+              <i class="fas fa-credit-card"></i>
+              <span>Book Package (Paymob)</span>
+            </button>
+            <button type="button" id="btn-save-master-plan" class="btn-save-trips">
+              <i class="far fa-heart"></i>
+              <span>Save to My Trips</span>
+            </button>
+          </div>
         </div>
-    </div>
 
-    <!-- 4. Schedule (calendar-style view) -->
-    <div id="page-schedule" class="page">
-        <h2 style="color:var(--foreground);" id="schedule-trip-title"><i class="fas fa-calendar-check"></i> Schedule</h2>
-        <div class="calendar-grid" id="calendar-days-container">
-            <!-- Calendar days generated dynamically -->
+        <p class="master-plan-desc" id="mp-desc">
+          This curated Roman holiday offers unparalleled access to the Eternal City's most iconic treasures. From private, after-hours tours of the Vatican to personal shopping sessions in the fashion district and dining at three-Michelin-starred institutions, every detail is designed for discerning travelers seeking history, art, and world-class gastronomy at a balanced pace.
+        </p>
+
+        <!-- Stats Bar -->
+        <div class="master-plan-stats-box">
+          <div>
+            <div class="stat-label">ESTIMATED BUDGET</div>
+            <div class="stat-val-budget" id="mp-budget">$7,900</div>
+          </div>
+          <div>
+            <div class="stat-label">PLANNED ITEMS</div>
+            <div class="stat-val-number" id="mp-items">20</div>
+          </div>
+          <div>
+            <div class="stat-label">OSRM WAYPOINTS</div>
+            <div class="stat-val-verified" id="mp-waypoints">Verified</div>
+          </div>
         </div>
-        <div class="schedule-list" id="schedule-items-list">
-            <!-- Injected time slots -->
-        </div>
-        <p class="text-muted" style="margin-top: 1.5rem;"><i class="fas fa-sync-alt"></i> Reuses trip itinerary data</p>
-    </div>
+      </div>
 
-    <!-- 5. Checkout (booking summary → payment) -->
-    <div id="page-checkout" class="page">
-        <h2 style="color:var(--foreground);"><i class="fas fa-receipt"></i> Checkout · Booking summary</h2>
-        <div class="checkout-summary" id="checkout-summary-container">
-            <!-- Itemized invoices injected dynamically -->
-        </div>
-    </div>
+      <!-- Day by Day Timeline Cards (D1, D2, D3, D4...) -->
+      <div class="days-container" id="mp-days-container">
+        <!-- Injected dynamically via planner.js -->
+      </div>
 
-</div>
+    </section>
 
-<!-- Global toast notification banner -->
-<div id="site-banner" role="status">
-    <span id="site-banner-msg"></span><span id="site-banner-drain" aria-hidden="true"></span>
-</div>
+  </div>
 
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-<script src="../assets/js/config.js?v=1786177601"></script>
-<script src="../assets/js/api.js"></script>
-<script src="../assets/js/animations.js"></script>
-<script src="../assets/js/session.js"></script>
-<script src="../assets/js/planner.js"></script>
+  <!-- Toast Notification -->
+  <div id="planner-toast" class="itinera-toast">
+    <i class="fas fa-check-circle" style="color: #10b981; font-size: 1.2rem;"></i>
+    <span class="toast-msg">Success</span>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/session.js"></script>
+  <script src="../assets/js/planner.js"></script>
   <script src="../assets/js/core/topbar.js"></script>
   <script src="../assets/js/core/theme.js"></script>
 </body>

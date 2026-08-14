@@ -1,854 +1,929 @@
-@import url("tokens.css");
+/* ==========================================================================
+   planner.css — Itinera Luxury AI Trip Planner
+   Aesthetics: Deep obsidian dark mode, Amber #F59E0B / #F0B429 accents,
+   Fraunces serif typography, Glassmorphism, and responsive timeline tracks.
+   ========================================================================== */
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: var(--font-body, 'Inter', -apple-system, sans-serif);
-}
-body {
-    background: hsl(var(--background));
-    color: hsl(var(--foreground));
-    display: flex;
-    justify-content: center;
-    padding: 2rem 1rem;
-    min-height: 100vh;
-}
-.app-container {
-    max-width: 1200px;
-    width: 100%;
-    background: hsl(var(--card));
-    color: hsl(var(--card-foreground));
-    border: 1px solid hsl(var(--border));
-    border-radius: 32px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-    overflow: hidden;
-    padding: 1.5rem 2rem 2.5rem;
-    align-self: flex-start;
-}
-/* header */
-.app-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-    flex-wrap: wrap;
-    gap: 1rem;
-}
-.app-header h1 {
-    font-weight: 700;
-    font-size: 1.8rem;
-    color: hsl(var(--foreground));
-    letter-spacing: -0.5px;
-}
-.app-header h1 i {
-    color: var(--accent);
-    margin-right: 10px;
-}
-.user-badge {
-    background: #eef3fa;
-    padding: 0.5rem 1.2rem;
-    border-radius: 40px;
-    font-weight: 500;
-    color: #1f3a6b;
-    font-size: 0.95rem;
-    display: inline-flex;
-    align-items: center;
-}
-.user-badge i {
-    margin-right: 8px;
-    color: #3b7cff;
+:root {
+  --itinera-bg: #09090b;
+  --itinera-card-bg: rgba(18, 18, 24, 0.75);
+  --itinera-card-border: rgba(255, 255, 255, 0.08);
+  --itinera-card-hover-border: rgba(245, 158, 11, 0.5);
+  --itinera-amber: #f59e0b;
+  --itinera-amber-glow: rgba(245, 158, 11, 0.25);
+  --itinera-amber-hover: #d97706;
+  --itinera-text: #f4f4f5;
+  --itinera-muted: #a1a1aa;
+  --itinera-dark-badge: rgba(255, 255, 255, 0.05);
+  --itinera-font-serif: "Fraunces", Georgia, serif;
+  --itinera-font-sans: "Plus Jakarta Sans", "Inter", -apple-system, sans-serif;
 }
 
-/* navigation pills */
-.nav-pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 0.8rem;
-    margin-bottom: 2.2rem;
-    border-bottom: 1px solid #e6edf5;
-    padding-bottom: 0.8rem;
-}
-.nav-pills button {
-    background: transparent;
-    border: none;
-    padding: 0.5rem 1.2rem;
-    border-radius: 40px;
-    font-weight: 500;
-    font-size: 0.95rem;
-    color: #3e5a7a;
-    transition: 0.2s;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.nav-pills button i {
-    font-size: 1rem;
-    color: #6f8db0;
-}
-.nav-pills button.active {
-    background: #1e3f70;
-    color: white;
-    box-shadow: 0 6px 12px rgba(27, 67, 150, 0.15);
-}
-.nav-pills button.active i {
-    color: white;
-}
-.nav-pills button:hover:not(.active) {
-    background: #e9f0f8;
+html[data-theme-luxury] {
+  background-color: var(--itinera-bg);
+  color: var(--itinera-text);
+  font-family: var(--itinera-font-sans);
 }
 
-/* page content */
-.page {
-    display: none;
-    animation: fadeUp 0.25s ease;
-}
-.page.active {
-    display: block;
-}
-
-@keyframes fadeUp {
-    0% { opacity: 0.5; transform: translateY(6px); }
-    100% { opacity: 1; transform: translateY(0); }
+body.planner-body {
+  background: radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.06) 0%, transparent 60%), #09090b;
+  color: var(--itinera-text);
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  font-family: var(--itinera-font-sans);
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Cards & Layouts */
-.trip-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px,1fr));
-    gap: 1.5rem;
-    margin-top: 0.8rem;
-}
-.trip-card {
-    background: #fafcff;
-    border: 1px solid #e2ecf7;
-    border-radius: 20px;
-    padding: 1.3rem 1.2rem 1.2rem;
-    transition: 0.2s;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.02);
-    cursor: pointer;
-}
-.trip-card:hover {
-    border-color: #b6d0e8;
-    box-shadow: 0 8px 18px rgba(27, 67, 150, 0.06);
-}
-.trip-card h3 {
-    font-weight: 600;
-    color: #0b1a33;
-}
-.trip-card .meta {
-    color: #51718c;
-    font-size: 0.9rem;
-    margin: 8px 0 12px;
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-.trip-card .meta i {
-    margin-right: 4px;
-    width: 16px;
-}
-.trip-card .actions {
-    display: flex;
-    gap: 12px;
-    margin-top: 12px;
-    border-top: 1px solid #e3edf6;
-    padding-top: 12px;
-}
-.trip-card .actions button {
-    background: none;
-    border: none;
-    color: #2f5a87;
-    font-weight: 500;
-    font-size: 0.85rem;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    cursor: pointer;
-    padding: 4px 8px;
-    border-radius: 30px;
-    transition: 0.1s;
-}
-.trip-card .actions button:hover {
-    background: #e3edf8;
-}
-.btn-primary {
-    background: #1d3f70;
-    border: none;
-    padding: 0.6rem 1.6rem;
-    border-radius: 40px;
-    color: white;
-    font-weight: 500;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    transition: 0.2s;
-    border: 1px solid transparent;
-}
-.btn-primary i { color: white; }
-.btn-primary:hover {
-    background: #12315a;
-    box-shadow: 0 6px 14px rgba(23, 55, 120, 0.2);
-}
-.btn-outline {
-    background: transparent;
-    border: 1px solid #c4d5e8;
-    padding: 0.6rem 1.6rem;
-    border-radius: 40px;
-    font-weight: 500;
-    color: #1f3a6b;
-    cursor: pointer;
-    transition: 0.15s;
-}
-.btn-outline:hover {
-    background: #eaf2fb;
+/* Container */
+.planner-container {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 4rem;
 }
 
-/* create trip form */
-.create-form {
-    background: #f9fcff;
-    border-radius: 28px;
-    padding: 2rem 1.8rem;
-    border: 1px solid #e3edf7;
-    max-width: 700px;
-}
-.form-group {
-    margin-bottom: 1.5rem;
-}
-.form-group label {
-    font-weight: 500;
-    color: #1f3a5c;
-    display: block;
-    margin-bottom: 6px;
-}
-.form-group input, .form-group select {
-    width: 100%;
-    padding: 0.8rem 1rem;
-    border-radius: 40px;
-    border: 1px solid #d5e2f0;
-    font-size: 1rem;
-    background: white;
-    outline: none;
-}
-.form-group input:focus, .form-group select:focus {
-    border-color: #3b7cff;
-}
-.form-row {
-    display: flex;
-    gap: 1.2rem;
-    flex-wrap: wrap;
-}
-.form-row .form-group { flex: 1; min-width: 150px; }
-
-/* details page (timeline, map, modal) */
-.detail-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    margin-bottom: 1.8rem;
-}
-.detail-header h2 { color: #0b1a33; }
-.timeline-map {
-    display: grid;
-    grid-template-columns: 1.2fr 0.8fr;
-    gap: 2rem;
-}
-@media (max-width: 700px) { .timeline-map { grid-template-columns: 1fr; } }
-
-.timeline-item {
-    background: #f8fafd;
-    border-left: 4px solid #3b7cff;
-    padding: 0.8rem 1.2rem;
-    margin-bottom: 1rem;
-    border-radius: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-}
-.timeline-item .time { font-weight: 600; color: #14305a; }
-.timeline-item .desc { color: #2a4b70; }
-.map-placeholder {
-    background: #e4eefa;
-    border-radius: 20px;
-    height: 180px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #1f4880;
-    font-weight: 500;
-    border: 2px dashed #b8cfe5;
-    overflow: hidden;
-    position: relative;
-}
-
-.map-node {
-    fill: #3b7cff;
-    stroke: #ffffff;
-    stroke-width: 2;
-    cursor: pointer;
-    transition: 0.2s;
-}
-.map-path {
-    fill: none;
-    stroke: #3b7cff;
-    stroke-width: 2.5;
-    stroke-dasharray: 4;
-}
-
-/* modal simulation (attach/detach) */
-.modal-card {
-    background: white;
-    border-radius: 28px;
-    padding: 1.8rem;
-    border: 1px solid #d7e3f0;
-    margin-top: 2rem;
-    box-shadow: 0 6px 14px rgba(0,0,0,0.02);
-}
-.modal-card h4 { margin-bottom: 0.8rem; color: #0b1a33; }
-.item-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.6rem 0.2rem;
-    border-bottom: 1px solid #e9f0f7;
-    align-items: center;
-    font-size: 0.9rem;
-}
-.item-row button {
-    background: none;
-    border: none;
-    color: #b02b3a;
-    cursor: pointer;
-    font-weight: 500;
-}
-.item-row button.attach { color: #1f6b3b; }
-
-/* schedule (calendar style) */
-.calendar-grid {
-    display: grid;
-    grid-template-columns: repeat(7,1fr);
-    gap: 8px;
-    margin: 1rem 0 1.5rem;
-}
-.cal-day {
-    background: #fafcff;
-    border-radius: 16px;
-    padding: 0.7rem 0.2rem;
-    text-align: center;
-    border: 1px solid #e3edf6;
-    font-weight: 500;
-    color: #1f3a5c;
-    cursor: pointer;
-    transition: 0.15s;
-}
-.cal-day:hover {
-    background: #e9f2fb;
-}
-.cal-day.active { background: #1d3f70; color: white; border-color: #1d3f70; }
-.cal-day.today { background: #3b7cff; color: white; border-color: #3b7cff; }
-.cal-day .event-dot {
-    display: block;
-    background: #3b7cff;
-    width: 6px;
-    height: 6px;
-    border-radius: 10px;
-    margin: 6px auto 0;
-}
-.cal-day.active .event-dot {
-    background: white;
-}
-.schedule-list {
-    margin-top: 1.2rem;
-}
-.schedule-item {
-    background: #f6faff;
-    padding: 0.8rem 1.2rem;
-    border-radius: 40px;
-    margin-bottom: 8px;
-    display: flex;
-    justify-content: space-between;
-    border: 1px solid #e2edf8;
-    font-size: 0.95rem;
-}
-
-/* checkout */
-.checkout-summary {
-    background: #f9fcff;
-    border-radius: 28px;
-    padding: 2rem;
-    border: 1px solid #deeaf6;
-    max-width: 600px;
-}
-.price-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 0.8rem 0;
-    border-bottom: 1px solid #deeaf6;
-    font-size: 0.95rem;
-}
-.total {
-    font-weight: 700;
-    font-size: 1.3rem;
-    color: #0b1a33;
-}
-
-/* skeleton loader */
-.skeleton {
-  min-height: 2rem;
-  border-radius: 20px;
-  background: linear-gradient(100deg, #f1f2f5 40%, #eef2f6 50%, #f1f2f5 60%);
-  background-size: 200% 100%;
-  animation: shimmer 1.4s ease infinite;
-}
-@keyframes shimmer { to { background-position: -200% 0; } }
-
-/* Toast Notifications styling matching auth.css */
-#site-banner {
-  position: fixed;
-  left: 50%;
-  bottom: 1.25rem;
-  transform: translate(-50%, 140%);
+/* ============================================================
+   TOP NAVIGATION HEADER
+   ============================================================ */
+.itinera-topbar {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  max-width: min(560px, calc(100% - 2rem));
-  padding: 0.75rem 1rem;
-  font-size: 0.88rem;
-  border-radius: 40px;
-  background: white;
-  color: #0b1a33;
-  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.15);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  opacity: 0;
-  pointer-events: none;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem;
+  background: rgba(12, 12, 16, 0.85);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 9999px;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.5);
+  position: sticky;
+  top: 1rem;
   z-index: 50;
-}
-#site-banner.is-show { transform: translate(-50%, 0); opacity: 1; }
-#site-banner.is-error { border-color: #ef4444; }
-#site-banner.is-error::before { content: "⚠"; color: #ef4444; font-weight: 700; }
-#site-banner.is-info { border-color: #3b7cff; }
-#site-banner.is-ok { border-color: #10b981; }
-#site-banner.is-ok::before { content: "✓"; color: #10b981; font-weight: 700; }
-
-/* utils */
-.flex { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
-.mt-2 { margin-top: 1.5rem; }
-.mb-1 { margin-bottom: 0.8rem; }
-.gap-1 { gap: 0.8rem; }
-.text-muted { color: #617e9e; }
-
-/* =====================================================================
-/* ===================================================================
-   Premium Design Polish — All vars bound to canonical tokens.css
-   =================================================================== */
-
-/* Planner light-mode overrides: primary = charcoal, accent = warm stone */
-:root {
-  --primary: 24 10% 12%;               /* Deep warm charcoal — matches tokens light */
-  --primary-foreground: 60 5% 98%;     /* Warm stone text */
-  --accent: 38 92% 50%;                /* Warm amber — overrides neutral accent */
-  --accent-foreground: 24 10% 12%;
-  --border: 240 6% 90%;
-  --input: 240 6% 90%;
-  --muted-foreground: 240 4% 46%;
-  --ring: 24 10% 12%;
+  gap: 1rem;
 }
 
-
-body {
-  background: hsl(var(--background)) !important;
-  color: hsl(var(--foreground)) !important;
+.itinera-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: -0.02em;
 }
 
-/* App Container shadows and depth */
-.app-container {
-  border: 1px solid hsl(var(--border));
-  box-shadow: var(--shadow-sm);
-  background-color: hsl(var(--card));
+.itinera-logo-badge {
+  background: #f59e0b;
+  color: #000;
+  font-weight: 900;
+  font-size: 0.75rem;
+  padding: 0.3rem 0.5rem;
+  border-radius: 6px;
+  letter-spacing: 0.05em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Header Headings */
-.app-header h1, .page h2, .detail-header h2, .modal-card h4, .calendar-grid h4 {
-  color: hsl(var(--foreground)) !important;
-  font-weight: 700 !important;
+.itinera-nav-pills {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.25rem 0.35rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.app-header h1 i {
-  color: hsl(var(--ring)) !important;
-}
-
-/* User Badge Pill */
-.user-badge {
-  background: hsl(var(--primary) / 0.08) !important;
-  color: hsl(var(--primary)) !important;
-  border: 1px solid hsl(var(--primary) / 0.12);
+.itinera-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.45rem 0.95rem;
+  border-radius: 9999px;
+  font-size: 0.84rem;
   font-weight: 600;
+  color: rgba(255, 255, 255, 0.65);
+  text-decoration: none;
+  transition: all 0.2s ease;
 }
 
-.user-badge i {
-  color: hsl(var(--ring)) !important;
+.itinera-nav-link:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
 }
 
-/* Navigation Tab Pills */
-.nav-pills button {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+.itinera-nav-link.active {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
-.nav-pills button.active {
-  background: hsl(var(--primary)) !important;
-  color: hsl(var(--primary-foreground)) !important;
-  box-shadow: var(--shadow-md) !important;
+.itinera-nav-link.active i {
+  color: #f59e0b;
 }
 
-.nav-pills button:hover:not(.active) {
-  background: hsl(var(--accent)) !important;
-  color: hsl(var(--accent-foreground)) !important;
+.nav-counter-badge {
+  background: #f59e0b;
+  color: #000;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 0.1rem 0.45rem;
+  border-radius: 9999px;
+  margin-left: 0.25rem;
 }
 
-/* Trip Cards elevation and branded shadows */
-.trip-card {
-  border: 1px solid hsl(var(--border)) !important;
-  box-shadow: var(--shadow-sm) !important;
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s ease;
-  background-color: hsl(var(--card));
+.itinera-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
-.trip-card:hover {
+.search-command-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.search-command-btn:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+.search-command-btn kbd {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  padding: 0.1rem 0.35rem;
+  font-size: 0.68rem;
+  font-family: inherit;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.quota-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #f59e0b;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+}
+
+.topbar-icon-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.topbar-icon-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+.user-avatar-badge {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #f59e0b;
+  color: #000;
+  font-weight: 800;
+  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+}
+
+/* ============================================================
+   PLANNER STEP 1: DESTINATION & INPUT FORM
+   ============================================================ */
+.planner-section-header {
+  margin-bottom: 1.5rem;
+}
+
+.planner-section-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.4rem;
+}
+
+.planner-section-desc {
+  color: var(--itinera-muted);
+  font-size: 0.92rem;
+  margin: 0;
+}
+
+/* Popular Destinations Grid */
+.destination-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.75rem;
+}
+
+.dest-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  height: 190px;
+  border: 2px solid rgba(255, 255, 255, 0.08);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  background: #18181b;
+}
+
+.dest-card:hover {
   transform: translateY(-3px);
-  border-color: hsl(var(--primary) / 0.3) !important;
-  box-shadow: var(--shadow-md) !important;
+  border-color: rgba(245, 158, 11, 0.4);
+  box-shadow: 0 12px 30px -6px rgba(0, 0, 0, 0.6);
 }
 
-.trip-card h3 {
-  color: hsl(var(--foreground)) !important;
+.dest-card.selected {
+  border-color: #f59e0b;
+  box-shadow: 0 0 24px rgba(245, 158, 11, 0.25);
 }
 
-/* Primary Button customization */
-.btn-primary {
-  background: hsl(var(--primary)) !important;
-  color: hsl(var(--primary-foreground)) !important;
-  transition: all 0.25s ease;
-}
-.btn-primary i {
-  color: hsl(var(--primary-foreground)) !important;
+.dest-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+  filter: brightness(0.75);
 }
 
-.btn-primary:hover {
-  opacity: 0.92 !important;
-  box-shadow: var(--shadow-md) !important;
-  transform: translateY(-1px);
+.dest-card:hover .dest-card__image {
+  transform: scale(1.04);
+  filter: brightness(0.85);
 }
 
-/* Outline Button customization */
-.btn-outline {
-  border: 1px solid hsl(var(--border)) !important;
-  color: hsl(var(--foreground)) !important;
+.dest-card__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.85) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.25rem;
+}
+
+.dest-card__title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 0.15rem;
+}
+
+.dest-card__country {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: capitalize;
+  margin: 0;
+}
+
+.dest-card__badge-check {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #f59e0b;
+  color: #000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 900;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.dest-card.selected .dest-card__badge-check {
+  display: flex;
+}
+
+/* Custom City Input & Form Fields */
+.form-card-container {
+  background: rgba(18, 18, 24, 0.7);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 1.75rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.5);
+}
+
+.field-group {
+  margin-bottom: 1.35rem;
+}
+
+.field-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 0.5rem;
+}
+
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon-prefix {
+  position: absolute;
+  left: 1.1rem;
+  color: #f59e0b;
+  font-size: 0.95rem;
+  pointer-events: none;
+}
+
+.luxury-input, .luxury-select {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 0.75rem 1rem 0.75rem 2.75rem;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: #fff;
+  outline: none;
+  font-family: inherit;
   transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
-.btn-outline:hover {
-  background: hsl(var(--accent)) !important;
-  border-color: hsl(var(--border)) !important;
+.luxury-input:focus, .luxury-select:focus {
+  border-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.03);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
 }
 
-/* Form panel styling */
-.create-form, .modal-card, .checkout-summary {
-  background: hsl(var(--card)) !important;
-  border: 1px solid hsl(var(--border)) !important;
-  box-shadow: var(--shadow-md) !important;
-  border-radius: var(--radius-xl) !important;
+.luxury-select option {
+  background: #18181b;
+  color: #fff;
 }
 
-/* Inputs & focus outlines */
-.form-group input, .form-group select {
-  border: 1px solid hsl(var(--border)) !important;
-  transition: all 0.25s ease;
+.form-grid-three {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.5fr;
+  gap: 1.25rem;
 }
 
-.form-group input:focus, .form-group select:focus {
-  border-color: hsl(var(--ring) / 0.6) !important;
-  box-shadow: 0 0 0 3px hsl(var(--ring) / 0.15) !important;
+@media (max-width: 768px) {
+  .form-grid-three {
+    grid-template-columns: 1fr;
+  }
 }
 
-/* Timeline Item coloring */
-.timeline-item {
-  background: hsl(var(--accent) / 0.3) !important;
-  border-left: 4px solid hsl(var(--ring)) !important;
+/* Button */
+.btn-amber-proceed {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: #111827;
+  font-weight: 800;
+  font-size: 0.95rem;
+  padding: 0.85rem 2rem;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 18px rgba(245, 158, 11, 0.35);
 }
 
-/* Calendar Days */
-.cal-day {
-  transition: all 0.2s ease;
-  border: 1px solid hsl(var(--border) / 0.8) !important;
+.btn-amber-proceed:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(245, 158, 11, 0.5);
+  filter: brightness(1.05);
 }
 
-.cal-day:hover {
-  background: hsl(var(--accent)) !important;
-}
-
-.cal-day.active {
-  background: hsl(var(--primary)) !important;
-  border-color: hsl(var(--primary)) !important;
-  color: white !important;
-}
-
-.cal-day.today {
-  background: hsl(var(--secondary)) !important;
-  border-color: hsl(var(--secondary)) !important;
-  color: hsl(var(--primary)) !important;
-}
-
-.cal-day .event-dot {
-  background: hsl(var(--ring)) !important;
-}
-
-/* Zebra shading and hovers for lists in Trip Planner */
-#attached-items-list .item-row {
-  padding: 0.75rem 1rem !important;
-  border-radius: var(--radius-lg);
-  transition: background-color 0.2s ease;
-}
-
-#attached-items-list .item-row:nth-child(even) {
-  background-color: hsl(var(--secondary) / 0.12);
-}
-
-#attached-items-list .item-row:hover {
-  background-color: hsl(var(--secondary) / 0.3) !important;
-}
-
-/* Schedule items list slide on hover */
-.schedule-item {
-  border-radius: var(--radius-full) !important;
-  transition: background-color 0.2s ease, transform 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
-}
-
-.schedule-item:nth-child(even) {
-  background-color: hsl(var(--secondary) / 0.12) !important;
-}
-
-.schedule-item:hover {
-  background-color: hsl(var(--secondary) / 0.3) !important;
-  transform: translateX(4px);
-}
-
-/* Checkout invoice rows */
-.price-row {
-  padding: 0.9rem 1rem !important;
-  transition: background-color 0.2s ease;
-  border-radius: var(--radius-md);
-}
-
-.price-row:nth-child(even) {
-  background-color: hsl(var(--secondary) / 0.12);
-}
-
-.price-row:hover {
-  background-color: hsl(var(--secondary) / 0.3);
-}
-
-/* Tab Pills click feedback */
-.nav-pills button:hover {
-  transform: translateY(-1px);
-}
-
-.nav-pills button:active {
+.btn-amber-proceed:active {
   transform: translateY(0);
 }
 
-/* Dark Mode Overrides for Trip Planner (Obsidian & Zinc) */
-html.dark {
-  --background: 0 0% 4%;               /* #0a0a0a deep obsidian */
-  --foreground: 0 0% 96%;              /* #f4f4f5 text */
-  --card: 240 5% 7%;                   /* #121212 cards */
-  --card-foreground: 0 0% 96%;
-  --primary: 0 0% 98%;
-  --primary-foreground: 0 0% 9%;
-  --secondary: 240 4% 12%;
-  --secondary-foreground: 0 0% 96%;
-  --accent: 240 4% 16%;
-  --accent-foreground: 0 0% 96%;
-  --border: 240 4% 16%;
-  --input: 240 4% 16%;
-  --muted: 240 4% 12%;
-  --muted-foreground: 240 5% 65%;
-  --ring: 0 0% 96%;
+/* ============================================================
+   STEP 2: BUDGET & TRAVEL STYLE
+   ============================================================ */
+.budget-tier-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-html.dark body {
-  background-color: hsl(var(--background)) !important;
-  color: hsl(var(--foreground)) !important;
+.tier-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
 }
 
-html.dark .app-container {
-  background-color: hsl(var(--card)) !important;
-  border-color: hsl(var(--border)) !important;
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3), 0 2px 8px -1px rgba(0, 0, 0, 0.2) !important;
+.tier-card:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(245, 158, 11, 0.3);
 }
 
-html.dark .trip-card {
-  background-color: hsl(var(--card)) !important;
-  border-color: hsl(var(--border)) !important;
+.tier-card.selected {
+  background: rgba(245, 158, 11, 0.08);
+  border-color: #f59e0b;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.18);
 }
 
-html.dark .trip-card h3 {
-  color: hsl(var(--foreground)) !important;
+.tier-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 0.35rem;
 }
 
-html.dark .trip-card .meta {
-  color: hsl(var(--muted-foreground)) !important;
+.tier-cost {
+  font-size: 0.82rem;
+  color: #f59e0b;
+  font-weight: 600;
+  margin: 0 0 0.4rem;
 }
 
-html.dark .trip-card .actions button {
-  color: hsl(var(--primary)) !important;
+.tier-desc {
+  font-size: 0.78rem;
+  color: var(--itinera-muted);
+  margin: 0;
+  line-height: 1.4;
 }
 
-html.dark .trip-card .actions button:hover {
-  background: hsl(var(--accent)) !important;
+/* Experiences Chips */
+.experience-chips-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-bottom: 1.5rem;
 }
 
-html.dark .create-form, html.dark .modal-card, html.dark .checkout-summary {
-  background-color: hsl(var(--card)) !important;
-  border-color: hsl(var(--border)) !important;
+.exp-chip {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.75);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
 }
 
-html.dark .form-group label {
-  color: hsl(var(--foreground)) !important;
+.exp-chip:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border-color: rgba(245, 158, 11, 0.3);
 }
 
-html.dark .form-group input, html.dark .form-group select {
-  background-color: hsl(var(--card)) !important;
-  color: hsl(var(--foreground)) !important;
-  border-color: hsl(var(--border)) !important;
+.exp-chip.selected {
+  background: rgba(245, 158, 11, 0.18);
+  border-color: #f59e0b;
+  color: #f59e0b;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.2);
 }
 
-html.dark .cal-day {
-  background-color: hsl(var(--card)) !important;
-  color: hsl(var(--foreground)) !important;
-  border-color: hsl(var(--border)) !important;
+/* Synthesis Loader */
+.ai-synthesizing-modal {
+  display: none;
+  background: rgba(18, 18, 24, 0.95);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 20px;
+  padding: 2.5rem;
+  text-align: center;
+  margin: 2rem 0;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
 }
 
-html.dark .cal-day:hover {
-  background-color: hsl(var(--accent)) !important;
+.spinner-glow {
+  width: 56px;
+  height: 56px;
+  border: 3px solid rgba(245, 158, 11, 0.2);
+  border-top-color: #f59e0b;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1.5rem;
 }
 
-html.dark .cal-day.active {
-  background-color: hsl(var(--primary)) !important;
-  color: hsl(var(--primary-foreground)) !important;
-  border-color: hsl(var(--primary)) !important;
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
-html.dark .cal-day.today {
-  background-color: hsl(var(--secondary)) !important;
-  color: hsl(var(--secondary-foreground)) !important;
-  border-color: hsl(var(--secondary)) !important;
+.synthesis-status-text {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 0.5rem;
 }
 
-html.dark .timeline-item, html.dark .schedule-item {
-  background-color: hsl(var(--accent) / 0.4) !important;
-  color: hsl(var(--foreground)) !important;
-  border-color: hsl(var(--border)) !important;
+.synthesis-subtext {
+  font-size: 0.85rem;
+  color: var(--itinera-muted);
+  margin: 0;
 }
 
-html.dark .item-row {
-  border-bottom: 1px solid hsl(var(--border)) !important;
-  color: hsl(var(--foreground)) !important;
+/* ============================================================
+   AI GENERATED MASTER PLAN PRESENTATION (MATCHING SCREENSHOTS)
+   ============================================================ */
+.master-plan-output {
+  display: none;
+  margin-top: 1rem;
 }
 
-html.dark .app-header h1, 
-html.dark .page h2, 
-html.dark .detail-header h2, 
-html.dark .modal-card h4, 
-html.dark .calendar-grid h4 {
-  color: hsl(var(--foreground)) !important;
+.master-plan-card {
+  background: rgba(18, 18, 24, 0.85);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 2rem;
+  margin-bottom: 2.5rem;
+  box-shadow: 0 12px 40px -6px rgba(0, 0, 0, 0.6);
+  position: relative;
+  overflow: hidden;
 }
 
-html.dark .nav-pills button {
-  color: hsl(var(--muted-foreground)) !important;
+.master-plan-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(245, 158, 11, 0.15);
+  color: #f59e0b;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  padding: 0.3rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 1rem;
 }
 
-html.dark .nav-pills button i {
-  color: hsl(var(--muted-foreground)) !important;
+.master-plan-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
 }
 
-html.dark .nav-pills button.active {
-  background: hsl(var(--primary)) !important;
-  color: hsl(var(--primary-foreground)) !important;
+.master-plan-title {
+  font-family: var(--itinera-font-serif);
+  font-size: 2.15rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  margin: 0 0 0.4rem;
+  line-height: 1.2;
 }
 
-html.dark .btn-outline {
-  border-color: hsl(var(--border)) !important;
-  color: hsl(var(--foreground)) !important;
+.master-plan-subtitle {
+  font-size: 0.88rem;
+  color: var(--itinera-muted);
+  margin: 0;
 }
 
-html.dark .btn-outline:hover {
-  background: hsl(var(--accent)) !important;
+.master-plan-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
 }
 
-/* Inline styles overrides for Trip Planner layout contrast */
-#tab-planner h2, #tab-planner h4, #tab-planner label {
-  color: hsl(var(--primary)) !important;
+.btn-book-paymob {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: #0f172a;
+  font-weight: 800;
+  font-size: 0.88rem;
+  padding: 0.75rem 1.4rem;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.3);
 }
 
-html.dark #tab-planner h2, 
-html.dark #tab-planner h4, 
-html.dark #tab-planner label {
-  color: hsl(var(--foreground)) !important;
+.btn-book-paymob:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.45);
 }
 
-html.dark #map-canvas-container {
-  background-color: hsl(var(--accent) / 0.3) !important;
-  color: hsl(var(--foreground)) !important;
-  border-color: hsl(var(--border)) !important;
+.btn-save-trips {
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.88rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  transition: all 0.2s ease;
 }
 
-html.dark #trips-count-meta {
-  color: hsl(var(--muted-foreground)) !important;
+.btn-save-trips:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.25);
 }
 
-/* =====================================================================
-   Glassmorphism Overrides for Trip Planner
-   ===================================================================== */
-
-/* Glass container for workspace wrapper */
-.app-container {
-  background: rgba(255, 255, 255, 0.6) !important;
-  backdrop-filter: blur(16px) saturate(120%) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(120%) !important;
-  border: 1px solid hsl(var(--border)) !important;
+.master-plan-desc {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.8);
+  margin: 0 0 1.75rem;
+  max-width: 960px;
 }
 
-html.dark .app-container {
-  background: rgba(18, 18, 18, 0.65) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+/* Stats Summary Box */
+.master-plan-stats-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1.5rem;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
 }
 
-/* Glass panel forms, summaries, lists */
-.create-form, .modal-card, .checkout-summary, .trip-card {
-  background: hsl(var(--card)) !important;
-  backdrop-filter: blur(12px) saturate(120%) !important;
-  -webkit-backdrop-filter: blur(12px) saturate(120%) !important;
-  border: 1px solid hsl(var(--border)) !important;
-  box-shadow: var(--shadow-sm) !important;
+.stat-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--itinera-muted);
+  margin-bottom: 0.35rem;
 }
 
-html.dark .create-form, html.dark .modal-card, html.dark .checkout-summary, html.dark .trip-card {
-  background: rgba(24, 24, 27, 0.75) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3) !important;
+.stat-val-budget {
+  font-family: var(--itinera-font-serif);
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: #f59e0b;
 }
 
-/* Transparent form controls */
-.form-group input, .form-group select {
-  background: hsl(var(--card)) !important;
-  border: 1px solid hsl(var(--border)) !important;
+.stat-val-number {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: #ffffff;
 }
 
-html.dark .form-group input, html.dark .form-group select {
-  background: rgba(24, 24, 27, 0.6) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+.stat-val-verified {
+  font-family: var(--itinera-font-serif);
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #10b981;
+}
+
+/* ============================================================
+   DAY BY DAY TIMELINE (MATCHING SCREENSHOTS 2, 3, 4, 5, 6)
+   ============================================================ */
+.days-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.day-card {
+  background: rgba(18, 18, 24, 0.75);
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 20px;
+  padding: 1.75rem;
+  box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.4);
+}
+
+.day-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.day-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.day-badge-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #f59e0b;
+  font-weight: 800;
+  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.day-title-text {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0;
+}
+
+.day-count-tag {
+  font-size: 0.82rem;
+  color: var(--itinera-muted);
+  font-weight: 500;
+}
+
+/* Timeline Layout */
+.timeline-track-container {
+  position: relative;
+  padding-left: 2rem;
+}
+
+/* Connected Vertical Track Line */
+.timeline-track-container::before {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 15px;
+  bottom: 25px;
+  width: 2px;
+  background: rgba(245, 158, 11, 0.25);
+}
+
+.timeline-item-row {
+  position: relative;
+  margin-bottom: 1.25rem;
+}
+
+.timeline-item-row:last-child {
+  margin-bottom: 0;
+}
+
+/* Glowing Node Dot */
+.timeline-node-dot {
+  position: absolute;
+  left: -2rem;
+  top: 1.25rem;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #f59e0b;
+  border: 2px solid #09090b;
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.8);
+  transform: translateX(0);
+}
+
+.timeline-activity-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 1.15rem 1.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.timeline-activity-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(245, 158, 11, 0.3);
+  transform: translateX(4px);
+}
+
+.activity-info-col {
+  flex: 1;
+}
+
+.activity-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.65rem;
+  margin-bottom: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.activity-time {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #f59e0b;
+  white-space: nowrap;
+}
+
+.activity-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0;
+}
+
+.activity-desc {
+  font-size: 0.82rem;
+  color: var(--itinera-muted);
+  margin: 0;
+  line-height: 1.45;
+}
+
+.activity-meta-col {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  white-space: nowrap;
+}
+
+.activity-price {
+  font-family: var(--itinera-font-serif);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #f59e0b;
+}
+
+.activity-category-badge {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 0.3rem 0.65rem;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
+/* Toast */
+.itinera-toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: #18181b;
+  border: 1px solid #f59e0b;
+  color: #fff;
+  padding: 0.85rem 1.4rem;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+  display: none;
+  align-items: center;
+  gap: 0.65rem;
+  z-index: 1000;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .itinera-topbar {
+    border-radius: 16px;
+    padding: 0.6rem 0.85rem;
+  }
+  .itinera-nav-pills {
+    display: none;
+  }
+  .timeline-activity-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+  }
+  .activity-meta-col {
+    width: 100%;
+    justify-content: space-between;
+  }
 }

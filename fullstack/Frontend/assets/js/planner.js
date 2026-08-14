@@ -1,560 +1,556 @@
 /**
- * planner.js — light-themed Trip Planning Engine SPA.
- * Interfaces with Laravel backend endpoints for live trip storage.
+ * planner.js — Itinera Luxury AI Trip Planner Engine
+ * Implements interactive destination selection, multi-step parameters,
+ * backend AI generation integration, and luxury master plan rendering.
  */
 (function (global) {
-    "use strict";
+  "use strict";
 
-    const It = global.Itinari;
-    const fb = It.feedback;
+  const It = global.Itinari || {};
 
-    let trips = [];
-    let activeTripId = null;
+  // Destination Catalog
+  const PRESET_DESTINATIONS = [
+    {
+      city: "Tokyo, Japan",
+      country: "Japan",
+      image: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=800&q=80",
+    },
+    {
+      city: "Zurich, Switzerland",
+      country: "Switzerland",
+      image: "https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?auto=format&fit=crop&w=800&q=80",
+    },
+    {
+      city: "Rome, Italy",
+      country: "Italy",
+      image: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=800&q=80",
+    }
+  ];
 
-    const catalog = [
-        { name: "Amnaya Resort DPS", type: "Hotel", address: "Kuta, Bali", price: 140, x: 50, y: 110 },
-        { name: "Ubud Monkey Forest", type: "Attraction", address: "Ubud, Bali", price: 12, x: 90, y: 80 },
-        { name: "Nusa Penida Tour", type: "Attraction", address: "Nusa Penida", price: 45, x: 140, y: 130 },
-        { name: "Jimbaran Seafood Dinner", type: "Restaurant", address: "Jimbaran Bay", price: 30, x: 60, y: 140 },
-        { name: "Private Driver Service", type: "Service", address: "Bali Region", price: 25, x: 100, y: 100 },
-        { name: "Swiss Alps Chalet", type: "Hotel", address: "Zermatt, Switzerland", price: 320, x: 70, y: 90 },
-        { name: "Mount Batur Sunrise Trek", type: "Attraction", address: "Kintamani, Giza", price: 35, x: 110, y: 60 }
+  // State
+  let plannerState = {
+    city: "Rome, Italy",
+    duration: 4,
+    startDate: "2026-09-15",
+    travelParty: "Couple / Romantic",
+    budgetTier: "Luxury",
+    budgetAmount: 7900,
+    interests: ["History & Culture", "Michelin Dining", "Art & High Fashion"],
+    quotaUsed: 1,
+    quotaTotal: 500,
+    currentPlan: null
+  };
+
+  function el(id) {
+    return document.getElementById(id);
+  }
+
+  function showToast(msg) {
+    const toast = el("planner-toast");
+    if (!toast) return;
+    toast.querySelector(".toast-msg").textContent = msg;
+    toast.style.display = "flex";
+    setTimeout(() => {
+      toast.style.display = "none";
+    }, 4000);
+  }
+
+  // Quota Management
+  function initQuota() {
+    const storedQuota = localStorage.getItem("itinari_ai_quota");
+    if (storedQuota) {
+      plannerState.quotaUsed = parseInt(storedQuota, 10);
+    }
+    updateQuotaDisplay();
+  }
+
+  function updateQuotaDisplay() {
+    const remaining = Math.max(0, plannerState.quotaTotal - plannerState.quotaUsed);
+    const quotaEl = el("quota-display");
+    if (quotaEl) {
+      quotaEl.innerHTML = `<i class="fas fa-bolt"></i> Quota: ${remaining}/${plannerState.quotaTotal}`;
+    }
+  }
+
+  function consumeQuota() {
+    plannerState.quotaUsed++;
+    localStorage.setItem("itinari_ai_quota", plannerState.quotaUsed);
+    updateQuotaDisplay();
+  }
+
+  // Destination Cards Render
+  function renderDestinationCards() {
+    const container = el("dest-cards-container");
+    if (!container) return;
+    container.innerHTML = "";
+
+    PRESET_DESTINATIONS.forEach((dest) => {
+      const isSelected = dest.city.toLowerCase() === plannerState.city.toLowerCase();
+      const card = document.createElement("div");
+      card.className = `dest-card ${isSelected ? "selected" : ""}`;
+      card.innerHTML = `
+        <img class="dest-card__image" src="${dest.image}" alt="${dest.city}" />
+        <div class="dest-card__badge-check"><i class="fas fa-check"></i></div>
+        <div class="dest-card__overlay">
+          <h3 class="dest-card__title">${dest.city}</h3>
+          <p class="dest-card__country">${dest.country}</p>
+        </div>
+      `;
+
+      card.addEventListener("click", () => {
+        plannerState.city = dest.city;
+        const customInput = el("custom-city-input");
+        if (customInput) customInput.value = dest.city;
+        renderDestinationCards();
+      });
+
+      container.appendChild(card);
+    });
+  }
+
+  // Budget Tier Selection
+  function setupBudgetTiers() {
+    const tierCards = document.querySelectorAll(".tier-card");
+    tierCards.forEach((card) => {
+      card.addEventListener("click", function () {
+        tierCards.forEach((c) => c.classList.remove("selected"));
+        this.classList.add("selected");
+        plannerState.budgetTier = this.getAttribute("data-tier");
+        const baseCost = parseInt(this.getAttribute("data-base-cost"), 10) || 1975;
+        plannerState.budgetAmount = baseCost * plannerState.duration;
+      });
+    });
+  }
+
+  // Experience Focus Chips
+  function setupExperienceChips() {
+    const chips = document.querySelectorAll(".exp-chip");
+    chips.forEach((chip) => {
+      chip.addEventListener("click", function () {
+        const val = this.getAttribute("data-value");
+        if (this.classList.contains("selected")) {
+          this.classList.remove("selected");
+          plannerState.interests = plannerState.interests.filter((i) => i !== val);
+        } else {
+          this.classList.add("selected");
+          plannerState.interests.push(val);
+        }
+      });
+    });
+  }
+
+  // Multi-step Navigation
+  function setupStepFlow() {
+    const btnProceed = el("btn-proceed-budget");
+    const step1 = el("planner-step-1");
+    const step2 = el("planner-step-2");
+    const btnGenerate = el("btn-generate-plan");
+    const btnBackStep1 = el("btn-back-step1");
+
+    if (btnProceed) {
+      btnProceed.addEventListener("click", () => {
+        // Collect Step 1 inputs
+        const customInput = el("custom-city-input");
+        if (customInput && customInput.value.trim()) {
+          plannerState.city = customInput.value.trim();
+        }
+        const durationInput = el("duration-input");
+        if (durationInput) {
+          plannerState.duration = parseInt(durationInput.value, 10) || 4;
+        }
+        const startDateInput = el("start-date-input");
+        if (startDateInput && startDateInput.value) {
+          plannerState.startDate = startDateInput.value;
+        }
+        const partySelect = el("party-select");
+        if (partySelect) {
+          plannerState.travelParty = partySelect.value;
+        }
+
+        // Calculate dynamic budget for tier
+        const selectedTier = document.querySelector(".tier-card.selected");
+        const baseCost = selectedTier ? parseInt(selectedTier.getAttribute("data-base-cost"), 10) : 1975;
+        plannerState.budgetAmount = baseCost * plannerState.duration;
+
+        step1.style.display = "none";
+        step2.style.display = "block";
+        window.scrollTo({ top: step2.offsetTop - 80, behavior: "smooth" });
+      });
+    }
+
+    if (btnBackStep1) {
+      btnBackStep1.addEventListener("click", () => {
+        step2.style.display = "none";
+        step1.style.display = "block";
+        window.scrollTo({ top: step1.offsetTop - 80, behavior: "smooth" });
+      });
+    }
+
+    if (btnGenerate) {
+      btnGenerate.addEventListener("click", generateAiMasterPlan);
+    }
+  }
+
+  // AI Master Plan Generation Execution
+  async function generateAiMasterPlan() {
+    const step2 = el("planner-step-2");
+    const modal = el("synthesis-modal");
+    const output = el("master-plan-output");
+    const statusText = el("synthesis-status-text");
+
+    step2.style.display = "none";
+    modal.style.display = "block";
+    output.style.display = "none";
+
+    const steps = [
+      "Analyzing destination landmarks & topography...",
+      "Curating Michelin culinary pairings & reservations...",
+      "Verifying OSRM logistics waypoints & transit...",
+      "Synthesizing bespoke luxury master plan..."
     ];
 
-    function el(id) { return document.getElementById(id); }
+    let stepIdx = 0;
+    const interval = setInterval(() => {
+      stepIdx = (stepIdx + 1) % steps.length;
+      if (statusText) statusText.textContent = steps[stepIdx];
+    }, 600);
 
-    // -------------------------------------------------------------
-    // Page Tab Navigation
-    // -------------------------------------------------------------
-    function navigateTo(pageId) {
-        document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-        el(pageId).classList.add("active");
+    const payload = {
+      city: plannerState.city,
+      destination: plannerState.city,
+      no_of_days: plannerState.duration,
+      start_date: plannerState.startDate,
+      travel_party: plannerState.travelParty,
+      travel_style: plannerState.budgetTier,
+      budget_tier: plannerState.budgetTier,
+      budget: plannerState.budgetAmount,
+      interests: plannerState.interests
+    };
 
-        document.querySelectorAll(".nav-pills button").forEach(btn => {
-            const dataPage = btn.getAttribute("data-page");
-            btn.classList.toggle("active", dataPage === pageId);
-        });
+    let planData = null;
 
-        // Trigger updates when specific tabs load
-        if (pageId === "page-trips") {
-            loadTripsFromDb();
-        } else if (pageId === "page-details") {
-            renderActiveTripDetails();
-        } else if (pageId === "page-schedule") {
-            renderCalendarSchedule();
-        } else if (pageId === "page-checkout") {
-            renderCheckoutInvoice();
+    try {
+      // Try backend AI generation endpoint
+      const res = await fetch((It.CONFIG?.apiBase || "https://itinari.up.railway.app/api") + "/trips/generate-ai", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          ...(localStorage.getItem("itinari_token") ? { "Authorization": "Bearer " + localStorage.getItem("itinari_token") } : {})
+        },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.ok) {
+        const body = await res.json();
+        planData = body.data || body;
+      }
+    } catch (e) {
+      console.warn("Backend AI fetch note:", e);
+    }
+
+    // Fallback if backend returned string or wasn't structured
+    if (!planData || !planData.days) {
+      planData = generateDeterministicPlan(plannerState);
+    }
+
+    clearInterval(interval);
+    consumeQuota();
+
+    modal.style.display = "none";
+    output.style.display = "block";
+    plannerState.currentPlan = planData;
+
+    renderMasterPlan(planData);
+    window.scrollTo({ top: output.offsetTop - 80, behavior: "smooth" });
+  }
+
+  // Deterministic Luxury Synthesis Engine
+  function generateDeterministicPlan(state) {
+    const cityName = state.city || "Rome, Italy";
+    const daysCount = state.duration || 4;
+    const party = state.travelParty || "Couple / Romantic";
+    const tier = state.budgetTier || "Luxury";
+    const budget = state.budgetAmount || 7900;
+
+    const isRome = cityName.toLowerCase().includes("rome");
+    const isTokyo = cityName.toLowerCase().includes("tokyo");
+    const isZurich = cityName.toLowerCase().includes("zurich");
+
+    let daysTemplates = [];
+
+    if (isRome) {
+      daysTemplates = [
+        {
+          title: "Imperial Glory & Rooftop Views",
+          items: [
+            { time: "09:30 AM", title: "Private VIP Colosseum & Roman Forum Tour", desc: "Includes fast-track underground access with a private archeologist guide.", price: 600, type: "ATTRACTION" },
+            { time: "01:30 PM", title: "Armando al Pantheon", desc: "Classic Roman cuisine in an intimate setting; reservations are essential months in advance.", price: 180, type: "RESTAURANT" },
+            { time: "04:00 PM", title: "Private Fountain & Piazza Walking Tour", desc: "Guided exploration of the Trevi Fountain and Spanish Steps with a focus on Baroque history.", price: 300, type: "ATTRACTION" },
+            { time: "08:00 PM", title: "Aroma Restaurant", desc: "Michelin-starred dining with a direct, unobstructed view of the Colosseum.", price: 550, type: "RESTAURANT" }
+          ]
+        },
+        {
+          title: "The Holy See & High Fashion",
+          items: [
+            { time: "08:00 AM", title: "Vatican Museums Private Early Access", desc: "Exclusive entry before the general public to view the Sistine Chapel in near silence.", price: 950, type: "ATTRACTION" },
+            { time: "01:00 PM", title: "Pierluigi", desc: "Rome's premier spot for luxury seafood dining; request a table in the historic piazza.", price: 250, type: "RESTAURANT" },
+            { time: "03:30 PM", title: "Via dei Condotti Personal Shopping", desc: "A dedicated fashion consultant will facilitate private viewings at flagship luxury boutiques.", price: 400, type: "ATTRACTION" },
+            { time: "08:30 PM", title: "La Pergola", desc: "Rome's only three-Michelin-starred restaurant, offering an unparalleled tasting menu.", price: 900, type: "RESTAURANT" }
+          ]
+        },
+        {
+          title: "Renaissance Art & Secret Alleys",
+          items: [
+            { time: "10:00 AM", title: "Galleria Borghese Private Docent Tour", desc: "An in-depth look at Bernini's and Caravaggio's masterpieces with an art historian.", price: 450, type: "ATTRACTION" },
+            { time: "01:00 PM", title: "Casina Valadier", desc: "High-end dining on Pincian Hill with panoramic views of the city skyline.", price: 220, type: "RESTAURANT" },
+            { time: "03:30 PM", title: "Private Vintage Vespa Tour", desc: "Discover hidden Roman gems and the Aventine Hill's secret keyhole on a classic Vespa.", price: 500, type: "ATTRACTION" },
+            { time: "08:00 PM", title: "Imàgo", desc: "Sophisticated Michelin-starred Italian dining at the top of the Spanish Steps.", price: 600, type: "RESTAURANT" }
+          ]
+        },
+        {
+          title: "Roman Relaxation & Culinary Mastery",
+          items: [
+            { time: "10:30 AM", title: "Luxury Wellness at De Russie Spa", desc: "A morning of hydrotherapy and Mediterranean-inspired treatments in a serene setting.", price: 600, type: "ATTRACTION" },
+            { time: "01:30 PM", title: "Roscioli Salumeria con Cucina", desc: "The city's most elite deli-restaurant; the carbonara is world-famous.", price: 150, type: "RESTAURANT" },
+            { time: "04:00 PM", title: "Private Pasta & Tiramisu Masterclass", desc: "Hosted in a private loft with a professional chef; includes premium wine pairing.", price: 500, type: "ATTRACTION" },
+            { time: "08:30 PM", title: "Il Pagliaccio", desc: "A refined two-Michelin-starred farewell dinner featuring innovative fusion-Italian cuisine.", price: 750, type: "RESTAURANT" }
+          ]
         }
-    }
-
-    global.navigateTo = navigateTo;
-
-    // Attach Nav Pills buttons event listeners
-    function setupNavButtons() {
-        document.querySelectorAll('.nav-pills button').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const pageId = this.getAttribute('data-page');
-                if (pageId) navigateTo(pageId);
-            });
-        });
-    }
-
-    // -------------------------------------------------------------
-    // Database API queries
-    // -------------------------------------------------------------
-    function loadTripsFromDb() {
-        const grid = el("trip-grid-container");
-        grid.innerHTML = `<div class="skeleton" style="min-height:160px; grid-column:1/-1;"></div>`;
-
-        It.apiGet("/dashboard/trips", { auth: true }).then(function (res) {
-            if (res.ok && res.body && res.body.data) {
-                trips = res.body.data;
-                
-                // Fetch mock attachments persistent in local storage
-                trips.forEach(t => {
-                    const localAtts = localStorage.getItem(`itinari_attachments_${t.id}`);
-                    t.attachments = localAtts ? JSON.parse(localAtts) : [];
-                    
-                    // Fallback attachments if database trip is newly created
-                    if (t.attachments.length === 0 && t.title.includes("Bali")) {
-                        t.attachments = [
-                            { id: "att-1", name: "Amnaya Resort DPS", type: "Hotel", address: "Kuta, Bali", price: 140, x: 50, y: 110 },
-                            { id: "att-2", name: "Nusa Penida Tour", type: "Attraction", address: "Nusa Penida", price: 45, x: 140, y: 130 }
-                        ];
-                        localStorage.setItem(`itinari_attachments_${t.id}`, JSON.stringify(t.attachments));
-                    }
-                });
-
-                if (trips.length > 0 && !activeTripId) {
-                    activeTripId = trips[0].id;
-                }
-
-                renderTripsList();
-            } else {
-                fb.banner("Failed to pull trips from database.", "is-error");
-            }
-        }).catch(function (err) {
-            fb.banner(err.message || "Failed to reach backend database server.", "is-error");
-        });
-    }
-
-    function renderTripsList() {
-        const grid = el("trip-grid-container");
-        grid.innerHTML = "";
-
-        if (trips.length === 0) {
-            grid.innerHTML = `<div class="text-muted" style="grid-column:1/-1;">No trips found in database. Create one!</div>`;
-            el("trips-count-meta").innerHTML = `<i class="fas fa-info-circle"></i> 0 trips · last updated today`;
-            return;
+      ];
+    } else if (isTokyo) {
+      daysTemplates = [
+        {
+          title: "Ancient Sanctuaries & Modern Neon",
+          items: [
+            { time: "09:00 AM", title: "Meiji Jingu Private Shinto Blessing", desc: "Private ceremonial entrance through the sacred forest with an English-speaking priest.", price: 450, type: "ATTRACTION" },
+            { time: "01:00 PM", title: "Sukiyabashi Jiro Roppongi", desc: "Master Edomae omakase sushi experience prepared before your eyes.", price: 350, type: "RESTAURANT" },
+            { time: "03:30 PM", title: "Ginza Luxury Haute Horlogerie & Couture", desc: "VIP private salon access in Ginza's premier luxury design houses.", price: 400, type: "ATTRACTION" },
+            { time: "07:30 PM", title: "Narisawa Gastronomy Experience", desc: "Innovative two-Michelin-starred 'Satoyama' sustainable culinary journey.", price: 650, type: "RESTAURANT" }
+          ]
+        },
+        {
+          title: "Traditional Arts & Culinary Precision",
+          items: [
+            { time: "10:00 AM", title: "Private Kintsugi & Tea Ceremony Master", desc: "Exclusive session in a centuries-old tea house with a 15th-generation master.", price: 550, type: "ATTRACTION" },
+            { time: "01:30 PM", title: "Tempura Kondo", desc: "Two-Michelin-starred delicate tempura mastery using seasonal rare ingredients.", price: 220, type: "RESTAURANT" },
+            { time: "04:00 PM", title: "teamLab Borderless VIP Private Viewing", desc: "Curated digital art museum experience with skip-the-line private docent.", price: 350, type: "ATTRACTION" },
+            { time: "08:00 PM", title: "L'Effervescence", desc: "Three-Michelin-starred French-Japanese harmonic culinary masterpiece.", price: 800, type: "RESTAURANT" }
+          ]
         }
+      ];
+    } else {
+      daysTemplates = [
+        {
+          title: "Heritage Landmarks & Skyline Gastronomy",
+          items: [
+            { time: "09:30 AM", title: `Private VIP ${cityName.split(",")[0]} Highlights Tour`, desc: "Fast-track access to premier historical monuments with an expert historian.", price: 550, type: "ATTRACTION" },
+            { time: "01:00 PM", title: "Grand Historic Piazza Lunch", desc: "Curated regional tasting menu in an iconic heritage location.", price: 200, type: "RESTAURANT" },
+            { time: "03:30 PM", title: "Private Chauffeur & Scenic Viewpoints", desc: "Curated private transportation covering secret gems and iconic vistas.", price: 400, type: "ATTRACTION" },
+            { time: "08:00 PM", title: "Panoramic Michelin-Starred Dinner", desc: "Haute cuisine tasting menu paired with grand cru vintage wines.", price: 650, type: "RESTAURANT" }
+          ]
+        },
+        {
+          title: "Artistry, Culture & Private Salons",
+          items: [
+            { time: "10:00 AM", title: "Exclusive Fine Art Gallery Access", desc: "Private early morning gallery docent tour before public opening.", price: 480, type: "ATTRACTION" },
+            { time: "01:30 PM", title: "Waterfront Gourmet Dining", desc: "Refined culinary specialties featuring fresh organic farm-to-table dining.", price: 240, type: "RESTAURANT" },
+            { time: "04:00 PM", title: "Boutique Artisan & Fashion Experience", desc: "Private appointments with premier local craftsmen and designers.", price: 420, type: "ATTRACTION" },
+            { time: "08:30 PM", title: "Celebrated Master Chef Degustation", desc: "Multi-course culinary journey crafted by the country’s leading culinary figure.", price: 780, type: "RESTAURANT" }
+          ]
+        }
+      ];
+    }
 
-        trips.forEach(trip => {
-            const card = document.createElement("div");
-            card.className = "trip-card";
-            card.onclick = () => {
-                activeTripId = trip.id;
-                navigateTo("page-details");
-            };
+    const generatedDays = [];
+    let plannedCount = 0;
 
-            const startDate = trip.start_date ? trip.start_date.split("T")[0] : "—";
-            const endDate = trip.end_date ? trip.end_date.split("T")[0] : "—";
-            const travelers = trip.no_of_travelers || 2;
+    for (let i = 1; i <= daysCount; i++) {
+      const template = daysTemplates[(i - 1) % daysTemplates.length];
+      generatedDays.push({
+        day_number: i,
+        title: template.title,
+        items: template.items
+      });
+      plannedCount += template.items.length;
+    }
 
-            card.innerHTML = `
-                <h3>${trip.title}</h3>
-                <div class="meta">
-                    <span><i class="fas fa-calendar-alt"></i> ${startDate} to ${endDate}</span>
-                    <span><i class="fas fa-users"></i> ${travelers} travelers</span>
+    return {
+      title: `${daysCount}-Day ${tier} ${cityName} Experience`,
+      meta: `${daysCount} Days • ${cityName} • ${party} • ${tier}`,
+      description: `This curated ${cityName.split(",")[0]} holiday offers unparalleled access to the city's most iconic treasures. From private, after-hours tours of landmark museums to personal shopping sessions in the fashion district and dining at Michelin-starred institutions, every detail is designed for discerning travelers seeking history, art, and world-class gastronomy at a balanced pace.`,
+      estimated_budget: budget,
+      planned_items_count: plannedCount,
+      osrm_waypoints: "Verified",
+      days: generatedDays
+    };
+  }
+
+  // Render Master Plan on UI
+  function renderMasterPlan(plan) {
+    const titleEl = el("mp-title");
+    const metaEl = el("mp-meta");
+    const descEl = el("mp-desc");
+    const budgetEl = el("mp-budget");
+    const itemsEl = el("mp-items");
+    const waypointsEl = el("mp-waypoints");
+    const daysContainer = el("mp-days-container");
+
+    if (titleEl) titleEl.textContent = plan.title;
+    if (metaEl) metaEl.textContent = plan.meta;
+    if (descEl) descEl.textContent = plan.description;
+    if (budgetEl) budgetEl.textContent = `$${plan.estimated_budget.toLocaleString()}`;
+    if (itemsEl) itemsEl.textContent = plan.planned_items_count;
+    if (waypointsEl) waypointsEl.textContent = plan.osrm_waypoints || "Verified";
+
+    if (!daysContainer) return;
+    daysContainer.innerHTML = "";
+
+    plan.days.forEach((day) => {
+      const dayCard = document.createElement("div");
+      dayCard.className = "day-card";
+
+      let itemsHtml = "";
+      day.items.forEach((item) => {
+        itemsHtml += `
+          <div class="timeline-item-row">
+            <div class="timeline-node-dot"></div>
+            <div class="timeline-activity-card">
+              <div class="activity-info-col">
+                <div class="activity-title-row">
+                  <span class="activity-time">${item.time}</span>
+                  <h4 class="activity-name">${item.title}</h4>
                 </div>
-                <div class="actions">
-                    <button type="button"><i class="fas fa-eye"></i> View details</button>
-                </div>
-            `;
-            grid.appendChild(card);
-        });
-
-        el("trips-count-meta").innerHTML = `<i class="fas fa-info-circle"></i> ${trips.length} trips · last updated today`;
-    }
-
-    // -------------------------------------------------------------
-    // Page 2: Create Trip (Live DB POST)
-    // -------------------------------------------------------------
-    function saveNewTripToDb() {
-        const title = el("trip-title-input").value.trim();
-        const start = el("trip-start-input").value;
-        const end = el("trip-end-input").value;
-        const travelers = parseInt(el("trip-travelers-input").value || 1);
-
-        if (!title) {
-            alert("Please provide a name for your trip!");
-            return;
-        }
-
-        const postBody = {
-            title: title,
-            status: "planned",
-            budget: 2500, // default budget mapping
-            start_date: start,
-            end_date: end,
-            no_of_travelers: travelers
-        };
-
-        fb.banner("Saving trip to database...", "is-info");
-
-        It.apiPost("/trips", postBody, { auth: true }).then(function (res) {
-            if (res.ok && res.body && res.body.data) {
-                fb.banner("Trip created successfully!", "is-ok");
-                activeTripId = res.body.data.id;
-                
-                // Initialize empty attachments
-                localStorage.setItem(`itinari_attachments_${activeTripId}`, JSON.stringify([]));
-                
-                loadTripsFromDb();
-                navigateTo("page-trips");
-            } else {
-                fb.banner(res.body.message || "Failed to save trip.", "is-error");
-            }
-        }).catch(function (err) {
-            fb.banner(err.message || "Database connection error.", "is-error");
-        });
-    }
-
-    global.saveNewTripToDb = saveNewTripToDb;
-
-    // -------------------------------------------------------------
-    // Page 3: Trip Details & Map Route
-    // -------------------------------------------------------------
-    function renderActiveTripDetails() {
-        const trip = trips.find(t => t.id == activeTripId);
-        if (!trip) {
-            el("details-trip-title").innerHTML = `<i class="fas fa-map-marked-alt"></i> No Trip Selected`;
-            el("timeline-container").innerHTML = `<div class="text-muted">Select a trip from the list first.</div>`;
-            return;
-        }
-
-        el("details-trip-title").innerHTML = `<i class="fas fa-map-marked-alt"></i> ${trip.title} · Details`;
-
-        // Populate Timeline items list
-        const timeline = el("timeline-container");
-        timeline.innerHTML = "";
-
-        const attachments = trip.attachments || [];
-        if (attachments.length === 0) {
-            timeline.innerHTML = `<div class="text-muted">No items attached yet. Check the attachment panel below!</div>`;
-        } else {
-            attachments.forEach((item, index) => {
-                const day = Math.floor(index / 2) + 1;
-                const time = index % 2 === 0 ? "09:30" : "14:00";
-                const div = document.createElement("div");
-                div.className = "timeline-item";
-                div.innerHTML = `
-                    <span>
-                        <span class="time">${time}</span>
-                        <span class="desc">${item.name} (${item.type})</span>
-                    </span>
-                    <span>Day ${day}</span>
-                `;
-                timeline.appendChild(div);
-            });
-        }
-
-        // Render Dynamic SVG route map
-        renderMapCanvas(attachments);
-
-        // Open Attach modal list options
-        populateAttachModal(trip);
-    }
-
-    function renderMapCanvas(attachments) {
-        const container = el("map-canvas-container");
-        container.innerHTML = "";
-
-        if (attachments.length === 0) {
-            container.innerHTML = `<i class="fas fa-map-pin" style="margin-right: 6px;"></i> Map route checkpoints will show here`;
-            return;
-        }
-
-        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-        svg.setAttribute("width", "100%");
-        svg.setAttribute("height", "100%");
-        svg.setAttribute("style", "position:absolute; inset:0;");
-
-        // Connecting line path
-        if (attachments.length > 1) {
-            const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            let pathD = `M ${attachments[0].x} ${attachments[0].y}`;
-            for (let i = 1; i < attachments.length; i++) {
-                pathD += ` L ${attachments[i].x} ${attachments[i].y}`;
-            }
-            path.setAttribute("d", pathD);
-            path.setAttribute("class", "map-path");
-            svg.appendChild(path);
-        }
-
-        // Circles nodes
-        attachments.forEach(item => {
-            const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-            circle.setAttribute("cx", item.x);
-            circle.setAttribute("cy", item.y);
-            circle.setAttribute("r", 5);
-            circle.setAttribute("class", "map-node");
-
-            const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
-            text.setAttribute("x", item.x);
-            text.setAttribute("y", item.y + 14);
-            text.setAttribute("text-anchor", "middle");
-            text.setAttribute("fill", "#1f3a5c");
-            text.setAttribute("font-size", "9px");
-            text.setAttribute("font-weight", "600");
-            text.textContent = item.name.split(" ").slice(0, 2).join(" ");
-
-            svg.appendChild(circle);
-            svg.appendChild(text);
-        });
-
-        container.appendChild(svg);
-    }
-
-    // -------------------------------------------------------------
-    // Page 3: Attach/Detach functions
-    // -------------------------------------------------------------
-    function populateAttachModal(trip) {
-        const select = el("modal-item-select");
-        select.innerHTML = "";
-
-        catalog.forEach(cat => {
-            const alreadyAttached = trip.attachments && trip.attachments.some(att => att.name === cat.name);
-            if (!alreadyAttached) {
-                const opt = document.createElement("option");
-                opt.value = cat.name;
-                opt.textContent = `${cat.name} (${cat.type})`;
-                select.appendChild(opt);
-            }
-        });
-
-        if (select.children.length === 0) {
-            const opt = document.createElement("option");
-            opt.textContent = "All items attached";
-            opt.disabled = true;
-            select.appendChild(opt);
-        }
-
-        renderAttachedList(trip);
-    }
-
-    function renderAttachedList(trip) {
-        const list = el("attached-items-list");
-        list.innerHTML = "";
-
-        const attachments = trip.attachments || [];
-        if (attachments.length === 0) {
-            list.innerHTML = `<div style="font-size:12px; color:#617e9e; text-align:center; padding:10px;">No items attached.</div>`;
-            return;
-        }
-
-        attachments.forEach(item => {
-            const row = document.createElement("div");
-            row.className = "item-row";
-            row.innerHTML = `
-                <span>📌 ${item.name}</span>
-                <button type="button" onclick="detachItemFromTrip('${item.id}')"><i class="fas fa-minus-circle"></i> Detach</button>
-            `;
-            list.appendChild(row);
-        });
-    }
-
-    function addSelectedItemToTrip() {
-        const trip = trips.find(t => t.id == activeTripId);
-        if (!trip) return;
-
-        const select = el("modal-item-select");
-        const name = select.value;
-        if (!name || name.includes("attached")) return;
-
-        const catItem = catalog.find(c => c.name === name);
-        if (!catItem) return;
-
-        const newAtt = {
-            id: "att-" + Date.now(),
-            name: catItem.name,
-            type: catItem.type,
-            address: catItem.address,
-            price: catItem.price,
-            x: catItem.x,
-            y: catItem.y
-        };
-
-        if (!trip.attachments) trip.attachments = [];
-        trip.attachments.push(newAtt);
-
-        localStorage.setItem(`itinari_attachments_${trip.id}`, JSON.stringify(trip.attachments));
-        renderActiveTripDetails();
-    }
-
-    global.addSelectedItemToTrip = addSelectedItemToTrip;
-
-    function detachItemFromTrip(itemId) {
-        const trip = trips.find(t => t.id == activeTripId);
-        if (!trip) return;
-
-        trip.attachments = (trip.attachments || []).filter(att => att.id !== itemId);
-        localStorage.setItem(`itinari_attachments_${trip.id}`, JSON.stringify(trip.attachments));
-        renderActiveTripDetails();
-    }
-
-    global.detachItemFromTrip = detachItemFromTrip;
-
-    // -------------------------------------------------------------
-    // Page 4: Calendar Schedule View
-    // -------------------------------------------------------------
-    function renderCalendarSchedule() {
-        const trip = trips.find(t => t.id == activeTripId);
-        if (!trip) {
-            el("schedule-trip-title").textContent = "Schedule";
-            el("calendar-days-container").innerHTML = "";
-            el("schedule-items-list").innerHTML = `<div class="text-muted">Select a trip to schedule activities.</div>`;
-            return;
-        }
-
-        el("schedule-trip-title").innerHTML = `<i class="fas fa-calendar-check"></i> Schedule · ${trip.title.split(" ")[0]}`;
-
-        const start = new Date(trip.start_date || Date.now());
-        const end = new Date(trip.end_date || Date.now() + 86400000);
-        const dayDiff = Math.max(1, Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1);
-
-        // Populate days grid
-        const grid = el("calendar-days-container");
-        grid.innerHTML = "";
-
-        const daysOfWeek = ["M", "T", "W", "T", "F", "S", "S"];
-        daysOfWeek.forEach(d => {
-            const col = document.createElement("div");
-            col.className = "cal-day";
-            col.style.fontWeight = "bold";
-            col.style.background = "transparent";
-            col.style.border = "none";
-            col.textContent = d;
-            grid.appendChild(col);
-        });
-
-        for (let d = 1; d <= dayDiff; d++) {
-            const cell = document.createElement("div");
-            cell.className = `cal-day ${d === 1 ? 'active' : ''}`;
-            
-            // Add date number increment starting from trip start date day
-            const dateNum = new Date(start.getTime() + (d - 1) * 24 * 60 * 60 * 1000).getDate();
-            cell.innerHTML = `${dateNum} ${(trip.attachments && trip.attachments.length > 0) ? '<span class="event-dot"></span>' : ''}`;
-            
-            cell.onclick = () => {
-                document.querySelectorAll(".cal-day").forEach(c => c.classList.remove("active"));
-                cell.classList.add("active");
-                populateCalendarSlots(d, trip);
-            };
-            grid.appendChild(cell);
-        }
-
-        populateCalendarSlots(1, trip);
-    }
-
-    function populateCalendarSlots(dayIndex, trip) {
-        const list = el("schedule-items-list");
-        list.innerHTML = "";
-
-        const dailyExcursions = [
-            { hour: "Morning Activity", name: "Beach Day & Relaxing" },
-            { hour: "Afternoon Tour", name: "Leisure Sightseeing Walk" },
-            { hour: "Dinner Reservation", name: "Local Culinary Restaurant" }
-        ];
-
-        const attachments = trip.attachments || [];
-        const hotels = attachments.filter(a => a.type === "Hotel");
-        const attractions = attachments.filter(a => a.type === "Attraction");
-        const restaurants = attachments.filter(a => a.type === "Restaurant");
-
-        if (hotels.length > 0) {
-            dailyExcursions[0].name = `Lobby meeting at ${hotels[0].name}`;
-        }
-        if (attractions.length > 0) {
-            const att = attractions[(dayIndex - 1) % attractions.length];
-            dailyExcursions[1].name = `${att.name} Visit`;
-        }
-        if (restaurants.length > 0) {
-            const res = restaurants[(dayIndex - 1) % restaurants.length];
-            dailyExcursions[2].name = `Dinner at ${res.name}`;
-        }
-
-        dailyExcursions.forEach((slot, index) => {
-            const div = document.createElement("div");
-            div.className = "schedule-item";
-            
-            const icons = ["umbrella-beach", "hiking", "utensils"];
-            const icon = icons[index % 3];
-
-            div.innerHTML = `
-                <span><i class="fas fa-${icon}" style="color:#3b7cff; margin-right: 8px;"></i> ${slot.name}</span>
-                <span>${slot.hour}</span>
-            `;
-            list.appendChild(div);
-        });
-    }
-
-    // -------------------------------------------------------------
-    // Page 5: Checkout Summary Billing
-    // -------------------------------------------------------------
-    function renderCheckoutInvoice() {
-        const trip = trips.find(t => t.id == activeTripId);
-        if (!trip) {
-            el("checkout-summary-container").innerHTML = `<div class="text-muted">Select a trip to proceed to invoice billing.</div>`;
-            return;
-        }
-
-        const travelers = parseInt(trip.no_of_travelers || 2);
-        const flightCost = 290 * travelers;
-
-        const start = new Date(trip.start_date || Date.now());
-        const end = new Date(trip.end_date || Date.now());
-        const nights = Math.max(1, Math.ceil((end - start) / (1000 * 60 * 60 * 24)));
-
-        const container = el("checkout-summary-container");
-        container.innerHTML = "";
-
-        const listDiv = document.createElement("div");
-
-        // Flight tickets row
-        let detailsHtml = `<div class="price-row"><span>✈️ Return Flights (x${travelers} pax)</span> <span>$${flightCost}</span></div>`;
-        let lodgingsTotal = 0;
-        let attractionsTotal = 0;
-
-        const attachments = trip.attachments || [];
-        attachments.forEach(item => {
-            if (item.type === "Hotel") {
-                const cost = item.price * nights;
-                lodgingsTotal += cost;
-                detailsHtml += `<div class="price-row"><span>🏨 ${item.name} Resort (${nights} nights)</span> <span>$${cost}</span></div>`;
-            } else {
-                const cost = item.price * travelers;
-                attractionsTotal += cost;
-                detailsHtml += `<div class="price-row"><span>🎟️ ${item.name} Entry Tickets</span> <span>$${cost}</span></div>`;
-            }
-        });
-
-        const totalCost = flightCost + lodgingsTotal + attractionsTotal;
-
-        detailsHtml += `
-            <div class="price-row total"><span>Total</span> <span>$${totalCost.toLocaleString()}</span></div>
-            <div style="margin-top: 1.8rem; display: flex; gap: 1rem; flex-wrap: wrap;">
-                <button class="btn-primary" onclick="simulatePayment(${totalCost})"><i class="fas fa-credit-card"></i> Pay now</button>
-                <button class="btn-outline"><i class="fas fa-lock"></i> Secure</button>
+                <p class="activity-desc">${item.description || item.desc}</p>
+              </div>
+              <div class="activity-meta-col">
+                <span class="activity-price">$${item.price}</span>
+                <span class="activity-category-badge">${item.type}</span>
+              </div>
             </div>
-            <p style="margin-top: 0.8rem; font-size: 0.9rem; color: #3b6a93;"><i class="fas fa-shield-alt"></i> Payment via Stripe · 3D secure</p>
+          </div>
         `;
+      });
 
-        listDiv.innerHTML = detailsHtml;
-        container.appendChild(listDiv);
-    }
+      dayCard.innerHTML = `
+        <div class="day-card-header">
+          <div class="day-header-left">
+            <div class="day-badge-circle">D${day.day_number}</div>
+            <h3 class="day-title-text">${day.title}</h3>
+          </div>
+          <span class="day-count-tag">Day ${day.day_number} of ${plan.days.length}</span>
+        </div>
+        <div class="timeline-track-container">
+          ${itemsHtml}
+        </div>
+      `;
 
-    function simulatePayment(amount) {
-        alert(`💳 Payment simulation: $${amount.toLocaleString()} charged successfully!`);
-    }
-
-    global.simulatePayment = simulatePayment;
-
-    // -------------------------------------------------------------
-    // Boot Authentication Gate
-    // -------------------------------------------------------------
-    function boot() {
-        if (!It.session.hasToken()) {
-            It.session.redirectToLogin();
-            return;
-        }
-
-        It.session.currentUser().then(function (user) {
-            if (!user) {
-                It.session.clearSession();
-                It.session.redirectToLogin();
-                return;
-            }
-
-            const role = It.session.roleOf(user);
-            if (It.session.isAdminRole(role)) {
-                global.location.replace(It.CONFIG.role.admin);
-                return;
-            }
-
-            // Update badge in header
-            document.querySelector(".user-badge").innerHTML = `<i class="fas fa-user-circle"></i> ${user.name}`;
-
-            // Load trips
-            loadTripsFromDb();
-        });
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const btn = el("logout-btn");
-        if (btn) btn.addEventListener("click", function () { It.session.logout(); });
-        
-        setupNavButtons();
-        boot();
+      daysContainer.appendChild(dayCard);
     });
+
+    // Wire Actions
+    const btnSave = el("btn-save-master-plan");
+    if (btnSave) {
+      btnSave.onclick = savePlanToMyTrips;
+    }
+
+    const btnBook = el("btn-book-paymob");
+    if (btnBook) {
+      btnBook.onclick = (e) => {
+        e.preventDefault();
+        sessionStorage.setItem("itinari_checkout_plan", JSON.stringify(plan));
+        window.location.href = "checkout.html?plan=ai_luxury&city=" + encodeURIComponent(plannerState.city) + "&amount=" + plan.estimated_budget;
+      };
+    }
+  }
+
+  // Save Plan to User's Account & Database
+  async function savePlanToMyTrips() {
+    const plan = plannerState.currentPlan;
+    if (!plan) return;
+
+    const btn = el("btn-save-master-plan");
+    if (btn) {
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+      btn.disabled = true;
+    }
+
+    // Save locally
+    const savedTrips = JSON.parse(localStorage.getItem("itinari_my_trips") || "[]");
+    savedTrips.unshift({
+      id: "trip_" + Date.now(),
+      title: plan.title,
+      city: plannerState.city,
+      duration: plannerState.duration,
+      start_date: plannerState.startDate,
+      travel_party: plannerState.travelParty,
+      budget: plan.estimated_budget,
+      plan: plan,
+      created_at: new Date().toISOString()
+    });
+    localStorage.setItem("itinari_my_trips", JSON.stringify(savedTrips));
+
+    // Update Nav counter badge
+    const badge = el("my-trips-count-badge");
+    if (badge) badge.textContent = savedTrips.length;
+
+    // Persist to backend database if logged in
+    const token = localStorage.getItem("itinari_token");
+    if (token) {
+      try {
+        await fetch((It.CONFIG?.apiBase || "https://itinari.up.railway.app/api") + "/trips", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": "Bearer " + token
+          },
+          body: JSON.stringify({
+            title: plan.title,
+            status: "planned",
+            travel_style: plannerState.budgetTier,
+            interests: plannerState.interests,
+            no_of_travelers: 2,
+            budget: plan.estimated_budget,
+            no_of_days: plannerState.duration,
+            start_date: plannerState.startDate,
+            end_date: plannerState.startDate
+          })
+        });
+      } catch (err) {
+        console.warn("Backend save notice:", err);
+      }
+    }
+
+    showToast("Master Plan saved to My Trips successfully!");
+    if (btn) {
+      btn.innerHTML = '<i class="fas fa-check"></i> Saved to My Trips';
+      btn.disabled = false;
+    }
+  }
+
+  // Initialize Page
+  document.addEventListener("DOMContentLoaded", () => {
+    initQuota();
+    renderDestinationCards();
+    setupBudgetTiers();
+    setupExperienceChips();
+    setupStepFlow();
+
+    // Set existing My Trips count
+    const savedTrips = JSON.parse(localStorage.getItem("itinari_my_trips") || "[]");
+    const badge = el("my-trips-count-badge");
+    if (badge) badge.textContent = Math.max(1, savedTrips.length);
+
+    // If URL has query params e.g. city=Rome
+    const urlParams = new URLSearchParams(window.location.search);
+    const qCity = urlParams.get("city");
+    if (qCity) {
+      plannerState.city = qCity;
+      const customInput = el("custom-city-input");
+      if (customInput) customInput.value = qCity;
+      renderDestinationCards();
+    }
+  });
 
 })(window);

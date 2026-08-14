@@ -70,7 +70,7 @@
     const currentTok = (It.readToken && It.readToken()) || localStorage.getItem("itinari_token");
     if (!currentTok) throw new Error("No token to refresh");
 
-    const base = (It.CONFIG && It.CONFIG.apiBase) || (global.APP_CONFIG && global.APP_CONFIG.API_BASE_URL) || "http://127.0.0.1:8000/api";
+    const base = (It.CONFIG && It.CONFIG.apiBase) || (global.APP_CONFIG && global.APP_CONFIG.API_BASE_URL) || "https://itinari.up.railway.app/api";
     const res = await fetch(base.replace(/\/$/, "") + "/refresh", {
       method: "POST",
       headers: {
@@ -102,7 +102,7 @@
   async function request(method, path, data, opts) {
     opts = opts || {};
     const normalizedPath = normalizePath(path);
-    const apiBase = (It.CONFIG && It.CONFIG.apiBase) ? It.CONFIG.apiBase.replace(/\/$/, "") : "http://127.0.0.1:8000/api";
+    const apiBase = (It.CONFIG && It.CONFIG.apiBase) ? It.CONFIG.apiBase.replace(/\/$/, "") : "https://itinari.up.railway.app/api";
     
     const headers = Object.assign(
       {
