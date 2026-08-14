@@ -128,7 +128,7 @@
   function renderPlanCard(plan, currentSub) {
     const isCurrent = currentSub && currentSub.status === "active" && Number(currentSub.plan_id) === Number(plan.id);
     const isFree = Number(plan.price_cents) === 0;
-    const isFeatured = plan.name === "Pro" || plan.name === "Business";
+    const isFeatured = plan.name === "Jetsetter" || plan.name === "Pro" || plan.name === "Business";
     const cycle = plan.billing_cycle === "yearly" ? "/ yr" : "/ mo";
     const priceDisplay = isFree ? "Free" : PC.fmtCents(plan.price_cents, plan.currency);
 
@@ -140,8 +140,9 @@
     } else if (isFree) {
       btnHtml = '<a href="app/dashboard.html" class="btn-outline w-full justify-center"><span>Get Started</span></a>';
     } else {
-      const btnClass = isFeatured ? "btn-primary w-full justify-center" : "btn-outline w-full justify-center";
-      const btnLabel = currentSub && currentSub.status === "active" ? "Upgrade to " + esc(plan.name) : "Choose " + esc(plan.name);
+      const btnClass = plan.name === "Jetsetter" ? "btn-primary w-full justify-center" : "btn-outline w-full justify-center";
+      const defaultLabel = plan.name.includes("Imperial") ? "Choose Imperial" : "Upgrade to " + esc(plan.name);
+      const btnLabel = currentSub && currentSub.status === "active" ? "Upgrade to " + esc(plan.name) : defaultLabel;
       btnHtml = '<button type="button" class="' + btnClass + '" data-plan-id="' + plan.id + '" data-plan-name="' + esc(plan.name) + '">' +
         '<span>' + btnLabel + '</span><i class="fas fa-arrow-right text-xs ml-2"></i></button>';
     }
