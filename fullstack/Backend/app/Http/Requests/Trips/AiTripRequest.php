@@ -22,15 +22,20 @@ class AiTripRequest extends FormRequest
      * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-    {        // Destination count
-        // number of days , budget , intersest , no of travel , travel style ,
+    {
         return [
-            'destination_country_id' => 'required|numeric|exists:countries,id',
-            'no_of_days' => 'required|integer',
-            'budget' => 'required|numeric',
-            'interests' => 'required|array',
-            'no_of_travelers' => 'required|integer',
-            'travel_style' => 'required|string',
+            'destination_country_id' => 'required_without_all:city,destination|nullable|numeric|exists:countries,id',
+            'city' => 'nullable|string|max:255',
+            'destination' => 'nullable|string|max:255',
+            'no_of_days' => 'required|integer|min:1|max:60',
+            'budget' => 'nullable|numeric|min:0',
+            'budget_tier' => 'nullable|string',
+            'interests' => 'nullable|array',
+            'no_of_travelers' => 'nullable|integer|min:1',
+            'travel_party' => 'nullable|string',
+            'travel_style' => 'nullable|string',
+            'start_date' => 'nullable|date',
+            'prompt' => 'nullable|string|max:1000',
         ];
     }
 }

@@ -69,14 +69,7 @@ html.dark[data-theme-luxury] {
   }
 }
 
-/* ---- Wizard step indicator ----
-   NOTE ON APPLICABILITY: trip-form.html (the real Planner page) is a
-   SINGLE-PAGE FORM, not a multi-step wizard — confirmed by direct
-   inspection (.form__card, .field, .chip-row, one .btn-row at the
-   bottom). The mockup's 5-step wizard concept has no matching markup
-   here. This class is defined for future use if the form is ever
-   converted to a wizard, but nothing in trip-form.html references it
-   today — do not assume it's wired in. */
+/* ---- Wizard step indicator ---- */
 [data-theme-luxury] .luxury-step {
   width: 2rem;
   height: 2rem;
@@ -100,8 +93,7 @@ html.dark[data-theme-luxury] {
   color: hsl(var(--primary));
 }
 
-/* ---- Planner form — REAL classes on trip-form.html, styled directly.
-   This is what actually applies today, unlike the wizard steps above. ---- */
+/* ---- Planner form — REAL classes on trip-form.html, styled directly. ---- */
 [data-theme-luxury] .form__card {
   border: 1px solid hsl(var(--primary) / 0.15);
 }
@@ -119,21 +111,13 @@ html.dark[data-theme-luxury] {
   text-transform: uppercase;
 }
 
-/* ---- Luxury status badges — reuse existing --ok/--warn/--danger tokens,
-   just add the luxury serif treatment for the headline text. ---- */
+/* ---- Luxury status badges ---- */
 [data-theme-luxury] .luxury-status-title {
   font-family: var(--luxury-serif);
   font-weight: 600;
 }
 
-/* ---- checkout.html — REAL classes on the actual plans-checkout page.
-   NOTE ON APPLICABILITY: the mockup imagined a multi-step Paymob flow
-   with a countdown timer, HMAC-failure state, and card/wallet/kiosk
-   method switcher. None of that markup exists in the real checkout.html
-   (confirmed by direct inspection) — it's a single-screen plan-purchase
-   page (.section-title, .btn-outline, .btn-white, standard nav-pill
-   header). Styled what's actually there; did not invent a fake wizard
-   to match the mockup. ---- */
+/* ---- checkout.html ---- */
 [data-theme-luxury] .section-title {
   font-family: var(--luxury-serif);
   color: hsl(var(--primary, 38 92% 55%));
@@ -145,5 +129,3 @@ html.dark[data-theme-luxury] {
 [data-theme-luxury] .btn-outline:hover {
   background: hsl(var(--primary, 38 92% 55%) / 0.1);
 }
-
-/* prefers-reduced-motion respected — no motion defined in this file that isn't already gated globally in app.css */

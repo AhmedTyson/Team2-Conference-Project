@@ -9,8 +9,7 @@
   function resolveApiBase() {
     if (global.ITINARI_API_BASE) return global.ITINARI_API_BASE;
     try {
-      var origin = global.location.origin;
-      if (origin && !origin.includes(":8080") && !origin.includes(":8085") && !origin.includes(":8086") && !origin.includes(":8087") && !origin.includes(":5500") && !origin.includes(":3000") && !origin.includes(":5173") && !origin.includes("null") && !origin.startsWith("file:")) {
+      if (origin && !origin.includes(":8000") && !origin.includes(":8080") && !origin.includes(":8085") && !origin.includes(":8086") && !origin.includes(":8087") && !origin.includes(":5500") && !origin.includes(":3000") && !origin.includes(":5173") && !origin.includes("null") && !origin.startsWith("file:") && !origin.includes("127.0.0.1") && !origin.includes("localhost")) {
         return origin + "/api";
       }
     } catch (e) {}
