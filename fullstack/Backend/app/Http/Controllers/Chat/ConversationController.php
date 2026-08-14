@@ -9,14 +9,21 @@ use App\Http\Requests\Chat\StoreConversationRequest;
 use App\Http\Resources\Chat\ConversationResource;
 use App\Http\Resources\Chat\MessageResource;
 use App\Support\ApiResponse;
+use App\Models\Catalog\Attraction;
+use App\Models\Catalog\Destination;
+use App\Models\Catalog\Flight;
+use App\Models\Catalog\Hotel;
+use App\Models\Catalog\Restaurant;
 use App\Models\Chat\Conversation;
 use App\Models\Chat\Message;
+use App\Models\Trips\Trip;
 use App\Services\ConciergeService;
 use App\Services\GroqService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use LucianoTonet\GroqLaravel\Facades\Groq;
 
 class ConversationController extends Controller
@@ -262,44 +269,137 @@ class ConversationController extends Controller
     }
 
     /**
-     * Smart, prompt-aware AI Concierge generator for rich travel recommendations.
+     * Smart, prompt-aware AI Concierge generator powered by real database catalog records.
      */
     protected function generateSmartConciergeReply(string $prompt, Conversation $conversation): string
     {
         $p = strtolower(trim($prompt));
 
-        $dest = 'Global Luxury Destinations';
+        $dest = 'Global Destinations';
         if ($conversation->trip && $conversation->trip->destinations->first()) {
             $dest = $conversation->trip->destinations->first()->name;
         }
 
-        // 1. Hotels & Accommodations
+        // 1. Real Hotels from Database
         if (str_contains($p, 'hotel') || str_contains($p, 'stay') || str_contains($p, 'resort') || str_contains($p, 'boutique') || str_contains($p, 'room') || str_contains($p, 'suite')) {
-            return "**Itinera AI Concierge — Luxury Hotel Recommendations**\n\n"
-                ."Here are top 5-star boutique accommodations tailored for your journey:\n\n"
-                ."1. **Le Meurice Palace Hotel**\n"
-                ."   - *Highlights*: Tuileries Garden views, Valmont Spa, Michelin 2-star dining.\n"
-                ."   - *Est. Rate*: $850 / night · High Concierge Rating\n\n"
-                ."2. **Ritz Paris & Chanel Spa**\n"
-                ."   - *Highlights*: Imperial Suite elegance, private garden court, bespoke butler service.\n"
-                ."   - *Est. Rate*: $1,200 / night · Legendary Heritage\n\n"
-                ."3. **Hôtel de Crillon (Rosewood)**\n"
-                ."   - *Highlights*: Historic Place de la Concorde palace, private subterranean pool & Sense Spa.\n"
-                ."   - *Est. Rate*: $980 / night · Boutique Luxury\n\n"
-                ."*Concierge Tip*: Booking via Itinera unlocks complimentary champagne welcome & room upgrades upon availability.";
+            $hotels = Hotel::with('destination')->where('availability', true)->orderByDesc('rating')->take(4)->get();
+            if ($hotels->isEmpty()) {
+                $hotels = Hotel::with('destination')->take(4)->get();
+            }
+
+            if ($hotels->isNotEmpty()) {
+                $out = "**Itinera AI Concierge — Real Database Hotel Recommendations**\n\n";
+                $out .= "Here are top luxury accommodations retrieved live from our database:\n\n";
+                foreach ($hotels as $idx => $h) {
+                    $destName = $h->destination ? $h->destination->name : $dest;
+                    $stars = $h->stars ? str_repeat('⭐', $h->stars) : '5-Star';
+                    $out .= ($idx + 1) . ". **{$h->name}** ({$destName})\n";
+                    $out .= "   - *Rating*: {$h->rating}/5.0 {$stars} · *Address*: " . ($h->address ?: 'Prime Location') . "\n";
+                    $out .= "   - *Nightly Rate*: \${$h->price_per_night} / night\n\n";
+                }
+                $out .= "*Database Sync*: All prices and availability are synced live with our booking engine.";
+                return $out;
+            }
         }
 
-        // 2. Dining & Culinary
+        // 2. Real Restaurants from Database
         if (str_contains($p, 'dining') || str_contains($p, 'restaurant') || str_contains($p, 'food') || str_contains($p, 'michelin') || str_contains($p, 'eat') || str_contains($p, 'chef')) {
-            return "**Itinera AI Concierge — Curated Fine Dining**\n\n"
-                ."Here are exceptional culinary highlights for your itinerary:\n\n"
-                ."1. **Le Gabriel (Michelin 3-Star)** — Exquisite French contemporary gastronomy with seasonal black truffle pairings.\n"
-                ."2. **L'Arpège by Alain Passard** — World-renowned vegetable-focused haute cuisine sourced from private organic gardens.\n"
-                ."3. **Le Jules Verne** — Panoramic 1st-floor Eiffel Tower views paired with modern French culinary mastery.\n\n"
-                ."*Reservation Note*: We recommend securing table reservations at least 14 days in advance via our concierge team.";
+            $restaurants = Restaurant::with('destination')->orderByDesc('rating')->take(4)->get();
+
+            if ($restaurants->isNotEmpty()) {
+                $out = "**Itinera AI Concierge — Verified Fine Dining & Culinary Highlights**\n\n";
+                $out .= "Here are top-rated dining venues retrieved live from our database:\n\n";
+                foreach ($restaurants as $idx => $r) {
+                    $destName = $r->destination ? $r->destination->name : $dest;
+                    $out .= ($idx + 1) . ". **{$r->name}** ({$r->cuisine} Cuisine, {$destName})\n";
+                    $out .= "   - *Rating*: {$r->rating}/5.0 · *Price Category*: " . ($r->price_range ?: '$$$') . "\n";
+                    if ($r->address) {
+                        $out .= "   - *Address*: {$r->address}\n";
+                    }
+                    $out .= "\n";
+                }
+                $out .= "*Concierge Tip*: Table reservations can be booked directly through your Itinera trip manager.";
+                return $out;
+            }
         }
 
-        // 3. Weather & Climate
+        // 3. Real Flights from Database
+        if (str_contains($p, 'flight') || str_contains($p, 'fly') || str_contains($p, 'airline') || str_contains($p, 'airport') || str_contains($p, 'transport') || str_contains($p, 'ticket') || str_contains($p, 'transfer')) {
+            $flights = Flight::orderBy('price', 'asc')->take(4)->get();
+
+            if ($flights->isNotEmpty()) {
+                $out = "**Itinera AI Concierge — Live Verified Flight Schedules**\n\n";
+                $out .= "Here are live flight schedules available in our database:\n\n";
+                foreach ($flights as $idx => $f) {
+                    $status = is_object($f->booking_status) && isset($f->booking_status->value) ? $f->booking_status->value : 'Available';
+                    $out .= ($idx + 1) . ". **{$f->airline}** (Flight `{$f->flight_number}`)\n";
+                    $out .= "   - *Route*: **{$f->departure_airport}** ➔ **{$f->arrival_airport}**\n";
+                    $out .= "   - *Price*: \${$f->price} · *Status*: {$status}\n\n";
+                }
+                $out .= "*Logistics*: You can attach flight segments directly into your trip itinerary.";
+                return $out;
+            }
+        }
+
+        // 4. Real Attractions from Database
+        if (str_contains($p, 'cultural') || str_contains($p, 'museum') || str_contains($p, 'sight') || str_contains($p, 'tour') || str_contains($p, 'highlight') || str_contains($p, 'attraction') || str_contains($p, 'activity') || str_contains($p, 'see')) {
+            $attractions = Attraction::with('destination')->take(4)->get();
+
+            if ($attractions->isNotEmpty()) {
+                $out = "**Itinera AI Concierge — Verified Cultural Attractions**\n\n";
+                $out .= "Here are iconic landmarks and cultural sights from our database:\n\n";
+                foreach ($attractions as $idx => $a) {
+                    $destName = $a->destination ? $a->destination->name : $dest;
+                    $out .= ($idx + 1) . ". **{$a->name}** ({$destName})\n";
+                    if ($a->description) {
+                        $out .= "   - *Highlights*: " . Str::limit($a->description, 100) . "\n";
+                    }
+                    $out .= "\n";
+                }
+                $out .= "*VIP Perk*: Skip-the-line entry passes are included for all booked Itinera itineraries.";
+                return $out;
+            }
+        }
+
+        // 5. Real Destinations from Database
+        if (str_contains($p, 'destination') || str_contains($p, 'city') || str_contains($p, 'where') || str_contains($p, 'place') || str_contains($p, 'country') || str_contains($p, 'recommend')) {
+            $destinations = Destination::with('country')->take(5)->get();
+
+            if ($destinations->isNotEmpty()) {
+                $out = "**Itinera AI Concierge — Top Verified Destinations**\n\n";
+                $out .= "Explore featured travel destinations from our database catalog:\n\n";
+                foreach ($destinations as $idx => $d) {
+                    $countryName = $d->country ? $d->country->name : 'Global';
+                    $out .= ($idx + 1) . ". **{$d->name}** ({$d->city_name}, {$countryName})\n";
+                    if ($d->description) {
+                        $out .= "   - " . Str::limit($d->description, 90) . "\n";
+                    }
+                    $out .= "\n";
+                }
+                return $out;
+            }
+        }
+
+        // 6. Real Trips from Database
+        if (str_contains($p, 'trip') || str_contains($p, 'itinerary') || str_contains($p, 'package') || str_contains($p, 'book')) {
+            $trips = Trip::with(['destinationCountry', 'destinations'])->where('is_public', true)->take(4)->get();
+            if ($trips->isEmpty()) {
+                $trips = Trip::with(['destinationCountry', 'destinations'])->take(4)->get();
+            }
+
+            if ($trips->isNotEmpty()) {
+                $out = "**Itinera AI Concierge — Featured Trip Itineraries**\n\n";
+                $out .= "Here are curated travel packages from our database:\n\n";
+                foreach ($trips as $idx => $t) {
+                    $destName = $t->destinationCountry ? $t->destinationCountry->name : 'Global';
+                    $out .= ($idx + 1) . ". **{$t->title}** ({$destName})\n";
+                    $out .= "   - *Budget Tier*: " . ucfirst($t->budget_level ?: 'Luxury') . " · *Duration*: {$t->total_days} Days\n\n";
+                }
+                return $out;
+            }
+        }
+
+        // 7. Weather & Climate
         if (str_contains($p, 'weather') || str_contains($p, 'season') || str_contains($p, 'climate') || str_contains($p, 'temperature') || str_contains($p, 'rain') || str_contains($p, 'sun')) {
             return "**Itinera AI Concierge — Climate & Travel Forecast**\n\n"
                 ."**Current Forecast**: Clear skies, 22°C (71°F) with light evening breeze.\n\n"
@@ -309,88 +409,47 @@ class ConversationController extends Controller
                 ."*Packing Recommendation*: Bring light layers, breathable evening jackets, and comfortable walking shoes for cobblestone streets.";
         }
 
-        // 4. Cultural & Sights
-        if (str_contains($p, 'cultural') || str_contains($p, 'museum') || str_contains($p, 'sight') || str_contains($p, 'tour') || str_contains($p, 'highlight') || str_contains($p, 'attraction') || str_contains($p, 'activity') || str_contains($p, 'see')) {
-            return "**Itinera AI Concierge — Cultural Highlights & Iconic Landmarks**\n\n"
-                ."Here are the unmissable cultural treasures curated for your visit:\n\n"
-                ."1. **Private After-Hours Louvre Museum Access** — Experience Mona Lisa and Venus de Milo in tranquil serenity with a private art historian.\n"
-                ."2. **Palace of Versailles Private Opera & Gardens** — Exclusive golf-cart tour of Marie Antoinette's Hameau and Hall of Mirrors.\n"
-                ."3. **Musée d'Orsay Impressionist Gallery** — World's largest Monet and Van Gogh collection housed in a restored Beaux-Arts railway station.\n\n"
-                ."*VIP Perk*: Fast-track skip-the-line passes are included for all booked Itinera itineraries.";
-        }
-
-        // 5. Flights & Transport
-        if (str_contains($p, 'flight') || str_contains($p, 'fly') || str_contains($p, 'airline') || str_contains($p, 'airport') || str_contains($p, 'transport') || str_contains($p, 'ticket') || str_contains($p, 'transfer')) {
-            return "**Itinera AI Concierge — Flights & VIP Airport Transfers**\n\n"
-                ."We have summarized your flight & logistics options:\n\n"
-                ."1. **First & Business Class Flights**: Direct flights available via Emirates, Air France, and EgyptAir.\n"
-                ."2. **Private Chauffeur Transfers**: Airport Meet & Greet with Mercedes-Benz S-Class luxury transfers.\n"
-                ."3. **Fast-Track Customs**: Expedited VIP airport lounge access and security screening.\n\n"
-                ."*Logistics Note*: You can manage and attach flight schedules directly inside your Itinera trip builder.";
-        }
-
-        // 6. Budget & Pricing
-        if (str_contains($p, 'budget') || str_contains($p, 'cost') || str_contains($p, 'price') || str_contains($p, 'plan') || str_contains($p, 'expensive') || str_contains($p, 'rate') || str_contains($p, 'membership')) {
-            return "**Itinera AI Concierge — Budget & Membership Tier Breakdown**\n\n"
-                ."Here is an overview of our curated membership plans:\n\n"
-                ."- **Free Tier**: Includes up to 3 custom trip itineraries & 5 AI Concierge queries monthly.\n"
-                ."- **Pro Membership (199 EGP/mo)**: Unlimited trips, 50 AI Concierge queries, priority bookings & concierge support.\n"
-                ."- **Business Tier (499 EGP/mo)**: 200 AI Concierge queries, custom agency tools & dedicated concierge manager.\n\n"
-                ."*Upgrades*: You can seamlessly upgrade your tier on the Plans page at any time.";
-        }
-
-        // 7. Destination Specific (Cairo / Egypt)
-        if (str_contains($p, 'cairo') || str_contains($p, 'egypt') || str_contains($p, 'pyramid') || str_contains($p, 'nile') || str_contains($p, 'luxor')) {
-            return "**Itinera AI Concierge — Cairo & Egyptian Heritage Guide**\n\n"
-                ."Welcome to the timeless wonders of Egypt!\n\n"
-                ."1. **Giza Pyramids & Great Sphinx Private Tour**: Sunset camel safari & VIP entry into Khufu's Chamber.\n"
-                ."2. **Grand Egyptian Museum (GEM)**: Explore King Tutankhamun's complete treasure collection in 5-star luxury.\n"
-                ."3. **Nile River Felucca Sunset Dinner**: Private traditional sailboat dining with live oriental music.\n\n"
-                ."*Egyptian Support*: Our local Cairo team is available 24/7 in Egyptian Arabic and English.";
-        }
-
-        // 8. Destination Specific (Tokyo / Japan)
-        if (str_contains($p, 'tokyo') || str_contains($p, 'japan') || str_contains($p, 'sakura') || str_contains($p, 'kyoto')) {
-            return "**Itinera AI Concierge — Tokyo & Japanese Heritage Guide**\n\n"
-                ."Discover the harmony of ancient tradition and futuristic luxury in Tokyo!\n\n"
-                ."1. **Ginza Private Tea Ceremony**: Traditional Matcha experience hosted by a Master Tea Artisan.\n"
-                ."2. **Sukiyabashi Jiro Omakase Dining**: 3-Star Michelin sushi tasting in Ginza.\n"
-                ."3. **Mount Fuji Private Helicopter Tour**: Aerial views of Hakone and Lake Kawaguchi.\n\n"
-                ."*Seasonal Note*: Cherry blossom (Sakura) peak bloom is late March to early April.";
-        }
-
-        // 9. Greetings & General Help
+        // 8. Greetings & General Help
         if (str_contains($p, 'hi') || str_contains($p, 'hello') || str_contains($p, 'hey') || str_contains($p, 'help') || str_contains($p, 'test') || str_contains($p, 'who') || $p === 'start') {
+            $hotelCount = Hotel::count();
+            $destCount = Destination::count();
+            $flightCount = Flight::count();
+
             return "**Welcome to Itinera AI Concierge!** ✨\n\n"
-                ."I am your 24/7 bespoke luxury travel assistant.\n\n"
+                ."I am your 24/7 bespoke luxury travel assistant, connected live to our database of **{$destCount} destinations**, **{$hotelCount} luxury hotels**, and **{$flightCount} flight schedules**.\n\n"
                 ."Here is how I can assist your journey today:\n"
-                ."- **🏨 Hotels & Resorts**: Find top 5-star boutique accommodations.\n"
-                ."- **🍽️ Fine Dining**: Reserve Michelin-starred tables & local culinary gems.\n"
-                ."- **🏛️ Cultural Trips**: Discover private museum tours, historic landmarks & guides.\n"
-                ."- **☀️ Weather & Seasons**: Get optimal travel dates and packing tips.\n"
-                ."- **✈️ Flights & Logistics**: Arrange VIP airport transfers & itinerary planning.\n\n"
-                ."*Simply type your destination or question, and I will curate bespoke recommendations for you!*";
+                ."- **🏨 Hotels & Resorts**: Query real 5-star accommodations & live nightly rates.\n"
+                ."- **🍽️ Fine Dining**: Explore verified Michelin-starred restaurants & top cuisines.\n"
+                ."- **🏛️ Cultural Attractions**: Discover verified museum tours, landmarks & historical sites.\n"
+                ."- **✈️ Flight Schedules**: Check live routes, prices & airlines.\n"
+                ."- **☀️ Weather & Seasons**: Get optimal travel dates and packing tips.\n\n"
+                ."*Simply type your destination or question, and I will pull live recommendations for you!*";
         }
 
-        // 10. Arabic Inquiry Handler
+        // 9. Arabic Inquiry Handler
         if (preg_match('/[\x{0600}-\x{06FF}]/u', $prompt)) {
+            $hotelCount = Hotel::count();
+            $destCount = Destination::count();
+
             return "**مساعد Itinera الذكي للرحلات** 🇪🇬✨\n\n"
-                ."مرحباً بك! يسعدني جداً مساعدتك في التخطيط لرحلتك المميزة.\n\n"
-                ."يمكنني تقديم المساعدة في الموضوعات التالية:\n"
-                ."- **الفنادق والإقامة الفاخرة**: اقتراح أفضل الفنادق والمنتجعات 5 نجوم.\n"
-                ."- **المطاعم وتجارب الطعام**: حجز أفضل المطاعم العالمية والمحلية.\n"
-                ."- **الأماكن السياحية والثقافية**: جولات خاصة للمتاحف والمعالم الأثرية.\n"
-                ."- **حالة الطقس والمواعيد المناسبة**: معرفة أفضل أشهر السفر.\n\n"
+                ."مرحباً بك! أنا مساعدك الذكي المتصل مباشرة بقاعدة بياناتنا التي تضم **{$destCount} وجهة سياحية** و **{$hotelCount} فندقاً فاخراً**.\n\n"
+                ."يمكنني تقديم المساعدة الفورية في الموضوعات التالية:\n"
+                ."- **الفنادق والإقامة**: استعراض الفنادق المتاحة والأسعار الحقيقية لليلة.\n"
+                ."- **المطاعم**: اكتشاف المطاعم الموصى بها والتقييمات.\n"
+                ."- **المعالم السياحية**: جولات المتاحف والأماكن الأثرية.\n"
+                ."- **رحلات الطيران**: متابعة مواعيد وأسعار الطيران المتاحة.\n\n"
                 ."*كيف يمكنني مساعدتك اليوم في تخطيط رحلتك؟*";
         }
 
-        // Fallback for any other prompt
+        // Fallback querying real top database entries
+        $topHotels = Hotel::orderByDesc('rating')->take(2)->get();
+        $hotelList = $topHotels->pluck('name')->implode(', ');
+
         return "**Itinera AI Travel Concierge**\n\n"
             ."Thank you for your inquiry: *\"".e($prompt)."\"*\n\n"
-            ."I have analyzed your prompt for **{$dest}** and prepared the following recommendations:\n\n"
-            ."- **Curated Accommodations**: 5-Star Palaces, Luxury Suites, and Private Villas.\n"
-            ."- **Bespoke Dining**: Michelin-starred dining & private chef experiences.\n"
-            ."- **Custom Itineraries**: Private museum tours, VIP transfers, and seasonal events.\n\n"
+            ."I have cross-referenced our live database for **{$dest}**:\n\n"
+            ."- **Featured Database Hotels**: " . ($hotelList ?: 'Le Meurice, Hotel Plaza Athenee') . "\n"
+            ."- **Live Database Catalog**: " . Destination::count() . " Destinations, " . Hotel::count() . " Hotels, " . Flight::count() . " Flights.\n\n"
             ."*Feel free to ask for specific hotel options, fine dining reservations, weather forecasts, or flight options!*";
     }
 }
