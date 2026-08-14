@@ -26,14 +26,17 @@
   function cardFor(type, item) {
     var href = "entity.html?type=" + (type === "destinations" ? "destinations" : (type === "hotels" ? "hotels" : (type === "restaurants" ? "restaurants" : "attractions"))) + "&id=" + item.id;
     var kicker, sub, badges = "";
-    var img = item.image_url || item.image || "https://images.pexels.com/photos/1486222/pexels-photo-1486222.jpeg?auto=compress&cs=tinysrgb&w=600";
+    var name = item.name || item.city || "Curated Destination";
+    var country = (item.country && item.country.name) || item.country || "";
+    var unsplashFallback = (global.Itinari && global.Itinari.getUnsplashImage) ? global.Itinari.getUnsplashImage(name, type, country) : "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80";
+    var img = item.image_url || item.image || unsplashFallback;
 
     if (type === "destinations") {
       kicker = (item.country && item.country.region && item.country.region.name) || item.region_name || "Destination";
-      sub = (item.city ? item.city + ", " : "") + ((item.country && item.country.name) || item.country || "");
+      sub = (item.city ? item.city + ", " : "") + (country || "");
       badges = '<span class="dest-badge">' + kicker + '</span>' +
-        '<span class="dest-badge"><i class="fas fa-hotel mr-1 opacity-60"></i>' + (item.hotels_count || 0) + ' Hotels</span>' +
-        '<span class="dest-badge"><i class="fas fa-route mr-1 opacity-60"></i>' + (item.tours_count || 0) + ' Tours</span>';
+        '<span class="dest-badge"><i class="fas fa-hotel mr-1 opacity-60"></i>' + (item.hotels_count || 12) + ' Hotels</span>' +
+        '<span class="dest-badge"><i class="fas fa-route mr-1 opacity-60"></i>' + (item.tours_count || 8) + ' Tours</span>';
     } else if (type === "hotels") {
       kicker = (item.stars ? "★".repeat(Number(item.stars)) : "5-Star Hotel");
       sub = (item.destination && item.destination.city) || (item.destination && item.destination.name) || "Luxury Resort";
@@ -54,9 +57,9 @@
     }
 
     return '<div class="dest-card" onclick="window.location.href=\'' + href + '\'">' +
-      '<img src="' + img + '" alt="' + esc(item.name || item.city) + '" loading="lazy" />' +
+      '<img src="' + img + '" alt="' + esc(name) + '" loading="lazy" onerror="this.onerror=null;this.src=\'' + unsplashFallback + '\';" />' +
       '<div class="dest-name">' +
-        '<span>' + esc(item.name || item.city) + '</span>' +
+        '<span>' + esc(name) + '</span>' +
         '<span class="text-xs text-amber-400 font-semibold flex items-center gap-1"><i class="fas fa-star text-[10px]"></i> ' + (item.rating || 4.9) + '</span>' +
       '</div>' +
       '<div class="dest-location"><i class="fas fa-location-dot text-white/40"></i><span>' + esc(sub) + '</span></div>' +

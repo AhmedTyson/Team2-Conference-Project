@@ -90,12 +90,45 @@
 
       items.forEach(function (item) {
         if (item.cta) return;
-        var a = document.createElement("a");
-        var dest = item.to.startsWith("/") ? p + item.to.slice(1) : item.to;
-        a.href = dest;
-        a.className = "nav-link" + (dest.indexOf(cur) !== -1 ? " active" : "");
-        a.textContent = item.label;
-        nav.appendChild(a);
+
+        if (item.dropdown && item.dropdown.length) {
+          var dropWrap = document.createElement("div");
+          dropWrap.className = "nav-dropdown";
+
+          var triggerBtn = document.createElement("button");
+          triggerBtn.type = "button";
+          triggerBtn.className = "nav-dropdown-trigger";
+          triggerBtn.innerHTML = '<span>' + item.label + '</span>' +
+            '<svg class="nav-dropdown-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+
+          var menu = document.createElement("div");
+          menu.className = "nav-dropdown-menu";
+
+          var hasActive = false;
+          item.dropdown.forEach(function (sub) {
+            var a = document.createElement("a");
+            var dest = sub.to.startsWith("/") ? p + sub.to.slice(1) : sub.to;
+            a.href = dest;
+            var isAct = (cur !== "" && dest.indexOf(cur) !== -1);
+            if (isAct) hasActive = true;
+            a.className = "nav-dropdown-item" + (isAct ? " active" : "");
+            a.textContent = sub.label;
+            menu.appendChild(a);
+          });
+
+          if (hasActive) triggerBtn.classList.add("active");
+
+          dropWrap.appendChild(triggerBtn);
+          dropWrap.appendChild(menu);
+          nav.appendChild(dropWrap);
+        } else if (item.to) {
+          var a = document.createElement("a");
+          var dest = item.to.startsWith("/") ? p + item.to.slice(1) : item.to;
+          a.href = dest;
+          a.className = "nav-link" + (dest.indexOf(cur) !== -1 ? " active" : "");
+          a.textContent = item.label;
+          nav.appendChild(a);
+        }
       });
     }
 

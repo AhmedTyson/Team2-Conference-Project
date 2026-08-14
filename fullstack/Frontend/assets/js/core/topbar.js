@@ -222,19 +222,7 @@
       avatarEl.textContent = initials;
     }
 
-    var nameEl = doc.createElement("span");
-    nameEl.id = "chip-name";
-    nameEl.className = "chip-name";
-    nameEl.textContent = name.split(" ")[0];
-
-    var roleEl = doc.createElement("span");
-    roleEl.id = "chip-role";
-    roleEl.className = "chip-role";
-    roleEl.textContent = roleLabel(role);
-
     chip.appendChild(avatarEl);
-    chip.appendChild(nameEl);
-    chip.appendChild(roleEl);
     chip.appendChild(doc.createRange().createContextualFragment(ICONS.chevDown));
 
     trigger.appendChild(chip);
@@ -367,8 +355,8 @@
 
     var prefix = getBasePrefix();
 
-    // Collect links from the page nav
-    var desktopLinks = doc.querySelectorAll('.app-nav-link, .auth-nav-link');
+    // Collect links from the page nav (including dropdown sub-items)
+    var desktopLinks = doc.querySelectorAll('.app-nav-link, .auth-nav-link, .nav-link, .nav-dropdown-item');
     if (!desktopLinks.length) return;
 
     var currPath = (global.location.pathname || '').split('/').pop() || 'index.html';

@@ -217,33 +217,58 @@
         95: { desc: "Thunderstorm", icon: "fa-bolt" }
       };
 
+      function updateWeatherUI(city, temp, code, windspeed, winddirection) {
+        var info = WEATHER_CODES[code] || { desc: "Clear conditions", icon: "fa-sun" };
+
+        var elCity = document.getElementById("wCurrentCity");
+        var elDesc = document.getElementById("wCurrentDesc");
+        var elTemp = document.getElementById("wCurrentTemp");
+        var elIcon = document.getElementById("wCurrentIcon");
+        var elWind = document.getElementById("wWind");
+        var elWindDir = document.getElementById("wWindDir");
+        var elCode = document.getElementById("wCode");
+
+        if (elCity) elCity.textContent = city;
+        if (elDesc) elDesc.textContent = info.desc;
+        if (elTemp) elTemp.textContent = Math.round(temp) + "°C";
+        if (elIcon) elIcon.className = "fas " + info.icon;
+        if (elWind) elWind.textContent = (windspeed != null ? windspeed + " km/h" : "14 km/h");
+        if (elWindDir) elWindDir.textContent = (winddirection != null ? winddirection + "°" : "240°");
+        if (elCode) elCode.textContent = "WMO " + (code < 10 ? "0" + code : code);
+
+        renderDailyForecast(temp, code);
+      }
+
       function fetchCityWeather(city, lat, lon) {
         Itinari.apiGet("/weather?lat=" + lat + "&lon=" + lon).then(function (res) {
-          if (!res.ok || !res.body) return;
-          var cw = res.body.current_weather || res.body;
-          var temp = cw.temperature != null ? Math.round(cw.temperature) : "—";
-          var code = cw.weathercode != null ? cw.weathercode : 0;
-          var info = WEATHER_CODES[code] || { desc: "Clear conditions", icon: "fa-sun" };
+          if (res && res.ok && res.body) {
+            var cw = res.body.current_weather || res.body;
+            if (cw && cw.temperature != null) {
+              updateWeatherUI(city, cw.temperature, cw.weathercode || 0, cw.windspeed, cw.winddirection);
+              return;
+            }
+          }
+          fetchDirectWeather(city, lat, lon);
+        }).catch(function () {
+          fetchDirectWeather(city, lat, lon);
+        });
+      }
 
-          var elCity = document.getElementById("wCurrentCity");
-          var elDesc = document.getElementById("wCurrentDesc");
-          var elTemp = document.getElementById("wCurrentTemp");
-          var elIcon = document.getElementById("wCurrentIcon");
-          var elWind = document.getElementById("wWind");
-          var elWindDir = document.getElementById("wWindDir");
-          var elCode = document.getElementById("wCode");
-
-          if (elCity) elCity.textContent = city;
-          if (elDesc) elDesc.textContent = info.desc;
-          if (elTemp) elTemp.textContent = temp + "°C";
-          if (elIcon) elIcon.className = "fas " + info.icon;
-          if (elWind) elWind.textContent = (cw.windspeed != null ? cw.windspeed + " km/h" : "12 km/h");
-          if (elWindDir) elWindDir.textContent = (cw.winddirection != null ? cw.winddirection + "°" : "210°");
-          if (elCode) elCode.textContent = "WMO " + (code < 10 ? "0" + code : code);
-
-          // Render simulated daily forecast using API data
-          renderDailyForecast(temp, code);
-        }).catch(function () {});
+      function fetchDirectWeather(city, lat, lon) {
+        var directUrl = "https://api.open-meteo.com/v1/forecast?latitude=" + encodeURIComponent(lat) + "&longitude=" + encodeURIComponent(lon) + "&current_weather=true";
+        fetch(directUrl)
+          .then(function (res) { return res.json(); })
+          .then(function (data) {
+            if (data && data.current_weather) {
+              var cw = data.current_weather;
+              updateWeatherUI(city, cw.temperature, cw.weathercode || 0, cw.windspeed, cw.winddirection);
+            } else {
+              updateWeatherUI(city, 22, 0, 14, 240);
+            }
+          })
+          .catch(function () {
+            updateWeatherUI(city, 22, 0, 14, 240);
+          });
       }
 
       function renderDailyForecast(baseTemp, code) {
@@ -293,7 +318,7 @@
 
       function geocodeSearch(query) {
         if (!query || query.length < 2) {
-          suggestions.classList.add("hidden");
+          if (suggestions) suggestions.classList.add("hidden");
           return;
         }
 
@@ -302,12 +327,12 @@
           .then(function (res) { return res.json(); })
           .then(function (data) {
             if (!data || !data.results || !data.results.length) {
-              suggestionsList.innerHTML = '<div class="p-3 text-xs text-white/50 text-center">No locations found. Try another city or country.</div>';
-              suggestions.classList.remove("hidden");
+              if (suggestionsList) suggestionsList.innerHTML = '<div class="p-3 text-xs text-white/50 text-center">No locations found. Try another city or country.</div>';
+              if (suggestions) suggestions.classList.remove("hidden");
               return;
             }
 
-            suggestionsList.innerHTML = "";
+            if (suggestionsList) suggestionsList.innerHTML = "";
             data.results.forEach(function (loc) {
               var label = loc.name;
               if (loc.admin1 && loc.admin1 !== loc.name) label += ", " + loc.admin1;
@@ -319,18 +344,18 @@
               item.innerHTML = '<div><span class="font-bold text-white">' + loc.name + '</span><span class="text-white/50 ml-1.5">' + (loc.country || "") + (loc.admin1 ? " (" + loc.admin1 + ")" : "") + '</span></div><span class="text-[10px] text-amber-400 uppercase tracking-widest font-mono">' + Number(loc.latitude).toFixed(2) + '°, ' + Number(loc.longitude).toFixed(2) + '°</span>';
 
               item.addEventListener("click", function () {
-                searchInput.value = label;
-                suggestions.classList.add("hidden");
+                if (searchInput) searchInput.value = label;
+                if (suggestions) suggestions.classList.add("hidden");
                 cityButtons.forEach(function (b) { b.classList.remove("on"); });
                 fetchCityWeather(label, loc.latitude, loc.longitude);
               });
 
-              suggestionsList.appendChild(item);
+              if (suggestionsList) suggestionsList.appendChild(item);
             });
-            suggestions.classList.remove("hidden");
+            if (suggestions) suggestions.classList.remove("hidden");
           })
           .catch(function () {
-            suggestions.classList.add("hidden");
+            if (suggestions) suggestions.classList.add("hidden");
           });
       }
 
@@ -343,7 +368,7 @@
         });
 
         document.addEventListener("click", function (e) {
-          if (!searchForm.contains(e.target) && !suggestions.contains(e.target)) {
+          if (searchForm && suggestions && !searchForm.contains(e.target) && !suggestions.contains(e.target)) {
             suggestions.classList.add("hidden");
           }
         });
@@ -362,8 +387,8 @@
               if (data && data.results && data.results[0]) {
                 var loc = data.results[0];
                 var label = loc.name + (loc.country ? ", " + loc.country : "");
-                searchInput.value = label;
-                suggestions.classList.add("hidden");
+                if (searchInput) searchInput.value = label;
+                if (suggestions) suggestions.classList.add("hidden");
                 cityButtons.forEach(function (b) { b.classList.remove("on"); });
                 fetchCityWeather(label, loc.latitude, loc.longitude);
               }
@@ -372,8 +397,29 @@
         });
       }
 
-      // Default load Paris
-      fetchCityWeather("Paris, France", 48.8566, 2.3522);
+      // Check query parameter ?city=...
+      var params = new URLSearchParams(window.location.search);
+      var qCity = params.get("city");
+      if (qCity) {
+        var geoUrl = "https://geocoding-api.open-meteo.com/v1/search?name=" + encodeURIComponent(qCity) + "&count=1&language=en&format=json";
+        fetch(geoUrl)
+          .then(function (res) { return res.json(); })
+          .then(function (data) {
+            if (data && data.results && data.results[0]) {
+              var loc = data.results[0];
+              var label = loc.name + (loc.country ? ", " + loc.country : "");
+              if (searchInput) searchInput.value = label;
+              fetchCityWeather(label, loc.latitude, loc.longitude);
+            } else {
+              fetchCityWeather("Paris, France", 48.8566, 2.3522);
+            }
+          })
+          .catch(function () {
+            fetchCityWeather("Paris, France", 48.8566, 2.3522);
+          });
+      } else {
+        fetchCityWeather("Paris, France", 48.8566, 2.3522);
+      }
     });
   </script>
   <script src="./assets/js/core/topbar.js"></script>

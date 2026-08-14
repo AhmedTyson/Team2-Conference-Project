@@ -294,12 +294,18 @@
 
       let plan = null;
       if (planParam) {
+        const paramLower = String(planParam).toLowerCase();
         plan = plans.find(function (p) {
-          return Number(p.id) === Number(planParam) || p.name.toLowerCase() === String(planParam).toLowerCase();
+          const pNameLower = p.name.toLowerCase();
+          return Number(p.id) === Number(planParam) ||
+                 pNameLower === paramLower ||
+                 (paramLower === "jetsetter" && (pNameLower === "pro" || Number(p.id) === 2)) ||
+                 (paramLower === "imperial" && (pNameLower === "business" || Number(p.id) === 3)) ||
+                 (paramLower === "ai_luxury" && (pNameLower === "pro" || Number(p.id) === 2));
         });
       }
 
-      // Default to first paid plan if none specified
+      // Default to first paid plan if none specified or resolved
       if (!plan) {
         plan = plans.find(function (p) { return Number(p.price_cents) > 0; }) || plans[0];
       }

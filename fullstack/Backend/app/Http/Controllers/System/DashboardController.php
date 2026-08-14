@@ -74,9 +74,18 @@ class DashboardController extends Controller
 
         return ApiResponse::success(
             $favourites->map(function ($fav) {
+                $typeMap = [
+                    \App\Models\Catalog\Hotel::class => 'hotel',
+                    \App\Models\Catalog\Restaurant::class => 'restaurant',
+                    \App\Models\Catalog\Attraction::class => 'attraction',
+                    \App\Models\Catalog\Destination::class => 'destination',
+                    \App\Models\Catalog\Flight::class => 'flight',
+                ];
+                $shortType = $typeMap[$fav->favorable_type] ?? strtolower(class_basename($fav->favorable_type));
+
                 return [
                     'id' => $fav->id,
-                    'favorable_type' => $fav->favorable_type,
+                    'favorable_type' => $shortType,
                     'favorable_id' => $fav->favorable_id,
                     'note' => $fav->note,
                     'item' => $fav->favorable, // The actual hotel, restaurant, or destination details
@@ -84,6 +93,44 @@ class DashboardController extends Controller
                 ];
             }),
             'Favorite places retrieved successfully.'
+        );
+    }
+
+    /**
+     * Get orders / booking transactions for the authenticated user.
+     */
+    public function orders(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        $orders = \App\Models\Commerce\Order::with('items')
+            ->where('user_id', $user->id)
+            ->latest()
+            ->get();
+
+        return ApiResponse::success(
+            $orders->map(function ($order) {
+                return [
+                    'id' => $order->id,
+                    'status' => $order->status instanceof \BackedEnum ? $order->status->value : $order->status,
+                    'total_amount' => (float) $order->total_amount,
+                    'currency' => $order->currency ?: 'USD',
+                    'payment_gateway' => $order->payment_gateway,
+                    'transaction_reference' => $order->transaction_reference,
+                    'confirmation_code' => $order->confirmation_code,
+                    'items' => $order->items->map(function ($item) {
+                        return [
+                            'id' => $item->id,
+                            'product_type' => $item->product_type,
+                            'product_id' => $item->product_id,
+                            'price_cents' => $item->price_cents,
+                            'metadata' => $item->metadata,
+                        ];
+                    }),
+                    'created_at' => $order->created_at,
+                ];
+            }),
+            'User orders retrieved successfully.'
         );
     }
 }

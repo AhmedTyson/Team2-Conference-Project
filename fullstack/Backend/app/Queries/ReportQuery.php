@@ -246,6 +246,56 @@ class ReportQuery
             ]);
     }
 
+    /**
+     * Current vs previous period comparison for the Executive Summary table.
+     */
+    public function executiveSummary(?string $from, ?string $to): array
+    {
+        [$prevFrom, $prevTo] = $this->previousPeriod($from, $to);
+
+        $revenue = fn (?string $f, ?string $t) => round($this->paidOrders($f, $t)->sum('orders.total_cents') / 100, 2);
+        $bookings = fn (?string $f, ?string $t) => $this->paidOrders($f, $t)->count();
+        $active = fn (?string $f, ?string $t) => $this->activeUsers($f, $t);
+        $newUsers = fn (?string $f, ?string $t) => (int) $this->newUsers($f, $t)->sum('new_users');
+
+        $definitions = [
+            'Revenue (USD)' => $revenue,
+            'Paid bookings' => $bookings,
+            'Active users' => $active,
+            'New users' => $newUsers,
+        ];
+
+        $rows = [];
+
+        foreach ($definitions as $label => $resolver) {
+            $current = $resolver($from, $to);
+            $previous = $resolver($prevFrom, $prevTo);
+
+            $rows[] = [
+                'metric' => $label,
+                'current' => $current,
+                'previous' => $previous,
+                'change_percent' => $previous > 0
+                    ? $this->growthPercent((int) round($previous * 100), (int) round($current * 100))
+                    : null,
+            ];
+        }
+
+        $currentAvg = $bookings($from, $to) > 0 ? $revenue($from, $to) / $bookings($from, $to) : 0;
+        $previousAvg = $bookings($prevFrom, $prevTo) > 0 ? $revenue($prevFrom, $prevTo) / $bookings($prevFrom, $prevTo) : 0;
+
+        $rows[] = [
+            'metric' => 'Avg booking value (USD)',
+            'current' => round($currentAvg, 2),
+            'previous' => round($previousAvg, 2),
+            'change_percent' => $previousAvg > 0
+                ? $this->growthPercent((int) round($previousAvg * 100), (int) round($currentAvg * 100))
+                : null,
+        ];
+
+        return $rows;
+    }
+
     /*
     |--------------------------------------------------------------------
     | Shared helpers
@@ -297,7 +347,7 @@ class ReportQuery
             ->join('orders', 'orders.id', '=', 'order_items.order_id')
             ->join('payments', 'orders.id', '=', 'payments.order_id')
             ->join('hotels', 'hotels.id', '=', 'order_items.product_id')
-            ->where('order_items.product_type', Hotel::class)
+            ->where('order_items.product_type', (new Hotel)->getMorphClass())
             ->where('payments.status', self::REVENUE_STATUS)
             ->when($from, fn ($q) => $q->whereDate('orders.created_at', '>=', $from))
             ->when($to, fn ($q) => $q->whereDate('orders.created_at', '<=', $to))
@@ -310,7 +360,7 @@ class ReportQuery
             ->join('orders', 'orders.id', '=', 'order_items.order_id')
             ->join('payments', 'orders.id', '=', 'payments.order_id')
             ->join('restaurants', 'restaurants.id', '=', 'order_items.product_id')
-            ->where('order_items.product_type', Restaurant::class)
+            ->where('order_items.product_type', (new Restaurant)->getMorphClass())
             ->where('payments.status', self::REVENUE_STATUS)
             ->when($from, fn ($q) => $q->whereDate('orders.created_at', '>=', $from))
             ->when($to, fn ($q) => $q->whereDate('orders.created_at', '<=', $to))

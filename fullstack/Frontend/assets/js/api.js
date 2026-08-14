@@ -308,16 +308,9 @@
   function imageHtml(src, name, cls, type) {
     var safeName = esc(name || '');
     var isPlaceholder = !src || src.indexOf('placeholder') > -1 || src.indexOf('null') > -1 || src.indexOf('undefined') > -1 || src.indexOf('loremflickr') > -1;
-    var prompt = name || 'beautiful travel destination';
-    if (type === 'destinations') prompt += ' city skyline landmark high quality photography';
-    else if (type === 'hotels') prompt += ' luxury hotel resort exterior high quality photography';
-    else if (type === 'restaurants') prompt += ' luxury restaurant interior dining high quality photography';
-    else if (type === 'attractions') prompt += ' famous attraction landmark high quality photography';
-    else prompt += ' beautiful travel photography';
-
-    var aiUrl = 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?width=800&height=600&nologo=true';
-    var finalSrc = isPlaceholder ? aiUrl : src;
-    return '<img class="' + (cls || '') + '" src="' + esc(finalSrc) + '" alt="' + safeName + '" loading="lazy" onerror="this.onerror=null; this.src=\'' + aiUrl + '\';">';
+    var unsplashFallback = (global.Itinari && global.Itinari.getUnsplashImage) ? global.Itinari.getUnsplashImage(name, type) : 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80';
+    var finalSrc = isPlaceholder ? unsplashFallback : src;
+    return '<img class="' + (cls || '') + '" src="' + esc(finalSrc) + '" alt="' + safeName + '" loading="lazy" onerror="this.onerror=null; this.src=\'' + unsplashFallback + '\';">';
   }
 
   function appBoot(callback) {

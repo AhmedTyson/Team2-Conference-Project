@@ -20,7 +20,20 @@ class InteractionController extends Controller
      */
     protected function resolveModelClass(string $type): string
     {
-        $class = Relation::getMorphedModel($type);
+        $map = [
+            'hotel' => \App\Models\Catalog\Hotel::class,
+            'hotels' => \App\Models\Catalog\Hotel::class,
+            'restaurant' => \App\Models\Catalog\Restaurant::class,
+            'restaurants' => \App\Models\Catalog\Restaurant::class,
+            'attraction' => \App\Models\Catalog\Attraction::class,
+            'attractions' => \App\Models\Catalog\Attraction::class,
+            'destination' => \App\Models\Catalog\Destination::class,
+            'destinations' => \App\Models\Catalog\Destination::class,
+            'flight' => \App\Models\Catalog\Flight::class,
+            'flights' => \App\Models\Catalog\Flight::class,
+        ];
+
+        $class = $map[strtolower($type)] ?? Relation::getMorphedModel($type);
 
         if (! $class) {
             abort(404, "Type '{$type}' is not supported.");
@@ -75,13 +88,26 @@ class InteractionController extends Controller
     }
 
     /**
+     * Get all reviews created by the authenticated user.
+     */
+    public function myReviews(Request $request): JsonResponse
+    {
+        $reviews = Review::with('reviewable')
+            ->where('user_id', $request->user()->id)
+            ->latest()
+            ->get();
+
+        return ApiResponse::success(ReviewResource::collection($reviews), 'User reviews retrieved successfully');
+    }
+
+    /**
      * Delete an existing review.
      */
     public function destroyReview(Request $request, int $id): JsonResponse
     {
         $review = Review::findOrFail($id);
 
-        if ($review->user_id !== $request->user()->id) {
+        if ($review->user_id !== $request->user()->id && ! $request->user()->hasAnyRole(['admin', 'super_admin'])) {
             abort(403, 'You do not have permission to delete this review.');
         }
 

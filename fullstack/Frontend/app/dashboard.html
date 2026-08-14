@@ -423,6 +423,7 @@
           <a href="planner.html" class="app-nav-link"><i class="fas fa-route"></i> <span>Planner</span></a>
           <a href="chat.html" class="app-nav-link"><i class="fas fa-sparkles text-amber-400"></i> <span>AI Concierge</span></a>
           <a href="favourites.html" class="app-nav-link"><i class="fas fa-heart"></i> <span>Saved</span></a>
+          <a href="my-reviews.html" class="app-nav-link"><i class="fas fa-star text-amber-400"></i> <span>My Reviews</span></a>
           <a href="../public/explore.html" class="app-nav-link"><i class="fas fa-compass"></i> <span>Explore</span></a>
         </nav>
         <div class="topbar-right" id="navAuthContainer">
@@ -514,6 +515,16 @@
             </div>
           </div>
 
+          <a href="my-reviews.html" class="stat-card-glass hover:border-amber-400/50 transition cursor-pointer" id="stat-reviews" style="text-decoration:none;">
+            <div class="stat-card-glass__icon" style="background:rgba(245,158,11,0.15);color:#f59e0b;">
+              <i class="fas fa-star"></i>
+            </div>
+            <div class="stat-card-glass__content">
+              <span class="stat-card-glass__label">My Reviews</span>
+              <span class="stat-card-glass__value" id="stat-val-reviews">0</span>
+            </div>
+          </a>
+
         </section>
 
         <!-- AI Concierge Spotlight Banner -->
@@ -565,6 +576,18 @@
             </div>
           </section>
 
+          <!-- Column 3: My Recent Reviews -->
+          <section class="dash-panel">
+            <div class="dash-panel__header">
+              <h2 class="dash-panel__title"><i class="fas fa-star text-amber-400"></i> My Recent Reviews</h2>
+              <a href="my-reviews.html" class="dash-panel__link"><span>View all</span> <i class="fas fa-arrow-right text-xs"></i></a>
+            </div>
+            <div id="reviews-feed" class="feed" aria-live="polite">
+              <div class="skeleton skeleton--card"></div>
+              <div class="skeleton skeleton--card"></div>
+            </div>
+          </section>
+
         </div>
 
         <!-- Section 3: Notifications & Concierge Alerts -->
@@ -601,7 +624,5 @@
   <script src="../assets/js/core/nav-config.js"></script>
   <script src="../assets/js/core/app-shell.js"></script>
   <script src="../assets/js/modules/customer/dashboard.js"></script>
-  <script src="../assets/js/core/topbar.js"></script>
-  <script src="../assets/js/core/theme.js"></script>
-</body>
+  </body>
 </html>

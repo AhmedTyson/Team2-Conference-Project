@@ -115,21 +115,67 @@
     return !!token;
   }
 
-  /** Standard auth-gate: guests get the auth modal/redirect, members proceed. */
-  function gateToCheckout(planName, planId, authModalFn) {
+  /** Standard auth-gate: guests get the auth modal/redirect, members initiate Paymob checkout directly. */
+  async function gateToCheckout(planName, planId, btnElement) {
     if (!isMember()) {
-      if (typeof authModalFn === "function") {
-        authModalFn("login", "Sign in to subscribe to the " + planName + " plan.");
-      } else if (typeof global.openAuthModal === "function") {
+      if (typeof global.openAuthModal === "function") {
         global.openAuthModal("login", "Sign in to subscribe to the " + planName + " plan.");
       } else {
-        global.location.href = "auth/login.html?redirect=" + encodeURIComponent("/plans.html");
+        const prefix = global.location.pathname.includes("/app/") ? "../" : "";
+        global.location.href = prefix + "auth/login.html?redirect=" + encodeURIComponent(global.location.pathname);
       }
       return false;
     }
-    const targetUrl = (global.location.pathname.includes("/app/") ? "checkout.html" : "app/checkout.html") + "?plan=" + encodeURIComponent(planId);
-    global.location.href = targetUrl;
-    return true;
+
+    let origHtml = "";
+    if (btnElement) {
+      origHtml = btnElement.innerHTML;
+      btnElement.disabled = true;
+      btnElement.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Connecting Paymob Gateway…';
+    }
+
+    try {
+      const user = (It.session && It.session.user) || (It.readUser && It.readUser()) || {};
+      const billingData = {
+        first_name: user.name ? user.name.split(" ")[0] : "Traveler",
+        last_name: user.name && user.name.split(" ").length > 1 ? user.name.split(" ").slice(1).join(" ") : "User",
+        email: user.email || "",
+        phone_number: user.phone || "01000000000",
+      };
+
+      const idempotencyKey = "sub_" + planId + "_" + Date.now();
+      const res = await initiateCheckout(planId, billingData, idempotencyKey);
+
+      if (!res.ok) {
+        const msg = (res.body && res.body.message) || "Unable to initiate payment gateway. Please try again.";
+        if (typeof global.showToast === "function") global.showToast(msg, true);
+        else alert(msg);
+        if (btnElement) {
+          btnElement.disabled = false;
+          btnElement.innerHTML = origHtml;
+        }
+        return false;
+      }
+
+      const data = (res.body && res.body.data) || {};
+      if (data.checkout_url) {
+        if (typeof global.showToast === "function") global.showToast("Redirecting to Paymob Gateway...", false);
+        global.location.href = data.checkout_url;
+        return true;
+      }
+
+      const receiptPath = global.location.pathname.includes("/app/") ? "receipt.html" : "app/receipt.html";
+      global.location.href = receiptPath + "?order=" + encodeURIComponent(data.order_id || "");
+      return true;
+
+    } catch (e) {
+      console.error("Direct Paymob checkout error:", e);
+      if (btnElement) {
+        btnElement.disabled = false;
+        btnElement.innerHTML = origHtml;
+      }
+      return false;
+    }
   }
 
   It.plansCore = {

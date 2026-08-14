@@ -29,19 +29,29 @@ class PaymobWebhookController extends Controller
         ], 200);
     }
 
-    public function callback(Request $request): JsonResponse
+    public function callback(Request $request)
     {
-        $success = $request->boolean('success');
+        $success = $request->boolean('success') || $request->input('success') === 'true';
         $merchantOrderId = $request->query('merchant_order_id');
+        $id = $request->query('id');
 
-        if (! $this->paymentGateway->verifyWebhook($request->all(), null)) {
-            return ApiResponse::fail(
-                'Invalid HMAC signature',
-                'invalid_hmac',
-                403
-            );
+        $isValid = $this->paymentGateway->verifyWebhook($request->all(), $request->query('hmac'));
+
+        if (! $isValid) {
+            if ($request->wantsJson()) {
+                return ApiResponse::fail('Invalid HMAC signature', 'invalid_hmac', 403);
+            }
+            return redirect('/app/receipt.html?success=false&error=invalid_hmac');
         }
 
-        return ApiResponse::success(['reference' => $merchantOrderId], $success ? 'Payment successful' : 'Payment failed');
+        if ($request->wantsJson()) {
+            return ApiResponse::success([
+                'reference' => $merchantOrderId,
+                'transaction_id' => $id,
+                'success' => $success,
+            ], $success ? 'Payment successful' : 'Payment failed');
+        }
+
+        return redirect('/app/receipt.html?order_id=' . urlencode($merchantOrderId ?? '') . '&id=' . urlencode($id ?? '') . '&success=' . ($success ? 'true' : 'false'));
     }
 }

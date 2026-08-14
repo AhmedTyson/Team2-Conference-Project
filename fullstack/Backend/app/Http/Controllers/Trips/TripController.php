@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Trips\StoreTripRequest;
 use App\Http\Resources\TripResource;
 use App\Models\Trips\Trip;
+use App\Services\Trips\TripForkService;
 use App\Services\Trips\TripService;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
@@ -31,9 +32,16 @@ class TripController extends Controller
 
     public function store(StoreTripRequest $request): JsonResponse
     {
-        $trip = $this->tripService->store($request->validated() + [
+        $data = $request->validated();
+        if (empty($data['travel_style'])) {
+            $data['travel_style'] = 'cultural';
+        }
+
+        $trip = $this->tripService->store($data + [
             'user_id' => $request->user()->id,
             'status' => TripStatus::PENDING->value,
+            'no_of_travelers' => $data['no_of_travelers'] ?? 1,
+            'no_of_days' => $data['no_of_days'] ?? 3,
         ]);
 
         return ApiResponse::success(new TripResource($trip), 'Trip created successfully', 201);
@@ -52,7 +60,17 @@ class TripController extends Controller
 
     public function fork(Request $request, Trip $trip): JsonResponse
     {
-        abort(400, 'Direct trip forking is disabled. Please use the /api/checkout/initiate endpoint to purchase a trip fork.');
+        if (Gate::forUser($request->user())->denies('fork', $trip)) {
+            return ApiResponse::fail('You are not authorized to fork this trip', 'forbidden', 403);
+        }
+
+        try {
+            $forkedTrip = app(TripForkService::class)->fulfillFork($request->user()->id, $trip->id);
+
+            return ApiResponse::success(new TripResource($forkedTrip), 'Trip forked successfully', 201);
+        } catch (\Exception $e) {
+            return ApiResponse::fail($e->getMessage(), 'fork_failed', 400);
+        }
     }
 
     public function attach(Request $request, Trip $trip, string $type): JsonResponse

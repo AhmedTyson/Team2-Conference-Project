@@ -495,28 +495,43 @@
     if (badge) badge.textContent = savedTrips.length;
 
     // Persist to backend database if logged in
-    const token = localStorage.getItem("itinari_token");
+    const token = (It.readToken && It.readToken()) || localStorage.getItem("itinari_token");
     if (token) {
       try {
-        await fetch((It.CONFIG?.apiBase || "https://itinari.up.railway.app/api") + "/trips", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "Authorization": "Bearer " + token
-          },
-          body: JSON.stringify({
-            title: plan.title,
-            status: "planned",
-            travel_style: plannerState.budgetTier,
-            interests: plannerState.interests,
-            no_of_travelers: 2,
-            budget: plan.estimated_budget,
-            no_of_days: plannerState.duration,
-            start_date: plannerState.startDate,
-            end_date: plannerState.startDate
-          })
-        });
+        const rawBudget = plan.estimated_budget;
+        const cleanBudget = typeof rawBudget === "number" ? rawBudget : (parseFloat(String(rawBudget || "").replace(/[^0-9.]/g, "")) || 15000);
+        const startDate = plannerState.startDate || new Date().toISOString().split("T")[0];
+        const days = Number(plannerState.duration) || 3;
+        const endDateObj = new Date(startDate);
+        endDateObj.setDate(endDateObj.getDate() + days);
+        const endDate = endDateObj.toISOString().split("T")[0];
+
+        const payload = {
+          title: plan.title || ("Trip to " + (plannerState.city || "Destination")),
+          status: "planned",
+          travel_style: plannerState.budgetTier || "cultural",
+          interests: Array.isArray(plannerState.interests) ? plannerState.interests : [plannerState.interests || "culture"],
+          no_of_travelers: 2,
+          budget: cleanBudget,
+          no_of_days: days,
+          start_date: startDate,
+          end_date: endDate
+        };
+
+        if (typeof It.apiPost === "function") {
+          await It.apiPost("/trips", payload);
+        } else {
+          const apiBase = (window.ITINERA_CONFIG && window.ITINERA_CONFIG.apiBase) || "/api";
+          await fetch(apiBase + "/trips", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+              "Authorization": "Bearer " + token
+            },
+            body: JSON.stringify(payload)
+          });
+        }
       } catch (err) {
         console.warn("Backend save notice:", err);
       }

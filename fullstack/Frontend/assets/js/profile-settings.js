@@ -15,6 +15,11 @@
   var form = document.getElementById("profile-form");
   var nameInput = document.getElementById("set-name");
   var emailInput = document.getElementById("set-email");
+  var phoneInput = document.getElementById("set-phone");
+  var countryInput = document.getElementById("set-country");
+  var currencyInput = document.getElementById("set-currency");
+  var emergencyInput = document.getElementById("set-emergency");
+  var bioInput = document.getElementById("set-bio");
   var passwordInput = document.getElementById("set-password");
   var confirmInput = document.getElementById("set-password-confirm");
   var avatarInput = document.getElementById("avatar-input");
@@ -24,6 +29,7 @@
   function el(id) { return document.getElementById(id); }
   function showError(id, message) {
     var node = el(id);
+    if (!node) return;
     node.textContent = message;
     node.hidden = !message;
   }
@@ -37,9 +43,15 @@
   It.app.boot(function (user) {
     if (!user) return;
     lead.textContent = "Logged in as " + ((user.roles || []).join(", ") || "member") +
-      " — manage your avatar, name, email and password.";
+      " — manage your avatar, name, contact info, travel bio, and password.";
     nameInput.value = user.name || "";
     emailInput.value = user.email || "";
+    if (phoneInput) phoneInput.value = user.phone || "";
+    if (countryInput) countryInput.value = user.country || "";
+    if (currencyInput) currencyInput.value = user.preferred_currency || "USD";
+    if (emergencyInput) emergencyInput.value = user.emergency_contact || "";
+    if (bioInput) bioInput.value = user.bio || "";
+
     renderAvatar(user);
 
     el("change-photo").addEventListener("click", function () { avatarInput.click(); });
@@ -66,7 +78,13 @@
       var errors = {};
       var name = nameInput.value.trim();
       var email = emailInput.value.trim();
+      var phone = phoneInput ? phoneInput.value.trim() : "";
+      var country = countryInput ? countryInput.value.trim() : "";
+      var currency = currencyInput ? currencyInput.value : "USD";
+      var emergency = emergencyInput ? emergencyInput.value.trim() : "";
+      var bio = bioInput ? bioInput.value.trim() : "";
       var password = passwordInput.value;
+
       if (!name) errors.name = "Name is required.";
       if (!email) errors.email = "Email is required.";
       if (password && password.length < 8) errors.password = "At least 8 characters.";
@@ -86,6 +104,11 @@
         var formData = new FormData();
         formData.append("name", name);
         formData.append("email", email);
+        if (phone) formData.append("phone", phone);
+        if (country) formData.append("country", country);
+        if (currency) formData.append("preferred_currency", currency);
+        if (emergency) formData.append("emergency_contact", emergency);
+        if (bio) formData.append("bio", bio);
         if (password) {
           formData.append("password", password);
           formData.append("password_confirmation", confirmInput.value);
@@ -103,7 +126,15 @@
           });
         });
       } else {
-        var payload = { name: name, email: email };
+        var payload = {
+          name: name,
+          email: email,
+          phone: phone,
+          country: country,
+          preferred_currency: currency,
+          emergency_contact: emergency,
+          bio: bio
+        };
         if (password) {
           payload.password = password;
           payload.password_confirmation = confirmInput.value;

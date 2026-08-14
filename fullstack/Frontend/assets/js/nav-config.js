@@ -50,34 +50,95 @@
   var TOP = {
     guest: [
       { to: "/index.html", label: "Home", icon: "home" },
-      { to: "/explore.html", label: "Explore", icon: "explore" },
-      { to: "/weather.html", label: "Weather", icon: "weather" },
+      {
+        label: "Discover",
+        icon: "explore",
+        dropdown: [
+          { to: "/explore.html", label: "Explore Catalog", icon: "explore" },
+          { to: "/destinations.html", label: "Destinations", icon: "destinations" },
+          { to: "/hotels.html", label: "Hotels", icon: "hotels" },
+          { to: "/attractions.html", label: "Attractions", icon: "attractions" },
+          { to: "/restaurants.html", label: "Restaurants", icon: "restaurants" },
+          { to: "/flights.html", label: "Flights", icon: "bookings" },
+          { to: "/weather.html", label: "Live Weather", icon: "weather" },
+        ]
+      },
       { to: "/plans.html", label: "Plans", icon: "plans" },
-      { to: "/about.html", label: "About", icon: "about" },
-      { to: "/contact.html", label: "Contact", icon: "contact" },
-      { to: "/help.html", label: "Help", icon: "settings" },
-      { to: "/login.html", label: "Sign in", cta: true, icon: "portal" },
+      {
+        label: "More",
+        icon: "about",
+        dropdown: [
+          { to: "/about.html", label: "About Us", icon: "about" },
+          { to: "/contact.html", label: "Contact Us", icon: "contact" },
+          { to: "/help.html", label: "Help Center", icon: "settings" },
+        ]
+      },
+      { to: "/auth/login.html", label: "Sign in", cta: true, icon: "portal" },
     ],
     user: [
       { to: "/index.html", label: "Home", icon: "home" },
-      { to: "/explore.html", label: "Explore", icon: "explore" },
-      { to: "/app/dashboard.html", label: "Dashboard", icon: "dashboard" },
-      { to: "/app/trips.html", label: "My Trips", icon: "trips" },
-      { to: "/app/bookings.html", label: "Bookings", icon: "bookings" },
-      { to: "/app/flight-booking.html", label: "Flights", icon: "bookings" },
-      { to: "/app/chat.html", label: "AI Concierge", icon: "reviews" },
-      { to: "/app/favourites.html", label: "Favourites", icon: "favourites" },
-      { to: "/app/report-agency.html", label: "Report Agency", icon: "contacts" },
-      { to: "/weather.html", label: "Weather", icon: "weather" },
-      { to: "/about.html", label: "About", icon: "about" },
-      { to: "/contact.html", label: "Contact", icon: "contact" },
+      {
+        label: "Discover",
+        icon: "explore",
+        dropdown: [
+          { to: "/explore.html", label: "Explore Catalog", icon: "explore" },
+          { to: "/destinations.html", label: "Destinations", icon: "destinations" },
+          { to: "/hotels.html", label: "Hotels", icon: "hotels" },
+          { to: "/attractions.html", label: "Attractions", icon: "attractions" },
+          { to: "/restaurants.html", label: "Restaurants", icon: "restaurants" },
+          { to: "/flights.html", label: "Flights", icon: "bookings" },
+          { to: "/weather.html", label: "Live Weather", icon: "weather" },
+        ]
+      },
+      {
+        label: "My Travel",
+        icon: "trips",
+        dropdown: [
+          { to: "/app/dashboard.html", label: "Dashboard", icon: "dashboard" },
+          { to: "/app/trips.html", label: "My Trips", icon: "trips" },
+          { to: "/app/bookings.html", label: "My Bookings", icon: "bookings" },
+          { to: "/app/flight-booking.html", label: "Flight Search", icon: "bookings" },
+          { to: "/app/favourites.html", label: "Saved Places", icon: "favourites" },
+          { to: "/app/my-reviews.html", label: "My Reviews", icon: "myreviews" },
+          { to: "/app/chat.html", label: "AI Concierge", icon: "reviews" },
+          { to: "/app/notifications.html", label: "Notifications", icon: "dashboard" },
+        ]
+      },
+      { to: "/plans.html", label: "Plans", icon: "plans" },
+      {
+        label: "More",
+        icon: "about",
+        dropdown: [
+          { to: "/about.html", label: "About Us", icon: "about" },
+          { to: "/contact.html", label: "Contact Us", icon: "contact" },
+          { to: "/help.html", label: "Help Center", icon: "settings" },
+        ]
+      },
     ],
     agency: [
       { to: "/index.html", label: "Home", icon: "home" },
-      { to: "/explore.html", label: "Explore", icon: "explore" },
-      { to: "/app/trips.html", label: "Trips", icon: "trips" },
+      {
+        label: "Discover",
+        icon: "explore",
+        dropdown: [
+          { to: "/explore.html", label: "Explore Catalog", icon: "explore" },
+          { to: "/destinations.html", label: "Destinations", icon: "destinations" },
+          { to: "/hotels.html", label: "Hotels", icon: "hotels" },
+          { to: "/attractions.html", label: "Attractions", icon: "attractions" },
+          { to: "/restaurants.html", label: "Restaurants", icon: "restaurants" },
+          { to: "/weather.html", label: "Live Weather", icon: "weather" },
+        ]
+      },
+      {
+        label: "Agency Tools",
+        icon: "agency",
+        dropdown: [
+          { to: "/agency/index.html", label: "Agency Dashboard", icon: "dashboard" },
+          { to: "/agency/assignments.html", label: "My Assignments", icon: "assignments" },
+          { to: "/agency/create-trip.html", label: "Create Package", icon: "trips" },
+        ]
+      },
       { to: "/contact.html", label: "Contact", icon: "contact" },
-      { to: "/agency/assignments.html", label: "Agency Portal", cta: true, icon: "portal" },
     ],
   };
 

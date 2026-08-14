@@ -69,6 +69,7 @@ Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
 // users must reach me/logout/refresh/verify-notice/resend/updateProfile)
 Route::middleware(['auth:api'])->group(function () {
     Route::get('/user', [AuthController::class, 'me']);
+    Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/refresh', [AuthController::class, 'refresh'])->middleware(['throttle:15,1']);
     Route::get('/email/verify-notice', [AuthController::class, 'verificationNotice'])
@@ -146,6 +147,7 @@ Route::prefix('v1')->group(function () {
     Route::get('/hotels/{hotel}/reviews', [HotelController::class, 'reviews']);
     Route::get('/regions', [RegionController::class, 'index']);
     Route::get('/stats/summary', [StatsController::class, 'summary']);
+    Route::get('/weather', [WeatherController::class, 'show'])->middleware('throttle:weather');
     Route::middleware(['auth:api'])->post('/destinations/{destination}/book', [DestinationController::class, 'book']);
 });
 
@@ -233,7 +235,7 @@ Route::middleware(['auth:api', 'verified'])->prefix('trips')->group(function () 
     Route::post('/{trip}/attach/{type}', [TripController::class, 'attach']);
     Route::delete('/{trip}/detach/{id}', [TripController::class, 'detach']);
 
-    // Deprecated shim: direct forking is disabled. Use /checkout/initiate instead.
+    // Fork a trip for authenticated user
     Route::post('/{trip}/fork', [TripController::class, 'fork']);
 });
 
@@ -257,6 +259,8 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
 
 // ---- Interaction & reviews
 Route::middleware(['auth:api', 'verified'])->group(function () {
+    Route::get('/me/reviews', [InteractionController::class, 'myReviews']);
+    Route::get('/reviews/my', [InteractionController::class, 'myReviews']);
     Route::post('/favourites/{type}/{id}', [InteractionController::class, 'toggleFavourite']);
     Route::post('/reviews/{type}/{id}', [InteractionController::class, 'storeReview']);
     Route::delete('/reviews/{id}', [InteractionController::class, 'destroyReview']);
@@ -267,6 +271,8 @@ Route::post('/enhance', [AIController::class, 'enhance'])->middleware(['auth:api
 Route::post('/review', [AIController::class, 'generate'])
     ->middleware(['auth:api', 'verified', 'permission:generate ai itineraries', 'throttle:ai']);
 Route::post('/trips/generate-ai', [AIController::class, 'generate'])
+    ->middleware(['throttle:ai']);
+Route::post('/trips/ai-generate', [AIController::class, 'generate'])
     ->middleware(['throttle:ai']);
 Route::post('/ai/plan', [AIController::class, 'generate'])
     ->middleware(['throttle:ai']);
@@ -351,6 +357,12 @@ Route::middleware(['auth:api', 'verified'])->prefix('dashboard')->name('dashboar
     Route::get('/', [DashboardController::class, 'index'])->name('index');
     Route::get('/trips', [DashboardController::class, 'trips'])->name('trips');
     Route::get('/favourites', [DashboardController::class, 'favourites'])->name('favourites');
+    Route::get('/orders', [DashboardController::class, 'orders'])->name('orders');
+});
+
+Route::middleware(['auth:api', 'verified'])->group(function () {
+    Route::get('/orders', [DashboardController::class, 'orders']);
+    Route::get('/me/orders', [DashboardController::class, 'orders']);
 });
 
 // ---- Notifications
@@ -388,7 +400,7 @@ Route::middleware(['auth:api', 'verified'])->prefix('admin')->name('admin.')->gr
         ->middleware('permission:manage settings')->name('settings.patchKey');
 });
 
-// ---- Reports
+// ---- Reports & Analytics Downloads
 Route::middleware(['auth:api', 'verified', 'role:admin|super_admin'])
     ->prefix('admin')
     ->group(function () {
@@ -396,6 +408,9 @@ Route::middleware(['auth:api', 'verified', 'role:admin|super_admin'])
         Route::post('/reports/generate', [ReportController::class, 'generate']);
         Route::get('/reports/{id}/download', [ReportController::class, 'download']);
     });
+
+Route::get('/reports/analytics/download', [ReportController::class, 'downloadAnalytics']);
+Route::get('/reports/{id}/download', [ReportController::class, 'download']);
 
 Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::post('/agency-requests', [AgencyRequestController::class, 'store']);

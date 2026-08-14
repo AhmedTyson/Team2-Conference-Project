@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -66,6 +66,10 @@
 
     <!-- Main Detail Section -->
     <main class="max-w-7xl mx-auto px-6 py-8" id="entity-page">
+  </header>
+
+    <!-- Main Detail Section -->
+    <main class="max-w-7xl mx-auto px-6 py-8" id="entity-page">
       <div class="py-20 text-center text-white/50">
         <i class="fas fa-circle-notch fa-spin text-2xl mb-3"></i>
         <p>Loading experience details...</p>
@@ -91,22 +95,8 @@
   <script src="assets/js/api.js"></script>
   <script src="assets/js/session.js"></script>
   <script src="assets/js/nav-config.js"></script>
+  <script src="assets/js/utils/unsplash-helper.js"></script>
   <script src="assets/js/entity.js"></script>
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      var y = document.getElementById("footerYear");
-      if (y) y.textContent = new Date().getFullYear();
-
-      Itinari.session.bootAuth().then(function (auth) {
-        var c = document.getElementById("navAuthContainer");
-        if (!c) return;
-        if (auth && auth.user) {
-          var name = auth.user.name || auth.user.email || "Traveler";
-          c.innerHTML = '<a href="/app/dashboard.html" class="user-profile-chip"><span class="w-5 h-5 rounded-full bg-white text-black font-bold flex items-center justify-center text-xs">' + name.charAt(0).toUpperCase() + '</span><span>' + name + '</span></a>';
-        }
-      });
-    });
-  </script>
   <script src="./assets/js/core/topbar.js"></script>
   <script src="./assets/js/core/theme.js"></script>
 </body>

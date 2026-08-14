@@ -51,9 +51,13 @@
 
   /** Context-aware fallback image matching the exact destination/hotel/attraction name */
   function seedImg(item, w, h, category) {
-    if (!item) return "https://images.pexels.com/photos/1486222/pexels-photo-1486222.jpeg?auto=compress&cs=tinysrgb&w=800";
+    if (!item) return "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80";
     var name = item.name || item.city_name || item.city || "travel destination";
+    var country = (item.country && item.country.name) || item.country || "";
     var cat = category || (item.category && item.category.name) || "";
+    if (global.Itinari && global.Itinari.getUnsplashImage) {
+      return global.Itinari.getUnsplashImage(name, cat, country);
+    }
     var query = name + (cat ? " " + cat : "") + " luxury travel photography";
     return "https://image.pollinations.ai/prompt/" + encodeURIComponent(query) + "?width=" + (w || 800) + "&height=" + (h || 600) + "&nologo=true";
   }

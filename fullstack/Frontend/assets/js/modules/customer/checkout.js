@@ -27,7 +27,7 @@
   const ORDER_KEY = "itinera_order_ctx";
 
   const params = new URLSearchParams(global.location.search);
-  const planId = Number(params.get("plan"));
+  const planParam = params.get("plan");
 
   function escapeHtml(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
@@ -251,7 +251,22 @@
     }
 
     const plans = await PC.fetchPlans();
-    const plan = plans.find(function (p) { return Number(p.id) === planId; });
+    let plan = null;
+    if (planParam && Array.isArray(plans)) {
+      const paramLower = String(planParam).toLowerCase();
+      plan = plans.find(function (p) {
+        const pNameLower = (p.name || "").toLowerCase();
+        return Number(p.id) === Number(planParam) ||
+               pNameLower === paramLower ||
+               (paramLower === "jetsetter" && (pNameLower === "pro" || Number(p.id) === 2)) ||
+               (paramLower === "imperial" && (pNameLower === "business" || Number(p.id) === 3)) ||
+               (paramLower === "ai_luxury" && (pNameLower === "pro" || Number(p.id) === 2));
+      });
+    }
+
+    if (!plan && Array.isArray(plans) && plans.length) {
+      plan = plans.find(function (p) { return Number(p.price_cents) > 0; }) || plans[0];
+    }
 
     if (!plan) {
       root.innerHTML =

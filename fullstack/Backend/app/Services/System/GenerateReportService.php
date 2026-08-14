@@ -104,9 +104,11 @@ class GenerateReportService
             'from' => $from,
             'to' => $to,
             'generatedAt' => now(),
+            'logoDataUri' => $this->logoDataUri(),
 
             // Page 1 — Executive Summary
             'kpis' => $kpis,
+            'summaryTable' => $this->reportQuery->executiveSummary($from, $to),
 
             // Page 2 — Revenue Analytics
             'monthlyRevenue' => $monthlyRevenue,
@@ -124,7 +126,8 @@ class GenerateReportService
             ),
             'revenueByTypeChartUrl' => $this->pieChart(
                 $revenueByType->pluck('type')->all(),
-                $revenueByType->pluck('revenue')->all()
+                $revenueByType->pluck('revenue')->all(),
+                height: 535
             ),
 
             // Page 3 — Booking Analytics
@@ -134,7 +137,8 @@ class GenerateReportService
             'bookingsTrendChartUrl' => $this->lineChart(
                 $bookingsTrend->pluck('period')->all(),
                 $bookingsTrend->pluck('bookings')->all(),
-                'Bookings'
+                'Bookings',
+                height: 320
             ),
             'bookingStatusChartUrl' => $this->pieChart(
                 $bookingStatus->pluck('status')->all(),
@@ -172,7 +176,8 @@ class GenerateReportService
             'peakBookingDaysChartUrl' => $this->barChart(
                 $peakBookingDays->pluck('day')->all(),
                 $peakBookingDays->pluck('bookings')->all(),
-                'Bookings'
+                'Bookings',
+                height: 320
             ),
         ];
     }
@@ -185,24 +190,98 @@ class GenerateReportService
     | side by quickchart.io, same approach as the reference report.
     */
 
-    private function lineChart(array $labels, array $data, string $label): string
+    private function logoDataUri(): string
     {
-        return $this->buildChartUrl('line', $labels, $data, $label);
+        $path = public_path('images/logo.png');
+
+        if (! file_exists($path)) {
+            return '';
+        }
+
+        $mime = mime_content_type($path) ?: 'image/png';
+        $data = (string) file_get_contents($path);
+
+        // DomPDF does not respect PNG alpha, so transparent pixels render as
+        // white. Re-render the logo on a solid navy (#0F2854) background and
+        // recolor the artwork to white / ice-blue (#BDE8F5) using its alpha
+        // channel as a mask, so it is fully visible on the navy cover and
+        // page-header strips without any white box.
+        if (function_exists('imagecreatefrompng') && str_starts_with($mime, 'image/png')) {
+            try {
+                $source = imagecreatefromstring($data);
+
+                if ($source !== false) {
+                    $width = imagesx($source);
+                    $height = imagesy($source);
+
+                    $flat = imagecreatetruecolor($width, $height);
+                    $navy = imagecolorallocate($flat, 15, 40, 84);
+                    imagefill($flat, 0, 0, $navy);
+
+                    // Ice-blue (#BDE8F5) tint used for the feathered edges.
+                    $ice = [189, 232, 245];
+                    $white = [255, 255, 255];
+
+                    for ($y = 0; $y < $height; $y++) {
+                        for ($x = 0; $x < $width; $x++) {
+                            $rgba = imagecolorat($source, $x, $y);
+                            $alpha = ($rgba >> 24) & 0x7F;
+
+                            if ($alpha >= 127) {
+                                continue; // fully transparent: keep navy
+                            }
+
+                            if ($alpha <= 60) {
+                                // Opaque core: white fading to ice-blue.
+                                $k = (60 - $alpha) / 60;
+                            } else {
+                                // Feather edge: ice-blue fading to navy.
+                                $k = (127 - $alpha) / 67;
+                                $r = (int) round($ice[0] * $k + 15 * (1 - $k));
+                                $g = (int) round($ice[1] * $k + 40 * (1 - $k));
+                                $b = (int) round($ice[2] * $k + 84 * (1 - $k));
+                                imagesetpixel($flat, $x, $y, imagecolorallocate($flat, $r, $g, $b));
+
+                                continue;
+                            }
+
+                            $r = (int) round($white[0] * $k + $ice[0] * (1 - $k));
+                            $g = (int) round($white[1] * $k + $ice[1] * (1 - $k));
+                            $b = (int) round($white[2] * $k + $ice[2] * (1 - $k));
+                            imagesetpixel($flat, $x, $y, imagecolorallocate($flat, $r, $g, $b));
+                        }
+                    }
+
+                    ob_start();
+                    imagepng($flat);
+                    $data = (string) ob_get_clean();
+                }
+            } catch (\Throwable) {
+                // Fall back to the original bytes if recoloring fails.
+            }
+        }
+
+        return 'data:'.$mime.';base64,'.base64_encode($data);
     }
 
-    private function barChart(array $labels, array $data, string $label): string
+    private function lineChart(array $labels, array $data, string $label, int $height = 400): string
     {
-        return $this->buildChartUrl('bar', $labels, $data, $label);
+        return $this->buildChartUrl('line', $labels, $data, $label, height: $height);
+    }
+
+    private function barChart(array $labels, array $data, string $label, int $height = 400): string
+    {
+        return $this->buildChartUrl('bar', $labels, $data, $label, height: $height);
     }
 
     private function horizontalBarChart(array $labels, array $data, string $label): string
     {
-        return $this->buildChartUrl('horizontalBar', $labels, $data, $label);
+        return $this->buildChartUrl('horizontalBar', $labels, $data, $label, height: 364);
     }
 
-    private function pieChart(array $labels, array $data): string
+    private function pieChart(array $labels, array $data, int $height = 500): string
     {
-        return $this->buildChartUrl('pie', $labels, $data, '', $this->paletteFor(count($labels)));
+        return $this->buildChartUrl('pie', $labels, $data, '', $this->paletteFor(count($labels)), $height);
     }
 
     private function buildChartUrl(
@@ -210,7 +289,8 @@ class GenerateReportService
         array $labels,
         array $data,
         string $label = '',
-        ?array $colors = null
+        ?array $colors = null,
+        int $height = 400
     ): string {
         if (empty($data) || array_sum(array_map('floatval', $data)) <= 0) {
             return '';
@@ -235,11 +315,14 @@ class GenerateReportService
             ],
             'options' => [
                 'legend' => ['display' => ! empty($label)],
-                $type === 'horizontalBar' ? 'indexAxis' : null => 'y',
             ],
         ];
 
-        $url = 'https://quickchart.io/chart?w=500&h=300&c='.urlencode(json_encode($chartConfig));
+        if ($type === 'horizontalBar') {
+            $chartConfig['options']['indexAxis'] = 'y';
+        }
+
+        $url = 'https://quickchart.io/chart?w=800&h='.$height.'&c='.urlencode(json_encode($chartConfig));
 
         try {
             // Fetch the image content from QuickChart and convert to Base64

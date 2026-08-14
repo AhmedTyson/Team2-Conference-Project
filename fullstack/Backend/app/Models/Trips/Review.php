@@ -15,7 +15,7 @@ class Review extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'user_id', 'reviewable_id', 'reviewable_type', 'rating', 'comment', ];
+        'user_id', 'reviewable_id', 'reviewable_type', 'rating', 'comment', 'status', ];
 
     public function user(): BelongsTo
     {

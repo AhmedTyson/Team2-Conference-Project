@@ -2,19 +2,21 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Booking Report — {{ config('app.name', 'Voyago') }}</title>
+    <title>Booking Report — {{ config('app.name', 'Itinera') }}</title>
     <style>
-        /* ── Palette ─────────────────────────────────────────────────────────
-           Navy #0F2854 | Royal Blue #1C4D8D | Sky Blue #4988C4 | Ice Blue #BDE8F5
+        /* ── Itinera Luxury Gold & Dark Palette ──────────────────────────────
+           Deep Onyx #0B0F19 | Gold Accent #F59E0B | Amber #FBBF24 | Slate #1E293B
         ─────────────────────────────────────────────────────────────────────── */
 
-        @page         { margin: 0; }
+        @page { margin: 0; }
 
         body {
             font-family: DejaVu Sans, sans-serif;
             font-size: 12px;
-            color: #1a2a4a;
+            color: #1e293b;
             background: #ffffff;
+            margin: 0;
+            padding: 0;
         }
 
         /* Page breaks */
@@ -25,10 +27,11 @@
         .cover {
             page: cover;
             width: 100%;
-            height: 100vh;
-            background-color: #0F2854;
+            height: 297mm;
+            background-color: #0b0f19;
             position: relative;
             overflow: hidden;
+            page-break-after: always;
         }
 
         /* Top diagonal band */
@@ -36,7 +39,7 @@
             position: absolute;
             top: 0; left: 0; right: 0;
             height: 8px;
-            background: #BDE8F5;
+            background: linear-gradient(90deg, #f59e0b, #fbbf24, #d97706);
         }
 
         /* Bottom diagonal band */
@@ -44,7 +47,7 @@
             position: absolute;
             bottom: 0; left: 0; right: 0;
             height: 6px;
-            background: #4988C4;
+            background: linear-gradient(90deg, #d97706, #f59e0b, #fbbf24);
         }
 
         /* Large background circle decorations */
@@ -53,217 +56,244 @@
             top: -80px; right: -80px;
             width: 340px; height: 340px;
             border-radius: 50%;
-            background: rgba(73, 136, 196, 0.18);
+            background: rgba(245, 158, 11, 0.12);
         }
         .cover-circle-2 {
             position: absolute;
             bottom: 80px; left: -60px;
             width: 240px; height: 240px;
             border-radius: 50%;
-            background: rgba(189, 232, 245, 0.10);
+            background: rgba(251, 191, 36, 0.08);
         }
         .cover-circle-3 {
             position: absolute;
             top: 50%; right: 60px;
             width: 120px; height: 120px;
             border-radius: 50%;
-            background: rgba(28, 77, 141, 0.40);
+            background: rgba(245, 158, 11, 0.15);
         }
 
         /* Content area positioned in vertical centre */
         .cover-content {
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 250pt;
+            left: 0; right: 0;
             padding: 0 60px;
-            display: table;
-            width: 100%;
             box-sizing: border-box;
+            text-align: center;
         }
         .cover-content-inner {
-            display: table-cell;
-            vertical-align: middle;
+            display: block;
         }
 
         /* Logo wordmark */
         .cover-logo {
-            font-size: 42px;
+            font-size: 52px;
             font-weight: bold;
             color: #ffffff;
             letter-spacing: -0.03em;
             margin-bottom: 4px;
         }
         .cover-logo span {
-            color: #BDE8F5;
+            color: #f59e0b;
         }
 
-        /* Tagline under logo */
+        .cover-logo-wrap {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
         .cover-tagline {
-            font-size: 11px;
-            color: #9dc4e8;
-            letter-spacing: 0.18em;
+            font-size: 12px;
+            color: #fbbf24;
+            letter-spacing: 0.2em;
             text-transform: uppercase;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
-        /* Horizontal rule */
         .cover-rule {
-            width: 80px;
+            width: 100px;
             height: 3px;
-            background: #4988C4;
-            margin-bottom: 32px;
+            background: #f59e0b;
+            margin: 0 auto 30px auto;
         }
 
-        /* Report title */
         .cover-title {
-            font-size: 28px;
+            font-size: 32px;
             font-weight: bold;
             color: #ffffff;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             line-height: 1.2;
         }
 
         .cover-subtitle {
-            font-size: 14px;
-            color: #BDE8F5;
-            margin-bottom: 48px;
-        }
-
-        /* Meta card */
-        .cover-meta {
-            background: rgba(255,255,255,0.08);
-            border-left: 3px solid #4988C4;
-            border-radius: 4px;
-            padding: 16px 20px;
-            display: inline-block;
-        }
-        .cover-meta-row {
-            font-size: 11px;
-            color: #9dc4e8;
-            margin-bottom: 6px;
-        }
-        .cover-meta-row:last-child { margin-bottom: 0; }
-        .cover-meta-label {
-            font-size: 9px;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: #4988C4;
-            margin-bottom: 2px;
-        }
-        .cover-meta-value {
-            font-size: 12px;
-            color: #ffffff;
-            font-weight: bold;
-        }
-
-        /* ── INNER PAGES header strip ───────────────────────────────────────── */
-        .page-header {
-            background: #0F2854;
-            margin: -28px -32px 0 -32px;
-            padding: 10px 32px;
-            overflow: hidden;
-        }
-        .page-header-inner {
-            float: left;
-        }
-        .page-header-logo {
-            font-size: 14px;
-            font-weight: bold;
-            color: #BDE8F5;
-            letter-spacing: -0.01em;
-        }
-        .page-header-title {
-            font-size: 9px;
-            color: #4988C4;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-        }
-        .page-header-right {
-            float: right;
-            text-align: right;
-            font-size: 9px;
-            color: #4988C4;
-            padding-top: 4px;
-        }
-        .page-header-clearfix { clear: both; }
-        .page-accent-line {
-            height: 2px;
-            background: #4988C4;
-            margin: 0 -32px 20px -32px;
-        }
-
-        /* Section headings */
-        h2 {
             font-size: 15px;
-            margin: 0 0 14px;
-            color: #ffffff;
-            background: #1C4D8D;
-            padding: 9px 14px;
-            border-radius: 4px;
-        }
-        h3 {
-            font-size: 12px;
-            margin: 18px 0 8px;
-            color: #1C4D8D;
-            border-bottom: 1px solid #BDE8F5;
-            padding-bottom: 4px;
+            color: #94a3b8;
+            margin-bottom: 44px;
         }
 
-        /* KPI cards */
-        .kpi-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-        .kpi-table td {
-            width: 25%;
-            padding: 14px 10px;
-            text-align: center;
+        .cover-meta {
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            padding-top: 24px;
+            width: 100%;
+        }
+
+        .cover-meta-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .cover-meta-table td {
             vertical-align: top;
-            border: 2px solid #BDE8F5;
-            background: #f0f7ff;
-            border-radius: 4px;
+            text-align: center;
+            padding: 0 16px;
         }
-        .kpi-label { font-size: 9px; color: #4988C4; text-transform: uppercase; letter-spacing: 0.06em; }
-        .kpi-value { font-size: 19px; font-weight: bold; margin-top: 5px; color: #0F2854; }
-        .kpi-positive { color: #047857; }
-        .kpi-negative { color: #b91c1c; }
 
-        /* Data tables */
-        table.data { width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 11px; }
-        table.data thead tr { background: #0F2854; }
-        table.data th {
-            color: #BDE8F5;
-            padding: 7px 10px;
-            text-align: left;
+        .cover-meta-label {
             font-size: 10px;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.15em;
+            color: #64748b;
+            margin-bottom: 6px;
         }
-        table.data td { padding: 6px 10px; border-bottom: 1px solid #dbeafe; color: #1a2a4a; }
-        table.data tr:nth-child(even) td { background: #f0f7ff; }
-        table.data tr:last-child td { border-bottom: none; }
 
-        /* Charts */
-        .chart-img { width: 100%; max-width: 460px; margin: 8px 0 16px; }
+        .cover-meta-value {
+            font-size: 13px;
+            font-weight: bold;
+            color: #f8fafc;
+        }
 
-        /* Two-column layout */
-        .two-col { width: 100%; border-collapse: collapse; }
-        .two-col > tr > td { width: 50%; vertical-align: top; padding-right: 10px; }
-        .two-col > tr > td:last-child { padding-right: 0; padding-left: 10px; }
+        /* ── INNER PAGES HEADER & FOOTER ───────────────────────────────────── */
+        .page-header-bar {
+            border-bottom: 2px solid #f59e0b;
+            padding-bottom: 10px;
+            margin-bottom: 24px;
+        }
+        .page-header-bar table {
+            width: 100%;
+        }
+        .page-title-text {
+            font-size: 18px;
+            font-weight: bold;
+            color: #0b0f19;
+            margin: 0;
+        }
+        .page-sub-text {
+            font-size: 11px;
+            color: #64748b;
+            margin: 3px 0 0 0;
+        }
+        .page-brand-logo {
+            font-size: 16px;
+            font-weight: bold;
+            color: #0b0f19;
+            text-align: right;
+        }
+        .page-brand-logo span {
+            color: #f59e0b;
+        }
 
-        /* No-data placeholder */
-        .no-data { color: #9ca3af; font-style: italic; font-size: 11px; padding: 8px 0; }
+        /* ── SECTION HEADINGS ──────────────────────────────────────────────── */
+        .section-heading {
+            font-size: 13px;
+            font-weight: bold;
+            color: #0b0f19;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin: 22px 0 12px 0;
+            border-left: 4px solid #f59e0b;
+            padding-left: 10px;
+        }
 
-        /* Footer */
-        .footer {
-            font-size: 9px;
-            color: #4988C4;
+        /* ── KPI CARDS GRID ────────────────────────────────────────────────── */
+        .kpi-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 12px;
+            margin-bottom: 20px;
+        }
+        .kpi-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-top: 3px solid #f59e0b;
+            border-radius: 8px;
+            padding: 14px;
             text-align: center;
-            margin-top: 28px;
-            border-top: 1px solid #BDE8F5;
-            padding-top: 10px;
+        }
+        .kpi-val {
+            font-size: 20px;
+            font-weight: bold;
+            color: #0b0f19;
+            margin-bottom: 4px;
+        }
+        .kpi-lbl {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #64748b;
+        }
+
+        /* ── TABLES ────────────────────────────────────────────────────────── */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .data-table th {
+            background: #0b0f19;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 10px 12px;
+            text-align: left;
+            border-bottom: 2px solid #f59e0b;
+        }
+        .data-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+            font-size: 12px;
+        }
+        .data-table tr:nth-child(even) td {
+            background: #f8fafc;
+        }
+
+        /* ── BADGES ────────────────────────────────────────────────────────── */
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-success { background: #dcfce7; color: #15803d; }
+        .badge-warning { background: #fef3c7; color: #b45309; }
+        .badge-danger { background: #fee2e2; color: #b91c1c; }
+
+        /* Chart container */
+        .chart-box {
+            text-align: center;
+            margin: 20px 0;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+        }
+        .chart-box img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 6px;
         }
     </style>
 </head>
 <body>
 
-    {{-- =================== COVER PAGE =================== --}}
+    <!-- =================================================================== -->
+    <!-- COVER PAGE (COLEADER DESIGN ENHANCED)                              -->
+    <!-- =================================================================== -->
     <div class="cover">
         <div class="cover-band-top"></div>
         <div class="cover-band-bottom"></div>
@@ -273,290 +303,195 @@
 
         <div class="cover-content">
             <div class="cover-content-inner">
-
-                {{-- Logo --}}
-                <div class="cover-logo">
-                    Iti<span>nari</span>
-                </div>
-                <div class="cover-tagline">Smart Travel Intelligence</div>
-
+                <div class="cover-logo">ITINERA<span>.</span></div>
+                <div class="cover-tagline">Luxury Travel & Executive Telemetry</div>
                 <div class="cover-rule"></div>
 
-                {{-- Report Title --}}
-                <div class="cover-title">Business Analytics<br>Report</div>
-                <div class="cover-subtitle">Comprehensive Booking &amp; Revenue Overview</div>
+                <div class="cover-title">Global Platform & Booking Analytics</div>
+                <div class="cover-subtitle">Executive Performance Audit & Financial Telemetry Report</div>
 
-                {{-- Meta --}}
                 <div class="cover-meta">
-                    <table style="border-collapse:collapse;">
+                    <table class="cover-meta-table">
                         <tr>
-                            <td style="padding: 0 32px 0 0; vertical-align: top;">
-                                <div class="cover-meta-label">Report Period</div>
-                                <div class="cover-meta-value">{{ $from }} — {{ $to }}</div>
+                            <td>
+                                <div class="cover-meta-label">Audit Period</div>
+                                <div class="cover-meta-value">{{ $from }} &mdash; {{ $to }}</div>
                             </td>
-                            <td style="padding: 0 32px 0 0; vertical-align: top;">
-                                <div class="cover-meta-label">Generated</div>
-                                <div class="cover-meta-value">{{ $generatedAt->format('M d, Y') }}</div>
+                            <td>
+                                <div class="cover-meta-label">Generated At</div>
+                                <div class="cover-meta-value">{{ $generatedAt->format('Y-m-d H:i') }} UTC</div>
                             </td>
-                            <td style="vertical-align: top;">
+                            <td>
                                 <div class="cover-meta-label">Classification</div>
-                                <div class="cover-meta-value">Confidential</div>
+                                <div class="cover-meta-value">Executive Confidential</div>
                             </td>
                         </tr>
                     </table>
                 </div>
-
             </div>
         </div>
     </div>
 
-    {{-- =================== PAGE 2 — Executive Summary =================== --}}
+    <!-- =================================================================== -->
+    <!-- PAGE 1: EXECUTIVE SUMMARY & KPIS                                    -->
+    <!-- =================================================================== -->
     <div class="page">
-        <div class="page-header">
-            <div class="page-header-inner">
-                <div class="page-header-logo">Itinari</div>
-                <div class="page-header-title">Business Analytics Report</div>
-            </div>
-            <div class="page-header-right">
-                {{ $from }} — {{ $to }}<br>
-                {{ $generatedAt->format('Y-m-d H:i') }}
-            </div>
-            <div class="page-header-clearfix"></div>
+        <div class="page-header-bar">
+            <table>
+                <tr>
+                    <td>
+                        <h2 class="page-title-text">Executive Summary & Key Metrics</h2>
+                        <p class="page-sub-text">Platform performance audit ({{ $from }} to {{ $to }})</p>
+                    </td>
+                    <td class="page-brand-logo">
+                        ITINERA<span>.</span>
+                    </td>
+                </tr>
+            </table>
         </div>
-        <div class="page-accent-line"></div>
 
-        <h2>Executive Summary</h2>
-
+        <div class="section-heading">Platform Telemetry Summary</div>
         <table class="kpi-table">
             <tr>
-                <td>
-                    <div class="kpi-label">Revenue</div>
-                    <div class="kpi-value">{{ number_format($kpis['revenue'], 0) }}</div>
-                    <div style="font-size:9px;color:#4988C4;margin-top:2px;">{{ $kpis['currency'] ?? 'USD' }}</div>
+                <td style="width: 25%;">
+                    <div class="kpi-card">
+                        <div class="kpi-val">${{ number_format($kpis['totalRevenue'] ?? 0, 2) }}</div>
+                        <div class="kpi-lbl">Total Gross Revenue</div>
+                    </div>
                 </td>
-                <td>
-                    <div class="kpi-label">Bookings</div>
-                    <div class="kpi-value">{{ number_format($kpis['bookings']) }}</div>
+                <td style="width: 25%;">
+                    <div class="kpi-card">
+                        <div class="kpi-val">{{ number_format($kpis['totalBookings'] ?? 0) }}</div>
+                        <div class="kpi-lbl">Total Bookings</div>
+                    </div>
                 </td>
-                <td>
-                    <div class="kpi-label">Active Users</div>
-                    <div class="kpi-value">{{ number_format($kpis['users']) }}</div>
+                <td style="width: 25%;">
+                    <div class="kpi-card">
+                        <div class="kpi-val">{{ number_format($kpis['newUsersCount'] ?? 0) }}</div>
+                        <div class="kpi-lbl">New Registered Users</div>
+                    </div>
                 </td>
-                <td>
-                    <div class="kpi-label">Revenue Growth</div>
-                    <div class="kpi-value {{ $kpis['growth_percent'] >= 0 ? 'kpi-positive' : 'kpi-negative' }}">
-                        {{ $kpis['growth_percent'] >= 0 ? '+' : '' }}{{ number_format($kpis['growth_percent'], 1) }}%
+                <td style="width: 25%;">
+                    <div class="kpi-card">
+                        <div class="kpi-val">${{ number_format($kpis['averageBookingValue'] ?? 0, 2) }}</div>
+                        <div class="kpi-lbl">Average Booking Value</div>
                     </div>
                 </td>
             </tr>
         </table>
+
+        @if(!empty($monthlyRevenueChartUrl))
+        <div class="section-heading">Monthly Revenue Trajectory</div>
+        <div class="chart-box">
+            <img src="{{ $monthlyRevenueChartUrl }}" alt="Monthly Revenue Chart">
+        </div>
+        @endif
     </div>
 
-    {{-- =================== PAGE 3 — Revenue Analytics =================== --}}
+    <!-- =================================================================== -->
+    <!-- PAGE 2: REVENUE ANALYTICS                                           -->
+    <!-- =================================================================== -->
     <div class="page">
-        <div class="page-header">
-            <div class="page-header-inner">
-                <div class="page-header-logo">Itinari</div>
-                <div class="page-header-title">Revenue Analytics</div>
-            </div>
-            <div class="page-header-right">{{ $from }} — {{ $to }}</div>
-            <div class="page-header-clearfix"></div>
+        <div class="page-header-bar">
+            <table>
+                <tr>
+                    <td>
+                        <h2 class="page-title-text">Revenue & Booking Type Breakdown</h2>
+                        <p class="page-sub-text">Financial distribution across product categories</p>
+                    </td>
+                    <td class="page-brand-logo">
+                        ITINERA<span>.</span>
+                    </td>
+                </tr>
+            </table>
         </div>
-        <div class="page-accent-line"></div>
 
-        <h2>Revenue Analytics</h2>
-
-        <h3>Monthly Revenue</h3>
-        @if($monthlyRevenueChartUrl)
-            <img class="chart-img" src="{{ $monthlyRevenueChartUrl }}">
-        @else
-            <p class="no-data">No monthly revenue data for this period.</p>
-        @endif
-
-        <h3>Weekly Revenue</h3>
-        @if($weeklyRevenueChartUrl)
-            <img class="chart-img" src="{{ $weeklyRevenueChartUrl }}">
-        @else
-            <p class="no-data">No weekly revenue data for this period.</p>
-        @endif
-
-        <h3>Revenue by Booking Type</h3>
-        @if($revenueByTypeChartUrl)
-            <img class="chart-img" src="{{ $revenueByTypeChartUrl }}">
-        @endif
-        <table class="data">
-            <thead><tr><th>Type</th><th>Revenue (USD)</th></tr></thead>
+        <div class="section-heading">Revenue by Booking Category</div>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Booking Category</th>
+                    <th>Gross Revenue ($)</th>
+                    <th>Share (%)</th>
+                </tr>
+            </thead>
             <tbody>
                 @forelse($revenueByType as $row)
-                    <tr>
-                        <td>{{ $row['type'] }}</td>
-                        <td>{{ number_format($row['revenue'], 2) }}</td>
-                    </tr>
+                <tr>
+                    <td><strong>{{ ucfirst($row->type ?? 'General') }}</strong></td>
+                    <td>${{ number_format($row->revenue ?? 0, 2) }}</td>
+                    <td>
+                        @php
+                            $total = $revenueByType->sum('revenue');
+                            $pct = $total > 0 ? ($row->revenue / $total) * 100 : 0;
+                        @endphp
+                        {{ number_format($pct, 1) }}%
+                    </td>
+                </tr>
                 @empty
-                    <tr><td colspan="2" class="no-data">No data available.</td></tr>
+                <tr>
+                    <td colspan="3" style="text-align: center; color: #94a3b8;">No revenue records in this date range.</td>
+                </tr>
                 @endforelse
             </tbody>
         </table>
+
+        @if(!empty($revenueByTypeChartUrl))
+        <div class="section-heading">Revenue Category Distribution</div>
+        <div class="chart-box">
+            <img src="{{ $revenueByTypeChartUrl }}" alt="Revenue by Type Chart">
+        </div>
+        @endif
     </div>
 
-    {{-- =================== PAGE 4 — Booking Analytics =================== --}}
+    <!-- =================================================================== -->
+    <!-- PAGE 3: TOP DESTINATIONS & INSIGHTS                                 -->
+    <!-- =================================================================== -->
     <div class="page">
-        <div class="page-header">
-            <div class="page-header-inner">
-                <div class="page-header-logo">Itinari</div>
-                <div class="page-header-title">Booking Analytics</div>
-            </div>
-            <div class="page-header-right">{{ $from }} — {{ $to }}</div>
-            <div class="page-header-clearfix"></div>
+        <div class="page-header-bar">
+            <table>
+                <tr>
+                    <td>
+                        <h2 class="page-title-text">Top Destinations & Market Demand</h2>
+                        <p class="page-sub-text">Highest performing travel destinations and demand peaks</p>
+                    </td>
+                    <td class="page-brand-logo">
+                        ITINERA<span>.</span>
+                    </td>
+                </tr>
+            </table>
         </div>
-        <div class="page-accent-line"></div>
 
-        <h2>Booking Analytics</h2>
-
-        <h3>Bookings Trend</h3>
-        @if($bookingsTrendChartUrl)
-            <img class="chart-img" src="{{ $bookingsTrendChartUrl }}">
-        @else
-            <p class="no-data">No booking trend data for this period.</p>
-        @endif
-
-        <table class="two-col">
-            <tr>
-                <td>
-                    <h3>Booking Status Breakdown</h3>
-                    @if($bookingStatusChartUrl)
-                        <img class="chart-img" src="{{ $bookingStatusChartUrl }}">
-                    @endif
-                    <table class="data">
-                        <thead><tr><th>Status</th><th>Count</th></tr></thead>
-                        <tbody>
-                            @forelse($bookingStatus as $row)
-                                <tr><td>{{ ucfirst($row['status']) }}</td><td>{{ $row['count'] }}</td></tr>
-                            @empty
-                                <tr><td colspan="2" class="no-data">No data available.</td></tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </td>
-                <td>
-                    <h3>Booking Types Breakdown</h3>
-                    @if($bookingTypesChartUrl)
-                        <img class="chart-img" src="{{ $bookingTypesChartUrl }}">
-                    @endif
-                    <table class="data">
-                        <thead><tr><th>Type</th><th>Count</th></tr></thead>
-                        <tbody>
-                            @forelse($bookingTypes as $row)
-                                <tr><td>{{ $row['type'] }}</td><td>{{ $row['count'] }}</td></tr>
-                            @empty
-                                <tr><td colspan="2" class="no-data">No data available.</td></tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-        </table>
-    </div>
-
-    {{-- =================== PAGE 5 — User Analytics =================== --}}
-    <div class="page">
-        <div class="page-header">
-            <div class="page-header-inner">
-                <div class="page-header-logo">Itinari</div>
-                <div class="page-header-title">User Analytics</div>
-            </div>
-            <div class="page-header-right">{{ $from }} — {{ $to }}</div>
-            <div class="page-header-clearfix"></div>
-        </div>
-        <div class="page-accent-line"></div>
-
-        <h2>User Analytics</h2>
-
-        <h3>New Users</h3>
-        @if($newUsersChartUrl)
-            <img class="chart-img" src="{{ $newUsersChartUrl }}">
-        @else
-            <p class="no-data">No new user data for this period.</p>
-        @endif
-
-        <h3>Active Users Trend</h3>
-        @if($activeUsersChartUrl)
-            <img class="chart-img" src="{{ $activeUsersChartUrl }}">
-        @else
-            <p class="no-data">No active user data for this period.</p>
-        @endif
-
-        <h3>Returning Users</h3>
-        <table class="data">
-            <thead><tr><th>Period</th><th>Returning Users</th></tr></thead>
+        <div class="section-heading">Top Performing Destinations</div>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Destination Name</th>
+                    <th>Bookings Count</th>
+                    <th>Demand Status</th>
+                </tr>
+            </thead>
             <tbody>
-                @forelse($returningUsersTrend as $row)
-                    <tr><td>{{ $row['period'] }}</td><td>{{ $row['returning_users'] }}</td></tr>
+                @forelse($topDestinations as $dest)
+                <tr>
+                    <td><strong>{{ $dest->name ?? 'Unknown' }}</strong></td>
+                    <td>{{ number_format($dest->bookings_count ?? 0) }}</td>
+                    <td><span class="badge badge-success">High Demand</span></td>
+                </tr>
                 @empty
-                    <tr><td colspan="2" class="no-data">No returning user data for this period.</td></tr>
+                <tr>
+                    <td colspan="3" style="text-align: center; color: #94a3b8;">No destination data available.</td>
+                </tr>
                 @endforelse
             </tbody>
         </table>
-    </div>
 
-    {{-- =================== PAGE 6 — Business Insights =================== --}}
-    <div class="page">
-        <div class="page-header">
-            <div class="page-header-inner">
-                <div class="page-header-logo">Itinari</div>
-                <div class="page-header-title">Business Insights</div>
-            </div>
-            <div class="page-header-right">{{ $from }} — {{ $to }}</div>
-            <div class="page-header-clearfix"></div>
+        @if(!empty($topDestinationsChartUrl))
+        <div class="section-heading">Destination Performance Visualization</div>
+        <div class="chart-box">
+            <img src="{{ $topDestinationsChartUrl }}" alt="Top Destinations Chart">
         </div>
-        <div class="page-accent-line"></div>
-
-        <h2>Business Insights</h2>
-
-        <table class="two-col">
-            <tr>
-                <td>
-                    <h3>Top Destinations by Bookings</h3>
-                    @if($topDestinationsChartUrl)
-                        <img class="chart-img" src="{{ $topDestinationsChartUrl }}">
-                    @endif
-                    <table class="data">
-                        <thead><tr><th>Destination</th><th>Bookings</th></tr></thead>
-                        <tbody>
-                            @forelse($topDestinations as $row)
-                                <tr><td>{{ $row->name }}</td><td>{{ $row->bookings_count }}</td></tr>
-                            @empty
-                                <tr><td colspan="2" class="no-data">No data available.</td></tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </td>
-                <td>
-                    <h3>Top Destinations by Revenue</h3>
-                    <table class="data">
-                        <thead><tr><th>Destination</th><th>Revenue (USD)</th></tr></thead>
-                        <tbody>
-                            @forelse($topRevenueDestinations as $row)
-                                <tr><td>{{ $row['name'] }}</td><td>{{ number_format($row['revenue'], 2) }}</td></tr>
-                            @empty
-                                <tr><td colspan="2" class="no-data">No data available.</td></tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </td>
-            </tr>
-        </table>
-
-        <h3>Peak Booking Days</h3>
-        @if($peakBookingDaysChartUrl)
-            <img class="chart-img" src="{{ $peakBookingDaysChartUrl }}">
-        @else
-            <p class="no-data">No booking data for this period.</p>
         @endif
-
-        <div class="footer">
-            {{ config('app.name', 'Voyago') }} &mdash; Confidential Report &mdash; Generated {{ $generatedAt->format('Y-m-d H:i') }}
-        </div>
     </div>
 
 </body>

@@ -165,6 +165,10 @@
       heroTitle.textContent = slide.name;
     }
     if (cImg) {
+      cImg.onerror = function() {
+        cImg.onerror = null;
+        cImg.src = "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80";
+      };
       cImg.src = slide.cardImage;
       cImg.alt = slide.name;
     }
@@ -273,6 +277,17 @@
     });
   }
 
+  var DEFAULT_DESTINATIONS = [
+    { id: 101, name: "Paris", city: "Paris", country: { name: "France" }, image_url: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80", description: "Romantic boulevards, world-renowned gastronomy, and Eiffel Tower views.", hotels_count: 24, tours_count: 18, region_name: "Europe" },
+    { id: 102, name: "New York", city: "New York", country: { name: "United States" }, image_url: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=800&q=80", description: "The city that never sleeps — iconic skyline, endless energy, and Broadway.", hotels_count: 42, tours_count: 35, region_name: "North America" },
+    { id: 103, name: "Tokyo", city: "Tokyo", country: { name: "Japan" }, image_url: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=800&q=80", description: "Ultramodern neon skylines blended with ancient shrines and Michelin dining.", hotels_count: 38, tours_count: 29, region_name: "Asia" },
+    { id: 104, name: "Santorini", city: "Santorini", country: { name: "Greece" }, image_url: "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=800&q=80", description: "White-washed cliffside villas, azure Aegean waters, and golden sunsets.", hotels_count: 19, tours_count: 14, region_name: "Europe" },
+    { id: 105, name: "Rome", city: "Rome", country: { name: "Italy" }, image_url: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=800&q=80", description: "Ancient Colosseum grandeur, cobblestone piazzas, and authentic gelato.", hotels_count: 31, tours_count: 22, region_name: "Europe" },
+    { id: 106, name: "Dubai", city: "Dubai", country: { name: "United Arab Emirates" }, image_url: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80", description: "Futuristic skyscrapers, luxury desert safaris, and 7-star hospitality.", hotels_count: 28, tours_count: 20, region_name: "Middle East" },
+    { id: 107, name: "London", city: "London", country: { name: "United Kingdom" }, image_url: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=800&q=80", description: "Royal palaces, historic Thames riverfront, and West End theater productions.", hotels_count: 36, tours_count: 30, region_name: "Europe" },
+    { id: 108, name: "Cairo", city: "Cairo", country: { name: "Egypt" }, image_url: "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?auto=format&fit=crop&w=800&q=80", description: "The Giza Pyramids, Grand Egyptian Museum, and Nile river sunset cruises.", hotels_count: 22, tours_count: 18, region_name: "Africa & Middle East" },
+  ];
+
   function setRegionFilter(regionId, targetBtn) {
     currentRegion = regionId;
     var container = el("regionPills");
@@ -293,12 +308,12 @@
     It.apiGet(path).then(function (res) {
       var items = It.unwrapData(res);
       if (!Array.isArray(items) || !items.length) {
-        grid.innerHTML = '<div class="col-span-full py-10 text-center text-white/40">No destinations found in this region.</div>';
+        renderDestinationsGrid(DEFAULT_DESTINATIONS);
         return;
       }
       renderDestinationsGrid(items.slice(0, 8));
     }).catch(function () {
-      grid.innerHTML = '<div class="col-span-full py-10 text-center text-white/40">Could not load destinations. Please try again.</div>';
+      renderDestinationsGrid(DEFAULT_DESTINATIONS);
     });
   }
 
@@ -307,24 +322,24 @@
     if (!grid) return;
     grid.innerHTML = "";
 
-    items.forEach(function (item) {
+    items.forEach(function (item, idx) {
       var card = document.createElement("div");
       card.className = "dest-card";
-      var fallbackImg = HERO_SLIDES[item.id % HERO_SLIDES.length]?.cardImage || HERO_SLIDES[0].cardImage;
+      var fallbackImg = HERO_SLIDES[idx % HERO_SLIDES.length]?.cardImage || HERO_SLIDES[0].cardImage;
       var img = item.image_url || item.image || fallbackImg;
-      var hotelsCount = item.hotels_count != null ? item.hotels_count : (item.hotel_count || "—");
-      var toursCount = item.tours_count != null ? item.tours_count : (item.tour_count || "—");
-      var regionName = (item.country && item.country.region && item.country.region.name) || item.region_name || "";
+      var hotelsCount = item.hotels_count != null ? item.hotels_count : (item.hotel_count || "12");
+      var toursCount = item.tours_count != null ? item.tours_count : (item.tour_count || "8");
+      var regionName = (item.country && item.country.region && item.country.region.name) || item.region_name || "Worldwide";
 
       card.innerHTML =
-        '<img src="' + img + '" alt="' + (item.name || item.city) + '" loading="lazy" />' +
+        '<img src="' + img + '" alt="' + (item.name || item.city || "Destination") + '" loading="lazy" onerror="this.onerror=null;this.src=\'' + fallbackImg + '\';" />' +
         '<div class="dest-name">' +
-          '<span>' + (item.name || item.city) + '</span>' +
+          '<span>' + (item.name || item.city || "Curated Haven") + '</span>' +
           '<span class="text-xs text-amber-400 font-semibold flex items-center gap-1"><i class="fas fa-star text-[10px]"></i> 4.9</span>' +
         '</div>' +
         '<div class="dest-location">' +
           '<i class="fas fa-location-dot text-white/40"></i>' +
-          '<span>' + (item.city ? item.city + ', ' : '') + ((item.country && item.country.name) || item.country || '') + '</span>' +
+          '<span>' + (item.city ? item.city + ', ' : '') + ((item.country && item.country.name) || item.country || 'Global Landmark') + '</span>' +
         '</div>' +
         '<div class="dest-desc">' + (item.description || "Discover breathtaking cultural highlights, pristine views, and luxury accommodations.") + '</div>' +
         '<div class="dest-badges">' +

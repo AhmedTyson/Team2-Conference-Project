@@ -214,11 +214,21 @@
         It.app.imageHtml(user.profile_image, user.name, "profile-hero__avatar") +
         "</div>" +
         '<h1 class="profile-hero__name">' + esc(user.name) + "</h1>" +
-        '<p class="profile-hero__email">' + esc(user.email) + "</p>" +
-        '<div class="profile-hero__roles">' + (user.roles || []).map(function (r) {
+        '<p class="profile-hero__email">' + esc(user.email) + (user.phone ? ' · ' + esc(user.phone) : '') + "</p>" +
+        (user.bio ? '<p class="profile-hero__bio" style="margin: 8px 0; color: var(--color-text-muted); font-size: 0.9em; max-width: 500px;">' + esc(user.bio) + '</p>' : '') +
+        '<div class="profile-hero__details" style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:8px 0;font-size:0.85em;color:var(--color-text-dim);">' +
+          (user.country ? '<span>📍 ' + esc(user.country) + '</span>' : '') +
+          (user.preferred_currency ? '<span>💳 Currency: ' + esc(user.preferred_currency) + '</span>' : '') +
+          (user.emergency_contact ? '<span>🆘 Emergency: ' + esc(user.emergency_contact) + '</span>' : '') +
+        '</div>' +
+        '<div class="profile-hero__roles" style="margin-top:10px;">' + (user.roles || []).map(function (r) {
           return '<span class="chip">' + esc(roleLabel(r)) + "</span>";
         }).join("") + "</div>" +
-        '<div class="profile-hero__actions"><a href="/profile-settings.html" class="btn btn--ghost">Edit profile</a></div></div>' +
+        '<div class="profile-hero__actions" style="margin-top:12px;display:flex;gap:8px;justify-content:center;">' +
+          '<a href="/profile-settings.html" class="btn btn--ghost">Edit profile & settings</a>' +
+          '<a href="/notifications.html" class="btn btn--ghost">My Notifications</a>' +
+          '<a href="/my-reviews.html" class="btn btn--ghost">My Reviews</a>' +
+        '</div></div>' +
 
         '<a href="' + surveyHref + '" class="identity-plate anim-rise anim-rise--delay-2">' +
         '<span class="identity-plate__monogram" aria-hidden="true">' + esc(String(user.name || "?").trim().charAt(0).toUpperCase() || "?") + "</span>" +

@@ -27,8 +27,12 @@ class UpdateProfileRequest extends FormRequest
         return [
             'name' => ['sometimes', 'string', 'max:255'],
             'email' => ['sometimes', 'string', 'email', 'max:255', 'unique:users,email,'.$userId],
-            'phone' => ['sometimes', 'nullable', 'string', 'max:20', 'unique:users,phone,'.$userId],
-            'profile_image' => ['sometimes', 'image', 'mimes:jpeg,png,webp,gif', 'max:2048'],
+            'phone' => ['sometimes', 'nullable', 'string', 'max:25', 'unique:users,phone,'.$userId],
+            'bio' => ['sometimes', 'nullable', 'string', 'max:1000'],
+            'country' => ['sometimes', 'nullable', 'string', 'max:100'],
+            'preferred_currency' => ['sometimes', 'nullable', 'string', 'max:10'],
+            'emergency_contact' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'profile_image' => ['sometimes', 'nullable', 'image', 'mimes:jpeg,png,webp,gif', 'max:2048'],
             'password' => ['sometimes', 'string', 'min:8', 'confirmed'],
         ];
     }

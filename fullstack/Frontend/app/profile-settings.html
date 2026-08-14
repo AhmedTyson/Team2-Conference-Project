@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -46,15 +46,47 @@
             </div>
 
             <div class="field">
-              <label class="field__label" for="set-name">Name</label>
+              <label class="field__label" for="set-name">Full Name</label>
               <input id="set-name" class="input" type="text" maxlength="255" autocomplete="name" />
               <p class="field__error" id="name-error" hidden></p>
             </div>
 
             <div class="field">
-              <label class="field__label" for="set-email">Email</label>
+              <label class="field__label" for="set-email">Email Address</label>
               <input id="set-email" class="input" type="email" maxlength="255" autocomplete="email" />
               <p class="field__error" id="email-error" hidden></p>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="set-phone">Phone Number</label>
+              <input id="set-phone" class="input" type="tel" maxlength="25" placeholder="+20 100 123 4567" autocomplete="tel" />
+              <p class="field__error" id="phone-error" hidden></p>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="set-country">Country / Region</label>
+              <input id="set-country" class="input" type="text" maxlength="100" placeholder="Egypt" autocomplete="country-name" />
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="set-currency">Preferred Currency</label>
+              <select id="set-currency" class="input">
+                <option value="USD">USD ($)</option>
+                <option value="EUR">EUR (€)</option>
+                <option value="GBP">GBP (£)</option>
+                <option value="EGP">EGP (E£)</option>
+                <option value="AED">AED (AED)</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="set-emergency">Emergency Contact</label>
+              <input id="set-emergency" class="input" type="text" maxlength="255" placeholder="Name & Phone Number" />
+            </div>
+
+            <div class="field">
+              <label class="field__label" for="set-bio">Personal Bio & Travel Preferences</label>
+              <textarea id="set-bio" class="input" rows="3" maxlength="1000" placeholder="Share your travel interests, dietary preferences, or travel style..."></textarea>
             </div>
 
             <div class="form__divider"><span class="form__divider-label">Change password — optional</span></div>
@@ -86,13 +118,11 @@
     </footer>
   </div>
 
-  <script src="../assets/js/config.js"></script>
-  <script src="../assets/js/api.js"></script>
-  <script src="../assets/js/session.js"></script>
-  <script src="../assets/js/nav-config.js"></script>
-  <script src="../assets/js/app-shell.js"></script>
+  <script src="../assets/js/core/config.js"></script>
+  <script src="../assets/js/core/api.js"></script>
+  <script src="../assets/js/core/session.js"></script>
+  <script src="../assets/js/core/nav-config.js"></script>
+  <script src="../assets/js/core/app-shell.js"></script>
   <script src="../assets/js/profile-settings.js"></script>
-  <script src="../assets/js/core/topbar.js"></script>
-  <script src="../assets/js/core/theme.js"></script>
-</body>
+  </body>
 </html>

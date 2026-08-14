@@ -725,13 +725,16 @@
       { message: "Your trip itinerary to DPS is finalized.", created_at: new Date(Date.now() - 7200000).toISOString() }
     ];
 
+    const reviewsFeed = el("reviews-feed");
+
     Promise.all([
       It.apiGet(DASH.stats, { auth: true }),
       It.apiGet(DASH.trips, { auth: true }),
       It.apiGet(DASH.favs, { auth: true }),
       It.apiGet(DASH.notifs, { auth: true }),
+      It.apiGet('/me/reviews', { auth: true }),
     ]).then(function (results) {
-      const [statsRes, tripsRes, favsRes, notifsRes] = results;
+      const [statsRes, tripsRes, favsRes, notifsRes, reviewsRes] = results;
       const stats = statsRes.ok && statsRes.body && statsRes.body.data ? statsRes.body.data : null;
       if (stats) {
         setStat("stat-total", stats.total_trips ?? "0");
@@ -753,6 +756,23 @@
 
       const notifsData = notifsRes.ok && notifsRes.body && notifsRes.body.data ? notifsRes.body.data : [];
       setFeed(notifsList, notifsData, "No new notifications.", renderNotifications);
+
+      const reviewsData = reviewsRes.ok && reviewsRes.body && reviewsRes.body.data ? reviewsRes.body.data : [];
+      const valRevEl = el("stat-val-reviews");
+      if (valRevEl) valRevEl.textContent = reviewsData.length;
+      if (reviewsFeed) {
+        setFeed(reviewsFeed, reviewsData, "No reviews submitted yet.", function (items) {
+          return items.map(function (r) {
+            const title = (r.reviewable && (r.reviewable.name || r.reviewable.title)) || "Travel Location";
+            const st = String(r.status || 'pending').toLowerCase();
+            const statusLabel = (st === 'approved' || st === 'published') ? 'Approved' : 'Pending';
+            return buildCard(
+              title,
+              (r.rating || 5) + "★ · " + statusLabel + (r.comment ? " · " + r.comment : "")
+            );
+          });
+        });
+      }
     }).catch(function (err) {
       console.warn("Backend API unavailable, loading fallback mockup stats:", err);
 
@@ -764,10 +784,19 @@
       setStat("stat-completed", "0");
       setStat("stat-cancelled", "0");
       setStat("stat-favs", "2");
+      const valRevEl = el("stat-val-reviews");
+      if (valRevEl) valRevEl.textContent = "1";
 
       setFeed(tripsList, mockTrips, "No trips yet.", renderTrips);
       setFeed(favsList, mockFavs, "No favourites saved yet.", renderFavs);
       setFeed(notifsList, mockNotifs, "No new notifications.", renderNotifications);
+      if (reviewsFeed) {
+        setFeed(reviewsFeed, [{ title: "Amnaya Resort DPS", rating: 5, status: "pending", comment: "Exceptional luxury stay with panoramic views." }], "No reviews yet.", function (items) {
+          return items.map(function (r) {
+            return buildCard(r.title, r.rating + "★ · Pending · " + r.comment);
+          });
+        });
+      }
 
       fb.banner("Showing demo mode dashboard (offline).", "is-info");
     });

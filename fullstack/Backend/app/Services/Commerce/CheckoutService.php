@@ -147,10 +147,20 @@ class CheckoutService
 
     protected function prepareBillingData(User $user, array $billingData): array
     {
-        $billingData['email'] = $billingData['email'] ?? $user->email;
-        $billingData['first_name'] = $billingData['first_name'] ?? $user->name;
-        $billingData['last_name'] = $billingData['last_name'] ?? 'User';
-        $billingData['phone_number'] = $billingData['phone_number'] ?? ($user->phone ?? '01000000000');
+        $nameParts = explode(' ', trim($user->name ?? 'Traveler User'), 2);
+
+        $billingData['email'] = !empty($billingData['email']) ? $billingData['email'] : ($user->email ?? 'traveler@example.com');
+        $billingData['first_name'] = !empty($billingData['first_name']) ? $billingData['first_name'] : ($nameParts[0] ?? 'Traveler');
+        $billingData['last_name'] = !empty($billingData['last_name']) ? $billingData['last_name'] : ($nameParts[1] ?? 'User');
+        $billingData['phone_number'] = !empty($billingData['phone_number']) && $billingData['phone_number'] !== 'NA' ? $billingData['phone_number'] : ($user->phone ?? '+201000000000');
+        $billingData['building'] = $billingData['building'] ?? '1';
+        $billingData['floor'] = $billingData['floor'] ?? '1';
+        $billingData['apartment'] = $billingData['apartment'] ?? '1';
+        $billingData['street'] = $billingData['street'] ?? 'Main St';
+        $billingData['city'] = $billingData['city'] ?? 'Cairo';
+        $billingData['state'] = $billingData['state'] ?? 'Cairo';
+        $billingData['country'] = $billingData['country'] ?? 'EG';
+        $billingData['postal_code'] = $billingData['postal_code'] ?? '11511';
 
         return $billingData;
     }

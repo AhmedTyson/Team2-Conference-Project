@@ -247,6 +247,11 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
+                'phone' => $user->phone,
+                'bio' => $user->bio,
+                'country' => $user->country,
+                'preferred_currency' => $user->preferred_currency,
+                'emergency_contact' => $user->emergency_contact,
                 'profile_image' => $user->profile_image
                     ? Storage::disk('public')->url($user->profile_image)
                     : null,

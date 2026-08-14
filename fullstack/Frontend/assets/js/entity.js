@@ -39,10 +39,14 @@
     return '<span class="inline-flex items-center">' + stars + '</span>';
   }
 
-  function imageHtml(src, alt) {
-    var url = src || "https://images.pexels.com/photos/1486222/pexels-photo-1486222.jpeg?auto=compress&cs=tinysrgb&w=1200";
+  function imageHtml(src, alt, name, entityType, country) {
+    var queryName = name || alt || "Destination";
+    var unsplashFallback = (global.Itinari && global.Itinari.getUnsplashImage) 
+      ? global.Itinari.getUnsplashImage(queryName, entityType || type, country) 
+      : "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1200&q=80";
+    var url = src || unsplashFallback;
     return '<div class="relative overflow-hidden rounded-2xl border border-white/10 mb-6 bg-white/5 shadow-2xl">' +
-      '<img src="' + url + '" alt="' + esc(alt) + '" class="w-full h-[360px] sm:h-[440px] object-cover" />' +
+      '<img src="' + url + '" alt="' + esc(alt) + '" class="w-full h-[360px] sm:h-[440px] object-cover" onerror="this.onerror=null;this.src=\'' + unsplashFallback + '\';" />' +
       '<div class="absolute inset-0 bg-gradient-to-t from-[#0d0d0c] via-transparent to-transparent"></div></div>';
   }
 
@@ -142,7 +146,7 @@
 
     page.innerHTML =
       '<div class="mb-6"><a href="explore.html" class="inline-flex items-center gap-2 text-sm text-white/50 hover:text-white transition"><i class="fas fa-arrow-left text-xs"></i> Back to Explore</a></div>' +
-      imageHtml(entityImage(e), name) +
+      imageHtml(entityImage(e), name, name, type, (e.country && e.country.name) || e.country) +
       '<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">' +
       '<div class="lg:col-span-2 space-y-6">' +
       '<div>' +

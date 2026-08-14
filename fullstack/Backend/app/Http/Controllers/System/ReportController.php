@@ -98,4 +98,35 @@ class ReportController extends Controller
             'Reports fetched successfully'
         );
     }
+
+    public function downloadAnalytics(Request $request)
+    {
+        $report = Report::where('status', 'completed')
+            ->whereNotNull('file_path')
+            ->latest()
+            ->first();
+
+        if (! $report) {
+            $from = $request->query('from', now()->subDays(30)->format('Y-m-d'));
+            $to = $request->query('to', now()->format('Y-m-d'));
+            $format = $request->query('format', 'pdf');
+
+            $report = Report::create([
+                'user_id' => $request->user() ? $request->user()->id : 1,
+                'from_date' => $from,
+                'to_date' => $to,
+                'format' => $format,
+                'status' => 'pending',
+            ]);
+
+            app(\App\Services\System\GenerateReportService::class)->fillReport($report);
+            $report->refresh();
+        }
+
+        if (! $report || ! $report->file_path || ! Storage::disk('public')->exists($report->file_path)) {
+            return ApiResponse::fail('Report file not available', 'not_found', 404);
+        }
+
+        return Storage::disk('public')->download($report->file_path, basename($report->file_path));
+    }
 }
