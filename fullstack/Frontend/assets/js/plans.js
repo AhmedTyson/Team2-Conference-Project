@@ -249,6 +249,7 @@
           const pId = btn.dataset.planId;
           const pName = btn.dataset.planName || "Selected";
           PC.gateToCheckout(pName, pId, btn);
+
         });
       });
 
