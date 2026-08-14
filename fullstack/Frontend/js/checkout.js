@@ -120,11 +120,21 @@
       "</div>";
   }
 
-  /* ── User info helper ───────────────────────────────────────── */
+  /**
+   * User info helper.
+   * FIX: previously called It.session.getUser() and It.readUser(), neither
+   * of which exists in assets/js/core/session.js (confirmed by reading the
+   * file — its real accessor, currentUser(), is async and can't be called
+   * synchronously here without restructuring every caller). Reading the
+   * same "itinari_user" localStorage key session.js itself caches the user
+   * under (see core/session.js line ~129/142) is the correct sync-safe fix.
+   */
   function getBillingInfo() {
-    const u = (It.session && It.session.getUser && It.session.getUser()) ||
-              (It.readUser && It.readUser()) ||
-              global.currentUser || {};
+    let u = {};
+    try {
+      const stored = localStorage.getItem("itinari_user");
+      if (stored) u = JSON.parse(stored) || {};
+    } catch (e) {}
     const raw = u.name || "";
     const parts = String(raw).trim().split(/\s+/);
     return {
@@ -284,8 +294,16 @@
     root.innerHTML = '<div class="glass-card p-12 text-center text-white/50"><i class="fas fa-spinner fa-spin text-3xl mb-3 text-amber-400"></i><p>Loading plan details…</p></div>';
 
     try {
-      const plans = await PC.fetchPlans();
-      if (!plans || !plans.length) {
+      /**
+       * FIX: fetchPlans() returns { ok, status, data, message } — not a
+       * plain array. Reading plans.length directly here always evaluated
+       * to undefined (falsy), so this page previously showed "No Plans
+       * Available" unconditionally, even when plans genuinely existed.
+       * Confirmed by reading plans-core.js's actual return shape.
+       */
+      const plansRes = await PC.fetchPlans();
+      const plans = (plansRes && plansRes.ok && Array.isArray(plansRes.data)) ? plansRes.data : [];
+      if (!plans.length) {
         root.innerHTML =
           emptyState("No Plans Available", "Pricing plans are currently unavailable. Please check back later.") +
           '<div class="mt-6 flex items-center justify-center"><a href="../plans.html" class="btn-primary"><i class="fas fa-arrow-left mr-2"></i>Back to Plans</a></div>';

@@ -217,7 +217,7 @@
         95: { desc: "Thunderstorm", icon: "fa-bolt" }
       };
 
-      function updateWeatherUI(city, temp, code, windspeed, winddirection) {
+      function updateWeatherUI(city, temp, code, windspeed, winddirection, daily) {
         var info = WEATHER_CODES[code] || { desc: "Clear conditions", icon: "fa-sun" };
 
         var elCity = document.getElementById("wCurrentCity");
@@ -236,15 +236,16 @@
         if (elWindDir) elWindDir.textContent = (winddirection != null ? winddirection + "°" : "240°");
         if (elCode) elCode.textContent = "WMO " + (code < 10 ? "0" + code : code);
 
-        renderDailyForecast(temp, code);
+        renderDailyForecast(temp, code, daily);
       }
 
       function fetchCityWeather(city, lat, lon) {
-        Itinari.apiGet("/weather?lat=" + lat + "&lon=" + lon).then(function (res) {
+        Itinari.apiGet("/weather?lat=" + encodeURIComponent(lat) + "&lon=" + encodeURIComponent(lon), { skipAuthRedirect: true }).then(function (res) {
           if (res && res.ok && res.body) {
-            var cw = res.body.current_weather || res.body;
+            var body = res.body.data || res.body;
+            var cw = body.current_weather || body;
             if (cw && cw.temperature != null) {
-              updateWeatherUI(city, cw.temperature, cw.weathercode || 0, cw.windspeed, cw.winddirection);
+              updateWeatherUI(city, cw.temperature, cw.weathercode || 0, cw.windspeed, cw.winddirection, body.daily);
               return;
             }
           }
@@ -255,23 +256,23 @@
       }
 
       function fetchDirectWeather(city, lat, lon) {
-        var directUrl = "https://api.open-meteo.com/v1/forecast?latitude=" + encodeURIComponent(lat) + "&longitude=" + encodeURIComponent(lon) + "&current_weather=true";
+        var directUrl = "https://api.open-meteo.com/v1/forecast?latitude=" + encodeURIComponent(lat) + "&longitude=" + encodeURIComponent(lon) + "&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto";
         fetch(directUrl)
           .then(function (res) { return res.json(); })
           .then(function (data) {
             if (data && data.current_weather) {
               var cw = data.current_weather;
-              updateWeatherUI(city, cw.temperature, cw.weathercode || 0, cw.windspeed, cw.winddirection);
+              updateWeatherUI(city, cw.temperature, cw.weathercode || 0, cw.windspeed, cw.winddirection, data.daily);
             } else {
-              updateWeatherUI(city, 22, 0, 14, 240);
+              updateWeatherUI(city, 22, 0, 14, 240, null);
             }
           })
           .catch(function () {
-            updateWeatherUI(city, 22, 0, 14, 240);
+            updateWeatherUI(city, 22, 0, 14, 240, null);
           });
       }
 
-      function renderDailyForecast(baseTemp, code) {
+      function renderDailyForecast(baseTemp, code, daily) {
         var grid = document.getElementById("forecastGrid");
         if (!grid) return;
         grid.innerHTML = "";
@@ -279,10 +280,30 @@
         var now = new Date();
         var dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
+        if (daily && Array.isArray(daily.temperature_2m_max) && daily.temperature_2m_max.length >= 7) {
+          for (var i = 0; i < 7; i++) {
+            var dName = i === 0 ? "Today" : dayNames[(now.getDay() + i) % 7];
+            var maxT = Math.round(daily.temperature_2m_max[i]);
+            var minT = Math.round(daily.temperature_2m_min[i]);
+            var dayCode = daily.weathercode ? daily.weathercode[i] : code;
+            var info = WEATHER_CODES[dayCode] || { icon: "fa-sun" };
+
+            var div = document.createElement("div");
+            div.className = "glass-card p-3.5 text-center space-y-2";
+            div.innerHTML =
+              '<div class="text-xs uppercase tracking-wider text-white/50 font-semibold">' + dName + '</div>' +
+              '<i class="fas ' + info.icon + ' text-base text-amber-300"></i>' +
+              '<div class="text-sm font-bold text-white tabular-nums">' + maxT + '°</div>' +
+              '<div class="text-[10px] text-white/40">' + minT + '° min</div>';
+            grid.appendChild(div);
+          }
+          return;
+        }
+
         for (var i = 0; i < 7; i++) {
           var dName = i === 0 ? "Today" : dayNames[(now.getDay() + i) % 7];
           var delta = (i % 3 === 0 ? -1 : (i % 2 === 0 ? 2 : 0));
-          var dayTemp = Number(baseTemp) + delta;
+          var dayTemp = Math.round(Number(baseTemp) + delta);
           var info = WEATHER_CODES[code] || { icon: "fa-sun" };
 
           var div = document.createElement("div");

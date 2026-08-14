@@ -113,6 +113,7 @@ class DatabaseSeeder extends Seeder
             TripContributionSeeder::class,
             PlanSeeder::class,
             SettingsSeeder::class,
+            User5Seeder::class,
         ]);
 
         // 5. Re-enable FK constraints
