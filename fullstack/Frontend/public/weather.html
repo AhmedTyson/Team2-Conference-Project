@@ -216,17 +216,29 @@
         95: { desc: "Thunderstorm", icon: "fa-bolt" }
       };
 
-      function fetchCityWeather(city, lat, lon) {
-        Itinari.apiGet("/weather?lat=" + lat + "&lon=" + lon).then(function (res) {
-          if (!res.ok || !res.body) return;
-          var cw = res.body.current_weather || res.body;
-          var temp = cw.temperature != null ? Math.round(cw.temperature) : "—";
-          var code = cw.weathercode != null ? cw.weathercode : 0;
-          var info = WEATHER_CODES[code] || { desc: "Clear conditions", icon: "fa-sun" };
+      function updateWeatherUI(city, temp, code, windspeed, winddirection, daily) {
+        var info = WEATHER_CODES[code] || { desc: "Clear conditions", icon: "fa-sun" };
 
-          var elCity = document.getElementById("wCurrentCity");
-          var elDesc = document.getElementById("wCurrentDesc");
-          var elTemp = document.getElementById("wCurrentTemp");
+        var elCity = document.getElementById("wCurrentCity");
+        var elDesc = document.getElementById("wCurrentDesc");
+        var elTemp = document.getElementById("wCurrentTemp");
+        var elIcon = document.getElementById("wCurrentIcon");
+        var elWind = document.getElementById("wWind");
+        var elWindDir = document.getElementById("wWindDir");
+        var elCode = document.getElementById("wCode");
+
+        if (elCity) elCity.textContent = city;
+        if (elDesc) elDesc.textContent = info.desc;
+        if (elTemp) elTemp.textContent = Math.round(temp) + "°C";
+        if (elIcon) elIcon.className = "fas " + info.icon;
+        if (elWind) elWind.textContent = (windspeed != null ? windspeed + " km/h" : "14 km/h");
+        if (elWindDir) elWindDir.textContent = (winddirection != null ? winddirection + "°" : "240°");
+        if (elCode) elCode.textContent = "WMO " + (code < 10 ? "0" + code : code);
+
+        renderDailyForecast(temp, code, daily);
+      }
+
+      function fetchCityWeather(city, lat, lon) {
           var elIcon = document.getElementById("wCurrentIcon");
           var elWind = document.getElementById("wWind");
           var elWindDir = document.getElementById("wWindDir");
