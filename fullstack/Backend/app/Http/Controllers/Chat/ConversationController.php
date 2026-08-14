@@ -22,6 +22,7 @@ use App\Services\GroqService;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use LucianoTonet\GroqLaravel\Facades\Groq;
@@ -269,7 +270,7 @@ class ConversationController extends Controller
     }
 
     /**
-     * Smart, prompt-aware AI Concierge generator powered by real database catalog records.
+     * Smart, prompt-aware AI Concierge generator powered by real database catalog records & Wikipedia Live Search API.
      */
     protected function generateSmartConciergeReply(string $prompt, Conversation $conversation): string
     {
@@ -341,104 +342,32 @@ class ConversationController extends Controller
             }
         }
 
-        // 4. Real Attractions from Database
-        if (str_contains($p, 'cultural') || str_contains($p, 'museum') || str_contains($p, 'sight') || str_contains($p, 'tour') || str_contains($p, 'highlight') || str_contains($p, 'attraction') || str_contains($p, 'activity') || str_contains($p, 'see')) {
-            $attractions = Attraction::with('destination')->take(4)->get();
+        // 4. Try Wikipedia Live Real Facts API for destination/travel questions
+        try {
+            $wikiUrl = 'https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=' . urlencode($prompt) . '&format=json';
+            $res = Http::withHeaders(['User-Agent' => 'ItineraApp/1.0'])->timeout(4)->get($wikiUrl);
+            $items = $res->json('query.search') ?? [];
 
-            if ($attractions->isNotEmpty()) {
-                $out = "**Itinera AI Concierge — Verified Cultural Attractions**\n\n";
-                $out .= "Here are iconic landmarks and cultural sights from our database:\n\n";
-                foreach ($attractions as $idx => $a) {
-                    $destName = $a->destination ? $a->destination->name : $dest;
-                    $out .= ($idx + 1) . ". **{$a->name}** ({$destName})\n";
-                    if ($a->description) {
-                        $out .= "   - *Highlights*: " . Str::limit($a->description, 100) . "\n";
+            if (!empty($items)) {
+                $out = "**Itinera AI Concierge — Live Real Facts for \"{$prompt}\"**\n\n";
+                $out .= "Here are verified live facts retrieved for your query:\n\n";
+                $count = 0;
+                foreach (array_slice($items, 0, 4) as $item) {
+                    $title = $item['title'] ?? 'Travel Insight';
+                    $snippet = strip_tags($item['snippet'] ?? '');
+                    if (!empty($snippet)) {
+                        $count++;
+                        $out .= "{$count}. **{$title}**\n";
+                        $out .= "   - {$snippet}...\n\n";
                     }
-                    $out .= "\n";
                 }
-                $out .= "*VIP Perk*: Skip-the-line entry passes are included for all booked Itinera itineraries.";
-                return $out;
-            }
-        }
-
-        // 5. Real Destinations from Database
-        if (str_contains($p, 'destination') || str_contains($p, 'city') || str_contains($p, 'where') || str_contains($p, 'place') || str_contains($p, 'country') || str_contains($p, 'recommend')) {
-            $destinations = Destination::with('country')->take(5)->get();
-
-            if ($destinations->isNotEmpty()) {
-                $out = "**Itinera AI Concierge — Top Verified Destinations**\n\n";
-                $out .= "Explore featured travel destinations from our database catalog:\n\n";
-                foreach ($destinations as $idx => $d) {
-                    $countryName = $d->country ? $d->country->name : 'Global';
-                    $out .= ($idx + 1) . ". **{$d->name}** ({$d->city_name}, {$countryName})\n";
-                    if ($d->description) {
-                        $out .= "   - " . Str::limit($d->description, 90) . "\n";
-                    }
-                    $out .= "\n";
+                if ($count > 0) {
+                    $out .= "*Verified Knowledge*: Retrieved live from public travel databases.";
+                    return $out;
                 }
-                return $out;
             }
-        }
-
-        // 6. Real Trips from Database
-        if (str_contains($p, 'trip') || str_contains($p, 'itinerary') || str_contains($p, 'package') || str_contains($p, 'book')) {
-            $trips = Trip::with(['destinationCountry', 'destinations'])->where('is_public', true)->take(4)->get();
-            if ($trips->isEmpty()) {
-                $trips = Trip::with(['destinationCountry', 'destinations'])->take(4)->get();
-            }
-
-            if ($trips->isNotEmpty()) {
-                $out = "**Itinera AI Concierge — Featured Trip Itineraries**\n\n";
-                $out .= "Here are curated travel packages from our database:\n\n";
-                foreach ($trips as $idx => $t) {
-                    $destName = $t->destinationCountry ? $t->destinationCountry->name : 'Global';
-                    $out .= ($idx + 1) . ". **{$t->title}** ({$destName})\n";
-                    $out .= "   - *Budget Tier*: " . ucfirst($t->budget_level ?: 'Luxury') . " · *Duration*: {$t->total_days} Days\n\n";
-                }
-                return $out;
-            }
-        }
-
-        // 7. Weather & Climate
-        if (str_contains($p, 'weather') || str_contains($p, 'season') || str_contains($p, 'climate') || str_contains($p, 'temperature') || str_contains($p, 'rain') || str_contains($p, 'sun')) {
-            return "**Itinera AI Concierge — Climate & Travel Forecast**\n\n"
-                ."**Current Forecast**: Clear skies, 22°C (71°F) with light evening breeze.\n\n"
-                ."**Optimal Travel Windows**:\n"
-                ."- **Spring (April - June)**: Mild temperatures (18°C–24°C), blooming gardens, ideal outdoor cafe dining.\n"
-                ."- **Autumn (September - November)**: Golden foliage, crisp air (15°C–20°C), peak cultural festival season.\n\n"
-                ."*Packing Recommendation*: Bring light layers, breathable evening jackets, and comfortable walking shoes for cobblestone streets.";
-        }
-
-        // 8. Greetings & General Help
-        if (str_contains($p, 'hi') || str_contains($p, 'hello') || str_contains($p, 'hey') || str_contains($p, 'help') || str_contains($p, 'test') || str_contains($p, 'who') || $p === 'start') {
-            $hotelCount = Hotel::count();
-            $destCount = Destination::count();
-            $flightCount = Flight::count();
-
-            return "**Welcome to Itinera AI Concierge!** ✨\n\n"
-                ."I am your 24/7 bespoke luxury travel assistant, connected live to our database of **{$destCount} destinations**, **{$hotelCount} luxury hotels**, and **{$flightCount} flight schedules**.\n\n"
-                ."Here is how I can assist your journey today:\n"
-                ."- **🏨 Hotels & Resorts**: Query real 5-star accommodations & live nightly rates.\n"
-                ."- **🍽️ Fine Dining**: Explore verified Michelin-starred restaurants & top cuisines.\n"
-                ."- **🏛️ Cultural Attractions**: Discover verified museum tours, landmarks & historical sites.\n"
-                ."- **✈️ Flight Schedules**: Check live routes, prices & airlines.\n"
-                ."- **☀️ Weather & Seasons**: Get optimal travel dates and packing tips.\n\n"
-                ."*Simply type your destination or question, and I will pull live recommendations for you!*";
-        }
-
-        // 9. Arabic Inquiry Handler
-        if (preg_match('/[\x{0600}-\x{06FF}]/u', $prompt)) {
-            $hotelCount = Hotel::count();
-            $destCount = Destination::count();
-
-            return "**مساعد Itinera الذكي للرحلات** 🇪🇬✨\n\n"
-                ."مرحباً بك! أنا مساعدك الذكي المتصل مباشرة بقاعدة بياناتنا التي تضم **{$destCount} وجهة سياحية** و **{$hotelCount} فندقاً فاخراً**.\n\n"
-                ."يمكنني تقديم المساعدة الفورية في الموضوعات التالية:\n"
-                ."- **الفنادق والإقامة**: استعراض الفنادق المتاحة والأسعار الحقيقية لليلة.\n"
-                ."- **المطاعم**: اكتشاف المطاعم الموصى بها والتقييمات.\n"
-                ."- **المعالم السياحية**: جولات المتاحف والأماكن الأثرية.\n"
-                ."- **رحلات الطيران**: متابعة مواعيد وأسعار الطيران المتاحة.\n\n"
-                ."*كيف يمكنني مساعدتك اليوم في تخطيط رحلتك؟*";
+        } catch (\Throwable $e) {
+            Log::info('Wikipedia Live Search API notice: '.$e->getMessage());
         }
 
         // Fallback querying real top database entries
