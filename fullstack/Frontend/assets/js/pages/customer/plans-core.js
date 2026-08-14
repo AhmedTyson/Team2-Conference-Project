@@ -60,18 +60,27 @@
     return !!(It && It.session && It.session.hasToken());
   }
 
-  /** Standard auth-gate: guests get the auth modal, members proceed. */
-  function gateToCheckout(planName, planId, authModalFn) {
+  /** Standard auth-gate: guests get redirected to login, members proceed to Paymob. */
+  async function gateToCheckout(planName, planId, btnElement) {
     if (!isMember()) {
-      if (typeof authModalFn === "function") {
-        authModalFn("login", "Sign in to subscribe to the " + planName + " plan.");
-      }
+      global.location.href = "auth/login.html?redirect=" + encodeURIComponent(global.location.pathname);
       return false;
     }
-    var cur = global.location.pathname.toLowerCase();
-    var prefix = cur.indexOf("/public/") !== -1 ? "../app/" : "";
-    global.location.href = prefix + "checkout.html?plan=" + encodeURIComponent(planId);
-    return true;
+
+    if (btnElement && btnElement.disabled) return false;
+
+    try {
+      const res = await It.apiPost(ROUTES.checkout, { type: "subscription", plan_id: Number(planId) });
+      const data = (res.body && res.body.data) || {};
+
+      if (data.checkout_url) {
+        global.location.href = data.checkout_url;
+        return true;
+      }
+    } catch (e) {
+      console.error("Paymob checkout error:", e);
+    }
+    return false;
   }
 
   It.plansCore = {

@@ -149,27 +149,67 @@
   }
 
   /**
-   * Standard auth-gate: guests get the auth modal/redirect, members are
-   * sent to checkout.html?plan={id} — checkout.html's own checkout.js then
-   * calls initiateCheckout() above to actually talk to Paymob. This
-   * function itself never calls Paymob directly.
+   * Directly initiates Paymob checkout for the selected plan and redirects
+   * the browser straight to Paymob's payment gateway (data.checkout_url).
    */
-  function gateToCheckout(planName, planId, authModalFn) {
+  async function gateToCheckout(planName, planId, btnElement) {
     if (!isMember()) {
-      if (typeof authModalFn === "function") {
-        authModalFn("login", "Sign in to subscribe to the " + planName + " plan.");
-      } else if (typeof global.openAuthModal === "function") {
+      const loginUrl = (global.location.pathname.includes("/auth/") ? "login.html" : "auth/login.html") + "?redirect=" + encodeURIComponent(global.location.pathname);
+      if (typeof global.openAuthModal === "function") {
         global.openAuthModal("login", "Sign in to subscribe to the " + planName + " plan.");
       } else {
-        const prefix = global.location.pathname.includes("/app/") ? "" : "app/";
-        global.location.href = prefix + "checkout.html?plan=" + encodeURIComponent(planId);
+        global.location.href = loginUrl;
       }
       return false;
     }
 
-    const targetUrl = (global.location.pathname.includes("/app/") ? "checkout.html" : "app/checkout.html") + "?plan=" + encodeURIComponent(planId);
-    global.location.href = targetUrl;
-    return true;
+    if (btnElement && btnElement.disabled) return false;
+    
+    let originalHtml = "";
+    if (btnElement) {
+      originalHtml = btnElement.innerHTML;
+      btnElement.disabled = true;
+      btnElement.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Connecting to Paymob...';
+    }
+
+    try {
+      const idempotencyKey = "sub_" + planId + "_" + Date.now();
+      const res = await initiateCheckout(planId, {}, idempotencyKey);
+
+      if (!res.ok) {
+        const msg = (res.body && res.body.message) || "Unable to initiate Paymob payment. Please try again.";
+        if (typeof global.toast === "function") global.toast(msg, true);
+        else alert(msg);
+
+        if (btnElement) {
+          btnElement.disabled = false;
+          btnElement.innerHTML = originalHtml;
+        }
+        return false;
+      }
+
+      const data = (res.body && res.body.data) || {};
+      if (data.checkout_url) {
+        if (typeof global.toast === "function") global.toast("Redirecting to Paymob payment gateway...", false);
+        global.location.href = data.checkout_url;
+        return true;
+      } else {
+        // Fallback receipt redirect
+        const targetUrl = (global.location.pathname.includes("/app/") ? "receipt.html" : "app/receipt.html") + "?order=" + encodeURIComponent(data.order_id || "");
+        global.location.href = targetUrl;
+        return true;
+      }
+    } catch (err) {
+      console.error("Direct Paymob checkout error:", err);
+      if (typeof global.toast === "function") global.toast("Network error initiating payment.", true);
+      else alert("Network error initiating payment.");
+
+      if (btnElement) {
+        btnElement.disabled = false;
+        btnElement.innerHTML = originalHtml;
+      }
+      return false;
+    }
   }
 
   It.plansCore = {
