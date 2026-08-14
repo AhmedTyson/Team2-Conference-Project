@@ -2858,6 +2858,10 @@
                   {
                     "key": "Accept",
                     "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}"
                   }
                 ],
                 "url": {
@@ -2874,17 +2878,18 @@
                 },
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"type\": \"string_value\",\n    \"trip_id\": 1,\n    \"plan_id\": 1,\n    \"billing\": {\n        \"first_name\": \"Example Name\",\n        \"last_name\": \"Example Name\",\n        \"email\": \"test@example.com\",\n        \"phone_number\": \"string_value\"\n    }\n}",
+                  "raw": "{\n    \"type\": \"subscription\",\n    \"plan_id\": 1,\n    \"idempotency_key\": \"sub_1_unique_key\",\n    \"billing\": {\n        \"first_name\": \"John\",\n        \"last_name\": \"Doe\",\n        \"email\": \"john@example.com\",\n        \"phone_number\": \"01012345678\"\n    }\n}",
                   "options": {
                     "raw": {
                       "language": "json"
                     }
                   }
-                }
+                },
+                "description": "Initiate secure checkout with Paymob for a subscription or trip. Backend resolves price server-side directly from the database and returns order_id, client_secret, and checkout_url."
               }
             }
           ],
-          "description": null,
+          "description": "Checkout and payment initiation endpoints",
           "_postman_isSubFolder": true
         },
         {
@@ -2962,6 +2967,10 @@
                   {
                     "key": "Accept",
                     "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}"
                   }
                 ],
                 "url": {
@@ -2974,11 +2983,107 @@
                     "v1",
                     "plans"
                   ]
-                }
+                },
+                "description": "List all active pricing plans with their price in cents, billing cycle, currency, quota, and features."
+              }
+            },
+            {
+              "name": "api/v1/plans/{id}",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/plans/:id",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "plans",
+                    ":id"
+                  ],
+                  "variable": [
+                    {
+                      "key": "id",
+                      "value": "1",
+                      "description": "The ID of the active pricing plan"
+                    }
+                  ]
+                },
+                "description": "Retrieve details of a single active pricing plan by its ID."
+              }
+            },
+            {
+              "name": "api/v1/me/subscription",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/me/subscription",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "me",
+                    "subscription"
+                  ]
+                },
+                "description": "Get the authenticated user's current subscription details with the associated plan."
+              }
+            },
+            {
+              "name": "api/v1/me/subscription/cancel",
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{auth_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/v1/me/subscription/cancel",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "v1",
+                    "me",
+                    "subscription",
+                    "cancel"
+                  ]
+                },
+                "description": "Cancel the authenticated user's currently active subscription."
               }
             }
           ],
-          "description": null,
+          "description": "Pricing plans and user subscription management endpoints",
           "_postman_isSubFolder": true
         }
       ],

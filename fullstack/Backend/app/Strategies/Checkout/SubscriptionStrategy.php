@@ -9,7 +9,7 @@ class SubscriptionStrategy implements CheckoutStrategyInterface
 {
     public function resolveProduct(int $productId): Model
     {
-        return Plan::findOrFail($productId);
+        return Plan::where('is_active', true)->findOrFail($productId);
     }
 
     public function calculatePrice(Model $product): int

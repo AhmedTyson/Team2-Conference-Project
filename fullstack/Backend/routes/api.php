@@ -297,6 +297,8 @@ Route::middleware(['auth:api', 'verified'])->name('plans.')->group(function () {
 
     Route::get('/plans', [PlanController::class, 'index'])
         ->middleware('permission:get plans');
+    Route::get('/plans/{id}', [PlanController::class, 'show'])
+        ->middleware('permission:get plans');
     Route::post('/me/subscribe', [PlanController::class, 'subscribe'])
         ->middleware('permission:subscribe to plans');
     Route::post('/me/upgrade', [PlanController::class, 'upgrade'])

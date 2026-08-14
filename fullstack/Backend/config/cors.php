@@ -18,7 +18,7 @@ return [
 
     'allowed_origins' => array_filter(array_map(function ($origin) {
         return trim($origin);
-    }, explode(',', env('CORS_ALLOWED_ORIGINS', 'http://localhost:8080,http://127.0.0.1:8080,http://localhost:5173,http://127.0.0.1:5173,http://localhost:8001,http://127.0.0.1:8001')))),
+    }, explode(',', env('CORS_ALLOWED_ORIGINS', 'http://localhost:8080,http://127.0.0.1:8080,http://localhost:5173,http://127.0.0.1:5173,http://localhost:8001,http://127.0.0.1:8001,http://localhost:5500,http://127.0.0.1:5500')))),
 
     'allowed_origins_patterns' => [],
 

@@ -30,3 +30,15 @@ pnpm-debug.log*
 *.log
 tmp/
 scratch/
+
+# Laravel generated/local files
+/vendor/
+/storage/*
+/bootstrap/cache/
+/.phpunit.result.cache
+
+# Local database
+/database/*.sqlite
+/database/*.sqlite-journal
+/database/*.sqlite-wal
+/database/*.sqlite-shm

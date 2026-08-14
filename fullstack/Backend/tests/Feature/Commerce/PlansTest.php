@@ -232,4 +232,33 @@ class PlansTest extends TestCase
             ->assertStatus(200)
             ->assertJsonPath('data', null);
     }
+
+    public function test_user_can_get_single_plan_by_id(): void
+    {
+        $user = $this->regularUser();
+        $plan = Plan::factory()->create(['name' => 'Pro Plan', 'is_active' => true]);
+
+        $response = $this->actingAs($user, 'api')->getJson("/api/plans/{$plan->id}");
+
+        $response->assertStatus(200)
+            ->assertJson(['success' => true])
+            ->assertJsonPath('data.id', $plan->id)
+            ->assertJsonPath('data.name', 'Pro Plan');
+    }
+
+    public function test_cannot_get_inactive_plan_by_id(): void
+    {
+        $user = $this->regularUser();
+        $plan = Plan::factory()->create(['name' => 'Deprecated Plan', 'is_active' => false]);
+
+        $this->actingAs($user, 'api')->getJson("/api/plans/{$plan->id}")
+            ->assertStatus(404);
+    }
+
+    public function test_single_plan_requires_auth(): void
+    {
+        $plan = Plan::factory()->create(['is_active' => true]);
+
+        $this->getJson("/api/plans/{$plan->id}")->assertStatus(401);
+    }
 }

@@ -21,6 +21,11 @@ class PlanService
         return $this->planRepository->getAllPlans();
     }
 
+    public function getPlan(int $id)
+    {
+        return $this->planRepository->findPlan($id);
+    }
+
     public function setPlans(array $plans)
     {
         return $this->planRepository->upsertPlans($plans);

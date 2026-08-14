@@ -31,6 +31,13 @@ class PlanController extends Controller
         return ApiResponse::success($this->planService->getAllPlans(), 'Plans retrieved successfully');
     }
 
+    public function show(int $id): JsonResponse
+    {
+        $plan = $this->planService->getPlan($id);
+
+        return ApiResponse::success($plan, 'Plan retrieved successfully');
+    }
+
     public function subscribe(SubscribePlanRequest $request): JsonResponse
     {
         $subscription = $this->planService->subscribe(

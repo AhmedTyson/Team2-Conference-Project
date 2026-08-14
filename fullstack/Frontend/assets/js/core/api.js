@@ -181,7 +181,7 @@
           return { ok: false, status: 401, body: body };
         }
       } else {
-        if (It.session && typeof It.session.clearSession === "function") {
+        if (!opts.skipAuthRedirect && It.session && typeof It.session.clearSession === "function") {
           It.session.clearSession();
           It.session.redirectToLogin();
         }

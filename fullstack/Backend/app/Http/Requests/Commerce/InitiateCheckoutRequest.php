@@ -26,7 +26,7 @@ class InitiateCheckoutRequest extends FormRequest
         return [
             'type' => 'required|in:trip_package,trip_fork,subscription',
             'trip_id' => 'required_if:type,trip_package,trip_fork|integer|exists:trips,id',
-            'plan_id' => 'required_if:type,subscription|integer|exists:plans,id',
+            'plan_id' => 'required_if:type,subscription|integer|exists:plans,id,is_active,1',
             'idempotency_key' => 'nullable|string|max:64',
             'billing' => 'nullable|array',
             'billing.first_name' => 'nullable|string',
