@@ -86,6 +86,75 @@ class PaymentFlowTest extends TestCase
         ]);
     }
 
+    public function test_user_can_initiate_subscription_checkout()
+    {
+        $user = User::factory()->create();
+        $plan = Plan::create([
+            'name' => 'Pro Plan',
+            'price_cents' => 19900,
+            'currency' => 'EGP',
+            'billing_cycle' => 'monthly',
+            'ai_quota_monthly' => 50,
+            'is_active' => true,
+        ]);
+
+        $response = $this->actingAs($user, 'api')->postJson('/api/checkout/initiate', [
+            'type' => 'subscription',
+            'plan_id' => $plan->id,
+            'billing' => [
+                'first_name' => 'John',
+                'last_name' => 'Doe',
+                'email' => 'john@example.com',
+                'phone_number' => '01012345678',
+            ],
+        ]);
+
+        $response->assertStatus(200)
+            ->assertJsonStructure(['success', 'data' => ['order_id', 'client_secret', 'checkout_url']]);
+
+        $orderId = $response->json('data.order_id');
+
+        $this->assertDatabaseHas('orders', [
+            'id' => $orderId,
+            'user_id' => $user->id,
+            'total_cents' => 19900,
+            'status' => OrderStatus::PENDING->value,
+        ]);
+
+        $this->assertDatabaseHas('order_items', [
+            'order_id' => $orderId,
+            'product_type' => 'plan',
+            'product_id' => $plan->id,
+            'price_cents' => 19900,
+        ]);
+
+        $this->assertDatabaseHas('payments', [
+            'order_id' => $orderId,
+            'amount_cents' => 19900,
+            'status' => PaymentStatus::PENDING->value,
+        ]);
+    }
+
+    public function test_subscription_checkout_rejects_inactive_plan()
+    {
+        $user = User::factory()->create();
+        $plan = Plan::create([
+            'name' => 'Old Inactive Plan',
+            'price_cents' => 19900,
+            'currency' => 'EGP',
+            'billing_cycle' => 'monthly',
+            'ai_quota_monthly' => 50,
+            'is_active' => false,
+        ]);
+
+        $response = $this->actingAs($user, 'api')->postJson('/api/checkout/initiate', [
+            'type' => 'subscription',
+            'plan_id' => $plan->id,
+        ]);
+
+        $response->assertStatus(422);
+    }
+
     public function test_successful_webhook_fulfills_trip_fork()
     {
         Mail::fake();

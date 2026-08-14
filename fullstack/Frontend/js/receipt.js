@@ -1,18 +1,17 @@
 /**
- * receipt.js — order receipt (receipt.html).
+ * receipt.js — Order Receipt & Subscription Verification Controller (receipt.html).
  *
- * Confirmation arrives asynchronously: Paymob redirects to the API callback
- * (`/api/v1/paymob/callback`) and the webhook fulfils the order, creating the
- * active subscription. This page polls GET /v1/me/subscription until the
- * purchased plan shows up, then renders the receipt from live data.
- *
- * Context (order_id, plan, amount) comes from sessionStorage set by
- * checkout.js, or from the `?order=` query param.
+ * Flow:
+ *   1. Paymob redirects to API / frontend with transaction parameters, or user lands after checkout.
+ *   2. Checks session. If guest, prompts login.
+ *   3. If URL indicates failure (?success=false or ?cancelled=true), renders failed/cancelled state.
+ *   4. Otherwise, polls GET /api/me/subscription to verify active status.
+ *   5. Renders verified Paid receipt with subscription ID, reference, plan, dates, and print option.
  */
-(function () {
+(function (global) {
   "use strict";
 
-  const It = window.Itinari;
+  const It = global.Itinari || (global.Itinari = {});
   const PC = It && It.plansCore;
   if (!PC) return;
 
@@ -24,12 +23,16 @@
   try {
     ctx = JSON.parse(sessionStorage.getItem(ORDER_KEY) || "null");
   } catch (e) { ctx = null; }
-  const queryOrder = params.get("order");
-  if (queryOrder && (!ctx || ctx.order_id === null)) {
+
+  const queryOrder = params.get("order") || params.get("merchant_order_id") || params.get("reference");
+  if (queryOrder && (!ctx || !ctx.order_id)) {
     ctx = Object.assign({}, ctx || {}, { order_id: queryOrder });
   }
 
-  const MAX_ATTEMPTS = 12;
+  const isFailedParam = params.get("success") === "false" || params.get("status") === "failed";
+  const isCancelledParam = params.get("cancelled") === "true" || params.get("status") === "cancelled";
+
+  const MAX_ATTEMPTS = 15;
   const POLL_MS = 2500;
 
   function escapeHtml(s) {
@@ -45,25 +48,48 @@
   }
 
   function emptyState(icon, title, sub) {
-    root.innerHTML =
-      '<div class="glass-card p-6 receipt-card"><div class="empty-state">' +
-      '<i class="fas ' + icon + '" aria-hidden="true"></i>' +
-      '<h3 class="mt-4 text-lg font-bold">' + escapeHtml(title) + "</h3>" +
-      (sub ? '<p class="mt-2 text-white/45 text-sm">' + escapeHtml(sub) + "</p>" : "") +
-      "</div></div>";
+    return (
+      '<div class="glass-card p-8 receipt-card text-center">' +
+      '<i class="fas ' + icon + ' text-4xl text-white/30 mb-4" aria-hidden="true"></i>' +
+      '<h3 class="text-xl font-bold text-white">' + escapeHtml(title) + "</h3>" +
+      (sub ? '<p class="mt-2 text-white/50 text-sm max-w-md mx-auto">' + escapeHtml(sub) + "</p>" : "") +
+      "</div>"
+    );
   }
 
   function gate() {
-    emptyState("fa-lock", "Sign in to view your receipt", "Log in to see the subscription linked to your account.");
-    root.insertAdjacentHTML(
-      "beforeend",
+    root.innerHTML =
+      emptyState("fa-lock text-amber-400", "Sign in to view your receipt", "Please sign in to see the subscription status linked to your account.") +
       '<div class="mt-6 flex items-center justify-center gap-4 flex-wrap">' +
-      '<button type="button" class="btn-primary" id="gateLogin"><i class="fas fa-sign-in-alt" aria-hidden="true"></i>Log in</button>' +
-      "</div>"
-    );
-    document.getElementById("gateLogin").addEventListener("click", function () {
-      global.openAuthModal("login", "Sign in to view your receipt.");
-    });
+      '<button type="button" class="btn-primary" id="gateLogin"><i class="fas fa-sign-in-alt mr-2" aria-hidden="true"></i>Log in</button>' +
+      '</div>';
+
+    const loginBtn = document.getElementById("gateLogin");
+    if (loginBtn) {
+      loginBtn.addEventListener("click", function () {
+        if (typeof global.openAuthModal === "function") {
+          global.openAuthModal("login", "Sign in to view your receipt.");
+        }
+      });
+    }
+  }
+
+  function renderFailed(isCancelled) {
+    const title = isCancelled ? "Payment Cancelled" : "Payment Unsuccessful";
+    const desc = isCancelled
+      ? "Your transaction was cancelled. No charges were made to your account."
+      : "The payment could not be completed by Paymob. Please check your payment details or try another card.";
+
+    root.innerHTML =
+      '<div class="glass-card p-8 receipt-card text-center">' +
+      '<div class="w-16 h-16 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center text-2xl mx-auto mb-4"><i class="fas fa-xmark"></i></div>' +
+      '<h3 class="text-2xl font-bold text-white">' + escapeHtml(title) + '</h3>' +
+      '<p class="text-sm text-white/50 mt-2 max-w-md mx-auto">' + escapeHtml(desc) + '</p>' +
+      '<div class="flex items-center justify-center gap-4 flex-wrap mt-8">' +
+      '<a href="../plans.html" class="btn-primary"><i class="fas fa-rotate-right mr-2"></i>Choose a Plan</a>' +
+      '<a href="dashboard.html" class="btn-outline">Go to Dashboard</a>' +
+      '</div>' +
+      '</div>';
   }
 
   function renderSuccess(sub) {
@@ -75,50 +101,59 @@
 
     root.innerHTML =
       '<div class="glass-card p-8 receipt-card">' +
-      '<div class="receipt-stamp mb-6"><i class="fas fa-check" aria-hidden="true"></i>PAID</div>' +
+      '<div class="receipt-stamp mb-6"><i class="fas fa-check mb-1" aria-hidden="true"></i>PAID</div>' +
       '<div class="text-center mb-6">' +
-      '<h3 class="text-2xl font-bold text-white">' + escapeHtml(plan.name || (ctx && ctx.plan_name) || "Plan") + " subscription</h3>" +
-      '<p class="text-white/45 text-sm mt-1">Thank you — your subscription is active.</p>' +
+      '<h3 class="text-2xl font-black text-white">' + escapeHtml(plan.name || (ctx && ctx.plan_name) || "Membership") + " Subscription</h3>" +
+      '<p class="text-emerald-400 text-sm font-semibold mt-1 flex items-center justify-center gap-1.5"><i class="fas fa-circle-check"></i> Active & Verified</p>' +
       "</div>" +
-      '<div class="border-t border-b border-dashed border-white/15 py-2">' +
+      '<div class="border-t border-b border-dashed border-white/15 py-3 space-y-1">' +
       '<div class="receipt-row"><span>Subscription ID</span><span class="val">#' + escapeHtml(String(sub.id != null ? sub.id : "—")) + "</span></div>" +
-      '<div class="receipt-row"><span>Order reference</span><span class="val">#' + escapeHtml(String(sub.provider_ref || (ctx && ctx.order_id) || "—")) + "</span></div>" +
-      '<div class="receipt-row"><span>Status</span><span class="val text-green-400">' + escapeHtml(String(sub.status || "active")) + "</span></div>" +
-      '<div class="receipt-row"><span>Amount</span><span class="val">' + escapeHtml(amount) + "</span></div>" +
-      '<div class="receipt-row"><span>Billing cycle</span><span class="val">' + escapeHtml(cycle) + "</span></div>" +
-      '<div class="receipt-row"><span>Started</span><span class="val">' + escapeHtml(fmtDate(sub.started_at)) + "</span></div>" +
-      '<div class="receipt-row"><span>Renews on</span><span class="val">' + escapeHtml(fmtDate(sub.renews_at)) + "</span></div>" +
+      '<div class="receipt-row"><span>Payment Reference</span><span class="val font-mono text-xs">#' + escapeHtml(String(sub.provider_ref || (ctx && ctx.order_id) || "—")) + "</span></div>" +
+      '<div class="receipt-row"><span>Status</span><span class="val text-emerald-400 font-bold uppercase tracking-wider text-xs">Active</span></div>' +
+      '<div class="receipt-row"><span>Amount</span><span class="val text-amber-400 font-bold">' + escapeHtml(amount) + "</span></div>" +
+      '<div class="receipt-row"><span>Billing Frequency</span><span class="val capitalize">' + escapeHtml(cycle) + "</span></div>" +
+      '<div class="receipt-row"><span>Activated On</span><span class="val">' + escapeHtml(fmtDate(sub.started_at)) + "</span></div>" +
+      '<div class="receipt-row"><span>Next Renewal</span><span class="val">' + escapeHtml(fmtDate(sub.renews_at)) + "</span></div>" +
+      '<div class="receipt-row"><span>Monthly AI Quota</span><span class="val text-amber-400 font-bold">' + (plan.ai_quota_monthly || 0) + ' generations</span></div>' +
       "</div>" +
-      '<div class="flex items-center justify-center gap-4 flex-wrap mt-6 no-print">' +
-      '<a href="dashboard.html" class="btn-primary"><i class="fas fa-tachometer-alt" aria-hidden="true"></i>Go to dashboard</a>' +
-      '<button type="button" class="btn-outline" id="printBtn"><i class="fas fa-print" aria-hidden="true"></i>Print receipt</button>' +
-      '<a href="contact.html" class="btn-outline"><i class="fas fa-envelope" aria-hidden="true"></i>Questions?</a>' +
+      '<div class="flex items-center justify-center gap-4 flex-wrap mt-8 no-print">' +
+      '<a href="dashboard.html" class="btn-primary"><i class="fas fa-tachometer-alt mr-2" aria-hidden="true"></i>Go to Dashboard</a>' +
+      '<button type="button" class="btn-outline" id="printBtn"><i class="fas fa-print mr-2" aria-hidden="true"></i>Print Receipt</button>' +
+      '<a href="../contact.html" class="btn-outline"><i class="fas fa-envelope mr-2" aria-hidden="true"></i>Support</a>' +
       "</div>" +
       "</div>";
+
+    const printBtn = document.getElementById("printBtn");
+    if (printBtn) {
+      printBtn.addEventListener("click", function () {
+        window.print();
+      });
+    }
   }
 
   function renderPending() {
     root.innerHTML =
-      '<div class="glass-card p-8 receipt-card">' +
-      '<div class="text-center">' +
-      '<span class="pulse-dot"></span>' +
-      '<h3 class="mt-4 text-lg font-bold text-white">Waiting for payment confirmation…</h3>' +
-      '<p class="text-white/45 text-sm mt-2 max-w-sm mx-auto">Your payment page may still be open, or the bank is confirming the transaction. This receipt refreshes automatically.</p>' +
-      '<div class="receipt-row mt-6"><span>Plan</span><span class="val">' + escapeHtml((ctx && ctx.plan_name) || "—") + "</span></div>" +
-      '<div class="receipt-row"><span>Amount</span><span class="val">' + escapeHtml((ctx && ctx.amount) || "—") + "</span></div>" +
-      '<div class="receipt-row"><span>Order reference</span><span class="val">#' + escapeHtml((ctx && ctx.order_id) || "—") + "</span></div>" +
-      "</div>" +
+      '<div class="glass-card p-8 receipt-card text-center">' +
+      '<div class="mb-4"><span class="pulse-dot"></span></div>' +
+      '<h3 class="text-xl font-bold text-white">Verifying payment confirmation…</h3>' +
+      '<p class="text-white/50 text-sm mt-2 max-w-md mx-auto">Paymob is confirming your payment. Entitlements and AI quota are provisioned the moment payment is verified. This page refreshes automatically.</p>' +
+      '<div class="border-t border-dashed border-white/15 my-6 pt-4 text-left">' +
+      (ctx && ctx.plan_name ? '<div class="receipt-row"><span>Plan</span><span class="val">' + escapeHtml(ctx.plan_name) + '</span></div>' : '') +
+      (ctx && ctx.amount ? '<div class="receipt-row"><span>Amount</span><span class="val text-amber-400">' + escapeHtml(ctx.amount) + '</span></div>' : '') +
+      (ctx && ctx.order_id ? '<div class="receipt-row"><span>Order reference</span><span class="val font-mono text-xs">#' + escapeHtml(ctx.order_id) + '</span></div>' : '') +
+      '</div>' +
       '<div class="flex items-center justify-center gap-4 flex-wrap mt-6">' +
-      '<button type="button" class="btn-outline" id="retryBtn"><i class="fas fa-sync-alt" aria-hidden="true"></i>Check again</button>' +
-      '<a href="dashboard.html" class="btn-primary"><i class="fas fa-tachometer-alt" aria-hidden="true"></i>Go to dashboard</a>' +
-      "</div>" +
-      "</div>";
+      '<button type="button" class="btn-outline" id="retryPollBtn"><i class="fas fa-sync-alt mr-2" aria-hidden="true"></i>Check Status Now</button>' +
+      '<a href="dashboard.html" class="btn-primary">Go to Dashboard</a>' +
+      '</div>' +
+      '</div>';
 
-    const retry = document.getElementById("retryBtn");
-    if (retry) retry.addEventListener("click", function () { boot(); });
-
-    const printBtn = document.getElementById("printBtn");
-    if (printBtn) printBtn.addEventListener("click", function () { window.print(); });
+    const retryBtn = document.getElementById("retryPollBtn");
+    if (retryBtn) {
+      retryBtn.addEventListener("click", function () {
+        poll(1);
+      });
+    }
   }
 
   function matchesCtx(sub) {
@@ -137,11 +172,15 @@
       return;
     }
 
-    const sub = await PC.fetchSubscription();
-    if (sub && matchesCtx(sub)) {
-      try { sessionStorage.removeItem(ORDER_KEY); } catch (e) { /* private mode */ }
-      renderSuccess(sub);
-      return;
+    try {
+      const sub = await PC.fetchSubscription();
+      if (sub && sub.status === "active") {
+        try { sessionStorage.removeItem(ORDER_KEY); } catch (e) {}
+        renderSuccess(sub);
+        return;
+      }
+    } catch (e) {
+      console.warn("Poll subscription error:", e);
     }
 
     if (attempt >= MAX_ATTEMPTS) {
@@ -149,22 +188,33 @@
       return;
     }
 
-    setTimeout(function () { poll(attempt + 1); }, POLL_MS);
+    setTimeout(function () {
+      poll(attempt + 1);
+    }, POLL_MS);
   }
 
   function boot() {
+    if (isFailedParam || isCancelledParam) {
+      renderFailed(isCancelledParam);
+      return;
+    }
+
     if (!PC.isMember()) {
       gate();
       return;
     }
+
     renderPending();
     poll(1);
   }
 
-  // Guest logs in through the modal → start polling immediately.
   document.addEventListener("itinera:auth", function () {
     if (PC.isMember()) boot();
   });
 
+  document.addEventListener("DOMContentLoaded", function () {
+    boot();
+  });
+
   boot();
-})();
+})(window);
