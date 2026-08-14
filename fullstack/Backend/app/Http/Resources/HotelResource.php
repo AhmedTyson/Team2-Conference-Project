@@ -25,8 +25,15 @@ class HotelResource extends JsonResource
             'image' => $this->image,
             'destination_id' => $this->destination_id,
             'destination' => $this->whenLoaded('destination'),
+            'reviews_count' => $this->when(! is_null($this->reviews_count), fn () => $this->reviews_count),
+            'reviews' => $this->when(! is_null($this->reviews_count), fn () => $this->formatReviews((int) $this->reviews_count)),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
+    }
+
+    private function formatReviews(int $n): string
+    {
+        return $n >= 1000 ? round($n / 1000, 1) . 'K' : (string) $n;
     }
 }

@@ -11,6 +11,8 @@ interface FlightRepositoryInterface
 
     public function getForPublic(): Collection;
 
+    public function countAll(): int;
+
     public function findById($id): Flight;
 
     public function create(array $data): Flight;

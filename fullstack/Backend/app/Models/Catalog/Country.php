@@ -4,6 +4,7 @@ namespace App\Models\Catalog;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -12,7 +13,7 @@ class Country extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'name', 'iso_code', 'capital', 'flag_url', 'currency', 'languages',
+        'region_id', 'name', 'iso_code', 'capital', 'flag_url', 'currency', 'languages',
     ];
 
     protected function casts(): array
@@ -20,6 +21,11 @@ class Country extends Model
         return [
             'languages' => 'array',
         ];
+    }
+
+    public function region(): BelongsTo
+    {
+        return $this->belongsTo(Region::class);
     }
 
     public function destinations(): HasMany

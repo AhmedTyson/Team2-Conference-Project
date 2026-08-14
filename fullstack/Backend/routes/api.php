@@ -16,7 +16,9 @@ use App\Http\Controllers\Catalog\CategoryController;
 use App\Http\Controllers\Catalog\DestinationController;
 use App\Http\Controllers\Catalog\FlightController;
 use App\Http\Controllers\Catalog\HotelController;
+use App\Http\Controllers\Catalog\RegionController;
 use App\Http\Controllers\Catalog\RestaurantController;
+use App\Http\Controllers\Catalog\StatsController;
 use App\Http\Controllers\Commerce\AdminAgencyController;
 // Commerce
 use App\Http\Controllers\Commerce\AdminAnalyticsController;
@@ -100,10 +102,18 @@ Route::group([], function () {
     // Destinations
     Route::get('/destinations', [DestinationController::class, 'index']);
     Route::get('/destinations/{id}', [DestinationController::class, 'show']);
+    Route::get('/destinations/{destination}/hotels', [HotelController::class, 'byDestination']);
 
     // Hotels
     Route::get('/hotels', [HotelController::class, 'index']);
     Route::get('/hotels/{id}', [HotelController::class, 'show']);
+    Route::get('/hotels/{hotel}/reviews', [HotelController::class, 'reviews']);
+
+    // Regions
+    Route::get('/regions', [RegionController::class, 'index']);
+
+    // Stats
+    Route::get('/stats/summary', [StatsController::class, 'summary']);
 
     // Flights
     Route::get('/flights', [FlightController::class, 'index']);
@@ -119,6 +129,24 @@ Route::group([], function () {
 
     // Public site settings (cached, no auth)
     Route::get('/site-settings', [SiteSettingsController::class, 'index'])->name('site-settings.index');
+});
+
+// ---- Itinera Tour Booking (authenticated)
+Route::middleware(['auth:api'])->group(function () {
+    Route::post('/destinations/{destination}/book', [DestinationController::class, 'book']);
+});
+
+// ---- V1 Compatibility Aliases
+Route::prefix('v1')->group(function () {
+    Route::get('/destinations', [DestinationController::class, 'index']);
+    Route::get('/destinations/{id}', [DestinationController::class, 'show']);
+    Route::get('/destinations/{destination}/hotels', [HotelController::class, 'byDestination']);
+    Route::get('/hotels', [HotelController::class, 'index']);
+    Route::get('/hotels/{id}', [HotelController::class, 'show']);
+    Route::get('/hotels/{hotel}/reviews', [HotelController::class, 'reviews']);
+    Route::get('/regions', [RegionController::class, 'index']);
+    Route::get('/stats/summary', [StatsController::class, 'summary']);
+    Route::middleware(['auth:api'])->post('/destinations/{destination}/book', [DestinationController::class, 'book']);
 });
 
 // ---- Admin CRUD

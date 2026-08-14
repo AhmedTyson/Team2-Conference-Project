@@ -18,6 +18,11 @@ class FlightRepository implements FlightRepositoryInterface
         return Flight::all();
     }
 
+    public function countAll(): int
+    {
+        return Flight::count();
+    }
+
     public function findById($id): Flight
     {
         return Flight::findOrFail($id);

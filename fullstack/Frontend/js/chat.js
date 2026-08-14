@@ -22,10 +22,11 @@
 
   const apiBase = It.CONFIG.apiBase; // e.g. http://127.0.0.1:8000/api
   const ROUTES = {
-    generate: "/review",
-    review: function (id) { return "/review/" + encodeURIComponent(id); },
-    trips: "/v1/dashboard/trips",
-    destinations: "/v1/destinations",
+    generate: "/ai/generate",
+    enhance: "/ai/enhance",
+    review: function (id) { return "/ai/review/" + encodeURIComponent(id); },
+    trips: "/dashboard/trips",
+    destinations: "/destinations",
   };
 
   const TRAVEL_STYLES = ["adventure", "cultural", "relaxation", "business", "family", "solo", "culinary", "nature"];

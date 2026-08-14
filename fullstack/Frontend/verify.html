@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Verify your email · Itinari</title>
+  <title>Verify your email · Itinera</title>
   <link rel="stylesheet" href="assets/css/auth.css" />
-  <script>
-    (function () {
-      var theme = localStorage.getItem("itinari_theme") || "system";
-      var isDark = theme === "dark" || (theme === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
-      if (isDark) document.documentElement.classList.add("dark");
+  <script>/* FOUC prevention — default dark */
+    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+    if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
+      document.documentElement.classList.add("dark","fouc-ready");
+    else document.documentElement.classList.add("fouc-ready");
     })();
   </script>
 </head>
-<body data-page="verify">
+<body data-page="verify" data-layout="public">
   <main class="auth-shell">
     <section class="auth-visual">
       <div class="auth-slides">
@@ -21,24 +21,24 @@
         <div class="auth-slide" style="background-image: url('assets/img/slide2.png');"></div>
         <div class="auth-slide" style="background-image: url('assets/img/slide3.png');"></div>
       </div>
-      <div class="brand">Itinari</div>
+      <div class="brand">Itinera</div>
       <div>
         <h1>One last step.</h1>
-        <p>Confirm your email to unlock the full itinerary experience.</p>
+        <p>Confirm your email to unlock the full travel and itinerary experience.</p>
       </div>
     </section>
 
     <section class="auth-form-side">
       <div class="auth-card">
         <h2>Check your inbox</h2>
-        <p class="sub">We sent a verification link to the address below. Follow it to activate your account.</p>
+        <p class="sub">We sent a verification link to your email address. Follow it to activate your account.</p>
 
         <input type="hidden" id="v-email-src" />
 
-        <div class="auth-links">
+        <div style="margin-top: 1.5rem;">
           <button type="button" id="v-resend" class="btn-primary">
             <span class="spinner"></span>
-            <span class="btn-label">Resend email</span>
+            <span class="btn-label">Resend verification email</span>
           </button>
         </div>
 
@@ -60,5 +60,7 @@
   <script src="assets/js/animations.js"></script>
   <script src="assets/js/session.js"></script>
   <script src="assets/js/auth.js"></script>
+  <script src="assets/js/core/topbar.js"></script>
+  <script src="assets/js/core/theme.js"></script>
 </body>
 </html>

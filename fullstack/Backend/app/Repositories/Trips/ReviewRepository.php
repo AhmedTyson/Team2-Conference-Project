@@ -2,9 +2,11 @@
 
 namespace App\Repositories\Trips;
 
+use App\Enums\ReviewStatus;
 use App\Interfaces\Trips\ReviewRepositoryInterface;
 use App\Models\Trips\Review;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 
 class ReviewRepository implements ReviewRepositoryInterface
 {
@@ -14,6 +16,22 @@ class ReviewRepository implements ReviewRepositoryInterface
             ->when($trashed, fn ($q) => $q->onlyTrashed())
             ->latest()
             ->get();
+    }
+
+    public function approvedForReviewable(Model $model): Collection
+    {
+        return Review::query()
+            ->where('reviewable_type', $model->getMorphClass())
+            ->where('reviewable_id', $model->getKey())
+            ->where('status', ReviewStatus::APPROVED->value)
+            ->with('user')
+            ->latest()
+            ->get();
+    }
+
+    public function countApproved(): int
+    {
+        return Review::where('status', ReviewStatus::APPROVED->value)->count();
     }
 
     public function findById($id): Review

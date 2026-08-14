@@ -9,6 +9,8 @@ interface TripRepositoryInterface
 {
     public function getForAdmin(bool $trashed = false): Collection;
 
+    public function countAll(): int;
+
     public function findById($id): Trip;
 
     public function create(array $data): Trip;

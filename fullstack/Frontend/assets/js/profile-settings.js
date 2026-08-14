@@ -93,7 +93,7 @@
         formData.append("profile_image", state.avatarFile);
         formData.append("_method", "PATCH");
         var token = It.readToken();
-        request = fetch(It.CONFIG.apiBase + "/v1/profile", {
+        request = fetch(It.CONFIG.apiBase + "/profile", {
           method: "POST",
           headers: token ? { Authorization: "Bearer " + token } : {},
           body: formData
@@ -108,13 +108,17 @@
           payload.password = password;
           payload.password_confirmation = confirmInput.value;
         }
-        request = It.apiPatch("/v1/profile", payload, { auth: true });
+        request = It.apiPatch("/profile", payload, { auth: true });
       }
 
       request.then(function (res) {
         if (res.ok) {
+          var updatedUser = (res.body && res.body.data && res.body.data.user) || (res.body && res.body.user) || null;
+          if (updatedUser) {
+            try { localStorage.setItem("itinari_user", JSON.stringify(updatedUser)); } catch (e) {}
+          }
           It.app.showToast("Profile updated.", "success");
-          global.location.reload();
+          setTimeout(function () { global.location.reload(); }, 600);
         } else {
           var body = res.body || {};
           var anyField = false;

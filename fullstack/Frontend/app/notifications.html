@@ -1,0 +1,100 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notifications · Travel Planner</title>
+  <link rel="stylesheet" href="../assets/css/tokens.css" />
+  <link rel="stylesheet" href="../assets/css/app.css" />
+  <style>
+    .notification-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--sp-4);
+      padding: var(--sp-5);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      margin-bottom: var(--sp-3);
+      transition: all 0.3s ease;
+    }
+    .notification-item.unread {
+      background: var(--surface-2);
+      border-left: 4px solid var(--primary);
+    }
+    .notification-icon {
+      font-size: 24px;
+      color: var(--primary);
+    }
+    .notification-content {
+      flex: 1;
+    }
+    .notification-title {
+      font-weight: 600;
+      margin-bottom: var(--sp-1);
+    }
+    .notification-text {
+      color: var(--text-muted);
+      font-size: var(--fs-sm);
+    }
+    .notification-time {
+      font-size: var(--fs-xs);
+      color: var(--text-faint);
+      margin-top: var(--sp-2);
+    }
+    .notification-actions {
+      display: flex;
+      gap: var(--sp-2);
+    }
+  </style>
+  <script>/* FOUC prevention — default dark */
+    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+    if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
+      document.documentElement.classList.add("dark","fouc-ready");
+    else document.documentElement.classList.add("fouc-ready");
+    })();
+  </script></head>
+<body data-page="notifications" class="is-booting" data-layout="app">
+  <div class="app">
+    <header class="app__header">
+      <a id="app-brand" class="app__brand" href="/home.html"></a>
+      <nav id="app-nav" class="nav" aria-label="Main navigation"></nav>
+      <div id="app-user" class="app__user">
+        <button id="theme-toggle" type="button" class="btn btn--ghost" aria-label="Toggle theme">◐</button>
+      </div>
+    </header>
+
+    <main class="app__main">
+      <div class="page container" style="max-width: 800px; margin-top: var(--sp-10);">
+        <header class="page-header" style="display: flex; justify-content: space-between; align-items: flex-end;">
+          <div>
+            <p class="page-header__eyebrow">Inbox</p>
+            <h1 class="page-header__title">Notifications</h1>
+          </div>
+          <button id="mark-all-read" class="btn btn--ghost" style="font-size: var(--fs-sm);">Mark all as read</button>
+        </header>
+
+        <div id="notifications-list">
+          <div class="skeleton" style="height: 100px; margin-bottom: var(--sp-3); border-radius: var(--radius-lg);"></div>
+          <div class="skeleton" style="height: 100px; margin-bottom: var(--sp-3); border-radius: var(--radius-lg);"></div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="app__footer">
+      <span>Travel Planner</span>
+      <span>•</span>
+      <span>Plan. Explore. Remember.</span>
+    </footer>
+  </div>
+
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/session.js"></script>
+  <script src="../assets/js/nav-config.js"></script>
+  <script src="../assets/js/app-shell.js"></script>
+  <script src="../assets/js/notifications.js"></script>
+  <script src="../assets/js/core/topbar.js"></script>
+  <script src="../assets/js/core/theme.js"></script>
+</body>
+</html>

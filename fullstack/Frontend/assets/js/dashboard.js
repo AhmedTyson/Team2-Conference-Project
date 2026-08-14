@@ -877,26 +877,12 @@
   }
 
   function initTheme() {
-    const btn = el("theme-toggle");
-    if (!btn) return;
-    const sun = btn.querySelector(".icon-sun");
-    const moon = btn.querySelector(".icon-moon");
-
-    let dark = false;
-    try { dark = global.localStorage.getItem("theme") === "dark"; } catch (e) {}
-
-    function setDark(val) {
-      dark = val;
-      document.documentElement.classList.toggle("dark", dark);
-      if (sun) sun.style.display = dark ? "none" : "block";
-      if (moon) moon.style.display = dark ? "block" : "none";
-      btn.setAttribute("aria-pressed", String(dark));
-      try { global.localStorage.setItem("theme", dark ? "dark" : "light"); } catch (e) {}
+    /* Delegate entirely to core/theme.js (ItTheme) — no duplicate logic here. */
+    if (global.ItTheme) {
+      global.ItTheme.set(global.ItTheme.mode());
     }
-
-    setDark(dark);
-    btn.addEventListener("click", function () { setDark(!dark); });
   }
+
 
   document.addEventListener("DOMContentLoaded", function () {
     const btn = el("logout-btn");

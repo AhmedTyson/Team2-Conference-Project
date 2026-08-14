@@ -93,6 +93,7 @@ class DatabaseSeeder extends Seeder
         // 4. Run ONLY the assigned seeders
         $this->call([
             CountrySeeder::class,
+            RegionSeeder::class,
             DestinationSeeder::class,
             CategorySeeder::class,
             HotelSeeder::class,

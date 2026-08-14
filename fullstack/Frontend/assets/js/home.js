@@ -81,6 +81,19 @@
       if (eyebrow && data.site_name) eyebrow.textContent = data.site_name;
     }).catch(function () { /* ignore */ });
 
+    It.apiGet("/v1/stats/summary").then(function (res) {
+      var stats = It.app.unwrapData(res);
+      if (!stats) return;
+      var sh = el("stat-hotels");
+      var st = el("stat-tours");
+      var sf = el("stat-flights");
+      var sr = el("stat-reviews");
+      if (sh && stats.hotels != null) sh.textContent = Number(stats.hotels).toLocaleString();
+      if (st && stats.tours != null) st.textContent = Number(stats.tours).toLocaleString();
+      if (sf && stats.flights != null) sf.textContent = Number(stats.flights).toLocaleString();
+      if (sr && stats.reviews != null) sr.textContent = String(stats.reviews);
+    }).catch(function () { /* ignore */ });
+
     if (user) {
       It.apiGet("/v1/dashboard", { auth: true }).then(function (res) {
         var data = It.app.unwrapData(res);

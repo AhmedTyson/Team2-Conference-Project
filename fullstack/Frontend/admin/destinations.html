@@ -1,12 +1,18 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Destinations · Itinari Admin</title>
   <link rel="stylesheet" href="../assets/css/admin.css?v=15" />
-</head>
-<body data-page="admin" data-module="destinations">
+  <script>/* FOUC prevention — default dark */
+    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+    if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
+      document.documentElement.classList.add("dark","fouc-ready");
+    else document.documentElement.classList.add("fouc-ready");
+    })();
+  </script></head>
+<body data-page="admin" data-module="destinations" data-layout="admin">
   <a href="#main" class="skip-link">Skip to main content</a>
   <div class="shell">
     <aside class="sidebar">
@@ -63,5 +69,7 @@
   <script src="../assets/js/nav-config.js"></script>
   <script src="../assets/js/admin-chrome.js?v=12"></script>
   <script src="../assets/js/admin-crud.js?v=12"></script>
+  <script src="../assets/js/core/topbar.js"></script>
+  <script src="../assets/js/core/theme.js"></script>
 </body>
 </html>

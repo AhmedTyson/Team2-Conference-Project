@@ -1,3 +1,4 @@
+@import url("tokens.css");
 @import "auth.css?v=2";
 
 /* ---------- shell layout ---------- */
@@ -8,45 +9,45 @@ body[data-page="admin"], body[data-page="agency"] {
   place-items: unset;
   background-color: hsl(var(--muted) / 0.25); /* Subtle page background tint for premium contrast */
 
-  /* Scope the gorgeous blue palette to the admin pages (Light Mode) */
-  --primary: 218 70% 20%;              /* Navy (#0F2854) */
-  --primary-foreground: 194 77% 96%;   /* Soft Ice Blue text */
+  /* Basecoat UI / shadcn tokens for admin pages (Light Mode) */
+  --primary: 24 10% 12%;               /* Deep warm charcoal (#1f1d1b) */
+  --primary-foreground: 60 5% 98%;     /* Warm stone text */
   
-  --secondary: 194 77% 85%;            /* Ice Blue (#BDE8F5) */
-  --secondary-foreground: 218 70% 20%; /* Navy on Ice Blue */
+  --secondary: 240 5% 96%;             /* Light neutral surface (#f4f4f5) */
+  --secondary-foreground: 24 10% 12%;  /* Charcoal text on secondary */
   
-  --accent: 194 77% 93%;               /* Ice Blue hover tint */
-  --accent-foreground: 214 67% 33%;    /* Royal Blue on hover */
+  --accent: 240 5% 92%;                /* Neutral hover tint */
+  --accent-foreground: 24 10% 12%;
   
-  --border: 210 30% 88%;               /* Soft slate-blue tinted border */
-  --input: 210 30% 88%;
+  --border: 240 6% 90%;                /* Soft zinc-200 border */
+  --input: 240 6% 90%;
   
-  --muted-foreground: 210 20% 45%;     /* Muted slate blue text */
-  --ring: 214 67% 33%;                 /* Royal Blue (#1C4D8D) */
+  --muted-foreground: 240 4% 46%;      /* Muted zinc text */
+  --ring: 24 10% 12%;
 }
 
-/* Dark Mode Overrides for the Blue Palette */
+/* Dark Mode Overrides (Comfortable Deep Obsidian & Zinc) */
 html.dark body[data-page="admin"], html.dark body[data-page="agency"] {
-  --background: 220 40% 6%;            /* Extremely deep navy background */
-  --foreground: 210 20% 98%;
-  --card: 220 35% 10%;                 /* Dark navy cards */
-  --card-foreground: 194 77% 95%;      /* Ice Blue tinted white */
+  --background: 0 0% 4%;               /* #0a0a0a deep obsidian canvas */
+  --foreground: 0 0% 96%;              /* #f4f4f5 crisp white text */
+  --card: 240 5% 7%;                   /* #121212 elevated card surface */
+  --card-foreground: 0 0% 96%;
   
-  --primary: 194 77% 85%;              /* Ice Blue as main accent (#BDE8F5) */
-  --primary-foreground: 218 70% 15%;   /* Navy text on Ice Blue background */
+  --primary: 0 0% 98%;                 /* Crisp primary accent */
+  --primary-foreground: 0 0% 9%;       /* Dark text on primary */
   
-  --secondary: 214 67% 20%;            /* Dark Royal Blue */
-  --secondary-foreground: 194 77% 95%;
+  --secondary: 240 4% 12%;             /* #1e1e24 dark secondary */
+  --secondary-foreground: 0 0% 96%;
   
-  --accent: 214 67% 18%;
-  --accent-foreground: 194 77% 85%;
+  --accent: 240 4% 16%;
+  --accent-foreground: 0 0% 96%;
   
-  --border: 218 35% 18%;               /* Deep blue border lines */
-  --input: 218 35% 18%;
+  --border: 240 4% 16%;                /* #27272a clean border */
+  --input: 240 4% 16%;
   
-  --muted: 218 30% 14%;
-  --muted-foreground: 210 20% 65%;
-  --ring: 194 77% 85%;
+  --muted: 240 4% 12%;
+  --muted-foreground: 240 5% 65%;      /* #a1a1aa clear muted text */
+  --ring: 0 0% 96%;
 }
 
 /* skip link accessibility styling */
@@ -1987,34 +1988,34 @@ body[data-page="admin"], body[data-page="agency"] {
   font-weight: 700;
 }
 
-/* Branded Navy-tinted shadows for cards and KPI blocks */
+/* Unified subtle shadows for cards and KPI blocks */
 .ticket, .kpi, .panel {
-  border: 1px solid hsl(var(--border) / 0.5);
-  box-shadow: 0 4px 12px -2px rgba(15, 40, 84, 0.03), 0 12px 24px -4px rgba(15, 40, 84, 0.05) !important;
+  border: 1px solid hsl(var(--border));
+  box-shadow: var(--shadow-sm);
   background-color: hsl(var(--card));
 }
 
 .kpi-ticket:hover, .ticket-panel:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 25px -5px rgba(15, 40, 84, 0.08), 0 20px 40px -10px rgba(15, 40, 84, 0.06) !important;
-  border-color: hsl(var(--secondary));
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: hsl(var(--border-strong, var(--border)));
 }
 
 /* Sidebar styling & active nav element */
 .sidebar {
-  background-color: #ffffff;
-  border-right: 1px solid rgba(15, 40, 84, 0.08);
+  background-color: hsl(var(--card));
+  border-right: 1px solid hsl(var(--border));
 }
 
 .nav-item.is-active {
-  background: hsl(var(--secondary)) !important; /* Solid Ice Blue background */
-  color: hsl(var(--primary)) !important;       /* Navy text color */
-  font-weight: 700;
-  box-shadow: inset 2px 0 0 hsl(var(--primary)); /* Left vertical border line */
+  background: hsl(var(--secondary)) !important;
+  color: hsl(var(--foreground)) !important;
+  font-weight: 600;
+  box-shadow: inset 2px 0 0 hsl(var(--primary));
 }
 
 .nav-item.is-active::before {
-  display: none; /* Hide old raw layout indicator */
+  display: none;
 }
 
 /* Polished Table Containers */
@@ -2029,10 +2030,10 @@ body[data-page="admin"], body[data-page="agency"] {
 }
 
 .kit-table thead th {
-  background: #f8fafc;
-  color: hsl(var(--primary) / 0.8);
+  background: hsl(var(--muted) / 0.5);
+  color: hsl(var(--primary) / 0.9);
   font-weight: 700;
-  border-bottom: 1px solid rgba(15, 40, 84, 0.08);
+  border-bottom: 1px solid hsl(var(--border));
   font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -2040,21 +2041,21 @@ body[data-page="admin"], body[data-page="agency"] {
 
 /* Alternating zebra stripe shading in light mode */
 .kit-table tbody tr:nth-child(even) td {
-  background-color: hsl(var(--secondary) / 0.12); /* Faint Ice Blue tint */
+  background-color: hsl(var(--muted) / 0.2);
 }
 
 .kit-table tbody tr:hover td {
-  background-color: hsl(var(--secondary) / 0.3) !important;
+  background-color: hsl(var(--accent) / 0.15) !important;
 }
 
 /* User Menu Button Hover state */
 .user-menu-trigger {
-  border: 1px solid rgba(15, 40, 84, 0.12);
+  border: 1px solid hsl(var(--border));
 }
 
 .user-menu-trigger:hover {
-  background: #f8fafc;
-  border-color: hsl(var(--primary) / 0.3);
+  background: hsl(var(--muted) / 0.5);
+  border-color: hsl(var(--border));
 }
 
 /* Dark mode safety override to preserve dark mode integrity */
@@ -2092,21 +2093,7 @@ html.dark .ticket, html.dark .kpi, html.dark .panel {
   border: 1px solid hsl(var(--border));
 }
 
-/* ---------- navbar removal ---------- */
-.topbar {
-  position: sticky;
-  top: 0;
-  z-index: 40;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: var(--space-3);
-  padding: 0.9rem 0;
-  background: transparent !important;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-}
-.topbar-right { gap: var(--space-4); }
+
 
 /* ---------- kit pager (contacts) ---------- */
 .kit-pager {
@@ -2151,14 +2138,14 @@ body[data-page="admin"]::before, body[data-page="admin"]::after,
 body[data-page="agency"]::before, body[data-page="agency"]::after {
   content: "";
   position: fixed;
-  width: 50vw;
-  height: 50vw;
-  max-width: 600px;
-  max-height: 600px;
+  width: 40vw;
+  height: 40vw;
+  max-width: 500px;
+  max-height: 500px;
   border-radius: 50%;
-  filter: blur(120px);
+  filter: blur(140px);
   z-index: -2;
-  opacity: 0.18;
+  opacity: 0.08;
   pointer-events: none;
   animation: float-blobs 25s ease-in-out infinite;
 }
@@ -2166,24 +2153,24 @@ body[data-page="agency"]::before, body[data-page="agency"]::after {
 body[data-page="admin"]::before, body[data-page="agency"]::before {
   top: -10%;
   left: -10%;
-  background: radial-gradient(circle, #4988C4, transparent 70%);
+  background: radial-gradient(circle, #f59e0b, transparent 70%);
 }
 
 body[data-page="admin"]::after, body[data-page="agency"]::after {
   bottom: -10%;
   right: -10%;
-  background: radial-gradient(circle, #BDE8F5, transparent 70%);
+  background: radial-gradient(circle, #78716c, transparent 70%);
   animation-delay: -5s;
 }
 
 html.dark body[data-page="admin"]::before, html.dark body[data-page="agency"]::before {
-  background: radial-gradient(circle, #1C4D8D, transparent 70%);
-  opacity: 0.15;
+  background: radial-gradient(circle, #f59e0b, transparent 70%);
+  opacity: 0.04;
 }
 
 html.dark body[data-page="admin"]::after, html.dark body[data-page="agency"]::after {
-  background: radial-gradient(circle, #0F2854, transparent 70%);
-  opacity: 0.15;
+  background: radial-gradient(circle, #27272a, transparent 70%);
+  opacity: 0.08;
 }
 
 /* Set container backgrounds transparent */
@@ -2191,56 +2178,54 @@ html.dark body[data-page="admin"]::after, html.dark body[data-page="agency"]::af
   background: transparent !important;
 }
 
-/* Glassmorphic Sidebar */
+/* Basecoat UI / shadcn Glassmorphic Sidebar */
 .sidebar {
-  background: rgba(255, 255, 255, 0.4) !important;
+  background: hsl(var(--card) / 0.9) !important;
   backdrop-filter: blur(16px) saturate(120%) !important;
   -webkit-backdrop-filter: blur(16px) saturate(120%) !important;
-  border-right: 1px solid rgba(15, 40, 84, 0.12) !important;
+  border-right: 1px solid hsl(var(--border)) !important;
 }
 
 html.dark .sidebar {
-  background: rgba(12, 19, 34, 0.45) !important;
+  background: rgba(18, 18, 18, 0.9) !important;
   border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
 /* Glassmorphic Top Bar */
 .topbar {
-  background: rgba(255, 255, 255, 0.4) !important;
+  background: hsl(var(--card) / 0.9) !important;
   backdrop-filter: blur(16px) saturate(120%) !important;
   -webkit-backdrop-filter: blur(16px) saturate(120%) !important;
-  border-bottom: 1px solid rgba(15, 40, 84, 0.12) !important;
+  border-bottom: 1px solid hsl(var(--border)) !important;
 }
 
 html.dark .topbar {
-  background: rgba(12, 19, 34, 0.45) !important;
+  background: rgba(18, 18, 18, 0.9) !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
-/* Glassmorphic Cards & Panels */
+/* Cards & Panels */
 .ticket, .kpi, .panel {
-  background: rgba(255, 255, 255, 0.45) !important;
-  backdrop-filter: blur(12px) saturate(120%) !important;
-  -webkit-backdrop-filter: blur(12px) saturate(120%) !important;
-  border: 1px solid rgba(15, 40, 84, 0.12) !important;
-  box-shadow: 0 8px 32px 0 rgba(15, 40, 84, 0.04) !important;
+  background: hsl(var(--card)) !important;
+  border: 1px solid hsl(var(--border)) !important;
+  box-shadow: var(--shadow-sm) !important;
 }
 
 html.dark .ticket, html.dark .kpi, html.dark .panel {
-  background: rgba(15, 23, 42, 0.45) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2) !important;
+  background: #121212 !important;
+  border: 1px solid #27272a !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4) !important;
 }
 
 /* Glassmorphic Edit Drawers */
 .drawer {
-  background: rgba(255, 255, 255, 0.7) !important;
-  backdrop-filter: blur(20px) saturate(120%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(120%) !important;
-  border-left: 1px solid rgba(15, 40, 84, 0.12) !important;
+  background: hsl(var(--card) / 0.95) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border-left: 1px solid hsl(var(--border)) !important;
 }
 
 html.dark .drawer {
-  background: rgba(12, 19, 34, 0.75) !important;
-  border-left: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: rgba(18, 18, 18, 0.95) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.1) !important;
 }

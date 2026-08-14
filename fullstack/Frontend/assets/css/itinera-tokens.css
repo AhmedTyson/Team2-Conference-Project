@@ -1,48 +1,49 @@
 /* ============================================================
-   ITINERA — Design Tokens (YOGO Edition)
-   Monochrome grey + white system, light by default.
-   Dark mode is an override via [data-theme="dark"].
+   ITINERA — Design Tokens (shadcn / Basecoat UI Edition)
+   - Dark Theme: #0a0a0a obsidian canvas, #121212 / #18181b surfaces
+   - Light Theme: #fafaf9 warm stone canvas, #ffffff surfaces
+   - Zero navy/ice blues in theme palette.
    ============================================================ */
 
 :root {
-  /* --- Palette (Navy/Royal/Sky/Ice Blue System) --- */
-  --bg:            #f0f6fa;   /* soft light ice-blue tint background */
-  --bg-raised:     #e1edf5;
-  --surface:       #ffffff;   /* cards, panels              */
-  --surface-2:     #e7eff5;   /* hover, inputs, elevated    */
-  --surface-3:     #d1e0eb;   /* active, chips selected     */
-  --border:        #d8e3eb;   /* hairline borders           */
-  --border-strong: #4988c4;   /* focus, emphasized borders  */
-  --text:          #0f2854;   /* Navy primary text          */
-  --text-muted:    #1c4d8d;   /* Royal Blue secondary text  */
-  --text-faint:    #4988c4;   /* Sky Blue labels            */
-  --white:         #1c4d8d;   /* accent (filled)            */
-  --black:         #ffffff;   /* on-accent text             */
+  /* --- Light Palette (Warm Alabaster / Stone & Neutral Charcoal) --- */
+  --bg:            #fafaf9;   /* #fafaf9 warm stone background */
+  --bg-raised:     #f5f5f4;
+  --surface:       #ffffff;   /* pure white cards, panels      */
+  --surface-2:     #f4f4f5;   /* hover, inputs, elevated       */
+  --surface-3:     #e4e4e7;   /* active, chips selected        */
+  --border:        #e7e5e4;   /* soft warm border              */
+  --border-strong: #a1a1aa;   /* focus, emphasized borders     */
+  --text:          #1c1917;   /* deep charcoal text            */
+  --text-muted:    #78716c;   /* warm taupe secondary text     */
+  --text-faint:    #a8a29e;   /* subtle labels                 */
+  --white:         #18181b;   /* primary button fill           */
+  --black:         #fafafa;   /* on-primary button text        */
 
-  /* --- Effects (soft, airy — YOGO) --- */
-  --glow:     0 0 0 1px rgba(0, 0, 0, .06), 0 8px 32px rgba(0, 0, 0, .10);
-  --glow-strong: 0 0 0 1px rgba(0, 0, 0, .14), 0 12px 44px rgba(0, 0, 0, .16);
-  --shadow-sm: 0 2px 10px rgba(0, 0, 0, .12);
-  --ring:      0 0 0 2px var(--bg), 0 0 0 4px rgba(0, 0, 0, .55);
+  /* --- Effects (clean, subtle shadcn style) --- */
+  --glow:          0 1px 3px rgba(0, 0, 0, .05), 0 1px 2px rgba(0, 0, 0, .03);
+  --glow-strong:   0 10px 15px -3px rgba(0, 0, 0, .08), 0 4px 6px -2px rgba(0, 0, 0, .04);
+  --shadow-sm:     0 1px 2px rgba(0, 0, 0, .05);
+  --ring:          0 0 0 2px var(--bg), 0 0 0 4px rgba(24, 24, 27, .3);
 
-  /* --- Theme-aware surfaces (kept in sync by [data-theme]) --- */
-  --scrim:          rgba(20, 20, 20, .5);      /* modal backdrop      */
-  --glass:          rgba(255, 255, 255, .85);  /* fav button on media */
-  --media-bg:       #e6e6e6;                   /* behind images       */
-  --overlay-header: rgba(247, 247, 247, .85); /* sticky header       */
-  --overlay-menu:   rgba(246, 246, 246, .98); /* mobile menu         */
-  --overlay-tab:    rgba(247, 247, 247, .92); /* bottom tab bar      */
-  --focus-glow:     rgba(0, 0, 0, .10);        /* input focus halo    */
-  --error-fill:     rgba(0, 0, 0, .06);
-  --error-border:   rgba(0, 0, 0, .25);
-  --error-line:     rgba(0, 0, 0, .4);
+  /* --- Theme-aware surfaces --- */
+  --scrim:          rgba(0, 0, 0, .5);
+  --glass:          rgba(255, 255, 255, .85);
+  --media-bg:       #f4f4f5;
+  --overlay-header: rgba(250, 250, 249, .88);
+  --overlay-menu:   rgba(250, 250, 249, .98);
+  --overlay-tab:    rgba(250, 250, 249, .92);
+  --focus-glow:     rgba(24, 24, 27, .08);
+  --error-fill:     rgba(239, 68, 68, .08);
+  --error-border:   rgba(239, 68, 68, .3);
+  --error-line:     #ef4444;
 
-  /* --- Radii (generous, YOGO) --- */
-  --r-sm: 10px;
-  --r-md: 14px;
-  --r-lg: 20px;
-  --r-xl: 28px;
-  --r-full: 999px;
+  /* --- Radii --- */
+  --r-sm: 6px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 16px;
+  --r-full: 9999px;
 
   /* --- Spacing scale --- */
   --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
@@ -50,11 +51,11 @@
   --sp-12: 48px; --sp-16: 64px; --sp-20: 80px; --sp-24: 96px;
 
   /* --- Typography --- */
-  --font-display: "Inter", "Segoe UI", system-ui, sans-serif;
-  --font-body:    "Inter", "Segoe UI", system-ui, sans-serif;
-  --font-mono:    "JetBrains Mono", "Cascadia Mono", Consolas, monospace;
+  --font-display: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body:    "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono:    "IBM Plex Mono", Consolas, monospace;
 
-  --fs-2xs: 0.6875rem;   /* mono labels            */
+  --fs-2xs: 0.6875rem;
   --fs-xs: 0.75rem;
   --fs-sm: 0.8125rem;
   --fs-md: 0.9375rem;
@@ -71,10 +72,10 @@
   --lh-normal: 1.6;
 
   /* --- Motion --- */
-  --ease: cubic-bezier(.22, 1, .36, 1);
+  --ease: cubic-bezier(.16, 1, .3, 1);
   --dur-fast: 140ms;
-  --dur: 240ms;
-  --dur-slow: 480ms;
+  --dur: 220ms;
+  --dur-slow: 340ms;
 
   /* --- Layout --- */
   --container: 1200px;
@@ -89,47 +90,35 @@
   --z-toast: 400;
 }
 
-:root[data-theme="dark"] {
-  /* --- Palette --- */
-  --bg:            #08101e;   /* very deep Navy dark background */
-  --bg-raised:     #0c182c;
-  --surface:       #0c192d;   /* Navy dark card surface */
-  --surface-2:     #152642;
-  --surface-3:     #1e365c;
-  --border:        #152642;
-  --border-strong: #4988c4;   /* Sky Blue borders */
-  --text:          #bde8f5;   /* Ice Blue primary text */
-  --text-muted:    #4988c4;   /* Sky Blue secondary text */
-  --text-faint:    #1c4d8d;   /* Royal Blue muted text */
-  --white:         #bde8f5;   /* accent text / blocks */
-  --black:         #050a12;
+:root[data-theme="dark"],
+.dark {
+  /* --- Dark Palette (Comfortable Deep Obsidian & Zinc) --- */
+  --bg:            #0a0a0a;   /* #0a0a0a deep obsidian canvas */
+  --bg-raised:     #121212;
+  --surface:       #121212;   /* elevated card surface        */
+  --surface-2:     #18181b;   /* elevated secondary surface   */
+  --surface-3:     #27272a;   /* active surface               */
+  --border:        #27272a;   /* 1px clean zinc border        */
+  --border-strong: #3f3f46;
+  --text:          #f4f4f5;   /* crisp white primary text     */
+  --text-muted:    #a1a1aa;   /* clear muted secondary text   */
+  --text-faint:    #71717a;   /* subtle dark label            */
+  --white:         #fafafa;   /* button fill                  */
+  --black:         #09090b;   /* button text                  */
 
   /* --- Effects --- */
-  --glow:          0 0 0 1px rgba(255,255,255,.08), 0 8px 32px rgba(0,0,0,.55);
-  --glow-strong:   0 0 0 1px rgba(255,255,255,.22), 0 12px 44px rgba(0,0,0,.7);
-  --shadow-sm:     0 2px 10px rgba(0,0,0,.45);
-  --ring:          0 0 0 2px var(--bg), 0 0 0 4px rgba(255,255,255,.65);
+  --glow:          0 0 0 1px rgba(255, 255, 255, .08), 0 8px 32px rgba(0, 0, 0, .55);
+  --glow-strong:   0 0 0 1px rgba(255, 255, 255, .15), 0 12px 44px rgba(0, 0, 0, .7);
+  --shadow-sm:     0 2px 10px rgba(0, 0, 0, .45);
 
-  /* --- Theme-aware surfaces --- */
-  --scrim:         rgba(5, 10, 20, .82);
-  --glass:         rgba(12, 24, 45, .72);
-  --media-bg:      #111f35;
-  --overlay-header: rgba(8, 16, 30, .82);
-  --overlay-menu:  rgba(6, 12, 22, .97);
-  --overlay-tab:   rgba(10, 20, 38, .92);
-  --focus-glow:    rgba(255, 255, 255, .08);
-  --error-fill:    rgba(255, 255, 255, .08);
-  --error-border:  rgba(255, 255, 255, .25);
-  --error-line:    rgba(255, 255, 255, .5);
-
-  /* Decorative image scrims stay dark in both themes for legibility. */
-}
-
-@media (max-width: 767px) {
-  :root {
-    --fs-4xl: 1.50rem;
-    --fs-5xl: 1.875rem;
-    --fs-6xl: 2.25rem;
-    --header-h: 60px;
-  }
+  --scrim:          rgba(0, 0, 0, .75);
+  --glass:          rgba(255, 255, 255, .06);
+  --media-bg:       #18181b;
+  --overlay-header: rgba(10, 10, 10, .85);
+  --overlay-menu:   rgba(10, 10, 10, .98);
+  --overlay-tab:    rgba(10, 10, 10, .92);
+  --focus-glow:     rgba(255, 255, 255, .08);
+  --error-fill:     rgba(239, 68, 68, .12);
+  --error-border:   rgba(239, 68, 68, .35);
+  --error-line:     #f87171;
 }

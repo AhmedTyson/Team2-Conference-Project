@@ -9,12 +9,12 @@
   const It = global.Itinari;
 
   const ROUTES = {
-    plans: "/v1/plans",
-    subscribe: "/v1/me/subscribe",
-    upgrade: "/v1/me/upgrade",
-    cancel: "/v1/me/subscription/cancel",
-    subscription: "/v1/me/subscription",
-    checkout: "/v1/checkout/initiate",
+    plans: "/plans",
+    subscribe: "/me/subscribe",
+    upgrade: "/me/upgrade",
+    cancel: "/me/subscription/cancel",
+    subscription: "/subscription",
+    checkout: "/checkout/initiate",
   };
 
   /** Format cents as a currency string (default EGP when unset). */

@@ -43,41 +43,36 @@ html.dark .glass--soft   { background: rgb(0 0 0 / 0.35); }
 html.dark .glass--mid    { background: rgb(0 0 0 / 0.5); }
 html.dark .glass--strong { background: rgb(0 0 0 / 0.65); }
 
-/* ---------- colored glass (tinted with brand palette) ---------- */
-.glass--tint-blue,
-.glass--tint-sky,
-.glass--tint-teal,
-.glass--tint-sun,
-.glass--tint-coral,
-.glass--tint-ink {
+/* ---------- colored glass (tinted with unified luxury palette) ---------- */
+.glass--tint-amber,
+.glass--tint-gold,
+.glass--tint-emerald,
+.glass--tint-stone,
+.glass--tint-charcoal {
   background: rgb(255 255 255 / 0.5);                /* fallback before color-mix */
   border-color: hsl(var(--glass-border));
 }
-.glass--tint-blue   { background: color-mix(in srgb, hsl(var(--brand-blue)) 18%, transparent); }
-.glass--tint-sky    { background: color-mix(in srgb, hsl(var(--brand-sky))    18%, transparent); }
-.glass--tint-teal   { background: color-mix(in srgb, hsl(var(--brand-teal))   18%, transparent); }
-.glass--tint-sun    { background: color-mix(in srgb, hsl(var(--brand-sun))    22%, transparent); }
-.glass--tint-coral  { background: color-mix(in srgb, hsl(var(--brand-coral))  18%, transparent); }
-.glass--tint-ink    { background: color-mix(in srgb, hsl(var(--brand-ink))    22%, transparent); }
+.glass--tint-amber    { background: color-mix(in srgb, #f59e0b 14%, transparent); }
+.glass--tint-gold     { background: color-mix(in srgb, #d97706 14%, transparent); }
+.glass--tint-emerald  { background: color-mix(in srgb, #10b981 14%, transparent); }
+.glass--tint-stone    { background: color-mix(in srgb, #78716c 14%, transparent); }
+.glass--tint-charcoal { background: color-mix(in srgb, #1c1917 18%, transparent); }
 
-html.dark .glass--tint-blue   { background: color-mix(in srgb, hsl(var(--brand-blue)) 25%, transparent); }
-html.dark .glass--tint-sky    { background: color-mix(in srgb, hsl(var(--brand-sky))    25%, transparent); }
-html.dark .glass--tint-teal   { background: color-mix(in srgb, hsl(var(--brand-teal))   25%, transparent); }
-html.dark .glass--tint-sun    { background: color-mix(in srgb, hsl(var(--brand-sun))    25%, transparent); }
-html.dark .glass--tint-coral  { background: color-mix(in srgb, hsl(var(--brand-coral))  25%, transparent); }
-html.dark .glass--tint-ink    { background: color-mix(in srgb, hsl(var(--brand-ink))    25%, transparent); }
+html.dark .glass--tint-amber    { background: color-mix(in srgb, #f59e0b 18%, transparent); }
+html.dark .glass--tint-gold     { background: color-mix(in srgb, #d97706 18%, transparent); }
+html.dark .glass--tint-emerald  { background: color-mix(in srgb, #10b981 18%, transparent); }
+html.dark .glass--tint-stone    { background: color-mix(in srgb, #78716c 18%, transparent); }
+html.dark .glass--tint-charcoal { background: color-mix(in srgb, #27272a 22%, transparent); }
 
 /* ---------- variants ---------- */
 .glass--borderless { border-color: transparent; }
 .glass--flush      { box-shadow: none; }
 
 /* ---------- colored shadow helpers ---------- */
-.shadow-blue   { box-shadow: 0 24px 60px -20px hsl(var(--brand-blue) / 0.55); }
-.shadow-sky    { box-shadow: 0 24px 60px -20px hsl(var(--brand-sky)    / 0.55); }
-.shadow-teal   { box-shadow: 0 24px 60px -20px hsl(var(--brand-teal)   / 0.55); }
-.shadow-ink    { box-shadow: 0 24px 60px -20px hsl(var(--brand-ink)    / 0.55); }
-.shadow-coral  { box-shadow: 0 24px 60px -20px hsl(var(--brand-coral)  / 0.55); }
-.shadow-sun    { box-shadow: 0 24px 60px -20px hsl(var(--brand-sun)    / 0.5); }
+.shadow-amber   { box-shadow: 0 24px 60px -20px rgba(245, 158, 11, 0.35); }
+.shadow-gold    { box-shadow: 0 24px 60px -20px rgba(217, 119, 6, 0.35); }
+.shadow-emerald { box-shadow: 0 24px 60px -20px rgba(16, 185, 129, 0.35); }
+.shadow-stone   { box-shadow: 0 24px 60px -20px rgba(120, 113, 108, 0.35); }
 
 /* ---------- layered glass stack (3 layers) ---------- */
 .glass-stack { position: relative; }

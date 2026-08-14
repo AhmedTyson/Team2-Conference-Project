@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
@@ -7,8 +7,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link rel="stylesheet" href="css/common.css" />
     <link rel="stylesheet" href="css/overview.css" />
-</head>
-<body data-page="overview" data-auth="protected">
+  <script>/* FOUC prevention — default dark */
+    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+    if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
+      document.documentElement.classList.add("dark","fouc-ready");
+    else document.documentElement.classList.add("fouc-ready");
+    })();
+  </script></head>
+<body data-page="overview" data-auth="protected" data-layout="public">
 
     <nav class="sidebar" id="sidebar"></nav>
 
@@ -33,5 +39,7 @@
 
     <script src="js/common.js"></script>
     <script src="js/overview.js"></script>
+  <script src="./assets/js/core/theme.js"></script>
+  <script src="assets/js/core/topbar.js"></script>
 </body>
 </html>

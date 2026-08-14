@@ -23,6 +23,11 @@ class HotelService
         return $this->hotelRepository->getById($id);
     }
 
+    public function byDestination(int $destinationId)
+    {
+        return $this->hotelRepository->getByDestination($destinationId);
+    }
+
     public function store(array $data)
     {
         return $this->hotelRepository->create($data);

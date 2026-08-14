@@ -2,8 +2,10 @@
 
 namespace App\Repositories\Catalog;
 
+use App\Enums\ReviewStatus;
 use App\Interfaces\Catalog\HotelRepositoryInterface;
 use App\Models\Catalog\Hotel;
+use Illuminate\Database\Eloquent\Collection;
 
 class HotelRepository implements HotelRepositoryInterface
 {
@@ -15,6 +17,19 @@ class HotelRepository implements HotelRepositoryInterface
     public function getById($id)
     {
         return Hotel::with('destination')->findOrFail($id);
+    }
+
+    public function getByDestination(int $destinationId): Collection
+    {
+        return Hotel::query()
+            ->where('destination_id', $destinationId)
+            ->withCount(['reviews as reviews_count' => fn ($q) => $q->where('status', ReviewStatus::APPROVED->value)])
+            ->get();
+    }
+
+    public function countAll(): int
+    {
+        return Hotel::count();
     }
 
     public function create(array $data)

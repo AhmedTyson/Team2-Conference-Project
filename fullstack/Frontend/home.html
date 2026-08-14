@@ -1,107 +1,20 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Home · Travel Planner</title>
-  <link rel="stylesheet" href="assets/css/tokens.css" />
-  <link rel="stylesheet" href="assets/css/app.css" />
-</head>
-<body data-page="home" class="is-booting">
-  <div class="app">
-    <header class="app__header">
-      <a id="app-brand" class="app__brand" href="/home.html"></a>
-      <nav id="app-nav" class="nav" aria-label="Main navigation"></nav>
-      <div id="app-user" class="app__user">
-        <button id="theme-toggle" type="button" class="btn btn--ghost" aria-label="Toggle theme">◐</button>
-      </div>
-    </header>
-
-    <main class="app__main">
-      <div class="page">
-        <section class="hero-slider-container">
-          <div class="hero-slider" id="hero-slideshow">
-            <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1200&q=80');">
-              <div class="slide-overlay"></div>
-              <div class="slide-content">
-                <p class="slide-eyebrow">Discover Europe</p>
-                <h1 class="slide-title">Paris, France</h1>
-                <p class="slide-description">Explore historic boulevards, charming sidewalk cafes, and the romantic Eiffel Tower.</p>
-                <div class="slide-buttons">
-                  <a href="/explore.html" class="btn btn--primary">Start Exploring</a>
-                  <a href="/login.html" class="btn btn--ghost" style="color:white; border-color:white;">Plan a Trip</a>
-                </div>
-              </div>
-            </div>
-            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=1200&q=80');">
-              <div class="slide-overlay"></div>
-              <div class="slide-content">
-                <p class="slide-eyebrow">Tropical Paradise</p>
-                <h1 class="slide-title">Bali, Indonesia</h1>
-                <p class="slide-description">Relax on pristine beaches, explore lush rice terraces, and experience vibrant spiritual culture.</p>
-                <div class="slide-buttons">
-                  <a href="/explore.html" class="btn btn--primary">Start Exploring</a>
-                  <a href="/login.html" class="btn btn--ghost" style="color:white; border-color:white;">Plan a Trip</a>
-                </div>
-              </div>
-            </div>
-            <div class="hero-slide" style="background-image: url('https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1200&q=80');">
-              <div class="slide-overlay"></div>
-              <div class="slide-content">
-                <p class="slide-eyebrow">Modern Metropolis</p>
-                <h1 class="slide-title">Tokyo, Japan</h1>
-                <p class="slide-description">Witness neon-lit skylines, peaceful historic temples, and world-class culinary wonders.</p>
-                <div class="slide-buttons">
-                  <a href="/explore.html" class="btn btn--primary">Start Exploring</a>
-                  <a href="/login.html" class="btn btn--ghost" style="color:white; border-color:white;">Plan a Trip</a>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="slider-dots" id="slider-dots">
-            <span class="dot active" data-slide="0"></span>
-            <span class="dot" data-slide="1"></span>
-            <span class="dot" data-slide="2"></span>
-          </div>
-        </section>
-
-        <div class="ticker" aria-hidden="true">
-          <div class="ticker__track">
-            <span class="ticker__content" id="ticker-content"></span>
-          </div>
-        </div>
-
-
-        <section class="page-section">
-          <p class="page-section__eyebrow">Every feature</p>
-          <h2 class="page-section__title">What you can do here</h2>
-          <div class="feature-grid" id="feature-grid"></div>
-        </section>
-
-        <section class="page-section">
-          <p class="page-section__eyebrow">On the radar</p>
-          <h2 class="page-section__title">Popular destinations</h2>
-          <div class="grid" id="destinations-grid">
-            <div class="skeleton skeleton--card"></div>
-            <div class="skeleton skeleton--card"></div>
-            <div class="skeleton skeleton--card"></div>
-          </div>
-        </section>
-      </div>
-    </main>
-
-    <footer class="app__footer">
-      <span>Travel Planner</span>
-      <span>•</span>
-      <span>Plan. Explore. Remember.</span>
-    </footer>
-  </div>
-
-  <script src="assets/js/config.js"></script>
-  <script src="assets/js/api.js"></script>
-  <script src="assets/js/session.js"></script>
-  <script src="assets/js/nav-config.js"></script>
-  <script src="assets/js/app-shell.js"></script>
-  <script src="assets/js/home.js"></script>
+  <meta http-equiv="refresh" content="0; url=/index.html" />
+  <script>window.location.replace("/index.html");</script>
+  <title>Itinera · Luxury Travel Experiences</title>
+  <script>/* FOUC prevention — default dark */
+    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+    if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
+      document.documentElement.classList.add("dark","fouc-ready");
+    else document.documentElement.classList.add("fouc-ready");
+    })();
+  </script></head>
+<body style="background:#0a0a0a; color:white; font-family:sans-serif; display:flex; align-items:center; justify-content:center; height:100vh; margin:0;" data-layout="public">
+  <p>Redirecting to <a href="/index.html" style="color:#38bdf8;">Itinera Home</a>...</p>
+  <script src="./assets/js/core/theme.js"></script>
+  <script src="assets/js/core/topbar.js"></script>
 </body>
 </html>

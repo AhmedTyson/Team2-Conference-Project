@@ -10,12 +10,12 @@ class CountryRepository implements CountryRepositoryInterface
 {
     public function getForAdmin(bool $trashed = false): Collection
     {
-        return Country::query()->when($trashed, fn ($q) => $q->onlyTrashed())->get();
+        return Country::with('region')->when($trashed, fn ($q) => $q->onlyTrashed())->get();
     }
 
     public function findById($id): Country
     {
-        return Country::findOrFail($id);
+        return Country::with('region')->findOrFail($id);
     }
 
     public function create(array $data): Country

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -10,8 +10,14 @@
   <script>(function(){try{if(localStorage.getItem('itinari_theme')==='dark')document.documentElement.classList.add('dark');}catch(e){}})();</script>
   <link rel="stylesheet" href="assets/css/tokens.css">
   <link rel="stylesheet" href="assets/css/app.css">
-</head>
-<body data-page="flights" class="is-booting">
+  <script>/* FOUC prevention — default dark */
+    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+    if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
+      document.documentElement.classList.add("dark","fouc-ready");
+    else document.documentElement.classList.add("fouc-ready");
+    })();
+  </script></head>
+<body data-page="flights" class="is-booting" data-layout="public">
   <div class="app">
     <header class="app__header">
       <a id="app-brand" class="app__brand" href="/home.html"></a>
@@ -54,5 +60,7 @@
   <script src="assets/js/nav-config.js"></script>
   <script src="assets/js/app-shell.js"></script>
   <script src="assets/js/flights.js"></script>
+  <script src="./assets/js/core/theme.js"></script>
+  <script src="assets/js/core/topbar.js"></script>
 </body>
 </html>

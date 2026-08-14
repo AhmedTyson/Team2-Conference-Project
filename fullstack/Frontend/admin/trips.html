@@ -1,12 +1,18 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Trips · Itinari Admin</title>
   <link rel="stylesheet" href="../assets/css/admin.css?v=15" />
-</head>
-<body data-page="admin" data-module="trips">
+  <script>/* FOUC prevention — default dark */
+    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+    if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
+      document.documentElement.classList.add("dark","fouc-ready");
+    else document.documentElement.classList.add("fouc-ready");
+    })();
+  </script></head>
+<body data-page="admin" data-module="trips" data-layout="admin">
   <a href="#main" class="skip-link">Skip to main content</a>
   <div class="shell">
     <aside class="sidebar">
@@ -35,6 +41,14 @@
         </span>
       </header>
 
+      <div class="kit-toolbar" style="margin-bottom: var(--space-4);">
+        <label class="table-search-group">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+          <input id="global-search" class="table-search" type="search" placeholder="Search trips..." autocomplete="off" aria-label="Search records" />
+        </label>
+        <button type="button" id="btn-new" class="btn-ghost">New Trip</button>
+      </div>
+
       <section class="ticket ticket-panel" aria-label="Trips">
         <div id="trips-table" class="panel-body"></div>
       </section>
@@ -55,5 +69,7 @@
   <script src="../assets/js/nav-config.js"></script>
   <script src="../assets/js/admin-chrome.js?v=12"></script>
   <script src="../assets/js/admin-crud.js?v=12"></script>
+  <script src="../assets/js/core/topbar.js"></script>
+  <script src="../assets/js/core/theme.js"></script>
 </body>
 </html>

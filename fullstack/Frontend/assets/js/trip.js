@@ -126,18 +126,27 @@
       var destinations = trip.destinations || [];
       var points = pointsFromItems(items);
 
+      var totalEstimated = items.reduce(function (sum, item) {
+        return sum + (Number(item.estimated_cost) || 0);
+      }, 0);
+      var budgetPct = trip.budget > 0 ? Math.min(100, Math.round((totalEstimated / trip.budget) * 100)) : 0;
+      var isOverBudget = trip.budget > 0 && totalEstimated > trip.budget;
+
       page.innerHTML =
         '<header class="page-header"><p class="page-header__eyebrow">Trip #' + trip.id + "</p>" +
         '<h1 class="page-header__title">' + esc(trip.title) + "</h1>" +
         '<p class="page-header__lead">' + esc(trip.travel_style || "") + " style · " + (trip.no_of_days || "—") + " days · " +
         (trip.no_of_travelers || "—") + " traveler" + (trip.no_of_travelers === 1 ? "" : "s") + "</p>" +
-        '<div class="btn-row"><a href="/trip-form.html" class="btn btn--primary">New trip</a></div></header>' +
+        '<div class="btn-row"><a href="/trip-form.html" class="btn btn--primary">New trip</a>' +
+        '<button type="button" id="ai-review-btn" class="btn btn--ghost" style="border: 1px solid hsl(var(--primary) / 0.4); color: hsl(var(--primary));"><i class="fas fa-robot mr-1"></i> AI Itinerary Review</button></div></header>' +
 
         '<section class="stats-band"><div class="stat-card"><span class="stat-card__value">' +
         formatDate(trip.start_date) + " → " + formatDate(trip.end_date) + '</span><span class="stat-card__label">Dates</span></div>' +
-        '<div class="stat-card"><span class="stat-card__value">' + (trip.budget != null ? Number(trip.budget).toLocaleString() : "—") + '</span><span class="stat-card__label">Budget</span></div>' +
-        '<div class="stat-card"><span class="stat-card__value">' + items.length + '</span><span class="stat-card__label">Items attached</span></div>' +
-        '<div class="stat-card"><span class="stat-card__value">' + destinations.length + '</span><span class="stat-card__label">Destinations</span></div></section>' +
+        '<div class="stat-card"><span class="stat-card__value">' + (trip.budget != null ? "$" + Number(trip.budget).toLocaleString() : "—") + '</span><span class="stat-card__label">Budget</span></div>' +
+        '<div class="stat-card"><span class="stat-card__value' + (isOverBudget ? ' text-red-400' : '') + '">' + "$" + totalEstimated.toLocaleString() + '</span><span class="stat-card__label">Est. Cost (' + budgetPct + '%)</span></div>' +
+        '<div class="stat-card"><span class="stat-card__value">' + items.length + '</span><span class="stat-card__label">Items attached</span></div></section>' +
+
+        '<div id="ai-review-result" style="margin-bottom:var(--space-4);" hidden></div>' +
 
         '<div class="split"><div class="split__main"><section class="page-section">' +
         '<p class="page-section__eyebrow">Route</p><h2 class="page-section__title" style="margin-bottom:var(--space-3);">Your trail</h2>' +
@@ -149,12 +158,41 @@
         '<a href="/explore.html" class="btn btn--ghost btn--block" style="margin-top:var(--space-3);">Add from Explore</a></div>' +
         stopsHtml(destinations) + "</aside></div>";
 
+      var aiReviewBtn = el("ai-review-btn");
+      if (aiReviewBtn) {
+        aiReviewBtn.addEventListener("click", function () {
+          var resBox = el("ai-review-result");
+          aiReviewBtn.disabled = true;
+          aiReviewBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Analyzing itinerary…';
+          It.apiGet("/ai/review/" + trip.id, { auth: true }).then(function (res) {
+            aiReviewBtn.disabled = false;
+            aiReviewBtn.innerHTML = '<i class="fas fa-robot mr-1"></i> Re-run AI Review';
+            if (res.ok && res.body) {
+              var reviewData = res.body.data || res.body;
+              var reviewText = typeof reviewData === "string" ? reviewData : (reviewData.review || reviewData.content || JSON.stringify(reviewData, null, 2));
+              resBox.hidden = false;
+              resBox.innerHTML = '<div class="card card--flat" style="border-left: 3px solid hsl(var(--primary)); background: hsl(var(--card)); padding: 1.25rem;">' +
+                '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 0.75rem;">' +
+                '<h3 class="page-section__title" style="font-size:15px; margin:0; display:flex; align-items:center; gap:0.5rem;"><i class="fas fa-sparkles text-amber-400"></i> AI Itinerary Diagnostic</h3>' +
+                '<button type="button" class="btn btn--xs btn--ghost" onclick="document.getElementById(\'ai-review-result\').hidden=true">Close</button></div>' +
+                '<div style="font-size:13px; color:hsl(var(--card-foreground)); line-height:1.6; white-space:pre-line;">' + esc(reviewText) + '</div></div>';
+            } else {
+              It.app.showToast((res.body && res.body.message) || "Could not generate AI review.", "error");
+            }
+          }).catch(function () {
+            aiReviewBtn.disabled = false;
+            aiReviewBtn.innerHTML = '<i class="fas fa-robot mr-1"></i> AI Itinerary Review';
+            It.app.showToast("Could not reach AI service.", "error");
+          });
+        });
+      }
+
       Array.prototype.forEach.call(page.querySelectorAll(".item-row__remove"), function (btn) {
         btn.addEventListener("click", function () {
           var pivotId = btn.dataset.pivot;
           if (!global.confirm('Remove "' + btn.dataset.title + '" from this trip?')) return;
           btn.disabled = true;
-          It.apiDelete("/v1/trips/" + id + "/detach/" + pivotId, { auth: true }).then(function (res) {
+          It.apiDelete("/trips/" + id + "/detach/" + pivotId, { auth: true }).then(function (res) {
             if (res.ok) {
               It.app.showToast("Item removed from the trip.", "info");
               var list = page.querySelector(".item-list");

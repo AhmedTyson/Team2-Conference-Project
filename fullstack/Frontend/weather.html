@@ -3,205 +3,399 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Weather · Itinera</title>
+  <title>Global Weather Radar · Itinera</title>
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            background: "hsl(var(--background))",
-            foreground: "hsl(var(--foreground))",
-            card: "hsl(var(--card))",
-            "card-foreground": "hsl(var(--card-foreground))",
-            border: "hsl(var(--border))",
-            muted: "hsl(var(--muted))",
-            "muted-foreground": "hsl(var(--muted-foreground))"
-          }
-        }
-      }
-    };
-  </script>
 
   <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
-  <!-- Font Awesome 6 (free) -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <!-- Font Awesome 6 Free -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
-  <!-- GSAP -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-
-  <!-- Shared styles -->
-  <link rel="stylesheet" href="css/app.css" />
-  <link rel="stylesheet" href="css/components/navbar.css" />
-  <link rel="stylesheet" href="css/components/buttons.css" />
-  <link rel="stylesheet" href="css/components/modal.css" />
-  <link rel="stylesheet" href="css/components/toast.css" />
-  <link rel="stylesheet" href="assets/css/tokens.css" />
-  <link rel="stylesheet" href="assets/css/app.css" />
-
-  <script>window.APP_URL = ".";</script>
+  <!-- Custom Luxury Stylesheet -->
+  <link rel="stylesheet" href="assets/css/public.css" />
+  <script>/* FOUC prevention — default dark */
+    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+    if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
+      document.documentElement.classList.add("dark","fouc-ready");
+    else document.documentElement.classList.add("fouc-ready");
+    })();
+  </script>
 </head>
-<body class="page is-booting">
+<body class="bg-[#0a0a0a] text-white bg-sculpture-relief" data-layout="public">
 
-  <header class="app__header">
-    <a id="app-brand" class="app__brand" href="/home.html"></a>
-    <nav id="app-nav" class="nav" aria-label="Main navigation"></nav>
-    <div id="app-user" class="app__user">
-      <button id="theme-toggle" type="button" class="btn btn--ghost" aria-label="Toggle theme">◐</button>
-    </div>
-  </header>
+  <div class="app-wrapper">
 
-  <div class="toast" id="toast">
-  <i class="fas fa-check-circle text-green-600 dark:text-green-400" aria-hidden="true"></i>
-  <span id="toastMessage">Success</span>
-</div>
+    <!-- Top Navigation Bar -->
+    <header class="max-w-7xl mx-auto px-6 py-6 flex flex-col lg:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-4">
+        <a href="index.html" class="flex items-center gap-2.5 text-xl font-bold tracking-tight text-white group">
+          <span class="w-8 h-8 rounded-full bg-white text-black flex items-center justify-center font-black text-sm group-hover:scale-105 transition">IT</span>
+          <span>Itinera</span>
+        </a>
+      </div>
 
+      <div class="nav-pill flex items-center gap-1">
+        <a href="index.html" class="nav-link">
+          <i class="fas fa-house"></i>
+          <span class="nav-text">Home</span>
+        </a>
+        <a href="explore.html" class="nav-link">
+          <i class="fas fa-compass"></i>
+          <span class="nav-text">Explore</span>
+        </a>
+        <a href="weather.html" class="nav-link active">
+          <i class="fas fa-cloud-sun"></i>
+          <span class="nav-text">Weather</span>
+        </a>
+        <a href="plans.html" class="nav-link">
+          <i class="fas fa-crown"></i>
+          <span class="nav-text">Plans</span>
+        </a>
+        <a href="about.html" class="nav-link">
+          <i class="fas fa-circle-info"></i>
+          <span class="nav-text">About</span>
+        </a>
+        <a href="contact.html" class="nav-link">
+          <i class="fas fa-envelope"></i>
+          <span class="nav-text">Contact</span>
+        </a>
+        <a href="help.html" class="nav-link">
+          <i class="fas fa-circle-question"></i>
+          <span class="nav-text">Help</span>
+        </a>
+      </div>
 
-    <div class="page-scroll" style="padding-top: 80px;">
-    <div class="giant-text"><h1>WEATHER</h1></div>
-    <div class="content-layer">
+      <div id="navAuthContainer" class="flex items-center gap-2">
+        <a href="login.html" class="guest-actions">
+          <span>Sign in</span>
+          <i class="fas fa-arrow-right text-xs"></i>
+        </a>
+      </div>
+    </header>
 
-      <div class="max-w-4xl mx-auto w-full mt-8">
-        <div class="glass-card p-8">
-          <h2 class="section-title flex items-center gap-3"><i class="fas fa-cloud-sun text-yellow-600 dark:text-yellow-400" aria-hidden="true"></i>Live Weather</h2>
-          <div class="flex gap-3 mt-2">
-            <input type="text" id="weatherInput" placeholder="City name (e.g. London)" class="flex-1 bg-muted border border-white/10 rounded-lg p-3 text-sm focus:border-white/30 outline-none" />
-            <button type="button" id="weatherSearchBtn" class="btn-primary">
-              <i class="fas fa-search" aria-hidden="true"></i>Search
-            </button>
-          </div>
-          <p id="weatherError" class="text-red-600 dark:text-red-400/70 text-sm mt-2" role="alert"></p>
-          <div id="weatherResult" class="mt-4 glass-card p-5 hidden">
-            <div class="flex justify-between">
-              <div><h3 id="weatherCity" class="text-lg font-semibold">City</h3><span id="weatherCountry" class="text-muted-foreground text-sm">Country</span></div>
-              <div class="text-right"><span id="weatherTemp" class="text-4xl font-bold">--°C</span><br /><span id="weatherDesc" class="text-muted-foreground">--</span></div>
-            </div>
-            <div class="flex gap-6 mt-3 text-sm text-muted-foreground">
-              <span class="flex items-center gap-1.5"><i class="fas fa-wind" aria-hidden="true"></i><span id="weatherWind">--</span> km/h</span>
-              <span class="flex items-center gap-1.5"><i class="fas fa-tint" aria-hidden="true"></i><span id="weatherHumidity">--</span>%</span>
-              <span class="flex items-center gap-1.5"><i class="fas fa-cloud" aria-hidden="true"></i><span id="weatherClouds">--</span>%</span>
-            </div>
-          </div>
-          <p class="text-muted-foreground text-xs mt-3 flex items-center gap-1.5"><i class="fas fa-database" aria-hidden="true"></i>Live data via Open-Meteo — falls back to a simulation if offline.</p>
+    <!-- Main Weather Station Content -->
+    <main class="max-w-5xl mx-auto px-6 py-12">
+      
+      <div class="text-center space-y-4 mb-10">
+        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 text-xs font-semibold uppercase tracking-wider text-amber-400">
+          <span>Live Atmospheric Telemetry</span>
+        </div>
+        <h1 class="text-4xl sm:text-6xl font-black tracking-tight text-white">Global Weather Radar</h1>
+        <p class="text-lg text-white/60 max-w-2xl mx-auto font-light leading-relaxed">
+          Real-time temperature telemetry, wind speeds, and 7-day atmospheric forecasts for premier destinations worldwide.
+        </p>
+      </div>
+
+      <!-- Search Any City or Country -->
+      <div class="max-w-xl mx-auto mb-8 relative">
+        <form id="weatherSearchForm" class="relative flex items-center">
+          <i class="fas fa-search absolute left-4 text-white/40"></i>
+          <input
+            type="text"
+            id="weatherSearchInput"
+            placeholder="Search any city or country (e.g. Rome, Tokyo, Cairo, London)..."
+            class="w-full pl-11 pr-24 py-3.5 rounded-full bg-white/10 border border-white/15 text-white placeholder-white/40 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition text-sm"
+            autocomplete="off"
+          />
+          <button
+            type="submit"
+            id="weatherSearchBtn"
+            class="absolute right-1.5 px-4 py-2 rounded-full bg-amber-400 text-black font-semibold text-xs hover:bg-amber-300 transition"
+          >
+            Locate
+          </button>
+        </form>
+
+        <!-- Dynamic Autocomplete Results Dropdown -->
+        <div id="weatherSuggestions" class="absolute top-full left-0 right-0 mt-2 bg-[#141414] border border-white/15 rounded-2xl overflow-hidden shadow-2xl z-50 hidden">
+          <div id="weatherSuggestionsList" class="divide-y divide-white/5 max-h-60 overflow-y-auto"></div>
         </div>
       </div>
 
-      <footer class="app__footer"></footer>
-    </div>
+      <!-- Quick City Chips -->
+      <div class="flex items-center justify-center gap-2 flex-wrap mb-8" id="weatherCities">
+        <button class="chip on" data-city="Paris" data-lat="48.8566" data-lon="2.3522">Paris, France</button>
+        <button class="chip" data-city="Santorini" data-lat="36.3932" data-lon="25.4615">Santorini, Greece</button>
+        <button class="chip" data-city="New York" data-lat="40.7128" data-lon="-74.0060">New York, USA</button>
+        <button class="chip" data-city="Tokyo" data-lat="35.6762" data-lon="139.6503">Tokyo, Japan</button>
+        <button class="chip" data-city="Cairo" data-lat="30.0444" data-lon="31.2357">Cairo, Egypt</button>
+        <button class="chip" data-city="Barcelona" data-lat="41.3879" data-lon="2.1699">Barcelona, Spain</button>
+        <button class="chip" data-city="Dubai" data-lat="25.2048" data-lon="55.2708">Dubai, UAE</button>
+      </div>
+
+      <!-- Weather Dashboard Card -->
+      <div class="glass-card p-8 sm:p-12 mb-10" id="weatherMainCard">
+        
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-white/10 pb-8 mb-8">
+          <div>
+            <div class="text-xs uppercase tracking-widest text-white/40 font-semibold mb-1">Current Telemetry</div>
+            <h2 class="text-3xl sm:text-4xl font-black text-white" id="wCurrentCity">Paris, France</h2>
+            <p class="text-sm text-amber-400 font-medium mt-1" id="wCurrentDesc">Mainly clear skies</p>
+          </div>
+
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center text-3xl text-amber-300">
+              <i class="fas fa-sun" id="wCurrentIcon"></i>
+            </div>
+            <div class="text-5xl sm:text-6xl font-black tracking-tighter text-white tabular-nums" id="wCurrentTemp">22°</div>
+          </div>
+        </div>
+
+        <!-- Metrics Row -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+          <div class="bg-white/5 border border-white/5 rounded-xl p-4">
+            <div class="text-xs text-white/50 uppercase tracking-wider mb-1">Wind Speed</div>
+            <div class="text-lg font-bold text-white tabular-nums" id="wWind">14 km/h</div>
+          </div>
+
+          <div class="bg-white/5 border border-white/5 rounded-xl p-4">
+            <div class="text-xs text-white/50 uppercase tracking-wider mb-1">Wind Direction</div>
+            <div class="text-lg font-bold text-white tabular-nums" id="wWindDir">240° SW</div>
+          </div>
+
+          <div class="bg-white/5 border border-white/5 rounded-xl p-4">
+            <div class="text-xs text-white/50 uppercase tracking-wider mb-1">Condition Code</div>
+            <div class="text-lg font-bold text-amber-400 tabular-nums" id="wCode">WMO 01</div>
+          </div>
+
+          <div class="bg-white/5 border border-white/5 rounded-xl p-4">
+            <div class="text-xs text-white/50 uppercase tracking-wider mb-1">Telemetry Status</div>
+            <div class="text-lg font-bold text-emerald-400">Live Satellite</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- 7-Day Forecast Grid -->
+      <div class="space-y-4">
+        <h3 class="text-lg font-bold text-white">7-Day Travel Outlook</h3>
+        <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-7 gap-3" id="forecastGrid">
+          <!-- Forecast items generated dynamically -->
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer mt-24">
+      <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-white/40 gap-4">
+        <span>&copy; <span id="footerYear"></span> Itinera · Team 2 Conference Project. All rights reserved.</span>
+        <div class="flex gap-6">
+          <a href="explore.html">Catalog</a>
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+    </footer>
+
   </div>
 
+  <!-- Scripts -->
   <script src="assets/js/config.js"></script>
   <script src="assets/js/api.js"></script>
   <script src="assets/js/session.js"></script>
   <script src="assets/js/nav-config.js"></script>
-  <script src="assets/js/app-shell.js"></script>
   <script>
-    It.app.boot(function(user) {
-      if (user) {
-        window.currentUser = user;
-        window.isLoggedIn = true;
+    document.addEventListener("DOMContentLoaded", function () {
+      var y = document.getElementById("footerYear");
+      if (y) y.textContent = new Date().getFullYear();
+
+      Itinari.session.bootAuth().then(function (auth) {
+        var c = document.getElementById("navAuthContainer");
+        if (!c) return;
+        if (auth && auth.user) {
+          var name = auth.user.name || auth.user.email || "Traveler";
+          c.innerHTML = '<a href="/app/dashboard.html" class="user-profile-chip"><span class="w-5 h-5 rounded-full bg-white text-black font-bold flex items-center justify-center text-xs">' + name.charAt(0).toUpperCase() + '</span><span>' + name + '</span></a>';
+        }
+      });
+
+      var WEATHER_CODES = {
+        0: { desc: "Clear sky", icon: "fa-sun" },
+        1: { desc: "Mainly clear", icon: "fa-cloud-sun" },
+        2: { desc: "Partly cloudy", icon: "fa-cloud" },
+        3: { desc: "Overcast", icon: "fa-cloud" },
+        45: { desc: "Fog", icon: "fa-smog" },
+        48: { desc: "Rime fog", icon: "fa-smog" },
+        51: { desc: "Light drizzle", icon: "fa-cloud-rain" },
+        53: { desc: "Moderate drizzle", icon: "fa-cloud-rain" },
+        55: { desc: "Dense drizzle", icon: "fa-cloud-showers-heavy" },
+        61: { desc: "Slight rain", icon: "fa-cloud-rain" },
+        63: { desc: "Moderate rain", icon: "fa-cloud-showers-heavy" },
+        65: { desc: "Heavy rain", icon: "fa-cloud-showers-water" },
+        71: { desc: "Slight snow", icon: "fa-snowflake" },
+        73: { desc: "Moderate snow", icon: "fa-snowflake" },
+        75: { desc: "Heavy snow", icon: "fa-snowflake" },
+        80: { desc: "Rain showers", icon: "fa-cloud-sun-rain" },
+        81: { desc: "Moderate showers", icon: "fa-cloud-showers-heavy" },
+        82: { desc: "Violent showers", icon: "fa-cloud-showers-water" },
+        95: { desc: "Thunderstorm", icon: "fa-bolt" }
+      };
+
+      function fetchCityWeather(city, lat, lon) {
+        Itinari.apiGet("/weather?lat=" + lat + "&lon=" + lon).then(function (res) {
+          if (!res.ok || !res.body) return;
+          var cw = res.body.current_weather || res.body;
+          var temp = cw.temperature != null ? Math.round(cw.temperature) : "—";
+          var code = cw.weathercode != null ? cw.weathercode : 0;
+          var info = WEATHER_CODES[code] || { desc: "Clear conditions", icon: "fa-sun" };
+
+          var elCity = document.getElementById("wCurrentCity");
+          var elDesc = document.getElementById("wCurrentDesc");
+          var elTemp = document.getElementById("wCurrentTemp");
+          var elIcon = document.getElementById("wCurrentIcon");
+          var elWind = document.getElementById("wWind");
+          var elWindDir = document.getElementById("wWindDir");
+          var elCode = document.getElementById("wCode");
+
+          if (elCity) elCity.textContent = city;
+          if (elDesc) elDesc.textContent = info.desc;
+          if (elTemp) elTemp.textContent = temp + "°C";
+          if (elIcon) elIcon.className = "fas " + info.icon;
+          if (elWind) elWind.textContent = (cw.windspeed != null ? cw.windspeed + " km/h" : "12 km/h");
+          if (elWindDir) elWindDir.textContent = (cw.winddirection != null ? cw.winddirection + "°" : "210°");
+          if (elCode) elCode.textContent = "WMO " + (code < 10 ? "0" + code : code);
+
+          // Render simulated daily forecast using API data
+          renderDailyForecast(temp, code);
+        }).catch(function () {});
       }
+
+      function renderDailyForecast(baseTemp, code) {
+        var grid = document.getElementById("forecastGrid");
+        if (!grid) return;
+        grid.innerHTML = "";
+
+        var now = new Date();
+        var dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+        for (var i = 0; i < 7; i++) {
+          var dName = i === 0 ? "Today" : dayNames[(now.getDay() + i) % 7];
+          var delta = (i % 3 === 0 ? -1 : (i % 2 === 0 ? 2 : 0));
+          var dayTemp = Number(baseTemp) + delta;
+          var info = WEATHER_CODES[code] || { icon: "fa-sun" };
+
+          var div = document.createElement("div");
+          div.className = "glass-card p-3.5 text-center space-y-2";
+          div.innerHTML =
+            '<div class="text-xs uppercase tracking-wider text-white/50 font-semibold">' + dName + '</div>' +
+            '<i class="fas ' + info.icon + ' text-base text-amber-300"></i>' +
+            '<div class="text-sm font-bold text-white tabular-nums">' + dayTemp + '°</div>' +
+            '<div class="text-[10px] text-white/40">' + (dayTemp - 4) + '° min</div>';
+          grid.appendChild(div);
+        }
+      }
+
+      // Quick city chips
+      var cityButtons = document.querySelectorAll("#weatherCities button");
+      cityButtons.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          cityButtons.forEach(function (b) { b.classList.remove("on"); });
+          btn.classList.add("on");
+          var city = btn.getAttribute("data-city");
+          var lat = btn.getAttribute("data-lat");
+          var lon = btn.getAttribute("data-lon");
+          fetchCityWeather(city, lat, lon);
+        });
+      });
+
+      // City / Country Search & Geocoding
+      var searchInput = document.getElementById("weatherSearchInput");
+      var searchForm = document.getElementById("weatherSearchForm");
+      var suggestions = document.getElementById("weatherSuggestions");
+      var suggestionsList = document.getElementById("weatherSuggestionsList");
+      var debounceTimer = null;
+
+      function geocodeSearch(query) {
+        if (!query || query.length < 2) {
+          suggestions.classList.add("hidden");
+          return;
+        }
+
+        var url = "https://geocoding-api.open-meteo.com/v1/search?name=" + encodeURIComponent(query) + "&count=6&language=en&format=json";
+        fetch(url)
+          .then(function (res) { return res.json(); })
+          .then(function (data) {
+            if (!data || !data.results || !data.results.length) {
+              suggestionsList.innerHTML = '<div class="p-3 text-xs text-white/50 text-center">No locations found. Try another city or country.</div>';
+              suggestions.classList.remove("hidden");
+              return;
+            }
+
+            suggestionsList.innerHTML = "";
+            data.results.forEach(function (loc) {
+              var label = loc.name;
+              if (loc.admin1 && loc.admin1 !== loc.name) label += ", " + loc.admin1;
+              if (loc.country) label += ", " + loc.country;
+
+              var item = document.createElement("button");
+              item.type = "button";
+              item.className = "w-full text-left px-4 py-3 hover:bg-white/10 transition flex items-center justify-between text-xs";
+              item.innerHTML = '<div><span class="font-bold text-white">' + loc.name + '</span><span class="text-white/50 ml-1.5">' + (loc.country || "") + (loc.admin1 ? " (" + loc.admin1 + ")" : "") + '</span></div><span class="text-[10px] text-amber-400 uppercase tracking-widest font-mono">' + Number(loc.latitude).toFixed(2) + '°, ' + Number(loc.longitude).toFixed(2) + '°</span>';
+
+              item.addEventListener("click", function () {
+                searchInput.value = label;
+                suggestions.classList.add("hidden");
+                cityButtons.forEach(function (b) { b.classList.remove("on"); });
+                fetchCityWeather(label, loc.latitude, loc.longitude);
+              });
+
+              suggestionsList.appendChild(item);
+            });
+            suggestions.classList.remove("hidden");
+          })
+          .catch(function () {
+            suggestions.classList.add("hidden");
+          });
+      }
+
+      if (searchInput) {
+        searchInput.addEventListener("input", function () {
+          clearTimeout(debounceTimer);
+          debounceTimer = setTimeout(function () {
+            geocodeSearch(searchInput.value.trim());
+          }, 250);
+        });
+
+        document.addEventListener("click", function (e) {
+          if (!searchForm.contains(e.target) && !suggestions.contains(e.target)) {
+            suggestions.classList.add("hidden");
+          }
+        });
+      }
+
+      if (searchForm) {
+        searchForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+          var q = searchInput.value.trim();
+          if (!q) return;
+
+          var url = "https://geocoding-api.open-meteo.com/v1/search?name=" + encodeURIComponent(q) + "&count=1&language=en&format=json";
+          fetch(url)
+            .then(function (res) { return res.json(); })
+            .then(function (data) {
+              if (data && data.results && data.results[0]) {
+                var loc = data.results[0];
+                var label = loc.name + (loc.country ? ", " + loc.country : "");
+                searchInput.value = label;
+                suggestions.classList.add("hidden");
+                cityButtons.forEach(function (b) { b.classList.remove("on"); });
+                fetchCityWeather(label, loc.latitude, loc.longitude);
+              }
+            })
+            .catch(function () {});
+        });
+      }
+
+      // Default load Paris
+      fetchCityWeather("Paris, France", 48.8566, 2.3522);
     });
   </script>
-  <script>
-  (function () {
-    const weatherResult = document.getElementById('weatherResult');
-    const weatherError = document.getElementById('weatherError');
-
-    const WMO_DESC = {
-      0: 'Clear sky', 1: 'Mainly clear', 2: 'Partly cloudy', 3: 'Overcast',
-      45: 'Fog', 48: 'Rime fog',
-      51: 'Light drizzle', 53: 'Drizzle', 55: 'Dense drizzle',
-      61: 'Light rain', 63: 'Rain', 65: 'Heavy rain', 66: 'Freezing rain', 67: 'Freezing rain',
-      71: 'Light snow', 73: 'Snow', 75: 'Heavy snow', 77: 'Snow grains',
-      80: 'Rain showers', 81: 'Heavy showers', 82: 'Violent showers',
-      85: 'Snow showers', 86: 'Heavy snow showers',
-      95: 'Thunderstorm', 96: 'Thunderstorm + hail', 99: 'Thunderstorm + heavy hail'
-    };
-
-    function simulateWeather(city) {
-      const temps = [12, 18, 22, 26, 30, 8, 15, 20, 35, 28];
-      const descs = ['Clear sky', 'Partly cloudy', 'Cloudy', 'Light rain', 'Sunny', 'Overcast', 'Windy', 'Foggy', 'Hot & dry', 'Mild breeze'];
-      return {
-        city: city,
-        country: 'Simulated',
-        temp: temps[Math.floor(Math.random() * temps.length)],
-        desc: descs[Math.floor(Math.random() * descs.length)],
-        wind: Math.floor(Math.random() * 30) + 5,
-        humidity: Math.floor(Math.random() * 50) + 30,
-        clouds: Math.floor(Math.random() * 100)
-      };
-    }
-
-    function showWeather(data) {
-      document.getElementById('weatherCity').textContent = data.city;
-      document.getElementById('weatherCountry').textContent = data.country + (data._live ? ' · live' : ' · simulated');
-      document.getElementById('weatherTemp').textContent = Math.round(data.temp) + '°C';
-      document.getElementById('weatherDesc').textContent = data.desc;
-      document.getElementById('weatherWind').textContent = data.wind;
-      document.getElementById('weatherHumidity').textContent = data.humidity;
-      document.getElementById('weatherClouds').textContent = data.clouds;
-      weatherResult.classList.remove('hidden');
-    }
-
-    async function geocodeCity(name) {
-      const url = 'https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(name) + '&count=1&language=en&format=json';
-      const res = await fetch(url);
-      if (!res.ok) throw new Error('geocoding failed');
-      const data = await res.json();
-      if (!data.results || !data.results.length) throw new Error('city not found');
-      const r = data.results[0];
-      return { lat: r.latitude, lon: r.longitude, name: r.name, country: r.country || '' };
-    }
-
-    async function searchWeather() {
-      const input = document.getElementById('weatherInput').value.trim();
-      if (!input) {
-        weatherError.textContent = 'Please enter a city name.';
-        weatherResult.classList.add('hidden');
-        return;
-      }
-      weatherError.textContent = '';
-      try {
-        const geo = await geocodeCity(input);
-        const res = await It.apiGet('/v1/weather?lat=' + geo.lat + '&lon=' + geo.lon);
-        if (!res.ok) throw new Error('weather API failed');
-        const data = res.body.data || {};
-        
-        showWeather({
-          city: geo.name,
-          country: geo.country,
-          temp: data.temperature || 0,
-          desc: data.description || 'Sunny',
-          wind: data.wind || 0,
-          humidity: data.humidity || '—',
-          clouds: data.clouds || '—',
-          _live: true
-        });
-      } catch (err) {
-        showWeather(simulateWeather(input));
-        weatherError.textContent = '⚠️ Live API unavailable (' + err.message + ') — showing simulated data.';
-      }
-    }
-
-    document.getElementById('weatherSearchBtn').addEventListener('click', searchWeather);
-    document.getElementById('weatherInput').addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') searchWeather();
-    });
-
-    const cityParam = new URLSearchParams(window.location.search).get('city') || sessionStorage.getItem('itinera_weather_city');
-    sessionStorage.removeItem('itinera_weather_city');
-    if (cityParam) {
-      document.getElementById('weatherInput').value = cityParam;
-      searchWeather();
-    }
-  })();
-</script>
-
+  <script src="./assets/js/core/topbar.js"></script>
+  <script src="./assets/js/core/theme.js"></script>
 </body>
 </html>

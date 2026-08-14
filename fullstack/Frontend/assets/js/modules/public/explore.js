@@ -1,0 +1,178 @@
+/**
+ * explore.js — catalog browser (converted from React ExplorePage).
+ * Tabs: destinations / hotels / restaurants / attractions. Public API.
+ * Depends on app-shell.js (It.app).
+ */
+(function (global) {
+  "use strict";
+
+  var It = global.Itinari || (global.Itinari = {});
+
+  var TAB = "destinations";
+  var REGION = "all";
+  var SEARCH = "";
+  var searchTimer = null;
+
+  var grid = document.getElementById("catalog-grid");
+  var tabs = document.getElementById("catalog-tabs");
+  var searchInput = document.getElementById("catalog-search");
+  var regionPills = document.getElementById("region-pills");
+
+  function esc(str) {
+    if (str == null) return "";
+    return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+
+  function cardFor(type, item) {
+    var href = "entity.html?type=" + (type === "destinations" ? "destinations" : (type === "hotels" ? "hotels" : (type === "restaurants" ? "restaurants" : "attractions"))) + "&id=" + item.id;
+    var kicker, sub, badges = "";
+    var img = item.image_url || item.image || "https://images.pexels.com/photos/1486222/pexels-photo-1486222.jpeg?auto=compress&cs=tinysrgb&w=600";
+
+    if (type === "destinations") {
+      kicker = (item.country && item.country.region && item.country.region.name) || item.region_name || "Destination";
+      sub = (item.city ? item.city + ", " : "") + ((item.country && item.country.name) || item.country || "");
+      badges = '<span class="dest-badge">' + kicker + '</span>' +
+        '<span class="dest-badge"><i class="fas fa-hotel mr-1 opacity-60"></i>' + (item.hotels_count || 0) + ' Hotels</span>' +
+        '<span class="dest-badge"><i class="fas fa-route mr-1 opacity-60"></i>' + (item.tours_count || 0) + ' Tours</span>';
+    } else if (type === "hotels") {
+      kicker = (item.stars ? "★".repeat(Number(item.stars)) : "5-Star Hotel");
+      sub = (item.destination && item.destination.city) || (item.destination && item.destination.name) || "Luxury Resort";
+      badges = '<span class="dest-badge text-amber-400">' + kicker + '</span>' +
+        '<span class="dest-badge font-bold text-white">' + (item.price_per_night != null ? "$" + Number(item.price_per_night).toLocaleString() + "/nt" : "$450/nt") + '</span>' +
+        (item.reviews_count ? '<span class="dest-badge">' + item.reviews_count + ' Reviews</span>' : '');
+    } else if (type === "restaurants") {
+      kicker = item.cuisine || "Fine Dining";
+      sub = (item.destination && item.destination.city) || (item.destination && item.destination.name) || "Michelin Selection";
+      badges = '<span class="dest-badge">' + kicker + '</span>' +
+        '<span class="dest-badge text-emerald-400">' + esc(item.price_range || "$$$$") + '</span>' +
+        '<span class="dest-badge text-amber-400"><i class="fas fa-star mr-1"></i>' + (item.rating || 4.9) + '</span>';
+    } else {
+      kicker = (item.category && item.category.name) || "Cultural Landmark";
+      sub = (item.destination && item.destination.name) || "Must-Visit";
+      badges = '<span class="dest-badge">' + kicker + '</span>' +
+        '<span class="dest-badge text-sky-400"><i class="fas fa-camera mr-1"></i>Guided Tour</span>';
+    }
+
+    return '<div class="dest-card" onclick="window.location.href=\'' + href + '\'">' +
+      '<img src="' + img + '" alt="' + esc(item.name || item.city) + '" loading="lazy" />' +
+      '<div class="dest-name">' +
+        '<span>' + esc(item.name || item.city) + '</span>' +
+        '<span class="text-xs text-amber-400 font-semibold flex items-center gap-1"><i class="fas fa-star text-[10px]"></i> ' + (item.rating || 4.9) + '</span>' +
+      '</div>' +
+      '<div class="dest-location"><i class="fas fa-location-dot text-white/40"></i><span>' + esc(sub) + '</span></div>' +
+      '<div class="dest-desc">' + esc(item.description || "Discover bespoke luxury highlights and unforgettable moments.") + '</div>' +
+      '<div class="dest-badges">' + badges + '</div>' +
+    '</div>';
+  }
+
+  function render(items) {
+    if (!grid) return;
+    if (!items || !items.length) {
+      grid.innerHTML = '<div class="col-span-full py-16 text-center text-white/40">' +
+        '<i class="fas fa-compass text-3xl mb-3 block opacity-30"></i>' +
+        '<p class="text-lg font-bold text-white mb-1">No items found</p>' +
+        '<p class="text-sm">Try adjusting your search query or selecting a different continent tab.</p></div>';
+      return;
+    }
+    grid.innerHTML = items.map(function (item) { return cardFor(TAB, item); }).join("");
+  }
+
+  function loadRegions() {
+    if (!regionPills) return;
+    It.apiGet("/v1/regions").then(function (res) {
+      var regions = res.body;
+      if (regions && regions.data) regions = regions.data;
+      if (!Array.isArray(regions)) return;
+      regionPills.innerHTML = regions.map(function (r) {
+        var active = r.id === REGION;
+        return '<button type="button" class="btn btn--xs ' + (active ? 'btn--primary' : 'btn--ghost') + '" data-region="' + r.id + '">' +
+          It.app.esc(r.label) + '</button>';
+      }).join("");
+    }).catch(function () { /* fallback */ });
+  }
+
+  function load(tab) {
+    TAB = tab;
+    var params = [];
+    if (TAB === "destinations") {
+      if (REGION && REGION !== "all") params.push("region=" + encodeURIComponent(REGION));
+    }
+    if (SEARCH.trim()) {
+      params.push("query=" + encodeURIComponent(SEARCH.trim()));
+    }
+
+    var qs = params.length ? "?" + params.join("&") : "";
+    var url = "/v1/" + (tab === "destinations" ? "destinations" : tab) + qs;
+
+    if (regionPills) {
+      regionPills.style.display = TAB === "destinations" ? "flex" : "none";
+    }
+
+    grid.innerHTML = '<div class="skeleton skeleton--card"></div><div class="skeleton skeleton--card"></div><div class="skeleton skeleton--card"></div>';
+    It.apiGet(url).then(function (res) {
+      var data = It.app.unwrapData(res);
+      var items = data;
+      if (data && typeof data === "object" && Array.isArray(data.data)) items = data.data;
+      if (Array.isArray(items)) {
+        render(items);
+      } else if (Array.isArray(res.body)) {
+        render(res.body);
+      } else {
+        render([]);
+      }
+    }).catch(function () {
+      if (grid) {
+        grid.innerHTML = '<div class="error-card" style="grid-column:1/-1;">' +
+          '<p>Could not load this catalog section.</p>' +
+          '<button type="button" class="btn btn--primary" onclick="location.reload()">Retry</button></div>';
+      }
+    });
+  }
+
+  if (tabs) {
+    tabs.addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-tab]");
+      if (!btn) return;
+      tabs.querySelectorAll("[data-tab]").forEach(function (b) {
+        b.classList.toggle("tab--on", b === btn);
+        b.setAttribute("aria-selected", String(b === btn));
+      });
+      load(btn.getAttribute("data-tab"));
+    });
+  }
+
+  if (regionPills) {
+    regionPills.addEventListener("click", function (e) {
+      var btn = e.target.closest("[data-region]");
+      if (!btn) return;
+      REGION = btn.getAttribute("data-region");
+      regionPills.querySelectorAll("[data-region]").forEach(function (b) {
+        var active = b === btn;
+        b.classList.toggle("btn--primary", active);
+        b.classList.toggle("btn--ghost", !active);
+      });
+      load(TAB);
+    });
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener("input", function () {
+      clearTimeout(searchTimer);
+      searchTimer = setTimeout(function () {
+        SEARCH = searchInput.value;
+        load(TAB);
+      }, 300);
+    });
+  }
+
+  function boot() {
+    loadRegions();
+    load(TAB);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot);
+  } else {
+    boot();
+  }
+})(window);

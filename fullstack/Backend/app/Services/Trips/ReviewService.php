@@ -4,6 +4,7 @@ namespace App\Services\Trips;
 
 use App\Enums\ReviewStatus;
 use App\Interfaces\Trips\ReviewRepositoryInterface;
+use Illuminate\Database\Eloquent\Model;
 
 class ReviewService
 {
@@ -17,6 +18,11 @@ class ReviewService
     public function getAdminList(bool $trashed = false)
     {
         return $this->reviewRepository->getForAdmin($trashed);
+    }
+
+    public function getApprovedForReviewable(Model $model)
+    {
+        return $this->reviewRepository->approvedForReviewable($model);
     }
 
     public function approve($id)

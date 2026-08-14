@@ -1,0 +1,107 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Itinera – Itinerary</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="stylesheet" href="../assets/css/app.css" />
+    <link rel="stylesheet" href="../assets/css/app.css" />
+    <link rel="stylesheet" href="../assets/css/app.css" />
+  <script>/* FOUC prevention — default dark */
+    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+    if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
+      document.documentElement.classList.add("dark","fouc-ready");
+    else document.documentElement.classList.add("fouc-ready");
+    })();
+  </script></head>
+<body data-page="itinerary" data-auth="protected" data-layout="app">
+
+    <nav class="sidebar" id="sidebar"></nav>
+
+    <div class="main">
+        <div class="flex-between mb-16">
+            <div>
+                <h1 class="page-title" id="dtTitle">—</h1>
+                <div style="font-size:14px; color:#555; margin-top:4px;">
+                    <span id="dtDest">—</span> &middot; <span id="dtDates">—</span>
+                </div>
+            </div>
+            <div class="flex" style="gap:8px;">
+                <a class="btn btn-sm" href="availability.html">
+                    <i class="fas fa-calendar-check"></i> Availability
+                </a>
+                <a class="btn btn-sm" href="trip-map.html">
+                    <i class="fas fa-map"></i> Map
+                </a>
+                <a class="btn btn-sm" href="copy-wizard.html">
+                    <i class="fas fa-copy"></i> Copy
+                </a>
+            </div>
+        </div>
+
+        <div class="tabs" id="detailTabs">
+            <div class="tab active" data-tab="tab-timeline">Timeline</div>
+            <div class="tab" data-tab="tab-map">Map</div>
+            <div class="tab" data-tab="tab-attach">Attachments</div>
+        </div>
+
+        <!-- Tab: Timeline -->
+        <div class="tab-content active" id="tab-timeline">
+            <div class="card" id="timelineList">
+                <div class="empty-state"><i class="fas fa-spinner fa-spin"></i> Loading itinerary…</div>
+            </div>
+            <div class="mt-8 placeholder">
+                <i class="fas fa-plus-circle"></i> <span style="border-bottom:2px dashed #1a1a1a;">Add activity</span> — attach hotels, restaurants &amp; attractions from the Attachments tab
+            </div>
+        </div>
+
+        <!-- Tab: Map -->
+        <div class="tab-content" id="tab-map">
+            <div class="map-box sm">
+                <span style="opacity:0.6; position:absolute; z-index:1;"><i class="fas fa-map-pin" style="margin-right:8px;"></i> Map view – locations pinned</span>
+            </div>
+            <div class="mt-16 flex" style="gap:16px; flex-wrap:wrap;" id="dtMapTags"></div>
+        </div>
+
+        <!-- Tab: Attachments -->
+        <div class="tab-content" id="tab-attach">
+            <div class="card">
+                <div class="card-header">
+                    <h4><i class="fas fa-paperclip"></i> Attached Items <span class="pill pill-dark" id="dtAttachCount">0</span></h4>
+                </div>
+                <div class="flex" style="gap:8px; align-items:flex-end;">
+                    <div style="min-width:150px;">
+                        <label class="label">Type</label>
+                        <select class="input" id="attachType">
+                            <option value="hotels">Hotel</option>
+                            <option value="restaurants">Restaurant</option>
+                            <option value="attractions">Attraction</option>
+                        </select>
+                    </div>
+                    <div style="flex:1; min-width:200px;">
+                        <label class="label">Item</label>
+                        <select class="input" id="attachItem"><option>Loading options…</option></select>
+                    </div>
+                    <button class="btn btn-dark btn-sm" id="attachBtn" style="margin-bottom:0;">
+                        <i class="fas fa-paperclip"></i> Attach
+                    </button>
+                </div>
+                <hr class="divider" />
+                <div id="attachList">
+                    <div class="empty-state"><i class="fas fa-paperclip"></i> Nothing attached yet.</div>
+                </div>
+                <hr class="divider" />
+                <div class="placeholder">
+                    <i class="fas fa-info-circle"></i> Attach hotels, restaurants &amp; attractions from the catalog to build this trip.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/common.js"></script>
+    <script src="../js/itinerary.js"></script>
+  <script src="../assets/js/core/topbar.js"></script>
+  <script src="../assets/js/core/theme.js"></script>
+</body>
+</html>

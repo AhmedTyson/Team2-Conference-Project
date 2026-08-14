@@ -16,6 +16,11 @@ class TripRepository implements TripRepositoryInterface
             ->get();
     }
 
+    public function countAll(): int
+    {
+        return Trip::count();
+    }
+
     public function findById($id): Trip
     {
         return Trip::findOrFail($id);

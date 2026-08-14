@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -6,17 +6,25 @@
   <title>404 Not Found · Travel Planner</title>
   <link rel="stylesheet" href="assets/css/tokens.css" />
   <link rel="stylesheet" href="assets/css/app.css" />
-</head>
-<body data-page="error">
+  <script>/* FOUC prevention — default dark */
+    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+    if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
+      document.documentElement.classList.add("dark","fouc-ready");
+    else document.documentElement.classList.add("fouc-ready");
+    })();
+  </script></head>
+<body data-page="error" data-layout="public">
   <div class="app app--center">
     <main class="app__main">
       <div class="error-state">
         <span class="error-state__code">404</span>
         <h1 class="error-state__title">Lost the map.</h1>
         <p class="error-state__text">That page doesn't exist — or it wandered off somewhere warm. Let's get you back on route.</p>
-        <a href="/home.html" class="btn btn--primary">Back to home</a>
+        <a href="/index.html" class="btn btn--primary">Back to home</a>
       </div>
     </main>
   </div>
+  <script src="./assets/js/core/theme.js"></script>
+  <script src="assets/js/core/topbar.js"></script>
 </body>
 </html>

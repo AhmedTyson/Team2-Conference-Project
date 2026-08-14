@@ -7,45 +7,19 @@
 (function (global) {
   "use strict";
 
-  const THEME_KEY = "itinari_theme";
+  /* Theme is handled by core/theme.js (ItTheme). No duplicate logic here. */
   const SIDEBAR_KEY = "itinari_sidebar";
 
   function el(id) { return document.getElementById(id); }
 
-  function systemDark() {
-    return !!(global.matchMedia && global.matchMedia("(prefers-color-scheme: dark)").matches);
-  }
-
-  function currentMode() {
-    try { return global.localStorage.getItem(THEME_KEY) || "system"; } catch (e) { return "system"; }
-  }
-
-  function applyTheme(mode, persist) {
-    const dark = mode === "dark" || (mode === "system" && systemDark());
-    document.documentElement.classList.toggle("dark", dark);
-    const btn = el("theme-toggle");
-    if (btn) {
-      btn.setAttribute("aria-pressed", String(dark));
-      btn.classList.toggle("is-dark", dark);
-      btn.setAttribute("aria-label", "Theme: " + (mode === "system" ? "System" : dark ? "Dark" : "Light"));
-    }
-    if (persist) {
-      try { global.localStorage.setItem(THEME_KEY, mode); } catch (e) { /* private mode */ }
-    }
-  }
-
   function initTheme() {
-    applyTheme(currentMode(), false);
-    const mql = global.matchMedia && global.matchMedia("(prefers-color-scheme: dark)");
-    if (mql && mql.addEventListener) {
-      mql.addEventListener("change", function () { applyTheme(currentMode(), false); });
+    /* core/theme.js boots before this script and wires the toggle button.
+       Nothing extra needed — theme-toggle click is already handled by ItTheme. */
+    if (global.ItTheme) {
+      global.ItTheme.set(global.ItTheme.mode()); /* re-apply to sync icons */
     }
-    const btn = el("theme-toggle");
-    if (btn) btn.addEventListener("click", function () {
-      const next = document.documentElement.classList.contains("dark") ? "light" : "dark";
-      applyTheme(next, true);
-    });
   }
+
 
   function setCollapsed(shell, btn, collapsed) {
     shell.classList.toggle("is-collapsed", collapsed);
@@ -795,8 +769,70 @@
       }
 
       document.dispatchEvent(new CustomEvent("itinari:ready", { detail: user }));
+      updateNavigationBadges();
     });
   }
+
+  function updateNavigationBadges() {
+    if (!global.Itinari || !global.Itinari.apiGet || !global.Itinari.session || !global.Itinari.session.hasToken()) return;
+    
+    // Contacts badge
+    global.Itinari.apiGet("/admin/contacts?status=unread", { auth: true }).then(function (res) {
+      const list = global.Itinari.unwrapData(res);
+      const count = Array.isArray(list) ? list.length : (res.body?.total || 0);
+      const b = document.querySelector('.nav-badge[data-badge="contacts"]');
+      if (b && count > 0) { b.textContent = count > 99 ? '99+' : count; b.hidden = false; }
+    }).catch(function () {});
+
+    // Agency requests badge
+    global.Itinari.apiGet("/admin/agency-requests", { auth: true }).then(function (res) {
+      const list = global.Itinari.unwrapData(res);
+      const pending = Array.isArray(list) ? list.filter(function(r){ return r.status === "pending" || r.status === "requested"; }).length : (res.body?.total || 0);
+      const b = document.querySelector('.nav-badge[data-badge="agency"]');
+      if (b && pending > 0) { b.textContent = pending > 99 ? '99+' : pending; b.hidden = false; }
+    }).catch(function () {});
+
+    // Flags badge
+    global.Itinari.apiGet("/admin/flags", { auth: true }).then(function (res) {
+      const list = global.Itinari.unwrapData(res);
+      const pending = Array.isArray(list) ? list.filter(function(r){ return r.status === "pending" || r.status === "open"; }).length : (res.body?.total || 0);
+      const b = document.querySelector('.nav-badge[data-badge="flags"]');
+      if (b && pending > 0) { b.textContent = pending > 99 ? '99+' : pending; b.hidden = false; }
+    }).catch(function () {});
+  }
+
+  function toast(message, type, duration) {
+    type = type || "info";
+    duration = duration || 3500;
+    let container = document.getElementById("toast-container");
+    if (!container) {
+      container = document.createElement("div");
+      container.id = "toast-container";
+      container.className = "toast-container";
+      container.setAttribute("role", "status");
+      container.setAttribute("aria-live", "polite");
+      document.body.appendChild(container);
+    }
+    const t = document.createElement("div");
+    t.className = "toast toast-" + type;
+    const iconSvg = type === "success" 
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>'
+      : type === "error"
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>'
+      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+    
+    t.innerHTML = '<span class="toast-icon">' + iconSvg + '</span><span class="toast-message">' + (message || "") + '</span>';
+    container.appendChild(t);
+    
+    setTimeout(function () { t.classList.add("is-visible"); }, 10);
+
+    setTimeout(function () {
+      t.classList.remove("is-visible");
+      setTimeout(function () { t.remove(); }, 300);
+    }, duration);
+  }
+
+  global.Itinari.toast = toast;
 
   function init() {
     initTheme();

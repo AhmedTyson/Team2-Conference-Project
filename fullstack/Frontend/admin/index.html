@@ -1,12 +1,18 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Departure Control · Itinari Admin</title>
   <link rel="stylesheet" href="../assets/css/admin.css?v=15" />
-</head>
-<body data-page="admin">
+  <script>/* FOUC prevention — default dark */
+    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+    if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
+      document.documentElement.classList.add("dark","fouc-ready");
+    else document.documentElement.classList.add("fouc-ready");
+    })();
+  </script></head>
+<body data-page="admin" data-layout="admin">
   <a href="#main" class="skip-link">Skip to main content</a>
   <div class="shell">
     <aside class="sidebar">
@@ -35,7 +41,21 @@
         </span>
       </header>
 
-      <section class="kpi-grid" id="kpi-row" aria-label="Key metrics">
+      <div class="dashboard-controls" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4); flex-wrap: wrap; gap: 0.75rem;">
+        <div class="filter-pill-group" role="group" aria-label="Time period selector">
+          <button type="button" class="btn-filter is-active" data-period="30d">Last 30 Days</button>
+          <button type="button" class="btn-filter" data-period="7d">Last 7 Days</button>
+          <button type="button" class="btn-filter" data-period="90d">Quarter (90d)</button>
+          <button type="button" class="btn-filter" data-period="all">All Time</button>
+        </div>
+        <div class="quick-action-group" style="display: flex; gap: 0.5rem;">
+          <a href="destinations.html" class="btn-sm btn-secondary">+ Destination</a>
+          <a href="hotels.html" class="btn-sm btn-secondary">+ Hotel</a>
+          <a href="reports.html" class="btn-sm btn-primary">Generate Report</a>
+        </div>
+      </div>
+
+      <section class="kpi-grid" id="kpi-row" aria-label="Key metrics" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
         <article class="ticket kpi-ticket skeleton" id="kpi-users">
           <p class="label-eyebrow">TOTAL USERS</p>
           <div class="kpi-value">–</div>
@@ -46,7 +66,7 @@
           </div>
         </article>
         <article class="ticket kpi-ticket skeleton" id="kpi-revenue">
-          <p class="label-eyebrow">TOTAL REVENUE</p>
+          <p class="label-eyebrow">TOTAL REVENUE (MRR)</p>
           <div class="kpi-value">–</div>
           <span class="ticket-edge" aria-hidden="true"></span>
           <div class="ticket-stub">
@@ -55,12 +75,21 @@
           </div>
         </article>
         <article class="ticket kpi-ticket skeleton" id="kpi-bookings">
-          <p class="label-eyebrow">TOTAL BOOKINGS</p>
+          <p class="label-eyebrow">CONFIRMED BOOKINGS</p>
           <div class="kpi-value">–</div>
           <span class="ticket-edge" aria-hidden="true"></span>
           <div class="ticket-stub">
             <span class="sil" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></span>
             <span class="label-eyebrow">BK-01</span>
+          </div>
+        </article>
+        <article class="ticket kpi-ticket skeleton" id="kpi-destinations">
+          <p class="label-eyebrow">ACTIVE CATALOG</p>
+          <div class="kpi-value">–</div>
+          <span class="ticket-edge" aria-hidden="true"></span>
+          <div class="ticket-stub">
+            <span class="sil" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></span>
+            <span class="label-eyebrow">CAT-01</span>
           </div>
         </article>
       </section>
@@ -108,5 +137,7 @@
   <script src="../assets/js/admin-chrome.js?v=12"></script>
   <script src="../assets/js/admin-dashboard.js?v=4"></script>
   <script src="../assets/js/admin-activity.js?v=1"></script>
+  <script src="../assets/js/core/topbar.js"></script>
+  <script src="../assets/js/core/theme.js"></script>
 </body>
 </html>

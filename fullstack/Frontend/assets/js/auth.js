@@ -33,6 +33,12 @@
         }
         fb.banner("Logged in — taking you to your dashboard…", "is-ok");
         setTimeout(function () {
+          const q = new URLSearchParams(global.location.search);
+          const redirectParam = q.get("redirect");
+          if (redirectParam && redirectParam.startsWith("/") && !redirectParam.startsWith("//")) {
+            global.location.href = redirectParam;
+            return;
+          }
           const role = It.session.roleOf(user);
           const destination = It.session.getRedirectPath(role);
           global.location.href = destination;
@@ -58,10 +64,15 @@
       onSuccess: function (body, form) {
         const token = It.extractToken(body);
         if (token) It.storeToken(token);
-        const email = form.elements.email.value;
-        fb.banner("Account created — check your inbox to verify.", "is-ok");
+        const user = (body && body.data && body.data.user) || (body && body.user) || (body && body.data) || It._cachedUser;
+        if (user && typeof user === "object") {
+          try { localStorage.setItem("itinari_user", JSON.stringify(user)); } catch (e) {}
+        }
+        fb.banner("Account created — welcome to Itinera!", "is-ok");
         setTimeout(function () {
-          global.location.href = "verify.html" + (email ? "?email=" + encodeURIComponent(email) : "");
+          const role = It.session.roleOf(user);
+          const destination = It.session.getRedirectPath(role);
+          global.location.href = destination;
         }, 900);
       },
     },

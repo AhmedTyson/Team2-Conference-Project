@@ -1091,6 +1091,194 @@ textarea.form-input {
   content: 'Light mode';
 }
 
-:root[data-theme="dark"] .m-theme-toggle::after {
+:root[data-theme="dark"] .m-theme-toggle::after,
+html.dark .m-theme-toggle::after {
   content: 'Dark mode';
 }
+
+/* ============================================================
+   UNIFIED TOPBAR-RIGHT — notifications, theme toggle, user menu
+   Works across: admin, agency, app, auth, public layouts
+   ============================================================ */
+
+/* ── topbar-right container ── */
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2, 0.5rem);
+  margin-left: auto;
+}
+
+/* ── Notification badge ── */
+.notif-wrap {
+  position: relative;
+}
+
+.notif-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 9999px;
+  background: hsl(0 72% 51%);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  pointer-events: none;
+}
+
+/* ── Theme toggle icons ── */
+#theme-toggle .icon-moon,
+.theme-toggle .icon-moon { display: none; }
+#theme-toggle .icon-sun,
+.theme-toggle .icon-sun  { display: block; }
+
+html.dark #theme-toggle .icon-moon,
+html.dark .theme-toggle .icon-moon { display: block; }
+html.dark #theme-toggle .icon-sun,
+html.dark .theme-toggle .icon-sun  { display: none; }
+
+[data-theme="dark"] #theme-toggle .icon-moon,
+[data-theme="dark"] .theme-toggle .icon-moon { display: block; }
+[data-theme="dark"] #theme-toggle .icon-sun,
+[data-theme="dark"] .theme-toggle .icon-sun  { display: none; }
+
+/* ── User chip ── */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.6rem 0.25rem 0.25rem;
+  border-radius: 9999px;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: background 0.15s, border-color 0.15s;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.chip:hover {
+  background: hsl(var(--muted));
+  border-color: hsl(var(--border));
+}
+
+.chip-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: hsl(var(--accent));
+  color: hsl(var(--foreground));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.chip-name {
+  color: hsl(var(--foreground));
+  font-weight: 500;
+}
+
+.chip-role {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.7rem;
+  font-weight: 400;
+  padding: 0.1rem 0.4rem;
+  border-radius: 9999px;
+  background: hsl(var(--muted));
+}
+
+.chip svg {
+  width: 12px;
+  height: 12px;
+  opacity: 0.5;
+  margin-left: 0.15rem;
+}
+
+/* ── User menu ── */
+.user-menu {
+  position: relative;
+}
+
+.user-menu-trigger {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.user-menu-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 200px;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-md, 10px);
+  box-shadow: 0 16px 48px -8px rgba(0,0,0,0.18);
+  padding: 0.4rem;
+  z-index: 9999;
+  animation: menuSlideIn 0.15s ease;
+}
+
+@keyframes menuSlideIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.user-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border-radius: 6px;
+  border: none;
+  background: none;
+  color: hsl(var(--foreground));
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.12s;
+  text-align: left;
+}
+
+.user-menu-item svg {
+  width: 15px;
+  height: 15px;
+  opacity: 0.65;
+  flex-shrink: 0;
+}
+
+.user-menu-item:hover {
+  background: hsl(var(--muted));
+  color: hsl(var(--foreground));
+}
+
+.user-menu-item.is-danger {
+  color: hsl(0 72% 51%);
+}
+
+.user-menu-item.is-danger:hover {
+  background: hsl(0 72% 51% / 0.08);
+}
+
+.user-menu-divider {
+  height: 1px;
+  background: hsl(var(--border));
+  margin: 0.3rem 0;
+}
+

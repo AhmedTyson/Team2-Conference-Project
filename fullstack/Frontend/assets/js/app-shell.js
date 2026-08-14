@@ -10,50 +10,14 @@
   var It = global.Itinari;
   if (!It || !It.session) return;
 
-  var THEME_KEY = "itinari_theme";
-
-  function topItems(role) {
-    return (It.nav && It.nav.topFor ? It.nav.topFor(role) : null) || [
-      { to: "/home.html", label: "Home" },
-      { to: "/explore.html", label: "Explore" },
-      { to: "/contact.html", label: "Contact" },
-    ];
-  }
-
-  function el(id) { return document.getElementById(id); }
-
-  function systemDark() {
-    return !!(global.matchMedia && global.matchMedia("(prefers-color-scheme: dark)").matches);
-  }
-
-  function currentMode() {
-    try { return global.localStorage.getItem(THEME_KEY) || "system"; } catch (e) { return "system"; }
-  }
-
-  function applyTheme(mode, persist) {
-    var dark = mode === "dark" || (mode === "system" && systemDark());
-    document.documentElement.classList.toggle("dark", dark);
-    if (dark) {
-      document.documentElement.setAttribute("data-theme", "dark");
-    } else {
-      document.documentElement.removeAttribute("data-theme");
-    }
-    if (persist) {
-      try { global.localStorage.setItem(THEME_KEY, mode); } catch (e) { /* private mode */ }
-    }
-  }
+  /* Theme is handled by core/theme.js (ItTheme) — no duplicate logic here. */
 
   function initTheme() {
-    applyTheme(currentMode(), false);
-    var mql = global.matchMedia && global.matchMedia("(prefers-color-scheme: dark)");
-    if (mql && mql.addEventListener) {
-      mql.addEventListener("change", function () { applyTheme(currentMode(), false); });
+    if (global.ItTheme) {
+      global.ItTheme.set(global.ItTheme.mode()); /* re-apply to sync icons */
     }
-    var btn = el("theme-toggle");
-    if (btn) btn.addEventListener("click", function () {
-      applyTheme(document.documentElement.classList.contains("dark") ? "light" : "dark", true);
-    });
   }
+
 
   function initialsOf(name) {
     var n = String(name || "").trim();

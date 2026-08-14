@@ -3,17 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Create account · Itinari</title>
+  <title>Create account · Itinera</title>
   <link rel="stylesheet" href="assets/css/auth.css" />
-  <script>
-    (function () {
-      var theme = localStorage.getItem("itinari_theme") || "system";
-      var isDark = theme === "dark" || (theme === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches);
-      if (isDark) document.documentElement.classList.add("dark");
+  <script>/* FOUC prevention — default dark */
+    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+    if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
+      document.documentElement.classList.add("dark","fouc-ready");
+    else document.documentElement.classList.add("fouc-ready");
     })();
   </script>
 </head>
-<body data-page="register">
+<body data-page="register" data-layout="public">
   <main class="auth-shell">
     <section class="auth-visual">
       <div class="auth-slides">
@@ -21,7 +21,7 @@
         <div class="auth-slide" style="background-image: url('assets/img/slide2.png');"></div>
         <div class="auth-slide" style="background-image: url('assets/img/slide3.png');"></div>
       </div>
-      <div class="brand">Itinari</div>
+      <div class="brand">Itinera</div>
       <div>
         <h1>Travel like a local.</h1>
         <p>Explore hidden gems, saved spots, and authentic experiences curated by people, not algorithms.</p>
@@ -31,7 +31,7 @@
     <section class="auth-form-side">
       <div class="auth-card">
         <h2>Create account</h2>
-        <p class="sub">Join the Itinari community.</p>
+        <p class="sub">Join the Itinera community.</p>
 
         <form id="auth-form" novalidate>
           <div class="field">
@@ -50,7 +50,7 @@
           <div class="field">
             <label for="password">Password</label>
             <div class="input-wrap">
-              <input id="password" name="password" type="password" autocomplete="new-password" placeholder="At least 8 characters" />
+              <input id="password" name="password" type="password" autocomplete="new-password" placeholder="Create strong password" />
               <button type="button" class="pw-toggle" data-pw-toggle aria-label="Show password" aria-pressed="false">👁</button>
             </div>
             <p class="field-hint" id="hint-password" role="alert"></p>
@@ -59,11 +59,11 @@
             </div>
             <p class="strength-note" id="pw-strength-note"></p>
             <ul class="hint-list" id="pw-checklist">
-              <li data-check="length">At least 8 characters</li>
-              <li data-check="upper">One uppercase letter</li>
-              <li data-check="lower">One lowercase letter</li>
-              <li data-check="digit">One number</li>
-              <li data-check="special">One special character</li>
+              <li data-check="length">8+ chars</li>
+              <li data-check="upper">A-Z</li>
+              <li data-check="lower">a-z</li>
+              <li data-check="digit">0-9</li>
+              <li data-check="special">!@#$</li>
             </ul>
           </div>
 
@@ -108,5 +108,7 @@
   <script src="assets/js/session.js"></script>
   <script src="assets/js/password-toggle.js"></script>
   <script src="assets/js/auth.js"></script>
+  <script src="assets/js/core/topbar.js"></script>
+  <script src="assets/js/core/theme.js"></script>
 </body>
 </html>

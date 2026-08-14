@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -36,8 +36,14 @@
     .log-type.alert { background: var(--danger-bg); color: var(--danger-fg); }
     .log-type.info { background: var(--brand-blue); color: #fff; }
   </style>
-</head>
-<body data-page="admin">
+  <script>/* FOUC prevention — default dark */
+    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+    if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
+      document.documentElement.classList.add("dark","fouc-ready");
+    else document.documentElement.classList.add("fouc-ready");
+    })();
+  </script></head>
+<body data-page="admin" data-layout="admin">
   <a href="#main" class="skip-link">Skip to main content</a>
   <div class="shell">
     <aside class="sidebar">
@@ -109,5 +115,7 @@
   <script src="../assets/js/nav-config.js"></script>
   <script src="../assets/js/admin-chrome.js"></script>
   <script src="../assets/js/admin-notifications.js"></script>
+  <script src="../assets/js/core/topbar.js"></script>
+  <script src="../assets/js/core/theme.js"></script>
 </body>
 </html>

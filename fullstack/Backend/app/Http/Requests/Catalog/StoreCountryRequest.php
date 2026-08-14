@@ -17,9 +17,11 @@ class StoreCountryRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'region_id' => ['nullable', 'integer', 'exists:regions,id'],
             'name' => ['required', 'string', 'max:255'],
             'iso_code' => ['required', 'string', 'max:10'],
             'capital' => ['nullable', 'string', 'max:255'],
+            'flag_url' => ['nullable', 'string', 'max:500'],
             'currency' => ['nullable', 'string', 'max:10'],
             'languages' => ['nullable', 'array'],
         ];
