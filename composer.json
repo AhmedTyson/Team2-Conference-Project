@@ -1,0 +1,8 @@
+{
+  "name": "itinari/project",
+  "description": "Itinera Fullstack Deployment",
+  "type": "project",
+  "require": {
+    "php": "^8.2"
+  }
+}
