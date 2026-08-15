@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Notifications Log · Itinari Admin</title>
+  <link rel="stylesheet" href="../assets/css/admin.css" />
+  <style>
+    .log-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--text-small);
+    }
+    .log-table th, .log-table td {
+      padding: var(--space-3) var(--space-4);
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    .log-table th {
+      font-family: var(--font-mono);
+      color: var(--neutral-fg);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .log-table tbody tr:hover {
+      background: var(--neutral-bg);
+    }
+    .log-type {
+      display: inline-block;
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-size: 10px;
+    }
+    .log-type.system { background: var(--ok-bg); color: var(--ok-fg); }
+    .log-type.alert { background: var(--danger-bg); color: var(--danger-fg); }
+    .log-type.info { background: var(--brand-blue); color: #fff; }
+  </style>
+  <script>/* FOUC prevention — default dark */
+    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+    if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
+      document.documentElement.classList.add("dark","fouc-ready");
+    else document.documentElement.classList.add("fouc-ready");
+    })();
+  </script></head>
+<body data-page="admin" data-layout="admin">
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="sidebar-brand"><span class="brand-mark" aria-hidden="true">IT</span><div class="sidebar-brand-inner"><span class="brand-gate">ITINARI · ADM</span><span class="brand">Departure Control</span></div><button type="button" id="sidebar-collapse" class="icon-btn collapse-btn" aria-label="Collapse sidebar" aria-expanded="true"><span class="icon-panel-left">◀</span></button></div>
+      <nav class="nav" aria-label="Admin"></nav>
+      <div class="sidebar-foot">
+        <button type="button" id="logout-btn" class="btn-ghost btn-block sidebar-logout"><span class="nav-label">Log out</span></button>
+      </div>
+    </aside>
+
+    <main id="main" class="content">
+      <div class="topbar">
+        <div class="topbar-right">
+          <button type="button" id="theme-toggle" class="icon-btn" aria-pressed="false" aria-label="Toggle theme">◐</button>
+        </div>
+      </div>
+      <header class="content-head" style="margin-bottom: var(--space-3);">
+        <div class="right">
+          <p class="label-eyebrow" style="margin: 0 0 0.35rem;">SYSTEM LOGS</p>
+          <h1 style="margin: 0 0 0.25rem 0;">Notifications</h1>
+          <p class="view-sub" style="margin: 0;">Audit log of system-generated notifications</p>
+        </div>
+      </header>
+
+      <div class="kit-toolbar" style="display: flex; gap: 0.75rem; margin-bottom: var(--space-4); align-items: center; flex-wrap: wrap;">
+        <label class="table-search-group" style="flex: 1; min-width: 200px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+          <input id="global-search" class="table-search" type="search" placeholder="Search notification messages, titles, user IDs..." autocomplete="off" aria-label="Search notifications" />
+        </label>
+      </div>
+
+      <section class="ticket ticket-panel" aria-label="System Notifications">
+        <div class="panel-head">
+          <p class="label-eyebrow" style="margin: 0 0 0.25rem;">ADMIN · NOTIFICATION LOG</p>
+          <h2 style="margin: 0;">Global Notifications Log</h2>
+        </div>
+        <div class="panel-body" style="padding: 0; overflow-x: auto;">
+          <table class="log-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>User ID</th>
+                <th>Title</th>
+                <th>Message</th>
+                <th>Created</th>
+              </tr>
+            </thead>
+            <tbody id="admin-notifications-tbody">
+              <tr>
+                <td colspan="5" style="text-align: center; padding: 20px;">Loading logs...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <span class="ticket-edge" aria-hidden="true"></span>
+        <div class="ticket-stub" style="margin-top: 0; padding-top: calc(var(--space-3) + var(--motif-perf)); padding-bottom: var(--space-3); padding-left: var(--space-5); padding-right: var(--space-5);">
+          <span class="label-eyebrow">ITN · LOG · 08-2026</span>
+          <span class="dash" style="flex: 1; margin: 0 var(--space-4);"></span>
+          <span class="sil" aria-hidden="true" style="height: 2rem;"><span></span><span></span><span></span></span>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="site-banner" role="status">
+    <span id="site-banner-msg"></span><span id="site-banner-drain" aria-hidden="true"></span>
+  </div>
+
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/session.js"></script>
+  <script src="../assets/js/nav-config.js"></script>
+  <script src="../assets/js/admin-chrome.js"></script>
+  <script src="../assets/js/admin-notifications.js"></script>
+  <script src="../assets/js/core/topbar.js"></script>
+  <script src="../assets/js/core/theme.js"></script>
+</body>
+</html>

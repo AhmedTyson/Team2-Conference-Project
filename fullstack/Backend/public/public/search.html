@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Search Catalog · Itinera</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome 6 (free) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+
+  <!-- GSAP -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <!-- Shared styles -->
+  <link rel="stylesheet" href="../assets/css/tokens.css" />
+  <link rel="stylesheet" href="../assets/css/public.css" />
+
+  <style>
+    .search-box {
+      background: hsl(var(--card));
+      border: 1px solid hsl(var(--border));
+      border-radius: 999px;
+      padding: 0.9rem 1.25rem;
+      color: hsl(var(--foreground));
+      width: 100%;
+      font-size: 1rem;
+      transition: all 0.25s;
+    }
+    .search-box:focus {
+      outline: none;
+      border-color: hsl(var(--accent));
+      box-shadow: 0 0 0 4px hsl(var(--accent) / 0.15);
+      background: hsl(var(--card));
+    }
+    .search-box::placeholder { color: hsl(var(--muted-foreground)); }
+    html.dark .search-box {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+    html.dark .search-box:focus {
+      border-color: rgba(245, 158, 11, 0.55);
+      box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.15);
+      background: rgba(255, 255, 255, 0.07);
+    }
+    html.dark .search-box::placeholder { color: rgba(255, 255, 255, 0.35); }
+  </style>
+
+  <script>window.APP_URL = ".";</script>
+  <script src="../assets/js/core/config.js?v=1786177601"></script>
+  <script src="../assets/js/core/api.js"></script>
+  <script src="../assets/js/core/session.js"></script>
+  <script src="../assets/js/utils/catalog-common.js"></script>
+  <script>window.Itinari && (window.Itinari.CONFIG.publicPage = true);</script>
+  <script>/* FOUC prevention — default dark */
+    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+    if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
+      document.documentElement.classList.add("dark","fouc-ready");
+    else document.documentElement.classList.add("fouc-ready");
+    })();
+  </script>
+</head>
+<body data-layout="public">
+
+  <div class="toast" id="toast">
+    <i class="fas fa-check-circle text-green-400" aria-hidden="true"></i>
+    <span id="toastMessage">Success</span>
+  </div>
+
+  <div class="modal-overlay" id="authModal">
+    <div class="modal-box">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold" id="authTitle">Welcome to Itinera</h3>
+        <button type="button" class="text-white/50 hover:text-white text-xl cursor-pointer" id="authCloseBtn" title="Close modal" aria-label="Close modal">
+          <i class="fas fa-times" aria-hidden="true"></i>
+        </button>
+      </div>
+      <div class="auth-tabs flex border border-white/10 rounded-full overflow-hidden mb-4">
+        <button type="button" id="tabLogin" class="on">Log in</button>
+        <button type="button" id="tabRegister">Sign up</button>
+      </div>
+
+      <form id="loginForm" novalidate>
+        <label for="loginEmail"><i class="fas fa-envelope mr-1" aria-hidden="true"></i>Email</label>
+        <input type="email" id="loginEmail" placeholder="you@example.com" required />
+        <label for="loginPassword"><i class="fas fa-lock mr-1" aria-hidden="true"></i>Password</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" required />
+        <button type="submit" class="btn-white w-full mt-4 flex items-center justify-center gap-2">
+          <i class="fas fa-arrow-right" aria-hidden="true"></i>Log in
+        </button>
+        <p class="text-sm mt-2 text-white/40" id="loginStatus" role="status"></p>
+        <p class="text-xs text-white/30 mt-3 pt-3 border-t border-white/10">
+          <i class="fas fa-info-circle mr-1" aria-hidden="true"></i>Demo: <span class="text-white/60">admin@example.com</span> / <span class="text-white/60">password</span>
+        </p>
+      </form>
+
+      <form id="registerForm" style="display:none;" novalidate>
+        <label for="regName"><i class="fas fa-user mr-1" aria-hidden="true"></i>Full name</label>
+        <input type="text" id="regName" placeholder="Jane Doe" required />
+        <label for="regEmail"><i class="fas fa-envelope mr-1" aria-hidden="true"></i>Email</label>
+        <input type="email" id="regEmail" placeholder="you@example.com" required />
+        <label for="regPhone"><i class="fas fa-phone mr-1" aria-hidden="true"></i>Phone</label>
+        <input type="tel" id="regPhone" placeholder="+1 555 000 0000" />
+        <label for="regPassword"><i class="fas fa-lock mr-1" aria-hidden="true"></i>Password</label>
+        <input type="password" id="regPassword" placeholder="Min. 8 characters" required minlength="8" />
+        <button type="submit" class="btn-white w-full mt-4 flex items-center justify-center gap-2">
+          <i class="fas fa-user-plus" aria-hidden="true"></i>Create account
+        </button>
+        <p class="text-sm mt-2 text-white/40" id="registerStatus" role="status"></p>
+      </form>
+    </div>
+  </div>
+
+  <div class="page-scroll">
+    <div class="giant-text"><h1>SEARCH</h1></div>
+    <div class="content-layer">
+
+        <!-- Top Navigation Header -->
+  <header class="app-nav-header">
+    <div class="app-nav-container">
+      <a href="../public/index.html" class="app-brand">
+        <span class="brand-mark">IT</span>
+        <span class="brand-name">Itinera</span>
+      </a>
+      <nav class="app-nav-links" aria-label="Public Navigation">
+        <a href="../public/index.html" class="app-nav-link"><i class="fas fa-home"></i> <span>Home</span></a>
+        <a href="../public/explore.html" class="app-nav-link"><i class="fas fa-compass"></i> <span>Explore</span></a>
+        <a href="../public/weather.html" class="app-nav-link"><i class="fas fa-cloud-sun"></i> <span>Weather</span></a>
+        <a href="../public/plans.html" class="app-nav-link"><i class="fas fa-crown"></i> <span>Plans</span></a>
+        <a href="../public/about.html" class="app-nav-link"><i class="fas fa-info-circle"></i> <span>About</span></a>
+        <a href="../public/contact.html" class="app-nav-link"><i class="fas fa-envelope"></i> <span>Contact</span></a>
+        <a href="../public/help.html" class="app-nav-link"><i class="fas fa-circle-question"></i> <span>Help</span></a>
+      </nav>
+      <div class="topbar-right" id="navAuthContainer">
+        <button type="button" id="theme-toggle" class="icon-btn theme-toggle" aria-label="Toggle theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.9" y1="4.9" x2="6.3" y2="6.3"/><line x1="17.7" y1="17.7" x2="19.1" y2="19.1"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.9" y1="19.1" x2="6.3" y2="17.7"/><line x1="17.7" y1="6.3" x2="19.1" y2="4.9"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+        </button>
+        <a href="../auth/login.html" class="guest-actions">
+          <span>Sign in</span>
+          <i class="fas fa-arrow-right text-xs"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+      <div class="cat-subnav">
+        <a href="destinations.html"><i class="fas fa-map-marked-alt" aria-hidden="true"></i>Destinations</a>
+        <a href="hotels.html"><i class="fas fa-hotel" aria-hidden="true"></i>Hotels</a>
+        <a href="restaurants.html"><i class="fas fa-utensils" aria-hidden="true"></i>Restaurants</a>
+        <a href="attractions.html"><i class="fas fa-camera" aria-hidden="true"></i>Attractions</a>
+        <a href="../admin/categories.html"><i class="fas fa-th-large" aria-hidden="true"></i>Categories</a>
+        <a href="search.html" class="on"><i class="fas fa-search" aria-hidden="true"></i>Search</a>
+      </div>
+
+      <div class="max-w-6xl mx-auto w-full mt-6">
+        <div class="text-center mb-6">
+          <h2 class="section-title">Search the catalog</h2>
+          <p class="section-sub mx-auto">One box for destinations, hotels, restaurants and attractions.</p>
+        </div>
+
+        <div class="max-w-2xl mx-auto relative mb-6">
+          <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-white/35" aria-hidden="true"></i>
+          <input type="search" id="searchInput" class="search-box pl-12" placeholder="Try: Paris, seafood, museum, Nile..." autocomplete="off" />
+        </div>
+        <p class="text-center text-xs text-white/30 mb-8" id="searchNote" hidden>
+          <i class="fas fa-info-circle mr-1" aria-hidden="true"></i>Hotels are searched within the first 10 catalog entries (API limit).
+        </p>
+
+        <div id="searchResults" class="space-y-8"></div>
+      </div>
+
+      <footer class="footer relative z-10 mt-12">
+        <div class="max-w-6xl mx-auto px-6 py-10">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="md:col-span-2">
+              <a href="index.html" class="flex items-center gap-2 no-underline text-white">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="text-red-500 flex-shrink-0" aria-hidden="true">
+                  <path d="M12 2C12 2 13 8 18 12C13 16 12 22 12 22C12 22 11 16 6 12C11 8 12 2 12 2Z" fill="currentColor" />
+                </svg>
+                <span class="text-lg font-semibold tracking-wide">Itinera</span>
+              </a>
+              <p class="text-white/45 text-sm leading-relaxed mt-3 max-w-sm">
+                Plan it. Live it. From iconic cities to hidden gems — expert-crafted journeys with 24/7 support.
+              </p>
+            </div>
+            <div>
+              <h5 class="font-semibold text-sm mb-3 flex items-center gap-2"><i class="fas fa-compass text-white/30" aria-hidden="true"></i>Explore</h5>
+              <ul class="space-y-2 text-sm text-white/50">
+                <li><a href="about.html" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]" aria-hidden="true"></i>About Us</a></li>
+                <li><a href="explore.html" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]" aria-hidden="true"></i>Explore</a></li>
+                <li><a href="plans.html" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]" aria-hidden="true"></i>Pricing</a></li>
+                <li><a href="../app/booking.html" class="hover:text-white transition flex items-center gap-2"><i class="fas fa-chevron-right text-[10px]" aria-hidden="true"></i>Booking</a></li>
+              </ul>
+            </div>
+            <div>
+              <h5 class="font-semibold text-sm mb-3 flex items-center gap-2"><i class="fas fa-phone text-white/30" aria-hidden="true"></i>Contact</h5>
+              <ul class="space-y-2 text-sm text-white/50">
+                <li class="flex items-center gap-2"><i class="fas fa-envelope w-4 text-white/30" aria-hidden="true"></i>help@itinera.travel</li>
+                <li class="flex items-center gap-2"><i class="fas fa-phone w-4 text-white/30" aria-hidden="true"></i>+1 (555) 123-4567</li>
+                <li class="flex items-center gap-2"><i class="fas fa-map-marker-alt w-4 text-white/30" aria-hidden="true"></i>Cairo, Egypt</li>
+              </ul>
+              <div class="flex gap-3 mt-4">
+                <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition" title="X" aria-label="X"><i class="fab fa-x-twitter text-white/60" aria-hidden="true"></i></a>
+                <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition" title="Instagram" aria-label="Instagram"><i class="fab fa-instagram text-white/60" aria-hidden="true"></i></a>
+                <a href="#" class="w-9 h-9 rounded-full bg-white/10 border border-white/10 flex items-center justify-center hover:bg-white/20 transition" title="Facebook" aria-label="Facebook"><i class="fab fa-facebook-f text-white/60" aria-hidden="true"></i></a>
+              </div>
+            </div>
+          </div>
+          <div class="flex flex-col sm:flex-row justify-between items-center gap-2 mt-8 pt-6 border-t border-white/10 text-xs text-white/35">
+            <span>&copy; <span id="footerYear"></span> Itinera · Team 2 Conference Project</span>
+            <span class="flex items-center gap-1.5">Made with <i class="fas fa-heart text-red-400" aria-hidden="true"></i> in Egypt</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Shared application bootstrap (session restore, auth modal wiring, session UI) -->
+  
+  <script src="../assets/js/pages/catalog-search.js?v=2026081001"></script>
+
+  <script src="../assets/js/core/theme.js"></script>
+  <script src="../assets/js/core/topbar.js"></script>
+</body>
+</html>

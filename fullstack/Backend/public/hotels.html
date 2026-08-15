@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hotels — Itinera</title>
+  <meta name="description" content="Browse hotels from the Itinera travel planner.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script>(function(){try{if(localStorage.getItem('itinera_theme')==='dark')document.documentElement.setAttribute('data-theme','dark');}catch(e){}})();</script>
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/pages.css">
+  <link rel="stylesheet" href="assets/css/tokens.css">
+  <link rel="stylesheet" href="assets/css/app.css">
+  <script>/* FOUC prevention — default dark */
+    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+    if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
+      document.documentElement.classList.add("dark","fouc-ready");
+    else document.documentElement.classList.add("fouc-ready");
+    })();
+  </script></head>
+<body data-page="hotels" class="is-booting" data-layout="public">
+  <div class="app">
+      <!-- Top Navigation Header -->
+  <header class="app-nav-header">
+    <div class="app-nav-container">
+      <a href="index.html" class="app-brand">
+        <span class="brand-mark">IT</span>
+        <span class="brand-name">Itinera</span>
+      </a>
+      <nav class="app-nav-links" aria-label="Public Navigation">
+        <a href="index.html" class="app-nav-link"><i class="fas fa-home"></i> <span>Home</span></a>
+        <a href="explore.html" class="app-nav-link"><i class="fas fa-compass"></i> <span>Explore</span></a>
+        <a href="weather.html" class="app-nav-link"><i class="fas fa-cloud-sun"></i> <span>Weather</span></a>
+        <a href="plans.html" class="app-nav-link"><i class="fas fa-crown"></i> <span>Plans</span></a>
+        <a href="about.html" class="app-nav-link"><i class="fas fa-info-circle"></i> <span>About</span></a>
+        <a href="contact.html" class="app-nav-link"><i class="fas fa-envelope"></i> <span>Contact</span></a>
+        <a href="help.html" class="app-nav-link"><i class="fas fa-circle-question"></i> <span>Help</span></a>
+      </nav>
+      <div class="topbar-right" id="navAuthContainer">
+        <button type="button" id="theme-toggle" class="icon-btn theme-toggle" aria-label="Toggle theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.9" y1="4.9" x2="6.3" y2="6.3"/><line x1="17.7" y1="17.7" x2="19.1" y2="19.1"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.9" y1="19.1" x2="6.3" y2="17.7"/><line x1="17.7" y1="6.3" x2="19.1" y2="4.9"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+        </button>
+        <a href="auth/login.html" class="guest-actions">
+          <span>Sign in</span>
+          <i class="fas fa-arrow-right text-xs"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+    <main class="app__main">
+
+  <main id="main">
+    <section class="page-hero">
+      <div class="container">
+        <p class="eyebrow"><span class="knum">02</span> / STAY</p>
+        <h1>Hotels</h1>
+        <p class="hero-sub">Where you rest matters — a shortlist of rooms with character.</p>
+      </div>
+    </section>
+
+    <section class="section" aria-label="All hotels">
+      <div class="container">
+        <div class="toolbar" role="search" aria-label="Filter hotels">
+          <label class="search-box">
+            <span class="search-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            </span>
+            <input type="search" class="search-input" id="searchInput" placeholder="Search hotels…" autocomplete="off">
+          </label>
+          <div class="chip-group" id="filterChips" aria-label="Filter by destination"></div>
+          <div class="chip-group" id="starChips" aria-label="Filter by star rating"></div>
+          <div class="toolbar-row">
+            <span class="result-count" id="resultCount" aria-live="polite">—</span>
+            <label class="search-box" style="flex:0 0 auto" aria-label="Sort hotels">
+              <select class="select" id="sortSelect">
+                <option value="price-asc">Price ↑</option>
+                <option value="price-desc">Price ↓</option>
+                <option value="rating">Rating</option>
+              </select>
+            </label>
+          </div>
+        </div>
+        <div class="grid" id="results"></div>
+        <div class="pagination" id="pagination" aria-label="Pagination"></div>
+        <div class="state-host" id="stateHost" aria-live="polite"></div>
+      </div>
+    </section>
+  </main>
+
+    </main>
+
+    <footer class="app__footer"></footer>
+  </div>
+
+  <div class="toast-host" id="toastHost" aria-live="assertive"></div>
+  <div class="modal" id="modalHost" hidden></div>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/session.js"></script>
+  <script src="assets/js/nav-config.js"></script>
+  <script src="assets/js/app-shell.js"></script>
+  <script src="assets/js/core/config.js"></script>
+  <script src="assets/js/core/api.js"></script>
+  <script src="assets/js/core/session.js"></script>
+  <script src="assets/js/ui.js"></script>
+  <script src="assets/js/pages/hotels.js"></script>
+  <script>
+    It.app.boot();
+  </script>
+  <script src="./assets/js/core/theme.js"></script>
+  <script src="assets/js/core/topbar.js"></script>
+</body>
+</html>

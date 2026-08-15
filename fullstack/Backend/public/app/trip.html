@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trip · Travel Planner</title>
+  <link rel="stylesheet" href="../assets/css/tokens.css" />
+  <link rel="stylesheet" href="../assets/css/app.css" />
+  <script>/* FOUC prevention — default dark */
+    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+    if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
+      document.documentElement.classList.add("dark","fouc-ready");
+    else document.documentElement.classList.add("fouc-ready");
+    })();
+  </script></head>
+<body data-page="trips" class="is-booting" data-layout="app">
+  <div class="app">
+    <header class="app__header">
+      <a id="app-brand" class="app__brand" href="/home.html"></a>
+      <nav id="app-nav" class="nav" aria-label="Main navigation"></nav>
+      <div id="app-user" class="app__user">
+        <button id="theme-toggle" type="button" class="btn btn--ghost" aria-label="Toggle theme">◐</button>
+      </div>
+    </header>
+
+    <main class="app__main">
+      <div class="page" id="trip-page">
+        <div class="skeleton skeleton--title"></div>
+        <div class="skeleton skeleton--card"></div>
+      </div>
+    </main>
+
+    <footer class="app__footer">
+      <span>Travel Planner</span>
+      <span>•</span>
+      <span>Plan. Explore. Remember.</span>
+    </footer>
+  </div>
+
+  <script src="../assets/js/core/config.js"></script>
+  <script src="../assets/js/core/api.js"></script>
+  <script src="../assets/js/core/session.js"></script>
+  <script src="../assets/js/core/nav-config.js"></script>
+  <script src="../assets/js/core/app-shell.js"></script>
+  <script src="../assets/js/trip.js"></script>
+  </body>
+</html>

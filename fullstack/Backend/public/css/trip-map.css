@@ -1,0 +1,17 @@
+/* ============================================================
+   Itinera – Trip Map (trip-map.html)
+   Dark cinematic theme
+   ============================================================ */
+.map-box {
+    height: 70vh; background: rgba(255, 255, 255, 0.03); border: 1px dashed rgba(255, 255, 255, 0.25); border-radius: 1rem;
+    position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; color: rgba(255, 255, 255, 0.5);
+}
+.map-box.sm { height: 280px; }
+.map-overlay {
+    position: absolute; top: 16px; left: 16px; background: #141414; border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 0.75rem; padding: 12px 16px; max-width: 260px; max-height: 60%; overflow-y: auto;
+}
+.map-overlay h4 { font-size: 14px; margin-bottom: 6px; }
+.map-overlay ul { list-style: none; font-size: 13px; color: rgba(255, 255, 255, 0.75); }
+.map-overlay ul li { padding: 3px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08); display: flex; align-items: center; gap: 8px; }
+.map-overlay ul li:last-child { border-bottom: none; }

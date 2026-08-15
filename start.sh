@@ -26,6 +26,11 @@ if [ -d "fullstack/Backend" ]; then
     php artisan storage:link --force || true
     php artisan migrate --force --seed || true
 
+    if [ -d "../Frontend" ]; then
+        echo "==> Syncing Frontend assets into Laravel public directory..."
+        cp -r ../Frontend/* public/ 2>/dev/null || true
+    fi
+
     cd ../..
 fi
 

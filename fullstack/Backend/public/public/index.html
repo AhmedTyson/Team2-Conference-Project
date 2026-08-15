@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Itinera · Luxury Travel Experiences & Concierge</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome 6 Free -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Custom Luxury Stylesheet -->
+  <link rel="stylesheet" href="../assets/css/public.css" />
+  <script>/* FOUC prevention — default dark */
+    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+    if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
+      document.documentElement.classList.add("dark","fouc-ready");
+    else document.documentElement.classList.add("fouc-ready");
+    })();
+  </script>
+</head>
+<body class="bg-[hsl(var(--background))] text-[hsl(var(--foreground))] bg-sculpture-relief" data-layout="public">
+
+  <!-- ============================================================
+       TOAST NOTIFICATIONS
+       ============================================================ -->
+  <div class="toast" id="appToast" role="status">
+    <i class="fas fa-circle-info text-amber-400"></i>
+    <span id="appToastMsg">Notification message</span>
+  </div>
+
+  <!-- ============================================================
+       AUTH MODAL (Sign In / Sign Up)
+       ============================================================ -->
+  <div class="modal-overlay" id="authModal" aria-hidden="true">
+    <div class="modal-box">
+      <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-bold tracking-tight">Welcome to Itinera</h3>
+        <button class="text-white/40 hover:text-white transition text-lg" id="authCloseBtn" aria-label="Close modal">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <div class="auth-tabs">
+        <button id="tabLogin" class="on">Sign In</button>
+        <button id="tabRegister">Sign Up</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="loginForm">
+        <div>
+          <label for="loginEmail">Email Address</label>
+          <input type="email" id="loginEmail" placeholder="you@example.com" required autocomplete="email" />
+        </div>
+        <div>
+          <label for="loginPassword">Password</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" required autocomplete="current-password" />
+        </div>
+        <div class="flex justify-between items-center text-xs mt-3 text-white/50">
+          <a href="../auth/forgot.html" class="hover:text-white transition">Forgot password?</a>
+        </div>
+        <button type="submit" class="btn-primary w-full justify-center mt-6">
+          <span>Sign In to Itinera</span>
+          <i class="fas fa-arrow-right text-xs"></i>
+        </button>
+      </form>
+
+      <!-- Register Form -->
+      <form id="registerForm" style="display: none;">
+        <div>
+          <label for="regName">Full Name</label>
+          <input type="text" id="regName" placeholder="Jane Doe" required autocomplete="name" />
+        </div>
+        <div>
+          <label for="regEmail">Email Address</label>
+          <input type="email" id="regEmail" placeholder="you@example.com" required autocomplete="email" />
+        </div>
+        <div>
+          <label for="regPhone">Phone (Optional)</label>
+          <input type="tel" id="regPhone" placeholder="+1 555 000 0000" autocomplete="tel" />
+        </div>
+        <div>
+          <label for="regPassword">Password (Min. 8 chars)</label>
+          <input type="password" id="regPassword" placeholder="Min. 8 characters" minlength="8" required autocomplete="new-password" />
+        </div>
+        <button type="submit" class="btn-primary w-full justify-center mt-6">
+          <span>Create Account</span>
+          <i class="fas fa-arrow-right text-xs"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="app-wrapper">
+
+    <!-- ============================================================
+         HERO SECTION
+         ============================================================ -->
+    <header class="hero-wrapper" id="heroWrapper" style="background-image: url('https://images.pexels.com/photos/1486222/pexels-photo-1486222.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+      
+      <!-- Giant Background Text Overlay -->
+      <div class="giant-text" aria-hidden="true">
+        <h1 id="hero-title">NEW YORK</h1>
+      </div>
+
+      <!-- Top Navigation Header -->
+  <div class="content-layer">
+          <!-- Top Navigation Header -->
+  <header class="app-nav-header">
+    <div class="app-nav-container">
+      <a href="../public/index.html" class="app-brand">
+        <span class="brand-mark">IT</span>
+        <span class="brand-name">Itinera</span>
+      </a>
+      <nav class="app-nav-links" aria-label="Public Navigation">
+        <a href="../public/index.html" class="app-nav-link"><i class="fas fa-home"></i> <span>Home</span></a>
+        <a href="../public/explore.html" class="app-nav-link"><i class="fas fa-compass"></i> <span>Explore</span></a>
+        <a href="../public/weather.html" class="app-nav-link"><i class="fas fa-cloud-sun"></i> <span>Weather</span></a>
+        <a href="../public/plans.html" class="app-nav-link"><i class="fas fa-crown"></i> <span>Plans</span></a>
+        <a href="../public/about.html" class="app-nav-link"><i class="fas fa-info-circle"></i> <span>About</span></a>
+        <a href="../public/contact.html" class="app-nav-link"><i class="fas fa-envelope"></i> <span>Contact</span></a>
+        <a href="../public/help.html" class="app-nav-link"><i class="fas fa-circle-question"></i> <span>Help</span></a>
+      </nav>
+      <div class="topbar-right" id="navAuthContainer">
+        <button type="button" id="theme-toggle" class="icon-btn theme-toggle" aria-label="Toggle theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.9" y1="4.9" x2="6.3" y2="6.3"/><line x1="17.7" y1="17.7" x2="19.1" y2="19.1"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.9" y1="19.1" x2="6.3" y2="17.7"/><line x1="17.7" y1="6.3" x2="19.1" y2="4.9"/></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+        </button>
+        <a href="../auth/login.html" class="guest-actions">
+          <span>Sign in</span>
+          <i class="fas fa-arrow-right text-xs"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+        <!-- Hero Main Content Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end pb-8">
+          
+          <!-- Hero Left Column -->
+          <div class="lg:col-span-7 space-y-6">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-medium tracking-wide uppercase text-white/90">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>Luxury Bespoke Journeys</span>
+            </div>
+
+            <h2 class="text-4xl sm:text-6xl font-black tracking-tight leading-[1.08] text-white">
+              Explore the world with extraordinary precision.
+            </h2>
+
+            <p class="text-base sm:text-lg text-white/70 max-w-xl font-light leading-relaxed">
+              Curated luxury itineraries, verified 5-star accommodations, and seamless concierge reservations tailored to your signature travel style.
+            </p>
+
+            <div class="flex flex-wrap items-center gap-3 pt-2">
+              <a href="explore.html" class="btn-primary">
+                <span>Start Exploring</span>
+                <i class="fas fa-compass text-xs"></i>
+              </a>
+              <a href="../app/planner.html" class="btn-outline">
+                <i class="fas fa-wand-magic-sparkles text-xs"></i>
+                <span>Plan a Trip</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Hero Right Column: Interactive Destination Carousel Card -->
+          <div class="lg:col-span-5 flex justify-end">
+            <div class="carousel-card" id="carousel-card">
+              <div class="relative overflow-hidden rounded-xl">
+                <img id="carousel-img" src="https://images.pexels.com/photos/1486222/pexels-photo-1486222.jpeg?auto=compress&cs=tinysrgb&w=600" alt="New York" class="w-full h-[190px] object-cover transition-opacity duration-500" />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-3.5">
+                  <h4 id="carousel-name" class="text-xl font-bold text-white">New York</h4>
+                  <p id="carousel-location" class="text-xs text-white/80 flex items-center gap-1">
+                    <i class="fas fa-location-dot text-white/60"></i>
+                    <span id="carousel-location-text">United States</span>
+                  </p>
+                </div>
+              </div>
+
+              <!-- Progress & Slide Counter -->
+              <div class="flex items-center gap-3 px-1 mt-3">
+                <span id="carousel-text" class="text-xs font-semibold text-white/70 w-12 tabular-nums">01/05</span>
+                <div class="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
+                  <div id="carousel-progress" class="h-full bg-white w-[20%] transition-all duration-500 ease-out rounded-full"></div>
+                </div>
+              </div>
+
+              <p id="carousel-desc" class="text-xs text-white/60 px-1 mt-2.5 leading-relaxed line-clamp-2">
+                The city that never sleeps — iconic skyline, endless energy, and world-class culture.
+              </p>
+
+              <!-- Controls -->
+              <div class="flex items-center justify-between px-1 mt-3 pt-2 border-t border-white/10">
+                <button id="carousel-prev" class="text-white/60 hover:text-white transition w-7 h-7 flex items-center justify-center rounded-full hover:bg-white/10" aria-label="Previous destination">
+                  <i class="fas fa-chevron-left text-xs"></i>
+                </button>
+                <div class="flex items-center gap-1.5" id="carousel-dots"></div>
+                <button id="carousel-next" class="text-white/60 hover:text-white transition w-7 h-7 flex items-center justify-center rounded-full hover:bg-white/10" aria-label="Next destination">
+                  <i class="fas fa-chevron-right text-xs"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ============================================================
+         MARQUEE TICKER
+         ============================================================ -->
+    <div class="ticker" aria-hidden="true">
+      <div class="ticker__track">
+        <span class="ticker__content">
+          CURATED DESTINATIONS ✦ 5-STAR HOTELS ✦ BESPOKE TOURS ✦ MICHELIN DINING ✦ VERIFIED REVIEWS ✦ LIVE WEATHER RADAR ✦ PRIVATE CONCIERGE ✦ SEAMLESS CHECKOUT ✦ CURATED DESTINATIONS ✦ 5-STAR HOTELS ✦ BESPOKE TOURS ✦
+        </span>
+      </div>
+    </div>
+
+    <!-- ============================================================
+         PLATFORM KPI METRICS GRID (Wired to /api/stats/summary)
+         ============================================================ -->
+    <section class="sections-wrapper py-12">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+        
+        <div class="glass-card p-6 text-center">
+          <div class="stat-number text-white" id="stat-hotels">120+</div>
+          <div class="text-xs uppercase tracking-wider text-white/50 mt-1 font-medium">Hotels Listed</div>
+        </div>
+
+        <div class="glass-card p-6 text-center">
+          <div class="stat-number text-white" id="stat-tours">45+</div>
+          <div class="text-xs uppercase tracking-wider text-white/50 mt-1 font-medium">Curated Tours</div>
+        </div>
+
+        <div class="glass-card p-6 text-center">
+          <div class="stat-number text-white" id="stat-flights">85+</div>
+          <div class="text-xs uppercase tracking-wider text-white/50 mt-1 font-medium">Flight Routes</div>
+        </div>
+
+        <div class="glass-card p-6 text-center">
+          <div class="stat-number text-white" id="stat-reviews">1.2K</div>
+          <div class="text-xs uppercase tracking-wider text-white/50 mt-1 font-medium">Verified Reviews</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CURATED DESTINATIONS & REGION EXPLORER
+         ============================================================ -->
+    <section class="sections-wrapper pt-4">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+        <div>
+          <p class="text-xs uppercase tracking-widest text-white/50 font-semibold mb-2">Curated Worldwide</p>
+          <h2 class="section-title">Discover Iconic Destinations</h2>
+          <p class="section-sub">Filter destinations across global continents or search by regional highlights.</p>
+        </div>
+
+        <a href="explore.html" class="btn-outline self-start md:self-auto text-sm">
+          <span>View Full Catalog</span>
+          <i class="fas fa-arrow-right text-xs"></i>
+        </a>
+      </div>
+
+      <!-- Continent Filter Pills -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-6" id="regionPills">
+        <button class="chip on">All Continents</button>
+      </div>
+
+      <!-- Destinations Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="topDestGrid">
+        <div class="col-span-full py-12 text-center text-white/50">
+          <i class="fas fa-circle-notch fa-spin mr-2"></i> Loading curated destinations...
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         4-STEP TRIP PLANNING SHOWCASE
+         ============================================================ -->
+    <section class="sections-wrapper">
+      <div class="glass-card p-8 sm:p-12">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+          <p class="text-xs uppercase tracking-widest text-white/50 font-semibold mb-2">How It Works</p>
+          <h2 class="section-title">Plan Your Journey in 4 Simple Steps</h2>
+          <p class="section-sub mx-auto">From initial inspiration to confirmed reservation, experience frictionless travel orchestration.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 relative">
+          
+          <!-- Step 1 -->
+          <div class="text-center space-y-3">
+            <div class="w-14 h-14 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center text-xl font-bold mx-auto text-white">1</div>
+            <h3 class="text-lg font-bold text-white">Choose Destination</h3>
+            <p class="text-xs text-white/60 leading-relaxed">Browse curated global regions, cultural landmarks, and hidden gems.</p>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="text-center space-y-3">
+            <div class="w-14 h-14 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center text-xl font-bold mx-auto text-white">2</div>
+            <h3 class="text-lg font-bold text-white">Select Dates & Travel</h3>
+            <p class="text-xs text-white/60 leading-relaxed">Configure travel dates, party size, and private flight options.</p>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="text-center space-y-3">
+            <div class="w-14 h-14 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center text-xl font-bold mx-auto text-white">3</div>
+            <h3 class="text-lg font-bold text-white">Customize Experience</h3>
+            <p class="text-xs text-white/60 leading-relaxed">Select luxury villas, dining reservations, and guided VIP excursions.</p>
+          </div>
+
+          <!-- Step 4 -->
+          <div class="text-center space-y-3">
+            <div class="w-14 h-14 rounded-2xl bg-white/10 border border-white/10 flex items-center justify-center text-xl font-bold mx-auto text-white">4</div>
+            <h3 class="text-lg font-bold text-white">Instant Confirmation</h3>
+            <p class="text-xs text-white/60 leading-relaxed">Receive itemized itineraries, concierge support, and payment receipt.</p>
+          </div>
+
+        </div>
+
+        <div class="text-center mt-10">
+          <a href="../app/planner.html" class="btn-primary">
+            <i class="fas fa-wand-magic-sparkles text-xs"></i>
+            <span>Launch Interactive AI Planner</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         WHY CHOOSE ITINERA (VALUE PILLARS)
+         ============================================================ -->
+    <section class="sections-wrapper">
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <p class="text-xs uppercase tracking-widest text-white/50 font-semibold mb-2">The Itinera Standard</p>
+        <h2 class="section-title">Why Discerning Travelers Choose Us</h2>
+        <p class="section-sub mx-auto">We combine modern digital convenience with classic white-glove concierge attention.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <div class="glass-card p-8 space-y-4">
+          <div class="w-12 h-12 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center text-xl text-amber-400">
+            <i class="fas fa-shield-halved"></i>
+          </div>
+          <h3 class="text-xl font-bold">Verified Excellence</h3>
+          <p class="text-sm text-white/60 leading-relaxed">
+            Every hotel, flight route, and culinary partner undergoes rigorous vetting to ensure unforgettable quality.
+          </p>
+        </div>
+
+        <div class="glass-card p-8 space-y-4">
+          <div class="w-12 h-12 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center text-xl text-amber-400">
+            <i class="fas fa-user-tie"></i>
+          </div>
+          <h3 class="text-xl font-bold">24/7 Dedicated Concierge</h3>
+          <p class="text-sm text-white/60 leading-relaxed">
+            Direct access to dedicated travel experts who handle custom adjustments, transfers, and immediate inquiries.
+          </p>
+        </div>
+
+        <div class="glass-card p-8 space-y-4">
+          <div class="w-12 h-12 rounded-xl bg-white/10 border border-white/10 flex items-center justify-center text-xl text-emerald-400">
+            <i class="fas fa-credit-card"></i>
+          </div>
+          <h3 class="text-xl font-bold">Transparent Pricing</h3>
+          <p class="text-sm text-white/60 leading-relaxed">
+            No surprise fees or hidden surcharges. Enjoy transparent itemized statements with guaranteed best rates.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         FOOTER
+         ============================================================ -->
+    <footer class="app-footer">
+      <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-8 pb-12">
+        
+        <div class="md:col-span-2 space-y-4">
+          <a href="index.html" class="flex items-center gap-2 text-xl font-bold tracking-tight text-white">
+            <span class="w-7 h-7 rounded-full bg-white text-black flex items-center justify-center font-black text-xs">IT</span>
+            <span>Itinera</span>
+          </a>
+          <p class="text-sm text-white/50 max-w-sm leading-relaxed">
+            The premier platform for curated luxury travel, bespoke itinerary orchestration, and verified boutique hospitality.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="text-xs uppercase tracking-wider text-white font-semibold mb-3">Explore</h4>
+          <ul class="space-y-2 text-sm text-white/60">
+            <li><a href="explore.html">Destinations</a></li>
+            <li><a href="explore.html?type=hotels">Hotels</a></li>
+            <li><a href="weather.html">Weather Radar</a></li>
+            <li><a href="plans.html">Membership Plans</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-xs uppercase tracking-wider text-white font-semibold mb-3">Company</h4>
+          <ul class="space-y-2 text-sm text-white/60">
+            <li><a href="about.html">About Us</a></li>
+            <li><a href="contact.html">Contact Us</a></li>
+            <li><a href="help.html">Help Center</a></li>
+            <li><a href="../agency/index.html">Agency Portal</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="text-xs uppercase tracking-wider text-white font-semibold mb-3">Account</h4>
+          <ul class="space-y-2 text-sm text-white/60">
+            <li><a href="../auth/login.html">Sign In</a></li>
+            <li><a href="../auth/register.html">Sign Up</a></li>
+            <li><a href="../app/dashboard.html">Traveler Hub</a></li>
+            <li><a href="../admin/index.html">Admin Suite</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="max-w-7xl mx-auto pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-white/40 gap-4">
+        <span>&copy; <span id="footerYear"></span> Itinera · Team 2 Conference Project. All rights reserved.</span>
+        <div class="flex gap-6">
+          <a href="help.html">Privacy Policy</a>
+          <a href="help.html">Terms of Service</a>
+          <a href="contact.html">Support</a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="../assets/js/core/config.js"></script>
+  <script src="../assets/js/core/api.js"></script>
+  <script src="../assets/js/core/session.js"></script>
+    <script src="../assets/js/modules/public/public-home.js"></script>
+  <script src="../assets/js/core/topbar.js"></script>
+  <script src="../assets/js/core/theme.js"></script>
+</body>
+</html>

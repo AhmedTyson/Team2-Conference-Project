@@ -13,7 +13,7 @@ use App\Models\Commerce\Subscription;
 use App\Models\Trips\Trip;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect('/', '/login.html');
+Route::redirect('/', '/index.html');
 
 // Temporary route for visual Mailable testing in local environments
 if (app()->environment('local')) {

@@ -1,0 +1,390 @@
+/* ── Catalog (Discovery) styles: lists, details, search, categories ── */
+
+/* Skeleton loading blocks */
+.skeleton-block {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 1rem;
+  overflow: hidden;
+  position: relative;
+}
+.skeleton-block::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.06), transparent);
+  animation: sk-shimmer 1.4s infinite;
+}
+@keyframes sk-shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ── Catalog sub-navigation (Destinations · Hotels · Restaurants · …) ── */
+.cat-subnav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 1.25rem 0 2rem;
+}
+.cat-subnav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.cat-subnav a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+.cat-subnav a.on {
+  background: rgba(239, 68, 68, 0.15);
+  border-color: rgba(239, 68, 68, 0.45);
+  color: #fca5a5;
+}
+
+/* ── Catalog cards ── */
+.cat-card {
+  position: relative;
+  display: block;
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 1rem;
+  padding: 0.75rem;
+  transition: all 0.3s;
+  cursor: pointer;
+  overflow: hidden;
+  color: inherit;
+  text-decoration: none;
+}
+.cat-card:hover {
+  transform: scale(1.02);
+  background: rgba(255, 255, 255, 0.08);
+}
+.cat-card .cat-thumb {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+}
+.cat-card .cat-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.cat-card .cat-thumb .img-ph {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  color: rgba(255, 255, 255, 0.2);
+}
+.cat-card .cat-name {
+  font-weight: 600;
+  font-size: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  color: #fff;
+}
+.cat-card .cat-meta {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-top: 0.25rem;
+  flex-wrap: wrap;
+}
+.cat-card .cat-desc {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 0.3rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Heart (favourite) button over thumbnails */
+.heart-btn {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.6rem;
+  z-index: 2;
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(10, 10, 10, 0.55);
+  color: rgba(255, 255, 255, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.heart-btn:hover {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  transform: scale(1.1);
+}
+.heart-btn.on {
+  background: rgba(239, 68, 68, 0.85);
+  border-color: rgba(239, 68, 68, 0.9);
+  color: #fff;
+}
+
+/* Rating stars */
+.stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  font-size: 0.72rem;
+  color: #fbbf24;
+  letter-spacing: 0.05em;
+}
+.stars .stars-num {
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+  margin-left: 0.3rem;
+}
+
+/* Chips / badges */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+}
+.chip.red {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.35);
+  color: #fca5a5;
+}
+.chip.green {
+  background: rgba(74, 222, 128, 0.1);
+  border-color: rgba(74, 222, 128, 0.3);
+  color: #86efac;
+}
+
+/* ── Detail hero ── */
+.cat-hero {
+  position: relative;
+  border-radius: 1.5rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 2rem;
+}
+.cat-hero img {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  display: block;
+}
+.cat-hero .cat-hero-shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10, 10, 10, 0.15) 0%, rgba(10, 10, 10, 0.55) 70%, rgba(10, 10, 10, 0.9) 100%);
+}
+.cat-hero .cat-hero-caption {
+  position: absolute;
+  left: 1.5rem;
+  right: 1.5rem;
+  bottom: 1.25rem;
+}
+.cat-hero h1 {
+  font-size: 1.9rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* ── Detail facts grid ── */
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
+}
+.fact {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 0.9rem;
+  padding: 0.9rem 1rem;
+}
+.fact .fact-label {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.35);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.fact .fact-value {
+  margin-top: 0.35rem;
+  font-weight: 700;
+  color: #fff;
+  font-size: 0.92rem;
+}
+
+/* ── Destination pin map (deterministic local renderer) ── */
+.map-frame {
+  position: relative;
+  width: 100%;
+  height: 340px;
+  border-radius: 1.25rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    radial-gradient(circle at 20% 25%, rgba(239, 68, 68, 0.12), transparent 40%),
+    radial-gradient(circle at 80% 70%, rgba(74, 222, 128, 0.08), transparent 40%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01)),
+    #0d0d0d;
+}
+.map-frame svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.map-grid-line { stroke: rgba(255, 255, 255, 0.05); }
+.map-pin-dest { fill: #ef4444; }
+.map-pin-dest-ring { fill: rgba(239, 68, 68, 0.25); }
+.map-pin-other { fill: #fbbf24; }
+.map-pin-other-ring { fill: rgba(251, 191, 36, 0.2); }
+.map-pin-label { fill: rgba(255, 255, 255, 0.75); font-size: 10px; font-weight: 600; }
+.map-coords {
+  position: absolute;
+  left: 0.75rem;
+  bottom: 0.75rem;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.45);
+  background: rgba(10, 10, 10, 0.6);
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* ── Review section ── */
+.review-avg {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.review-avg .big-score {
+  font-size: 2.4rem;
+  font-weight: 800;
+  line-height: 1;
+  color: #fff;
+}
+.review-stub-note {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.45);
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 0.9rem;
+  padding: 0.8rem 1rem;
+  margin-top: 1rem;
+}
+
+/* Review form modal */
+.review-stars {
+  display: flex;
+  gap: 0.35rem;
+}
+.review-star {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.18);
+  cursor: pointer;
+  padding: 0.15rem;
+  transition: color 0.15s, transform 0.15s;
+}
+.review-star:hover {
+  transform: scale(1.12);
+}
+.review-star.on {
+  color: #fbbf24;
+}
+.field-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 0.75rem;
+  padding: 0.7rem 0.9rem;
+  color: #fff;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border 0.15s;
+  resize: vertical;
+}
+.field-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 0.35rem;
+}
+.field-input:focus {
+  border-color: rgba(239, 68, 68, 0.6);
+}
+.field-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+/* Search input */
+.search-box {
+  display: flex;
+  gap: 0.6rem;
+  max-width: 640px;
+  margin: 0 auto 2rem;
+}
+.search-box input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  padding: 0.85rem 1.4rem;
+  color: #fff;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border 0.15s;
+}
+.search-box input:focus { border-color: rgba(239, 68, 68, 0.6); }
+.search-box input::placeholder { color: rgba(255, 255, 255, 0.3); }
+
+/* Result group headers */
+.result-group h3 {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.4);
+  margin: 1.6rem 0 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.result-group h3 i { color: #ef4444; }
