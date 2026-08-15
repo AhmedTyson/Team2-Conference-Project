@@ -6,18 +6,18 @@
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
-        "php": "^8.2 || ^8.3 || ^8.4 || ^8.5",
+        "php": "^8.2",
         "barryvdh/laravel-dompdf": "^3.1",
         "dedoc/scramble": "^0.13.36",
-        "laravel/framework": "^13.0",
-        "laravel/tinker": "^3.0",
+        "laravel/framework": "^12.0 || ^13.0",
+        "laravel/tinker": "^2.10 || ^3.0",
         "ext-zip": "*",
         "lucianotonet/groq-laravel": "^1.0",
-        "openspout/openspout": "^5.10",
+        "openspout/openspout": "^4.24 || ^5.0",
         "paymob/php-library": "^1.0",
-        "predis/predis": "^3.5",
-        "spatie/laravel-permission": "^8.0",
-        "tymon/jwt-auth": "^2.3"
+        "predis/predis": "^2.0 || ^3.0",
+        "spatie/laravel-permission": "^6.16 || ^8.0",
+        "tymon/jwt-auth": "^2.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -27,7 +27,7 @@
         "laravel/telescope": "^5.21",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.6",
-        "phpunit/phpunit": "^13.0"
+        "phpunit/phpunit": "^11.0 || ^12.0 || ^13.0"
     },
     "autoload": {
         "psr-4": {
@@ -86,6 +86,9 @@
         }
     },
     "config": {
+        "platform": {
+            "php": "8.2.33"
+        },
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,
