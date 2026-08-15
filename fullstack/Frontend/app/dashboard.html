@@ -405,35 +405,14 @@
     else document.documentElement.classList.add("fouc-ready");
     })();
   </script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body data-page="dashboard" class="is-booting" data-layout="app">
   <a href="#main-content-target" class="skip-link">Skip to main content</a>
 
   <div class="app">
-    <!-- Top Navigation Header (Universal Glassmorphism Header) -->
-    <header class="app-nav-header">
-      <div class="app-nav-container">
-        <a href="../public/index.html" class="app-brand">
-          <span class="brand-mark">IT</span>
-          <span class="brand-name">Itinera</span>
-        </a>
-        <nav class="app-nav-links" aria-label="Customer Navigation">
-          <a href="dashboard.html" class="app-nav-link active"><i class="fas fa-chart-pie"></i> <span>Dashboard</span></a>
-          <a href="trips.html" class="app-nav-link"><i class="fas fa-plane-departure"></i> <span>My Trips</span></a>
-          <a href="planner.html" class="app-nav-link"><i class="fas fa-route"></i> <span>Planner</span></a>
-          <a href="chat.html" class="app-nav-link"><i class="fas fa-sparkles text-amber-400"></i> <span>AI Concierge</span></a>
-          <a href="favourites.html" class="app-nav-link"><i class="fas fa-heart"></i> <span>Saved</span></a>
-          <a href="my-reviews.html" class="app-nav-link"><i class="fas fa-star text-amber-400"></i> <span>My Reviews</span></a>
-          <a href="../public/explore.html" class="app-nav-link"><i class="fas fa-compass"></i> <span>Explore</span></a>
-        </nav>
-        <div class="topbar-right" id="navAuthContainer">
-          <button type="button" id="theme-toggle" class="icon-btn theme-toggle" aria-label="Toggle theme">
-            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.9" y1="4.9" x2="6.3" y2="6.3"/><line x1="17.7" y1="17.7" x2="19.1" y2="19.1"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.9" y1="19.1" x2="6.3" y2="17.7"/><line x1="17.7" y1="6.3" x2="19.1" y2="4.9"/></svg>
-            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
-          </button>
-        </div>
-      </div>
-    </header>
+    <!-- Top Navigation Header -->
+    <header class="app-nav-header"></header>
 
     <!-- Main Content -->
     <main class="app__main" id="main-content-target">
@@ -624,5 +603,8 @@
   <script src="../assets/js/core/nav-config.js"></script>
   <script src="../assets/js/core/app-shell.js"></script>
   <script src="../assets/js/modules/customer/dashboard.js"></script>
+  <script src="../assets/js/core/navbar-component.js"></script>
+  <script src="../assets/js/core/topbar.js"></script>
+  <script src="../assets/js/core/theme.js"></script>
   </body>
 </html>

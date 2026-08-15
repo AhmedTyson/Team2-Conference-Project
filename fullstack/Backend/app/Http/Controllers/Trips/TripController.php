@@ -23,6 +23,21 @@ class TripController extends Controller
         $this->tripService = $tripService;
     }
 
+    public function index(Request $request): JsonResponse
+    {
+        $perPage = min((int) $request->input('per_page', 20) ?: 20, 100);
+        $query = Trip::where('user_id', $request->user()->id)
+            ->with(['destinations'])
+            ->latest();
+
+        if ($request->has('page') || $request->has('per_page')) {
+            $trips = $query->paginate($perPage);
+            return ApiResponse::success(TripResource::collection($trips), 'Trips retrieved successfully');
+        }
+
+        return ApiResponse::success(TripResource::collection($query->get()), 'Trips retrieved successfully');
+    }
+
     public function creationData(Request $request): JsonResponse
     {
         $data = $this->tripService->getCreationData();

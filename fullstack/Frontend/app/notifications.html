@@ -1,98 +1,181 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Notifications · Travel Planner</title>
+  <title>Notifications · Itinera</title>
+  
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Core Tokens & Layout Styles -->
   <link rel="stylesheet" href="../assets/css/tokens.css" />
   <link rel="stylesheet" href="../assets/css/app.css" />
+  <link rel="stylesheet" href="../assets/css/public.css" />
+
   <style>
-    .notification-item {
+    .notif-card {
+      position: relative;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      border-radius: 1rem;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 0.875rem;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .notif-card:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.5);
+    }
+    .notif-card.unread {
+      background: rgba(255, 255, 255, 0.05);
+      border-left: 4px solid var(--accent, #f59e0b);
+      border-color: rgba(245, 158, 11, 0.25);
+    }
+    .notif-card.unread::after {
+      content: '';
+      position: absolute;
+      top: 1.25rem;
+      right: 1.25rem;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #f59e0b;
+      box-shadow: 0 0 10px #f59e0b;
+    }
+    .notif-icon-box {
+      width: 44px;
+      height: 44px;
+      border-radius: 0.75rem;
       display: flex;
-      align-items: flex-start;
-      gap: var(--sp-4);
-      padding: var(--sp-5);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-lg);
-      margin-bottom: var(--sp-3);
-      transition: all 0.3s ease;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      flex-shrink: 0;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
-    .notification-item.unread {
-      background: var(--surface-2);
-      border-left: 4px solid var(--primary);
+    .notif-icon-box.system { color: #38bdf8; background: rgba(56, 189, 248, 0.1); border-color: rgba(56, 189, 248, 0.2); }
+    .notif-icon-box.booking { color: #10b981; background: rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.2); }
+    .notif-icon-box.payment { color: #f59e0b; background: rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.2); }
+    .notif-icon-box.ai { color: #a855f7; background: rgba(168, 85, 247, 0.1); border-color: rgba(168, 85, 247, 0.2); }
+    .notif-icon-box.alert { color: #ef4444; background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); }
+    
+    .filter-chip {
+      padding: 0.5rem 1.15rem;
+      border-radius: 9999px;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.6);
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      transition: all 0.2s ease;
+      cursor: pointer;
     }
-    .notification-icon {
-      font-size: 24px;
-      color: var(--primary);
+    .filter-chip:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.08);
     }
-    .notification-content {
-      flex: 1;
-    }
-    .notification-title {
+    .filter-chip.active {
+      color: #000000;
+      background: #ffffff;
+      border-color: #ffffff;
       font-weight: 600;
-      margin-bottom: var(--sp-1);
     }
-    .notification-text {
-      color: var(--text-muted);
-      font-size: var(--fs-sm);
-    }
-    .notification-time {
-      font-size: var(--fs-xs);
-      color: var(--text-faint);
-      margin-top: var(--sp-2);
-    }
-    .notification-actions {
-      display: flex;
-      gap: var(--sp-2);
+    .notif-body-text {
+      color: rgba(255, 255, 255, 0.75);
+      font-size: 0.875rem;
+      line-height: 1.6;
+      margin-top: 0.35rem;
+      white-space: pre-line;
+      word-break: break-word;
     }
   </style>
+
   <script>/* FOUC prevention — default dark */
     (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
     if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
       document.documentElement.classList.add("dark","fouc-ready");
     else document.documentElement.classList.add("fouc-ready");
     })();
-  </script></head>
-<body data-page="notifications" class="is-booting" data-layout="app">
-  <div class="app">
-    <header class="app__header">
-      <a id="app-brand" class="app__brand" href="/home.html"></a>
-      <nav id="app-nav" class="nav" aria-label="Main navigation"></nav>
-      <div id="app-user" class="app__user">
-        <button id="theme-toggle" type="button" class="btn btn--ghost" aria-label="Toggle theme">◐</button>
-      </div>
-    </header>
+  </script>
+</head>
+<body data-page="notifications" class="bg-[#0a0a0a] text-white min-h-screen" data-layout="app">
+  <div class="app min-h-screen flex flex-col">
+    <!-- Top Navigation Header -->
+    <header class="app-nav-header"></header>
 
-    <main class="app__main">
-      <div class="page container" style="max-width: 800px; margin-top: var(--sp-10);">
-        <header class="page-header" style="display: flex; justify-content: space-between; align-items: flex-end;">
-          <div>
-            <p class="page-header__eyebrow">Inbox</p>
-            <h1 class="page-header__title">Notifications</h1>
+    <!-- Main Content Area -->
+    <main class="app__main flex-1 max-w-4xl w-full mx-auto px-4 py-10">
+      <!-- Header Bar -->
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 border-b border-white/10 pb-6">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-xs font-semibold text-amber-400 uppercase tracking-widest mb-2">
+            <i class="fas fa-bell text-xs"></i>
+            <span>Real-time Activity</span>
           </div>
-          <button id="mark-all-read" class="btn btn--ghost" style="font-size: var(--fs-sm);">Mark all as read</button>
-        </header>
+          <h1 class="text-3xl font-black tracking-tight text-white">Notifications</h1>
+          <p class="text-sm text-white/60 mt-1">Updates, itinerary revisions, payment confirmations, and concierge alerts.</p>
+        </div>
+        <div class="flex items-center gap-3 self-start sm:self-auto">
+          <button id="mark-all-read" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/10 text-xs font-semibold text-white transition">
+            <i class="fas fa-check-double text-xs"></i>
+            <span>Mark All as Read</span>
+          </button>
+        </div>
+      </div>
 
-        <div id="notifications-list">
-          <div class="skeleton" style="height: 100px; margin-bottom: var(--sp-3); border-radius: var(--radius-lg);"></div>
-          <div class="skeleton" style="height: 100px; margin-bottom: var(--sp-3); border-radius: var(--radius-lg);"></div>
+      <!-- Filter Chips -->
+      <div class="flex items-center gap-2 mb-6 overflow-x-auto pb-2" id="notif-filters">
+        <button class="filter-chip active" data-filter="all">All Notifications (<span id="count-all">0</span>)</button>
+        <button class="filter-chip" data-filter="unread">Unread (<span id="count-unread">0</span>)</button>
+        <button class="filter-chip" data-filter="read">Read (<span id="count-read">0</span>)</button>
+      </div>
+
+      <!-- Notifications List Container -->
+      <div id="notifications-list" class="space-y-3">
+        <!-- Skeleton Loaders -->
+        <div class="notif-card animate-pulse flex items-start gap-4">
+          <div class="w-11 h-11 rounded-xl bg-white/10"></div>
+          <div class="flex-1 space-y-2">
+            <div class="h-4 bg-white/10 rounded w-1/3"></div>
+            <div class="h-3 bg-white/10 rounded w-5/6"></div>
+            <div class="h-3 bg-white/10 rounded w-1/2"></div>
+          </div>
+        </div>
+        <div class="notif-card animate-pulse flex items-start gap-4">
+          <div class="w-11 h-11 rounded-xl bg-white/10"></div>
+          <div class="flex-1 space-y-2">
+            <div class="h-4 bg-white/10 rounded w-1/4"></div>
+            <div class="h-3 bg-white/10 rounded w-4/5"></div>
+          </div>
         </div>
       </div>
     </main>
 
-    <footer class="app__footer">
-      <span>Travel Planner</span>
-      <span>•</span>
+    <!-- Footer -->
+    <footer class="app__footer border-t border-white/10 py-6 text-center text-xs text-white/40">
+      <span>Itinera Luxury Travel & Concierge Platform</span>
+      <span class="mx-2">•</span>
       <span>Plan. Explore. Remember.</span>
     </footer>
   </div>
 
+  <!-- Global Scripts -->
   <script src="../assets/js/core/config.js"></script>
   <script src="../assets/js/core/api.js"></script>
   <script src="../assets/js/core/session.js"></script>
   <script src="../assets/js/core/nav-config.js"></script>
   <script src="../assets/js/core/app-shell.js"></script>
   <script src="../assets/js/notifications.js"></script>
-  </body>
+  <script src="../assets/js/core/navbar-component.js"></script>
+  <script src="../assets/js/core/topbar.js"></script>
+  <script src="../assets/js/core/theme.js"></script>
+</body>
 </html>

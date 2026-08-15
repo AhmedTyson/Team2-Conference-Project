@@ -9,9 +9,10 @@ use Illuminate\Database\Eloquent\Collection;
 
 class DestinationRepository implements DestinationRepositoryInterface
 {
-    public function getAll(array $filters = []): Collection
+    public function getAll(array $filters = [])
     {
-        return Destination::query()
+        $perPage = min((int) ($filters['per_page'] ?? request('per_page', 20)) ?: 20, 100);
+        $query = Destination::query()
             ->with('country.region')
             ->withCount(['hotels', 'trips'])
             ->when(
@@ -22,8 +23,13 @@ class DestinationRepository implements DestinationRepositoryInterface
                 $w->where('name', 'like', "%{$filters['query']}%")
                     ->orWhere('city_name', 'like', "%{$filters['query']}%")
                     ->orWhereHas('country', fn ($c) => $c->where('name', 'like', "%{$filters['query']}%"));
-            }))
-            ->get();
+            }));
+
+        if (request()->has('page') || request()->has('per_page') || ! empty($filters['per_page']) || ! empty($filters['page'])) {
+            return $query->paginate($perPage);
+        }
+
+        return $query->get();
     }
 
     public function getById($id): Destination

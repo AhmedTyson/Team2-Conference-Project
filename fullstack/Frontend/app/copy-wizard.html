@@ -13,8 +13,11 @@
       document.documentElement.classList.add("dark","fouc-ready");
     else document.documentElement.classList.add("fouc-ready");
     })();
-  </script></head>
+  </script>  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+</head>
 <body data-page="copy-wizard" data-auth="protected" data-layout="app">
+  <header class="app-nav-header"></header>
 
     <nav class="sidebar" id="sidebar"></nav>
 
@@ -101,5 +104,6 @@
 
     <script src="../js/common.js"></script>
     <script src="../js/copy-wizard.js"></script>
-  </body>
+    <script src="../assets/js/core/navbar-component.js"></script>
+</body>
 </html>

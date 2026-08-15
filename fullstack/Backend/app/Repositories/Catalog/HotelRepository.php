@@ -11,7 +11,8 @@ class HotelRepository implements HotelRepositoryInterface
 {
     public function getAll()
     {
-        return Hotel::with('destination')->paginate(10);
+        $perPage = min((int) request('per_page', 20) ?: 20, 100);
+        return Hotel::with('destination')->paginate($perPage);
     }
 
     public function getById($id)

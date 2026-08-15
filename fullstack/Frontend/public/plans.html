@@ -29,23 +29,7 @@
   <div class="relative z-10 flex flex-col min-h-screen">
     
     <!-- Topbar Navigation -->
-    <header class="app-nav-header">
-      <div class="app-nav-container">
-        <a href="index.html" class="app-brand">
-          <div class="brand-mark">IT</div>
-          <span class="brand-name">Itinera</span>
-        </a>
-        <nav class="app-nav-links">
-          <a href="index.html" class="app-nav-link"><i class="fas fa-compass"></i> Explore</a>
-          <a href="community.html" class="app-nav-link"><i class="fas fa-users"></i> Community</a>
-          <a href="plans.html" class="app-nav-link active"><i class="fas fa-crown"></i> Plans</a>
-        </nav>
-        <div class="flex items-center gap-3" id="navAuthContainer">
-          <a href="../auth/login.html" class="btn-outline text-xs px-4 py-2">Log In</a>
-          <a href="../auth/register.html" class="btn-primary text-xs px-4 py-2">Get Started</a>
-        </div>
-      </div>
-    </header>
+    <header class="app-nav-header"></header>
 
     <!-- Main Pricing Section -->
     <main class="max-w-6xl mx-auto px-6 py-12 flex-1 w-full">
@@ -167,6 +151,7 @@
   <script src="../assets/js/core/session.js"></script>
   <script src="../js/plans-core.js"></script>
   <script src="../assets/js/core/theme.js"></script>
+  <script src="../assets/js/core/navbar-component.js"></script>
   <script src="../assets/js/core/topbar.js"></script>
 
   <script>
@@ -176,14 +161,7 @@
 
       // Check auth for topbar
       if (window.Itinari && window.Itinari.session) {
-        window.Itinari.session.bootAuth().then(function (auth) {
-          var c = document.getElementById("navAuthContainer");
-          if (!c) return;
-          if (auth && auth.user) {
-            var name = auth.user.name || auth.user.email || "Traveler";
-            c.innerHTML = '<a href="../app/dashboard.html" class="chip"><div class="chip-avatar">' + name.charAt(0).toUpperCase() + '</div><i class="fas fa-chevron-down text-xs opacity-60"></i></a>';
-          }
-        });
+        window.
       }
 
       // Wire direct Paymob gateway buttons

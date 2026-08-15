@@ -177,7 +177,12 @@
       const res = await initiateCheckout(planId, {}, idempotencyKey);
 
       if (!res.ok) {
-        const msg = (res.body && res.body.message) || "Unable to initiate Paymob payment. Please try again.";
+        let msg = "Unable to initiate Paymob payment. Please try again.";
+        if (res.body) {
+          if (typeof res.body.message === "string" && res.body.message) msg = res.body.message;
+          else if (res.body.error && typeof res.body.error === "string") msg = res.body.error;
+          else if (res.body.error && typeof res.body.error.message === "string" && res.body.error.message) msg = res.body.error.message;
+        }
         if (typeof global.toast === "function") global.toast(msg, true);
         else alert(msg);
 

@@ -13,9 +13,15 @@ class AttractionRepository implements AttractionRepositoryInterface
         return Attraction::query()->when($trashed, fn ($q) => $q->onlyTrashed())->get();
     }
 
-    public function getForPublic(): Collection
+    public function getForPublic()
     {
-        return Attraction::with(['destination', 'category'])->get();
+        $perPage = min((int) request('per_page', 20) ?: 20, 100);
+        $query = Attraction::with(['destination', 'category']);
+        if (request()->has('page') || request()->has('per_page')) {
+            return $query->paginate($perPage);
+        }
+
+        return $query->get();
     }
 
     public function findById($id, array $relations = []): Attraction

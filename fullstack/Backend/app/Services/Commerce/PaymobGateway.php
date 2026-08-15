@@ -52,11 +52,13 @@ class PaymobGateway implements PaymentGatewayInterface
 
     public function createIntention(string $referenceId, int $amountCents, string $currency, array $billingData): array
     {
+        $frontendUrl = env('FRONTEND_URL', 'http://localhost:8080');
+
         if (empty($this->secretKey) || str_starts_with($this->secretKey, 'mock') || app()->environment('testing')) {
             return [
                 'success' => true,
-                'client_secret' => 'mock_client_secret_' . uniqid(),
-                'checkout_url' => 'https://accept.paymob.com/unifiedcheckout/?publicKey=' . ($this->publicKey ?: 'mock') . '&clientSecret=mock_client_secret',
+                'client_secret' => 'simulated_cs_' . uniqid(),
+                'checkout_url' => rtrim($frontendUrl, '/') . '/app/receipt.html?mock=1&order_ref=' . urlencode($referenceId),
                 'message' => 'Simulated test checkout created',
             ];
         }
@@ -104,11 +106,15 @@ class PaymobGateway implements PaymentGatewayInterface
 
                 if (str_contains($this->secretKey, 'test') || app()->environment('local', 'testing')) {
                     Log::warning('Paymob Intention API returned error; falling back to simulated test checkout URL.', ['error' => $status['message'] ?? '']);
-                    $clientSecret = 'test_cs_' . md5($referenceId);
+                    $clientSecret = 'simulated_cs_' . md5($referenceId);
+                    $checkoutUrl = (!empty($this->publicKey) && !str_starts_with($this->publicKey, 'mock'))
+                        ? "https://accept.paymob.com/unifiedcheckout/?publicKey={$this->publicKey}&clientSecret={$clientSecret}"
+                        : rtrim($frontendUrl, '/') . '/app/receipt.html?mock=1&order_ref=' . urlencode($referenceId);
+
                     return [
                         'success' => true,
                         'client_secret' => $clientSecret,
-                        'checkout_url' => "https://accept.paymob.com/unifiedcheckout/?publicKey={$this->publicKey}&clientSecret={$clientSecret}",
+                        'checkout_url' => $checkoutUrl,
                         'message' => 'Simulated test checkout created',
                     ];
                 }

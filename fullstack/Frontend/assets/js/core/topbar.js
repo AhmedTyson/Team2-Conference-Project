@@ -504,6 +504,11 @@
   /* ── Main Render Function ── */
   function render() {
     var layout = getLayout();
+    if (el("global-navbar") || doc.querySelector(".app-nav-header") || doc.querySelector('script[src*="navbar-component.js"]') || layout === "auth") {
+      var legacyInject = doc.querySelector(".auth-shell > .topbar-right, .app__header > .topbar-right");
+      if (legacyInject) legacyInject.remove();
+      return;
+    }
     ensureCmdPalette();
     var user = getCurrentUser();
     var prefix = getBasePrefix();
@@ -512,7 +517,7 @@
     var bar = doc.querySelector(".topbar-right") || el("app-user") || el("navAuthContainer") || doc.querySelector(".top-bar .flex");
 
     if (!bar) {
-      var topbar = doc.querySelector(".topbar, .app__header, .top-bar, .nav-pill, .auth-shell");
+      var topbar = doc.querySelector(".topbar, .app__header, .top-bar, .nav-pill");
       if (topbar) {
         bar = doc.createElement("div");
         bar.className = "topbar-right";

@@ -43,7 +43,9 @@
       p.startsWith("/v1/orders") || p.startsWith("v1/orders") ||
       p.startsWith("/v1/plans") || p.startsWith("v1/plans") ||
       p.startsWith("/v1/checkout") || p.startsWith("v1/checkout") ||
-      p.startsWith("/v1/weather") || p.startsWith("v1/weather")
+      p.startsWith("/v1/weather") || p.startsWith("v1/weather") ||
+      p.startsWith("/v1/ai/") || p.startsWith("v1/ai/") ||
+      p.startsWith("/v1/review/") || p.startsWith("v1/review/")
     ) {
       p = p.replace(/^\/?v1\//, "/");
     }
@@ -294,17 +296,34 @@
     return !!(body && body.errors && typeof body.errors === "object");
   }
 
+  async function apiFetchAll(path, opts) {
+    var res = await apiGet(path, opts);
+    var items = unwrapData(res);
+    return Array.isArray(items) ? items : (items && Array.isArray(items.data) ? items.data : []);
+  }
+
   It.apiPost = apiPost;
   It.apiGet = apiGet;
   It.apiPut = apiPut;
   It.apiPatch = apiPatch;
   It.apiDelete = apiDelete;
+  It.fetchAll = apiFetchAll;
   It.extractToken = extractToken;
   It.isFieldErrors = isFieldErrors;
   It.normalizePath = normalizePath;
   It.unwrapData = unwrapData;
   It.parseMeta = parseMeta;
   It.refreshToken = refreshToken;
+
+  It.api = {
+    get: apiGet,
+    post: apiPost,
+    put: apiPut,
+    patch: apiPatch,
+    delete: apiDelete,
+    fetchAll: apiFetchAll,
+    request: request
+  };
 
   function esc(value) {
     return String(value === null || value === undefined ? "" : value)

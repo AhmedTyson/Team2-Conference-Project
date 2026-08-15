@@ -92,8 +92,40 @@
     }).catch(function () { /* fallback */ });
   }
 
+  var CURRENT_PAGE = 1;
+  var PER_PAGE = 20;
+  var ALL_ITEMS = [];
+
+  function updatePage(page) {
+    CURRENT_PAGE = page;
+    var start = (CURRENT_PAGE - 1) * PER_PAGE;
+    var paged = ALL_ITEMS.slice(start, start + PER_PAGE);
+    render(paged);
+
+    var pagContainer = document.getElementById("catalog-pagination");
+    if (!pagContainer && grid && grid.parentNode) {
+      pagContainer = document.createElement("div");
+      pagContainer.id = "catalog-pagination";
+      pagContainer.className = "w-full col-span-full mt-6";
+      grid.parentNode.insertBefore(pagContainer, grid.nextSibling);
+    }
+    if (pagContainer && global.ItPaginate) {
+      global.ItPaginate.render({
+        container: pagContainer,
+        totalItems: ALL_ITEMS.length,
+        currentPage: CURRENT_PAGE,
+        itemsPerPage: PER_PAGE,
+        onPageChange: function (newPage) {
+          updatePage(newPage);
+          if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    }
+  }
+
   function load(tab) {
     TAB = tab;
+    CURRENT_PAGE = 1;
     var params = [];
     if (TAB === "destinations") {
       if (REGION && REGION !== "all") params.push("region=" + encodeURIComponent(REGION));
@@ -114,13 +146,10 @@
       var data = (It.unwrapData && It.unwrapData(res)) || (res && res.body && res.body.data) || res.body;
       var items = data;
       if (data && typeof data === "object" && Array.isArray(data.data)) items = data.data;
-      if (Array.isArray(items)) {
-        render(items);
-      } else if (Array.isArray(res.body)) {
-        render(res.body);
-      } else {
-        render([]);
-      }
+      if (!Array.isArray(items) && Array.isArray(res.body)) items = res.body;
+      if (!Array.isArray(items)) items = [];
+      ALL_ITEMS = items;
+      updatePage(1);
     }).catch(function () {
       if (grid) {
         grid.innerHTML = '<div class="error-card" style="grid-column:1/-1;">' +

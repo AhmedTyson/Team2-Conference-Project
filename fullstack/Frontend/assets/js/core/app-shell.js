@@ -69,6 +69,7 @@
   }
 
   function initHeader(user) {
+    if (el("global-navbar")) return;
     var p = (global.location.pathname.indexOf("/app/") !== -1 || global.location.pathname.indexOf("/admin/") !== -1 || global.location.pathname.indexOf("/agency/") !== -1 || global.location.pathname.indexOf("/auth/") !== -1 || global.location.pathname.indexOf("/public/") !== -1) ? "../" : "";
     
     var brand = el("app-brand");

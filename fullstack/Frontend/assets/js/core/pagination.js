@@ -1,128 +1,101 @@
 /**
- * pagination.js — Canonical Response Unwrapping & Pagination Controller
- * Handles Laravel LengthAwarePaginator metadata & renders accessible UI controls.
- * 
- * @module core/pagination
+ * core/pagination.js — Universal Pagination UI Component (20 cards per page).
+ * @date    2026-08-16
+ * @purpose Renders Tailwind glassmorphism pagination controls & info counters.
  */
 (function (global) {
-  'use strict';
+  "use strict";
 
-  var ItPagination = {
-    /**
-     * Unwraps any API response payload and extracts data records + pagination metadata.
-     * @param {Object} res API response
-     * @returns {{ items: Array, meta: { currentPage: number, lastPage: number, perPage: number, total: number, from: number, to: number } }}
-     */
-    unwrap: function (res) {
-      if (!res) return { items: [], meta: { currentPage: 1, lastPage: 1, perPage: 15, total: 0, from: 0, to: 0 } };
+  var doc = global.document;
 
-      var payload = res.body !== undefined ? res.body : res;
-      var rawData = payload.data !== undefined ? payload.data : payload;
-      var rawMeta = payload.meta || (res.meta !== undefined ? res.meta : null);
+  function renderPagination(options) {
+    // options: { container, totalItems, currentPage, itemsPerPage, onPageChange }
+    var container = typeof options.container === "string" ? doc.getElementById(options.container) : options.container;
+    if (!container) return;
 
-      var items = [];
-      if (Array.isArray(rawData)) {
-        items = rawData;
-      } else if (rawData && Array.isArray(rawData.data)) {
-        items = rawData.data;
-        if (!rawMeta && rawData.current_page) {
-          rawMeta = rawData;
-        }
-      } else if (rawData && typeof rawData === 'object') {
-        items = [rawData];
-      }
+    var totalItems = Number(options.totalItems) || 0;
+    var itemsPerPage = Number(options.itemsPerPage) || 20;
+    var currentPage = Number(options.currentPage) || 1;
+    var totalPages = Math.max(1, Math.ceil(totalItems / itemsPerPage));
 
-      var meta = {
-        currentPage: 1,
-        lastPage: 1,
-        perPage: items.length || 15,
-        total: items.length,
-        from: items.length ? 1 : 0,
-        to: items.length
-      };
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
 
-      if (rawMeta) {
-        meta.currentPage = rawMeta.current_page || rawMeta.currentPage || 1;
-        meta.lastPage = rawMeta.last_page || rawMeta.lastPage || 1;
-        meta.perPage = rawMeta.per_page || rawMeta.perPage || 15;
-        meta.total = rawMeta.total !== undefined ? rawMeta.total : items.length;
-        meta.from = rawMeta.from !== undefined ? rawMeta.from : (meta.currentPage - 1) * meta.perPage + 1;
-        meta.to = rawMeta.to !== undefined ? rawMeta.to : Math.min(meta.currentPage * meta.perPage, meta.total);
-      }
+    var startItem = totalItems === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
+    var endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
-      return { items: items, meta: meta };
-    },
+    var html = `
+      <div class="w-full flex flex-col sm:flex-row items-center justify-between gap-4 mt-10 pt-6 border-t border-white/10 text-xs font-sans" id="pagination-controls-bar">
+        <div class="text-white/60 font-medium">
+          Showing <span class="text-amber-400 font-bold">${startItem}</span>–<span class="text-amber-400 font-bold">${endItem}</span> of <span class="text-white font-bold">${totalItems}</span> results
+        </div>
 
-    /**
-     * Render pagination controls into a target DOM container.
-     * @param {HTMLElement|string} container Target element or selector
-     * @param {Object} meta Pagination metadata
-     * @param {Function} onPageChange Callback when page is changed (pageNumber)
-     */
-    renderControls: function (container, meta, onPageChange) {
-      var el = typeof container === 'string' ? document.querySelector(container) : container;
-      if (!el || !meta) return;
+        <div class="flex items-center gap-1.5 flex-wrap">
+          <button type="button" class="btn-prev-page px-3.5 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/15 text-white/80 hover:text-white font-semibold transition disabled:opacity-40 disabled:pointer-events-none" ${currentPage === 1 ? 'disabled' : ''}>
+            <i class="fas fa-chevron-left text-[10px] mr-1"></i> Previous
+          </button>
+    `;
 
-      if (meta.lastPage <= 1) {
-        el.innerHTML = '';
-        el.style.display = 'none';
-        return;
-      }
-
-      el.style.display = 'flex';
-      var html = '<div class="pagination flex items-center justify-between gap-4 w-full py-4">';
-      html += '<div class="text-xs text-white/50">Showing <span class="text-white font-medium">' + meta.from + '</span> to <span class="text-white font-medium">' + meta.to + '</span> of <span class="text-white font-medium">' + meta.total + '</span> entries</div>';
-      
-      html += '<div class="flex items-center gap-1.5">';
-      
-      // Prev Button
-      var prevDisabled = meta.currentPage <= 1;
-      html += '<button type="button" class="btn-page icon-btn ' + (prevDisabled ? 'opacity-40 pointer-events-none' : '') + '" data-page="' + (meta.currentPage - 1) + '" ' + (prevDisabled ? 'disabled' : '') + ' aria-label="Previous Page">&laquo; Prev</button>';
-
-      // Page Numbers
-      var start = Math.max(1, meta.currentPage - 2);
-      var end = Math.min(meta.lastPage, meta.currentPage + 2);
-
-      if (start > 1) {
-        html += '<button type="button" class="btn-page" data-page="1">1</button>';
-        if (start > 2) html += '<span class="px-1 text-white/30">...</span>';
-      }
-
-      for (var p = start; p <= end; p++) {
-        var active = p === meta.currentPage;
-        html += '<button type="button" class="btn-page ' + (active ? 'active font-bold bg-white text-black' : '') + '" data-page="' + p + '">' + p + '</button>';
-      }
-
-      if (end < meta.lastPage) {
-        if (end < meta.lastPage - 1) html += '<span class="px-1 text-white/30">...</span>';
-        html += '<button type="button" class="btn-page" data-page="' + meta.lastPage + '">' + meta.lastPage + '</button>';
-      }
-
-      // Next Button
-      var nextDisabled = meta.currentPage >= meta.lastPage;
-      html += '<button type="button" class="btn-page icon-btn ' + (nextDisabled ? 'opacity-40 pointer-events-none' : '') + '" data-page="' + (meta.currentPage + 1) + '" ' + (nextDisabled ? 'disabled' : '') + ' aria-label="Next Page">Next &raquo;</button>';
-
-      html += '</div></div>';
-      el.innerHTML = html;
-
-      // Attach click listeners
-      var buttons = el.querySelectorAll('button[data-page]');
-      buttons.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          var targetPage = parseInt(this.getAttribute('data-page'), 10);
-          if (!isNaN(targetPage) && targetPage >= 1 && targetPage <= meta.lastPage && targetPage !== meta.currentPage) {
-            if (typeof onPageChange === 'function') {
-              onPageChange(targetPage);
-            }
-          }
-        });
-      });
+    var maxPagesToShow = 5;
+    var startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+    var endPage = Math.min(totalPages, startPage + maxPagesToShow - 1);
+    if (endPage - startPage + 1 < maxPagesToShow) {
+      startPage = Math.max(1, endPage - maxPagesToShow + 1);
     }
-  };
 
-  // Expose globally
-  global.ItPagination = ItPagination;
-  if (global.Itinari) {
-    global.Itinari.Pagination = ItPagination;
+    if (startPage > 1) {
+      html += `<button type="button" class="btn-page-num w-8 h-8 rounded-full border border-white/10 bg-white/5 text-white/70 hover:text-white hover:bg-white/15 transition font-bold" data-page="1">1</button>`;
+      if (startPage > 2) {
+        html += `<span class="px-1 text-white/40 font-bold">...</span>`;
+      }
+    }
+
+    for (var p = startPage; p <= endPage; p++) {
+      var isActive = p === currentPage;
+      html += `<button type="button" class="btn-page-num w-8 h-8 rounded-full ${isActive ? 'bg-amber-400 text-black font-extrabold ring-2 ring-amber-400/40 shadow-lg' : 'border border-white/10 bg-white/5 text-white/70 hover:text-white hover:bg-white/15 font-bold'} transition" data-page="${p}">${p}</button>`;
+    }
+
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
+        html += `<span class="px-1 text-white/40 font-bold">...</span>`;
+      }
+      html += `<button type="button" class="btn-page-num w-8 h-8 rounded-full border border-white/10 bg-white/5 text-white/70 hover:text-white hover:bg-white/15 transition font-bold" data-page="${totalPages}">${totalPages}</button>`;
+    }
+
+    html += `
+          <button type="button" class="btn-next-page px-3.5 py-1.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/15 text-white/80 hover:text-white font-semibold transition disabled:opacity-40 disabled:pointer-events-none" ${currentPage === totalPages || totalPages === 0 ? 'disabled' : ''}>
+            Next <i class="fas fa-chevron-right text-[10px] ml-1"></i>
+          </button>
+        </div>
+      </div>
+    `;
+
+    container.innerHTML = html;
+
+    var prevBtn = container.querySelector(".btn-prev-page");
+    if (prevBtn) {
+      prevBtn.onclick = function () {
+        if (currentPage > 1 && options.onPageChange) options.onPageChange(currentPage - 1);
+      };
+    }
+
+    var nextBtn = container.querySelector(".btn-next-page");
+    if (nextBtn) {
+      nextBtn.onclick = function () {
+        if (currentPage < totalPages && options.onPageChange) options.onPageChange(currentPage + 1);
+      };
+    }
+
+    var numBtns = container.querySelectorAll(".btn-page-num");
+    numBtns.forEach(function (btn) {
+      btn.onclick = function () {
+        var pageNum = Number(btn.getAttribute("data-page"));
+        if (pageNum && pageNum !== currentPage && options.onPageChange) options.onPageChange(pageNum);
+      };
+    });
   }
-})(typeof window !== 'undefined' ? window : this);
+
+  global.ItPaginate = {
+    render: renderPagination
+  };
+})(window);

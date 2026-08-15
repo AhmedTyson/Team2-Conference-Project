@@ -9,7 +9,7 @@ interface AttractionRepositoryInterface
 {
     public function getForAdmin(bool $trashed = false): Collection;
 
-    public function getForPublic(): Collection;
+    public function getForPublic();
 
     public function findById($id, array $relations = []): Attraction;
 

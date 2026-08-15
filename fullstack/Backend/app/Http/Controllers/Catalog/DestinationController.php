@@ -29,8 +29,13 @@ class DestinationController extends Controller
 
     public function index(ListDestinationsRequest $request): JsonResponse
     {
+        $destinations = $this->destinationService->index($request->validated());
+        if ($destinations instanceof \Illuminate\Pagination\AbstractPaginator) {
+            return response()->json(DestinationCardResource::collection($destinations)->response()->getData(true));
+        }
+
         return ApiResponse::success(
-            DestinationCardResource::collection($this->destinationService->index($request->validated())),
+            DestinationCardResource::collection($destinations),
             'Destinations fetched successfully'
         );
     }

@@ -33,6 +33,7 @@
   }
 
   function initHeader(user) {
+    if (el("global-navbar")) return;
     var brand = el("app-brand");
     if (brand) {
       brand.href = "/home.html";

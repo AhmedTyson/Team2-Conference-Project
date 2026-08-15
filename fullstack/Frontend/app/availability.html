@@ -13,8 +13,10 @@
       document.documentElement.classList.add("dark","fouc-ready");
     else document.documentElement.classList.add("fouc-ready");
     })();
-  </script></head>
+  </script>  <script src="https://cdn.tailwindcss.com"></script>
+</head>
 <body data-page="availability" data-auth="protected" data-layout="app">
+  <header class="app-nav-header"></header>
 
     <nav class="sidebar" id="sidebar"></nav>
 
@@ -106,5 +108,6 @@
 
     <script src="../js/common.js"></script>
     <script src="../js/availability.js"></script>
-  </body>
+    <script src="../assets/js/core/navbar-component.js"></script>
+</body>
 </html>

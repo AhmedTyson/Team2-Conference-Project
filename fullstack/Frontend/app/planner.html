@@ -26,43 +26,14 @@
     else document.documentElement.classList.add("fouc-ready");
     })();
   </script>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="planner-body" data-page="planner" data-layout="app">
+  <header class="app-nav-header"></header>
 
   <div class="planner-container">
     
-    <!-- Top Navigation Header (Matching Screenshot 1) -->
-    <header class="itinera-topbar">
-      <a href="../public/index.html" class="itinera-logo">
-        <span class="itinera-logo-badge">IT</span>
-        <span>Itinera</span>
-      </a>
 
-      <nav class="itinera-nav-pills" aria-label="Planner Main Navigation">
-        <a href="dashboard.html" class="itinera-nav-link"><i class="fas fa-compass"></i> <span>Dashboard</span></a>
-        <a href="planner.html" class="itinera-nav-link active"><i class="fas fa-sparkles"></i> <span>Planner</span></a>
-        <a href="trips.html" class="itinera-nav-link"><i class="fas fa-paper-plane"></i> <span>My Trips</span> <span class="nav-counter-badge" id="my-trips-count-badge">1</span></a>
-        <a href="chat.html" class="itinera-nav-link"><i class="fas fa-comment-dots"></i> <span>AI Concierge</span></a>
-      </nav>
-
-      <div class="itinera-topbar-right">
-        <button type="button" class="search-command-btn" id="cmd-search-btn" aria-label="Search and commands">
-          <i class="fas fa-search"></i>
-          <span>Search</span>
-          <kbd>Ctrl k</kbd>
-        </button>
-        <div class="quota-indicator" id="quota-display" title="AI Generation Usage Quota">
-          <i class="fas fa-bolt"></i> Quota: 499/500
-        </div>
-        <button type="button" class="topbar-icon-btn" id="topbar-bell-btn" aria-label="Notifications">
-          <i class="fas fa-bell"></i>
-        </button>
-        <button type="button" class="topbar-icon-btn" id="theme-toggle-btn" aria-label="Toggle theme">
-          <i class="fas fa-sun"></i>
-        </button>
-        <a href="profile.html" class="user-avatar-badge" title="User Profile">A</a>
-      </div>
-    </header>
 
     <!-- STEP 1: DESTINATION, DURATION, START DATE, TRAVEL PARTY -->
     <section id="planner-step-1">
@@ -260,5 +231,6 @@
   <script src="../assets/js/core/api.js"></script>
   <script src="../assets/js/core/session.js"></script>
   <script src="../assets/js/planner.js"></script>
-  </body>
+    <script src="../assets/js/core/navbar-component.js"></script>
+</body>
 </html>

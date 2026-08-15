@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Collection;
 
 interface DestinationRepositoryInterface
 {
-    public function getAll(array $filters = []): Collection;
+    public function getAll(array $filters = []);
 
     public function getById($id): Destination;
 

@@ -69,16 +69,49 @@
 
     if (btnElement && btnElement.disabled) return false;
 
+    let originalHtml = "";
+    if (btnElement) {
+      originalHtml = btnElement.innerHTML;
+      btnElement.disabled = true;
+      btnElement.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Connecting to Paymob...';
+    }
+
     try {
       const res = await It.apiPost(ROUTES.checkout, { type: "subscription", plan_id: Number(planId) });
+      
+      if (!res.ok) {
+        let msg = "Unable to initiate Paymob payment. Please try again.";
+        if (res.body) {
+          if (typeof res.body.message === "string" && res.body.message) msg = res.body.message;
+          else if (res.body.error && typeof res.body.error === "string") msg = res.body.error;
+          else if (res.body.error && typeof res.body.error.message === "string" && res.body.error.message) msg = res.body.error.message;
+        }
+        if (typeof global.toast === "function") global.toast(msg, true);
+        else alert(msg);
+
+        if (btnElement) {
+          btnElement.disabled = false;
+          btnElement.innerHTML = originalHtml;
+        }
+        return false;
+      }
+
       const data = (res.body && res.body.data) || {};
 
       if (data.checkout_url) {
+        if (typeof global.toast === "function") global.toast("Redirecting to Paymob payment gateway...", false);
         global.location.href = data.checkout_url;
         return true;
       }
     } catch (e) {
       console.error("Paymob checkout error:", e);
+      if (typeof global.toast === "function") global.toast("Network error initiating payment.", true);
+      else alert("Network error initiating payment.");
+
+      if (btnElement) {
+        btnElement.disabled = false;
+        btnElement.innerHTML = originalHtml;
+      }
     }
     return false;
   }

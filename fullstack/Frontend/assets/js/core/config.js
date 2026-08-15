@@ -125,6 +125,6 @@
     REVERB_APP_KEY: 'app-key',
     TOKEN_KEY: CONFIG.tokenKey,
     USER_KEY: CONFIG.userKey,
-    PAGINATION_PER_PAGE: 12
+    PAGINATION_PER_PAGE: 20
   };
 })(window);

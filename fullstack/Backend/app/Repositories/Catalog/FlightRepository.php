@@ -13,9 +13,15 @@ class FlightRepository implements FlightRepositoryInterface
         return Flight::query()->when($trashed, fn ($q) => $q->onlyTrashed())->latest()->get();
     }
 
-    public function getForPublic(): Collection
+    public function getForPublic()
     {
-        return Flight::all();
+        $perPage = min((int) request('per_page', 20) ?: 20, 100);
+        $query = Flight::query();
+        if (request()->has('page') || request()->has('per_page')) {
+            return $query->paginate($perPage);
+        }
+
+        return $query->get();
     }
 
     public function countAll(): int

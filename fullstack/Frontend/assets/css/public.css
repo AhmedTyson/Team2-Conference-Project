@@ -109,6 +109,157 @@ body {
   margin: 0 auto;
 }
 
+/* =====================================================================
+   UNIFIED GLASSMORPHISM NAVBAR (Public, Customer & Auth Pages)
+   ===================================================================== */
+.app-nav-header,
+.auth-nav-header {
+  width: 100%;
+  padding: 1.25rem 2rem 0.6rem;
+  display: flex;
+  justify-content: center;
+  z-index: 100;
+  position: sticky;
+  top: 0;
+  box-sizing: border-box;
+  background: transparent;
+  border: none;
+}
+
+.app-nav-container,
+.auth-nav-container {
+  width: 100%;
+  max-width: 1180px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(248, 248, 246, 0.82) 100%);
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  backdrop-filter: blur(24px) saturate(190%);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 9999px;
+  padding: 0.45rem 1rem 0.45rem 1.2rem;
+  box-shadow: 
+    inset 0 1px 1px 0 rgba(255, 255, 255, 1),
+    0 10px 30px -5px rgba(0, 0, 0, 0.05),
+    0 4px 12px rgba(0, 0, 0, 0.02);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-sizing: border-box;
+}
+
+html.dark .app-nav-container,
+html.dark .auth-nav-container,
+:root[data-theme="dark"] .app-nav-container,
+:root[data-theme="dark"] .auth-nav-container {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.01) 100%), rgba(18, 18, 20, 0.92) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(190%);
+  backdrop-filter: blur(24px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 
+    inset 0 1px 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 1px 0 rgba(0, 0, 0, 0.5),
+    0 16px 40px -8px rgba(0, 0, 0, 0.65),
+    0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+.app-brand,
+.auth-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  text-decoration: none;
+  color: hsl(var(--foreground));
+  font-weight: 700;
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+  flex-shrink: 0;
+}
+
+.app-brand:hover,
+.auth-brand:hover {
+  transform: translateY(-1px) scale(1.02);
+}
+
+.app-brand .brand-mark,
+.auth-brand .brand-mark,
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #000000;
+  color: #ffffff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 900;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}
+
+html.dark .app-brand .brand-mark,
+html.dark .auth-brand .brand-mark {
+  background: #ffffff;
+  color: #000000;
+}
+
+.app-brand .brand-name,
+.auth-brand .brand-name {
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
+  color: hsl(var(--foreground));
+}
+
+html.dark .app-brand .brand-name,
+html.dark .auth-brand .brand-name {
+  color: #ffffff;
+}
+
+.app-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.app-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.65);
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+html.dark .app-nav-link {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.app-nav-link:hover,
+.app-nav-link.active {
+  color: #000000;
+  background: rgba(0, 0, 0, 0.06);
+  font-weight: 600;
+}
+
+html.dark .app-nav-link:hover,
+html.dark .app-nav-link.active {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 /* ── Nav Pill (Glassmorphism) ── */
 .nav-pill {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.78) 0%, rgba(245, 245, 244, 0.58) 100%);

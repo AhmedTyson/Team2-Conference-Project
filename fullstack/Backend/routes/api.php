@@ -80,6 +80,10 @@ Route::middleware(['auth:api'])->group(function () {
     Route::patch('/profile', [AuthController::class, 'updateProfile']);
 });
 
+Route::middleware(['auth:api', 'verified'])->group(function () {
+    Route::apiResource('trips', TripController::class);
+});
+
 // ---- Admin: users
 Route::middleware(['auth:api', 'verified'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/users', [AdminUserController::class, 'index'])->middleware('permission:manage users');
@@ -145,10 +149,27 @@ Route::prefix('v1')->group(function () {
     Route::get('/hotels', [HotelController::class, 'index']);
     Route::get('/hotels/{id}', [HotelController::class, 'show']);
     Route::get('/hotels/{hotel}/reviews', [HotelController::class, 'reviews']);
+    Route::get('/restaurants', [RestaurantController::class, 'index']);
+    Route::get('/restaurants/{id}', [RestaurantController::class, 'show']);
+    Route::get('/attractions', [AttractionController::class, 'index']);
+    Route::get('/attractions/{id}', [AttractionController::class, 'show']);
+    Route::get('/flights', [FlightController::class, 'index']);
+    Route::get('/flights/{id}', [FlightController::class, 'show']);
     Route::get('/regions', [RegionController::class, 'index']);
     Route::get('/stats/summary', [StatsController::class, 'summary']);
     Route::get('/weather', [WeatherController::class, 'show'])->middleware('throttle:weather');
     Route::middleware(['auth:api'])->post('/destinations/{destination}/book', [DestinationController::class, 'book']);
+    Route::middleware(['auth:api', 'verified'])->group(function () {
+        Route::get('/trips', [TripController::class, 'index']);
+        Route::get('/trips/{trip}', [TripController::class, 'show']);
+        Route::post('/trips', [TripController::class, 'store']);
+        Route::put('/trips/{trip}', [TripController::class, 'update']);
+        Route::delete('/trips/{trip}', [TripController::class, 'destroy']);
+        Route::get('/review/{id}', [AIController::class, 'review']);
+        Route::get('/ai/review/{id}', [AIController::class, 'review']);
+        Route::post('/review/{id}', [AIController::class, 'review']);
+        Route::post('/ai/review/{id}', [AIController::class, 'review']);
+    });
 });
 
 // ---- Admin CRUD
@@ -277,6 +298,12 @@ Route::post('/trips/ai-generate', [AIController::class, 'generate'])
 Route::post('/ai/plan', [AIController::class, 'generate'])
     ->middleware(['throttle:ai']);
 Route::get('/review/{id}', [AIController::class, 'review'])
+    ->middleware(['auth:api', 'verified', 'throttle:ai']);
+Route::get('/ai/review/{id}', [AIController::class, 'review'])
+    ->middleware(['auth:api', 'verified', 'throttle:ai']);
+Route::post('/review/{id}', [AIController::class, 'review'])
+    ->middleware(['auth:api', 'verified', 'throttle:ai']);
+Route::post('/ai/review/{id}', [AIController::class, 'review'])
     ->middleware(['auth:api', 'verified', 'throttle:ai']);
 
 // ---- Admin: trips & reviews moderation

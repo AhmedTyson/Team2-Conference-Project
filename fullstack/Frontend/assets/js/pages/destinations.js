@@ -87,21 +87,22 @@
   }
 
   function renderPager() {
-    const total = Math.ceil(filtered().length / APP_CONFIG.PAGINATION_PER_PAGE);
-    let pager = resultsEl.parentElement.querySelector('.pagination');
+    let pager = resultsEl.parentElement.querySelector('#catalog-pagination');
     if (!pager) {
       pager = document.createElement('div');
+      pager.id = 'catalog-pagination';
+      pager.className = 'w-full mt-6 col-span-full';
       resultsEl.after(pager);
     }
-    if (total <= 1) {
-      pager.innerHTML = '';
-      return;
+    if (window.ItPaginate) {
+      window.ItPaginate.render({
+        container: pager,
+        totalItems: filtered().length,
+        currentPage: page,
+        itemsPerPage: APP_CONFIG.PAGINATION_PER_PAGE,
+        onPageChange: (p) => { page = p; render(); if (resultsEl) resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' }); },
+      });
     }
-    pager.innerHTML = '';
-    pager.appendChild(Ui.pagination(
-      { current_page: page, last_page: total, total: filtered().length },
-      (p) => { page = p; render(); },
-    ));
   }
 
   function filtered() {

@@ -13,12 +13,13 @@
     else document.documentElement.classList.add("fouc-ready");
     })();
   </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
 <body data-page="report-agency" class="is-booting" data-layout="app">
   <div class="app">
-    <header class="app__header">
-      <a id="app-brand" class="app__brand" href="/index.html"></a>
-      <nav id="app-nav" class="nav" aria-label="Main navigation"></nav>
+    <!-- Top Navigation Header -->
+    <header class="app-nav-header"></header>
       <div id="app-user" class="app__user">
         <button id="theme-toggle" type="button" class="btn btn--ghost" aria-label="Toggle theme">◐</button>
       </div>
@@ -63,5 +64,6 @@
   <script src="../assets/js/core/nav-config.js"></script>
   <script src="../assets/js/core/app-shell.js"></script>
   <script src="../assets/js/report-agency.js"></script>
-  </body>
+    <script src="../assets/js/core/navbar-component.js"></script>
+</body>
 </html>
