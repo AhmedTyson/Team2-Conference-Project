@@ -1,60 +1,36 @@
 <?php
 
-use App\Mail\PaymentFailedMail;
-use App\Mail\PaymentSuccessMail;
-use App\Mail\SubscriptionActivatedMail;
-use App\Mail\TripForkedMail;
-use App\Mail\WelcomeMail;
-use App\Models\Account\User;
-use App\Models\Catalog\Destination;
-use App\Models\Commerce\Order;
-use App\Models\Commerce\Plan;
-use App\Models\Commerce\Subscription;
-use App\Models\Trips\Trip;
 use Illuminate\Support\Facades\Route;
 
-Route::redirect('/', '/index.html');
+/*
+|--------------------------------------------------------------------------
+| Web Routes — Pure API Backend Mode
+|--------------------------------------------------------------------------
+|
+| This server operates strictly as a RESTful API backend.
+| All application routes and resources are exposed via routes/api.php.
+|
+*/
 
-// Temporary route for visual Mailable testing in local environments
-if (app()->environment('local')) {
-    Route::get('/mail-preview/{type}', function ($type) {
-        $user = new User(['name' => 'John Doe', 'email' => 'john@example.com']);
+// Root API Status Endpoint
+Route::get('/', function () {
+    return response()->json([
+        'status' => 'online',
+        'service' => 'Itinera API Backend',
+        'version' => '1.0.0',
+        'api_base' => url('/api'),
+        'timestamp' => now()->toIso8601String(),
+    ]);
+});
 
-        switch ($type) {
-            case 'welcome':
-                return new WelcomeMail($user);
-
-            case 'payment-success':
-                $order = new Order(['id' => 8492, 'total_cents' => 150000, 'currency' => 'EGP']);
-                $order->created_at = now();
-
-                return new PaymentSuccessMail($user, $order);
-
-            case 'payment-failed':
-                $order = new Order(['id' => 8492, 'total_cents' => 150000, 'currency' => 'EGP']);
-
-                return new PaymentFailedMail($user, $order);
-
-            case 'trip-forked':
-                $originalTrip = new Trip(['id' => 10, 'title' => 'Amazing 7-Day Paris Trip']);
-                $originalTrip->setRelation('user', $user);
-
-                $destination = new Destination(['name' => 'Paris']);
-                $originalTrip->setRelation('destinations', collect([$destination]));
-
-                $forkedTrip = new Trip(['id' => 11, 'title' => 'Amazing 7-Day Paris Trip (Forked)']);
-
-                return new TripForkedMail($forkedTrip, $originalTrip);
-
-            case 'subscription':
-                $plan = new Plan(['name' => 'Pro Explorer', 'ai_quota_monthly' => 100]);
-                $subscription = new Subscription(['id' => 1]);
-                $subscription->setRelation('plan', $plan);
-
-                return new SubscriptionActivatedMail($user, $subscription);
-
-            default:
-                return 'Invalid mail type. Options: welcome, payment-success, payment-failed, trip-forked, subscription';
-        }
-    });
-}
+// Fallback JSON 404 response for any unmatched web route
+Route::fallback(function () {
+    return response()->json([
+        'error' => [
+            'type' => 'not_found',
+            'status' => 404,
+            'message' => 'The requested API endpoint or resource was not found on this server. Access all endpoints under /api.',
+            'timestamp' => now()->toIso8601String(),
+        ]
+    ], 404);
+});

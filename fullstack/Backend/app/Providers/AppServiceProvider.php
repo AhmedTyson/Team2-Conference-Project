@@ -20,6 +20,7 @@ use App\Interfaces\System\ContactMessageRepositoryInterface;
 use App\Interfaces\System\FlagRepositoryInterface;
 use App\Interfaces\System\SettingRepositoryInterface;
 use App\Interfaces\System\SurveyRepositoryInterface;
+use App\Models\Commerce\AgencyAssignment;
 use App\Interfaces\Trips\ReviewRepositoryInterface;
 use App\Interfaces\Trips\TripRepositoryInterface;
 use App\Models\Account\User;
@@ -144,6 +145,7 @@ class AppServiceProvider extends ServiceProvider
             'flight' => Flight::class,
             'trip' => Trip::class,
             'plan' => Plan::class,
+            'agency_assignment' => AgencyAssignment::class,
         ]);
     }
 }

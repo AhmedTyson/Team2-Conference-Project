@@ -71,7 +71,8 @@
     if (title) title.textContent = "Hello, " + (user && user.name ? user.name.split(" ")[0] : "there") + ".";
 
     if (user) {
-      It.apiGet(It.CONFIG.routes.me, { auth: true }).then(function () { /* warm cache */ }).catch(function () { /* ignore */ });
+      const meRoute = (It.CONFIG && It.CONFIG.routes && It.CONFIG.routes.me) ? It.CONFIG.routes.me : "/user";
+      It.apiGet(meRoute, { auth: true }).then(function () { /* warm cache */ }).catch(function () { /* ignore */ });
     }
 
     It.apiGet("/v1/site-settings").then(function (res) {

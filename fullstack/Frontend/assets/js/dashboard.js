@@ -892,13 +892,12 @@
     }
     It.session.currentUser().then(function (user) {
       if (!user) {
-        It.session.clearSession();
         It.session.redirectToLogin();
         return;
       }
       const role = It.session.roleOf(user);
-      if (It.session.isAdminRole(role)) {
-        global.location.replace(It.CONFIG.role.admin);
+      if (It.session.isAdminRole(role) || role === "agency" || role === "agency_manager" || role === "agent") {
+        global.location.replace(It.session.getRedirectPath(role));
         return;
       }
       load(user);

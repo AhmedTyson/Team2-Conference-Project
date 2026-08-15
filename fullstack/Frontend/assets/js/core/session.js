@@ -34,13 +34,13 @@
 
   /** Payload of stored token (sub, id, exp). Null when no token or undecodable. */
   function tokenPayload() {
-    const token = It.readToken();
+    const token = (It.readToken && It.readToken()) || localStorage.getItem("itinari_token");
     if (!token) return null;
     return decodeJwt(token);
   }
 
   function hasToken() {
-    return !!It.readToken();
+    return !!((It.readToken && It.readToken()) || localStorage.getItem("itinari_token"));
   }
 
   /** Check if token is near expiration (within 5 minutes) */
@@ -126,25 +126,31 @@
     }
 
     try {
-      const stored = localStorage.getItem("itinari_user");
+      const stored = (It.readUser && It.readUser()) || localStorage.getItem("itinari_user");
       if (stored && !forceRefresh) {
-        const parsed = JSON.parse(stored);
-        _user = extractUser(parsed) || parsed;
+        const parsed = typeof stored === "string" ? JSON.parse(stored) : stored;
+        const extracted = extractUser(parsed) || parsed;
+        if (extracted && typeof extracted === "object" && (extracted.id || extracted.email || extracted.name || extracted.roles || extracted.role)) {
+          _user = extracted;
+          return _user;
+        }
       }
     } catch (e) {}
 
     try {
-      const res = await It.apiGet((It.CONFIG && It.CONFIG.routes ? It.CONFIG.routes.me : "/user") + "?_t=" + Date.now(), { auth: true });
+      const res = await It.apiGet((It.CONFIG && It.CONFIG.routes ? It.CONFIG.routes.me : "/user") + "?_t=" + Date.now(), { auth: true, skipAuthRedirect: true });
       if (res.ok) {
         const user = extractUser(res.body);
         if (user) {
           _user = user;
-          try { localStorage.setItem("itinari_user", JSON.stringify(user)); } catch (e) {}
+          if (It.storeUser) It.storeUser(user);
+          else {
+            try { localStorage.setItem("itinari_user", JSON.stringify(user)); } catch (e) {}
+          }
           return _user;
         }
       } else if (res.status === 401 || res.status === 403) {
-        _user = null;
-        return null;
+        if (!_user) return null;
       }
     } catch (e) {
       if (_user) return _user;
@@ -187,7 +193,7 @@
   ];
 
   function isPublicPage() {
-    var p = global.location.pathname || "";
+    var p = (global.location.pathname || "").toLowerCase();
     if (p.indexOf("/app/") !== -1 || p.indexOf("/admin/") !== -1 || p.indexOf("/agency/") !== -1) {
       return false;
     }
@@ -197,9 +203,12 @@
 
   /** Guard route based on layout and role */
   function guardRoute(user) {
-    var p = global.location.pathname || "";
+    var p = (global.location.pathname || "").toLowerCase();
     var role = roleOf(user);
     var layout = document.body && document.body.dataset ? document.body.dataset.layout : null;
+
+    var isSubDir = p.indexOf("/admin/") !== -1 || p.indexOf("/agency/") !== -1 || p.indexOf("/app/") !== -1;
+    var errorPage = isSubDir ? "../403.html" : "403.html";
 
     // Admin layout / path protection
     if (p.indexOf("/admin/") !== -1 || layout === "admin") {
@@ -208,7 +217,7 @@
         return false;
       }
       if (role !== "admin" && role !== "super_admin") {
-        global.location.replace("/403.html");
+        global.location.replace(errorPage);
         return false;
       }
     }
@@ -219,8 +228,8 @@
         redirectToLogin();
         return false;
       }
-      if (role !== "agency" && role !== "admin" && role !== "super_admin") {
-        global.location.replace("/403.html");
+      if (role !== "agency" && role !== "agency_manager" && role !== "agent" && role !== "admin" && role !== "super_admin") {
+        global.location.replace(errorPage);
         return false;
       }
     }
@@ -279,8 +288,13 @@
   }
 
   function redirectToLogin(reason) {
+    var cur = (global.location.pathname || "").toLowerCase();
+    var isAuthDir = cur.indexOf("/auth/") !== -1;
+    var isRoot = !isAuthDir && cur.indexOf("/app/") === -1 && cur.indexOf("/admin/") === -1 && cur.indexOf("/agency/") === -1 && cur.indexOf("/public/") === -1;
+
     var redirectTarget = encodeURIComponent(global.location.pathname + global.location.search);
-    var url = "/login.html" + (reason ? "?blocked=1" : "");
+    var baseTarget = isAuthDir ? "login.html" : (isRoot ? "auth/login.html" : "../auth/login.html");
+    var url = baseTarget + (reason ? "?blocked=1" : "");
     if (!reason && global.location.pathname && !isPublicPage()) {
       url += (url.indexOf("?") === -1 ? "?" : "&") + "redirect=" + redirectTarget;
     }
@@ -289,8 +303,10 @@
 
   function clearSession() {
     _user = null;
-    It.clearToken();
-    try { localStorage.removeItem("itinari_user"); } catch (e) {}
+    if (It.clearToken) It.clearToken();
+    else localStorage.removeItem("itinari_token");
+    if (It.clearUser) It.clearUser();
+    else try { localStorage.removeItem("itinari_user"); } catch (e) {}
   }
 
   /** POST logout (best-effort), then wipe local session + go to login. */
@@ -336,8 +352,10 @@
     isAdminRole: isAdminRole,
     getRedirectPath: getRedirectPath,
     currentUser: currentUser,
+    getUserProfile: currentUser,
     extractUser: extractUser,
     bootAuth: resolveSession,
+    resolveSession: resolveSession,
     requireAuth: requireAuth,
     guardRoute: guardRoute,
     redirectToLogin: redirectToLogin,

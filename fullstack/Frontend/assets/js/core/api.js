@@ -70,7 +70,8 @@
     const currentTok = (It.readToken && It.readToken()) || localStorage.getItem("itinari_token");
     if (!currentTok) throw new Error("No token to refresh");
 
-    const base = (It.CONFIG && It.CONFIG.apiBase) || (global.APP_CONFIG && global.APP_CONFIG.API_BASE_URL) || "https://itinari.up.railway.app/api";
+    const defaultFallback = (global.location && global.location.origin && !global.location.origin.includes("null") && !global.location.origin.startsWith("file:")) ? global.location.origin.replace(/\/$/, "") + "/api" : "http://127.0.0.1:8000/api";
+    const base = (It.CONFIG && It.CONFIG.apiBase) || (global.APP_CONFIG && global.APP_CONFIG.API_BASE_URL) || defaultFallback;
     const res = await fetch(base.replace(/\/$/, "") + "/refresh", {
       method: "POST",
       headers: {
@@ -102,11 +103,13 @@
   async function request(method, path, data, opts) {
     opts = opts || {};
     const normalizedPath = normalizePath(path);
-    const apiBase = (It.CONFIG && It.CONFIG.apiBase) ? It.CONFIG.apiBase.replace(/\/$/, "") : "https://itinari.up.railway.app/api";
+    const defaultFallback = (global.location && global.location.origin && !global.location.origin.includes("null") && !global.location.origin.startsWith("file:")) ? global.location.origin.replace(/\/$/, "") + "/api" : "http://127.0.0.1:8000/api";
+    const apiBase = (It.CONFIG && It.CONFIG.apiBase) ? It.CONFIG.apiBase.replace(/\/$/, "") : defaultFallback;
     
     const headers = Object.assign(
       {
         Accept: "application/json",
+        "X-Requested-With": "XMLHttpRequest",
         "Cache-Control": "no-cache, no-store, must-revalidate",
         Pragma: "no-cache",
         Expires: "0",
@@ -129,14 +132,45 @@
         body: data !== undefined ? JSON.stringify(data) : undefined,
       });
     } catch (e) {
-      const err = new Error("Could not reach the server. Please try again.");
-      err.name = "NetworkError";
-      throw err;
+      let altBase = null;
+      if (apiBase.indexOf("127.0.0.1:8000") !== -1) {
+        altBase = apiBase.replace("127.0.0.1:8000", "localhost:8000");
+      } else if (apiBase.indexOf("localhost:8000") !== -1) {
+        altBase = apiBase.replace("localhost:8000", "127.0.0.1:8000");
+      }
+      if (altBase) {
+        try {
+          res = await fetch(altBase + normalizedPath, {
+            method: method,
+            headers: headers,
+            body: data !== undefined ? JSON.stringify(data) : undefined,
+          });
+          if (It.CONFIG) It.CONFIG.apiBase = altBase;
+        } catch (e2) {
+          const err = new Error("Could not reach the server. Please try again.");
+          err.name = "NetworkError";
+          throw err;
+        }
+      } else {
+        const err = new Error("Could not reach the server. Please try again.");
+        err.name = "NetworkError";
+        throw err;
+      }
     }
 
     let body = {};
-    try { body = await res.json(); }
-    catch (e) { body = {}; }
+    try {
+      const rawText = await res.text();
+      if (rawText) {
+        try {
+          body = JSON.parse(rawText);
+        } catch (jsonErr) {
+          body = { message: "Server response error (non-JSON).", raw: rawText };
+        }
+      }
+    } catch (e) {
+      body = {};
+    }
 
     // Centralized 401 Unauthorized interceptor with Token Refresh queue
     if (

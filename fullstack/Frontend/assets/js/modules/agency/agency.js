@@ -152,10 +152,10 @@
 
     if (!It.session.hasToken()) { It.session.redirectToLogin(); return; }
     It.session.currentUser().then(function (user) {
-      if (!user) { It.session.clearSession(); It.session.redirectToLogin(); return; }
-      if (It.session.roleOf(user) !== "agency") {
-        It.session.clearSession();
-        It.session.redirectToLogin();
+      if (!user) { It.session.redirectToLogin(); return; }
+      const role = It.session.roleOf(user);
+      if (role !== "agency" && role !== "agency_manager" && role !== "agent" && role !== "admin" && role !== "super_admin") {
+        global.location.replace(It.session.getRedirectPath(role));
         return;
       }
       boot(user);

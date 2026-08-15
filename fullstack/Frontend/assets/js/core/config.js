@@ -1,16 +1,29 @@
 /**
- * config.js — global constants + token & user session helpers.
+ * assets/js/config.js — global constants + token & user session helpers.
  * Source of truth for client network configuration and session storage keys.
  * Load this before api.js / session.js / auth.js.
  */
 (function (global) {
   "use strict";
 
+  const Itinari = global.Itinari = global.Itinari || {};
+  const It = global.It = global.Itinari;
+
   function resolveApiBase() {
     if (global.ITINARI_API_BASE) return global.ITINARI_API_BASE;
     try {
-      if (origin && !origin.includes(":8000") && !origin.includes(":8080") && !origin.includes(":8085") && !origin.includes(":8086") && !origin.includes(":8087") && !origin.includes(":5500") && !origin.includes(":3000") && !origin.includes(":5173") && !origin.includes("null") && !origin.startsWith("file:") && !origin.includes("127.0.0.1") && !origin.includes("localhost")) {
-        return origin + "/api";
+      if (typeof location !== "undefined" && location.origin && !location.origin.includes("null") && !location.origin.startsWith("file:")) {
+        var hostname = location.hostname || "";
+        var port = location.port || "";
+        // Only use same origin if served on port 8000 (Laravel API port)
+        if (port === "8000") {
+          return location.origin.replace(/\/$/, "") + "/api";
+        }
+        // Match client hostname (localhost vs 127.0.0.1) on API target port 8000
+        if (hostname === "localhost" || hostname === "127.0.0.1") {
+          return location.protocol + "//" + hostname + ":8000/api";
+        }
+        return location.origin.replace(/\/$/, "") + "/api";
       }
     } catch (e) {}
     return "http://127.0.0.1:8000/api";
@@ -97,16 +110,15 @@
     try { localStorage.removeItem(CONFIG.userKey); } catch (e) {}
   }
 
-  global.Itinari = global.Itinari || {};
-  global.Itinari.CONFIG = CONFIG;
-  global.Itinari.storeToken = storeToken;
-  global.Itinari.readToken = readToken;
-  global.Itinari.clearToken = clearToken;
-  global.Itinari.storeUser = storeUser;
-  global.Itinari.readUser = readUser;
-  global.Itinari.clearUser = clearUser;
+  Itinari.CONFIG = CONFIG;
+  Itinari.storeToken = storeToken;
+  Itinari.readToken = readToken;
+  Itinari.clearToken = clearToken;
+  Itinari.storeUser = storeUser;
+  Itinari.readUser = readUser;
+  Itinari.clearUser = clearUser;
+  Itinari.resolveApiBase = resolveApiBase;
 
-  global.It = global.Itinari;
   global.APP_CONFIG = {
     API_BASE_URL: CONFIG.apiBase,
     ASSET_BASE_URL: CONFIG.apiBase.replace('/api', ''),

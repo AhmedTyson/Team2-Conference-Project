@@ -7,6 +7,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance;
+use Illuminate\Http\Middleware\HandleCors;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Spatie\Permission\Middleware\PermissionMiddleware;
@@ -21,6 +22,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->prepend(HandleCors::class);
+
         $middleware->alias([
             'role' => RoleMiddleware::class,
             'permission' => PermissionMiddleware::class,
@@ -30,17 +33,19 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->group('api', [
             // Must run first: reject all requests while app is in maintenance mode
-            // (php artisan down / up). This prevents DB/auth calls against an
-            // intentionally-offline application.
             PreventRequestsDuringMaintenance::class,
             SubstituteBindings::class,
             EnsureUserIsActive::class,
             // SEC-16: global authenticated-API cap (60/min per user, IP fallback).
-            // Route-level throttles (login/ai/maps/checkout/...) still apply on top.
             'throttle:api_authenticated',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        // Pure API Server: Always render exceptions as JSON (Postman, web, curl, etc.)
+        $exceptions->shouldRenderJsonWhen(function (Request $request, Throwable $e) {
+            return true;
+        });
+
         // Single renderable: every API exception flows through ApiExceptionHandler
         $exceptions->renderable(function (Throwable $e, Request $request) {
             return app(ApiExceptionHandler::class)->render($e, $request);

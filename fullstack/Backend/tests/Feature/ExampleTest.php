@@ -14,6 +14,6 @@ class ExampleTest extends TestCase
     {
         $response = $this->get('/');
 
-        $response->assertRedirect('/login.html');
+        $response->assertStatus(200)->assertJson(['status' => 'online']);
     }
 }

@@ -245,10 +245,10 @@
 
     if (!It.session.hasToken()) { It.session.redirectToLogin(); return; }
     It.session.currentUser().then(function (user) {
-      if (!user) { It.session.clearSession(); It.session.redirectToLogin(); return; }
-      if (!It.session.isAdminRole(It.session.roleOf(user))) {
-        It.session.clearSession();
-        It.session.redirectToLogin();
+      if (!user) { It.session.redirectToLogin(); return; }
+      const role = It.session.roleOf(user);
+      if (!It.session.isAdminRole(role)) {
+        global.location.replace(It.session.getRedirectPath(role));
         return;
       }
       boot(user);

@@ -46,6 +46,7 @@ class UserTest extends TestCase
      */
     public function test_admin_can_store_user_with_created_resource(): void
     {
+        $this->seed(\Database\Seeders\RoleAndPermissionSeeder::class);
         $admin = User::factory()->create();
         $admin->assignRole('admin');
 

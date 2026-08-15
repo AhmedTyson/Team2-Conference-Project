@@ -116,9 +116,9 @@ class PlansTest extends TestCase
         $this->assertCount(2, $response->json('data'));
     }
 
-    public function test_plans_require_auth(): void
+    public function test_plans_are_publicly_accessible(): void
     {
-        $this->getJson('/api/plans')->assertStatus(401);
+        $this->getJson('/api/plans')->assertStatus(200);
     }
 
     public function test_direct_subscribe_redirects_to_checkout(): void
@@ -255,10 +255,10 @@ class PlansTest extends TestCase
             ->assertStatus(404);
     }
 
-    public function test_single_plan_requires_auth(): void
+    public function test_single_plan_is_publicly_accessible(): void
     {
         $plan = Plan::factory()->create(['is_active' => true]);
 
-        $this->getJson("/api/plans/{$plan->id}")->assertStatus(401);
+        $this->getJson("/api/plans/{$plan->id}")->assertStatus(200);
     }
 }

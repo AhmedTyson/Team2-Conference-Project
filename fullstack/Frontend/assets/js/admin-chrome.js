@@ -714,7 +714,6 @@
 
     It.session.currentUser().then(function (user) {
       if (!user) { 
-          It.session.clearSession(); 
           It.session.redirectToLogin(); 
           return; 
       }
@@ -722,15 +721,13 @@
       injectRoleNav(role);
       const isAgencyPage = document.body.getAttribute("data-page") === "agency";
       if (isAgencyPage) {
-        if (role !== "agency") {
-          It.session.clearSession();
-          It.session.redirectToLogin();
+        if (role !== "agency" && role !== "agency_manager" && role !== "agent" && role !== "admin" && role !== "super_admin") {
+          global.location.replace("../403.html");
           return;
         }
       } else {
         if (!It.session.isAdminRole(role)) {
-          It.session.clearSession();
-          It.session.redirectToLogin();
+          global.location.replace("../403.html");
           return;
         }
       }

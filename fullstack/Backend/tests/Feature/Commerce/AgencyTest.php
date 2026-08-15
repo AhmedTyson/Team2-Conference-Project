@@ -17,9 +17,7 @@ class AgencyTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'api']);
-        Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'api']);
-        Role::firstOrCreate(['name' => 'agency', 'guard_name' => 'api']);
+        $this->seed(\Database\Seeders\RoleAndPermissionSeeder::class);
     }
 
     public function test_customer_can_request_agency()

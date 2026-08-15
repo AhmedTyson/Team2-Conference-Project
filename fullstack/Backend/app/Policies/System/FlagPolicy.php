@@ -21,6 +21,10 @@ class FlagPolicy
 
     public function createForAssignment(User $user, AgencyAssignment $assignment): bool
     {
+        if ($assignment->status === AgencyAssignmentStatus::REQUESTED) {
+            return false;
+        }
+
         return $user->id === $assignment->customer_id ||
             $user->hasAnyRole(['admin', 'super_admin']) ||
             $user->email === 'admin@itinari.com' ||

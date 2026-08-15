@@ -212,8 +212,10 @@
   function init() {
     if (!It.session.hasToken()) { It.session.redirectToLogin(); return; }
     It.session.currentUser().then(function (user) {
-      if (!user || !It.session.isAdminRole(It.session.roleOf(user))) {
-        It.session.redirectToLogin();
+      if (!user) { It.session.redirectToLogin(); return; }
+      const role = It.session.roleOf(user);
+      if (!It.session.isAdminRole(role)) {
+        global.location.replace(It.session.getRedirectPath(role));
         return;
       }
       var search = document.getElementById("global-search");

@@ -27,9 +27,12 @@
       onSuccess: function (body, form) {
         const token = It.extractToken(body);
         if (token) It.storeToken(token);
-        const user = (body && body.data && body.data.user) || (body && body.user) || (body && body.data) || It._cachedUser;
+        const user = (It.session && It.session.extractUser ? It.session.extractUser(body) : null) || (body && body.data && body.data.user) || (body && body.user) || (body && body.data) || It._cachedUser;
         if (user && typeof user === "object") {
-          try { localStorage.setItem("itinari_user", JSON.stringify(user)); } catch (e) {}
+          if (It.storeUser) It.storeUser(user);
+          else {
+            try { localStorage.setItem("itinari_user", JSON.stringify(user)); } catch (e) {}
+          }
         }
         fb.banner("Logged in — taking you to your dashboard…", "is-ok");
         setTimeout(function () {
@@ -65,9 +68,12 @@
       onSuccess: function (body, form) {
         const token = It.extractToken(body);
         if (token) It.storeToken(token);
-        const user = (body && body.data && body.data.user) || (body && body.user) || (body && body.data) || It._cachedUser;
+        const user = (It.session && It.session.extractUser ? It.session.extractUser(body) : null) || (body && body.data && body.data.user) || (body && body.user) || (body && body.data) || It._cachedUser;
         if (user && typeof user === "object") {
-          try { localStorage.setItem("itinari_user", JSON.stringify(user)); } catch (e) {}
+          if (It.storeUser) It.storeUser(user);
+          else {
+            try { localStorage.setItem("itinari_user", JSON.stringify(user)); } catch (e) {}
+          }
         }
         fb.banner("Account created — welcome to Itinera!", "is-ok");
         setTimeout(function () {
@@ -291,16 +297,40 @@ form.addEventListener("submit", async function (e) {
       fb.loading(btn, true); // spec #2
       form.dataset.busy = "1";
 
+  function getErrorMessage(body) {
+    if (!body) return "Request failed. Please try again.";
+    if (typeof body === "string") return body;
+    if (body.message) return body.message;
+    if (body.error) {
+      if (typeof body.error === "string") return body.error;
+      if (body.error.message) return body.error.message;
+    }
+    if (body.errors) {
+      if (typeof body.errors === "string") return body.errors;
+      if (typeof body.errors === "object") {
+        const keys = Object.keys(body.errors);
+        if (keys.length) {
+          const first = body.errors[keys[0]];
+          if (Array.isArray(first)) return first[0];
+          if (typeof first === "string") return first;
+        }
+      }
+    }
+    return "Request failed. Please try again.";
+  }
+
       try {
-        const res = await It.apiPost(It.CONFIG.routes[cfg.route] || cfg.route, collectPayload(fields));
+        const routePath = (It.CONFIG && It.CONFIG.routes && It.CONFIG.routes[cfg.route]) ? It.CONFIG.routes[cfg.route] : (cfg.route.startsWith("/") ? cfg.route : "/" + cfg.route);
+        const res = await It.apiPost(routePath, collectPayload(fields));
         if (res.ok) {
           fb.successPulse(form); // spec #3
           cfg.onSuccess(res.body, form);
         } else if (It.isFieldErrors(res.body)) {
           // spec #4: 422 → per-field inline errors
           mapServerErrors(fields, res.body.errors);
+          fb.banner(getErrorMessage(res.body), "is-error");
         } else {
-          fb.banner((res.body && res.body.message) || (res.body && res.body.error && res.body.error.message) || "Request failed. Please try again.", "is-error");
+          fb.banner(getErrorMessage(res.body), "is-error");
         }
       } catch (err) {
         fb.banner(err.message || "Network error. Please try again.", "is-error");
@@ -335,7 +365,8 @@ form.addEventListener("submit", async function (e) {
       }
       fb.loading(btn, true);
       try {
-        const res = await It.apiPost(It.CONFIG.routes.resend, {}, { headers: { Authorization: "Bearer " + token } });
+        const resendRoute = (It.CONFIG && It.CONFIG.routes && It.CONFIG.routes.resend) ? It.CONFIG.routes.resend : "/email/resend";
+        const res = await It.apiPost(resendRoute, {}, { headers: { Authorization: "Bearer " + token } });
         if (res.ok) fb.banner((res.body && res.body.message) || "Verification link sent.", "is-info");
         else fb.banner((res.body && res.body.message) || "Could not send the link.", "is-error");
       } catch (err) {
