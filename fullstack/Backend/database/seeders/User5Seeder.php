@@ -118,7 +118,7 @@ class User5Seeder extends Seeder
 
             // Attach Destination
             $matchedDest = $destinations->firstWhere('name', $tData['dest_name']) ?? $destinations->first();
-            if ($matchedDest && ! $trip->destinations()->where('destination_id', $matchedDest->id)->exists()) {
+            if ($matchedDest && ! $trip->destinations()->where('destinations.id', $matchedDest->id)->exists()) {
                 $trip->destinations()->attach($matchedDest->id, [
                     'day_number' => 1,
                     'visit_order' => 1,
@@ -129,7 +129,7 @@ class User5Seeder extends Seeder
 
             // Attach Hotel, Restaurant, Attraction if available
             $hotel = $hotels->first();
-            if ($hotel && ! $trip->hotels()->where('hotel_id', $hotel->id)->exists()) {
+            if ($hotel && ! $trip->hotels()->where('hotels.id', $hotel->id)->exists()) {
                 $trip->hotels()->attach($hotel->id);
                 ItineraryItem::firstOrCreate([
                     'trip_id' => $trip->id,
@@ -147,7 +147,7 @@ class User5Seeder extends Seeder
             }
 
             $restaurant = $restaurants->first();
-            if ($restaurant && ! $trip->restaurants()->where('restaurant_id', $restaurant->id)->exists()) {
+            if ($restaurant && ! $trip->restaurants()->where('restaurants.id', $restaurant->id)->exists()) {
                 $trip->restaurants()->attach($restaurant->id);
                 ItineraryItem::firstOrCreate([
                     'trip_id' => $trip->id,
@@ -165,7 +165,7 @@ class User5Seeder extends Seeder
             }
 
             $attraction = $attractions->first();
-            if ($attraction && ! $trip->attractions()->where('attraction_id', $attraction->id)->exists()) {
+            if ($attraction && ! $trip->attractions()->where('attractions.id', $attraction->id)->exists()) {
                 $trip->attractions()->attach($attraction->id);
                 ItineraryItem::firstOrCreate([
                     'trip_id' => $trip->id,

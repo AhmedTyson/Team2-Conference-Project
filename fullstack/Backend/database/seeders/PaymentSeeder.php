@@ -16,15 +16,14 @@ class PaymentSeeder extends Seeder
         Order::query()->get()->each(function (Order $order) {
             Payment::create([
                 'order_id' => $order->id,
-                'paymob_transaction_id' => (string) fake()->unique()->numberBetween(10000000, 99999999),
-                'status' => $order->status->value === 'paid' ? 'paid' : ($order->status->value === 'refunded' ? 'refunded' : 'failed'),
+                'paymob_transaction_id' => 'ORDER_' . $order->id . '_' . time(),
+                'status' => $order->status->value === 'paid' ? 'paid' : ($order->status->value === 'refunded' ? 'refunded' : 'pending'),
                 'amount_cents' => $order->total_cents,
-                'currency' => $order->currency ?? 'USD',
-                'card_type' => fake()->randomElement(['credit', 'debit']),
-                'card_subtype' => fake()->randomElement(['Visa', 'MasterCard']),
-                'card_pan' => 'XXXX-XXXX-'.fake()->numerify('####'),
+                'currency' => $order->currency ?? 'EGP',
+                'client_secret' => 'mock_client_secret_' . fake()->hexColor(),
+                'checkout_url' => 'https://accept.paymob.com/unifiedcheckout/?publicKey=mock&clientSecret=mock',
                 'hmac_valid' => true,
-                'raw_payload' => ['order_id' => $order->id, 'source' => 'seeder'],
+                'raw_payload' => json_encode(['order_id' => $order->id, 'source' => 'seeder']),
             ]);
         });
     }
