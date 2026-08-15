@@ -2,7 +2,7 @@
   "$schema": "https://railpack.com/config.schema.json",
   "provider": "php",
   "build": {
-    "command": "cd fullstack/Backend && composer install --no-dev --optimize-autoloader"
+    "command": "cd fullstack/Backend && composer install --no-dev --optimize-autoloader --ignore-platform-reqs"
   },
   "deploy": {
     "startCommand": "bash start.sh"

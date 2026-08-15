@@ -11,7 +11,7 @@ if [ -d "fullstack/Backend" ]; then
     fi
 
     if [ -f "composer.json" ]; then
-        composer install --no-dev --optimize-autoloader --no-interaction || true
+        composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs || composer install --no-interaction --ignore-platform-reqs || true
     fi
 
     mkdir -p database
