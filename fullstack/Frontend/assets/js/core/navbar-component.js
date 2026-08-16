@@ -60,20 +60,25 @@
     var prefix = getBasePrefix();
     var user = getCurrentUser();
 
-    // Target mounting container or replacement
-    var target = doc.querySelector("header.app-nav-header") || doc.querySelector("header.hero-wrapper .app-nav-header") || doc.querySelector("header.app__header") || el("global-navbar");
-
-    if (!target) {
-      target = doc.createElement("header");
-      target.className = "app-nav-header";
-      doc.body.insertBefore(target, doc.body.firstChild);
-    }
-
-    // Insert HTML template
-    target.outerHTML = htmlText;
-
-    var navEl = el("global-navbar");
+    // 1. Parse HTML template into element
+    var temp = doc.createElement("div");
+    temp.innerHTML = htmlText.trim();
+    var navEl = temp.firstElementChild;
     if (!navEl) return;
+
+    // 2. Clean up any existing global-navbar or placeholder elements
+    var existingNav = el("global-navbar");
+    if (existingNav && existingNav.parentNode) {
+      existingNav.parentNode.removeChild(existingNav);
+    }
+    doc.querySelectorAll("header.app-nav-header, header.app__header").forEach(function (ph) {
+      if (ph.parentNode) ph.parentNode.removeChild(ph);
+    });
+
+    // 3. Mount directly at top level of document.body so it escapes all parent stacking contexts & transforms
+    if (doc.body) {
+      doc.body.insertBefore(navEl, doc.body.firstChild);
+    }
 
     // 1. Fix all link Hrefs relative to current directory
     navEl.querySelectorAll("a[href]").forEach(function (a) {
