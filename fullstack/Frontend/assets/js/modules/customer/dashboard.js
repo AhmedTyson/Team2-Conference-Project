@@ -909,10 +909,10 @@
       const quotaVal = el("stat-val-quota");
       if (quotaVal) {
         if (subRes && subRes.ok && subRes.body && subRes.body.data) {
-          const quota = subRes.body.data.ai_quota_remaining ?? subRes.body.data.quota ?? "25 Remaining";
+          const quota = subRes.body.data.ai_quota_remaining ?? subRes.body.data.quota ?? "500 Remaining";
           quotaVal.textContent = typeof quota === "number" ? `${quota} Remaining` : String(quota);
         } else {
-          quotaVal.textContent = "25 Remaining";
+          quotaVal.textContent = "500 Remaining";
         }
       }
 
