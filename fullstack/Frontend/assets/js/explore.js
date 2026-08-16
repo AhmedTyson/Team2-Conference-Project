@@ -459,6 +459,49 @@
     }
   }
 
+  var REGION_MAP = {
+    europe: ["france", "paris", "italy", "rome", "venice", "uk", "united kingdom", "london", "spain", "barcelona", "germany", "berlin", "greece", "santorini", "europe"],
+    asia: ["japan", "tokyo", "kyoto", "china", "thailand", "bangkok", "singapore", "indonesia", "bali", "asia"],
+    "middle east": ["egypt", "cairo", "uae", "united arab emirates", "dubai", "abu dhabi", "saudi arabia", "qatar", "jordan", "middle east"],
+    americas: ["usa", "united states", "new york", "los angeles", "canada", "brazil", "mexico", "americas", "america"],
+    africa: ["south africa", "kenya", "tanzania", "morocco", "africa"]
+  };
+
+  function matchItemRegion(item, targetRegion) {
+    if (!targetRegion || targetRegion.trim() === "" || targetRegion === "All Regions") return true;
+    var target = targetRegion.toLowerCase();
+
+    var regName = (
+      (item.country && item.country.region && item.country.region.name) ||
+      (item.destination && item.destination.country && item.destination.country.region && item.destination.country.region.name) ||
+      (item.country && item.country.name) ||
+      (item.destination && item.destination.country && item.destination.country.name) ||
+      item.region_name ||
+      item.region ||
+      ""
+    ).toLowerCase();
+
+    if (regName.indexOf(target) !== -1) return true;
+
+    var combinedText = (
+      (item.name || "") + " " +
+      (item.city_name || item.city || "") + " " +
+      (item.country_name || (item.country && item.country.name) || "") + " " +
+      (item.destination && (item.destination.name || item.destination.city || "")) + " " +
+      (item.origin || "") + " " +
+      (item.destination || "")
+    ).toLowerCase();
+
+    var keywords = REGION_MAP[target] || [target];
+    for (var k = 0; k < keywords.length; k++) {
+      if (combinedText.indexOf(keywords[k]) !== -1) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   function loadCatalog() {
     if (!grid) return;
     grid.innerHTML = '<div class="col-span-full py-16 text-center text-white/50 space-y-3"><i class="fas fa-circle-notch fa-spin text-2xl text-amber-400"></i><p class="text-sm font-semibold">Loading luxury experiences...</p></div>';
@@ -480,11 +523,8 @@
       }
 
       if (SELECTED_REGION && SELECTED_REGION.trim() !== "" && SELECTED_REGION !== "All Regions") {
-        var reg = SELECTED_REGION.toLowerCase();
         items = items.filter(function (i) {
-          var itemRegion = ((i.country && i.country.region && i.country.region.name) || i.region_name || i.region || "").toLowerCase();
-          var itemCountry = (i.country_name || (i.country && i.country.name) || "").toLowerCase();
-          return itemRegion.indexOf(reg) !== -1 || itemCountry.indexOf(reg) !== -1;
+          return matchItemRegion(i, SELECTED_REGION);
         });
       }
 
