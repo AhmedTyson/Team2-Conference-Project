@@ -75,8 +75,8 @@ class ReportQuery
     {
         $rows = DB::table('order_items')
             ->join('orders', 'orders.id', '=', 'order_items.order_id')
-            ->join('payments', 'orders.id', '=', 'payments.order_id')
-            ->where('payments.status', self::REVENUE_STATUS)
+            ->leftJoin('payments', 'orders.id', '=', 'payments.order_id')
+            ->where('orders.status', '!=', 'cancelled')
             ->when($from, fn ($q) => $q->whereDate('orders.created_at', '>=', $from))
             ->when($to, fn ($q) => $q->whereDate('orders.created_at', '<=', $to))
             ->select(
@@ -334,8 +334,8 @@ class ReportQuery
     protected function paidOrders(?string $from, ?string $to): Builder
     {
         return Order::query()
-            ->join('payments', 'orders.id', '=', 'payments.order_id')
-            ->where('payments.status', self::REVENUE_STATUS)
+            ->leftJoin('payments', 'orders.id', '=', 'payments.order_id')
+            ->where('orders.status', '!=', 'cancelled')
             ->when($from, fn ($q) => $q->whereDate('orders.created_at', '>=', $from))
             ->when($to, fn ($q) => $q->whereDate('orders.created_at', '<=', $to))
             ->select('orders.*');
@@ -345,10 +345,10 @@ class ReportQuery
     {
         $hotels = DB::table('order_items')
             ->join('orders', 'orders.id', '=', 'order_items.order_id')
-            ->join('payments', 'orders.id', '=', 'payments.order_id')
+            ->leftJoin('payments', 'orders.id', '=', 'payments.order_id')
             ->join('hotels', 'hotels.id', '=', 'order_items.product_id')
             ->where('order_items.product_type', (new Hotel)->getMorphClass())
-            ->where('payments.status', self::REVENUE_STATUS)
+            ->where('orders.status', '!=', 'cancelled')
             ->when($from, fn ($q) => $q->whereDate('orders.created_at', '>=', $from))
             ->when($to, fn ($q) => $q->whereDate('orders.created_at', '<=', $to))
             ->select(
@@ -358,10 +358,10 @@ class ReportQuery
 
         $restaurants = DB::table('order_items')
             ->join('orders', 'orders.id', '=', 'order_items.order_id')
-            ->join('payments', 'orders.id', '=', 'payments.order_id')
+            ->leftJoin('payments', 'orders.id', '=', 'payments.order_id')
             ->join('restaurants', 'restaurants.id', '=', 'order_items.product_id')
             ->where('order_items.product_type', (new Restaurant)->getMorphClass())
-            ->where('payments.status', self::REVENUE_STATUS)
+            ->where('orders.status', '!=', 'cancelled')
             ->when($from, fn ($q) => $q->whereDate('orders.created_at', '>=', $from))
             ->when($to, fn ($q) => $q->whereDate('orders.created_at', '<=', $to))
             ->select(
