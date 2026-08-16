@@ -113,26 +113,6 @@ class PaymobGateway implements PaymentGatewayInterface
             if (! $status['success']) {
                 Log::error('Paymob Intention Failed', ['response' => $status]);
 
-                if (app()->environment('local', 'testing') || str_contains($this->secretKey, 'test') || empty($this->secretKey) || str_starts_with($this->secretKey, 'mock')) {
-                    Log::warning('Paymob Intention API returned error; falling back to simulated test checkout URL.', ['error' => $status['message'] ?? '']);
-                    $clientSecret = 'simulated_cs_' . md5($referenceId);
-                    $checkoutUrl = url('/api/v1/paymob/callback?') . http_build_query([
-                        'merchant_order_id' => $referenceId,
-                        'success' => 'true',
-                        'id' => '516' . rand(100000, 999999),
-                        'txn_response_code' => 'APPROVED',
-                        'source_data_pan' => '1111',
-                        'source_data_sub_type' => 'Visa',
-                    ]);
-
-                    return [
-                        'success' => true,
-                        'client_secret' => $clientSecret,
-                        'checkout_url' => $checkoutUrl,
-                        'message' => 'Simulated test checkout created',
-                    ];
-                }
-
                 $errMsg = !empty($status['message']) ? $status['message'] : (is_array($status) ? json_encode($status) : 'Paymob API Intention failed. Check PAYMOB_SECRET_KEY in .env');
 
                 return [
@@ -154,25 +134,6 @@ class PaymobGateway implements PaymentGatewayInterface
 
         } catch (\Throwable $e) {
             Log::error('Paymob Exception', ['error' => $e->getMessage()]);
-
-            if (app()->environment('local', 'testing')) {
-                $clientSecret = 'simulated_cs_' . md5($referenceId);
-                $checkoutUrl = url('/api/v1/paymob/callback?') . http_build_query([
-                    'merchant_order_id' => $referenceId,
-                    'success' => 'true',
-                    'id' => '516' . rand(100000, 999999),
-                    'txn_response_code' => 'APPROVED',
-                    'source_data_pan' => '1111',
-                    'source_data_sub_type' => 'Visa',
-                ]);
-
-                return [
-                    'success' => true,
-                    'client_secret' => $clientSecret,
-                    'checkout_url' => $checkoutUrl,
-                    'message' => 'Simulated test checkout created',
-                ];
-            }
 
             return [
                 'success' => false,
