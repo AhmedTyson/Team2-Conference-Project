@@ -120,7 +120,7 @@ class ReportTest extends TestCase
         $reportPath = 'reports/booking_report_test.pdf';
         Storage::disk('public')->put($reportPath, '%PDF-1.7 fake contents');
 
-        $report = Report::factory()->create(['file_path' => $reportPath]);
+        $report = Report::factory()->create(['file_path' => $reportPath, 'status' => 'completed']);
 
         $response = $this->actingAs($this->admin(), 'api')->getJson("/api/admin/reports/{$report->id}/download");
 
