@@ -40,6 +40,27 @@
     avatarWrap.innerHTML = It.app.imageHtml(user.profile_image || null, user.name || "?", "profile-avatar");
   }
 
+  function renderQuotaBar(user) {
+    var sub = user.subscription || {};
+    var planName = sub.plan_name || "Free Explorer";
+    var total = sub.ai_quota_total || 500;
+    var used = typeof user.ai_generations_count === "number" ? user.ai_generations_count : (sub.ai_quota_used || 0);
+    var remaining = Math.max(0, total - used);
+    var pct = Math.min(100, Math.round((used / total) * 100));
+
+    var titleEl = el("profile-plan-title");
+    var badgeEl = el("profile-quota-avail-badge");
+    var usedEl = el("profile-quota-used-text");
+    var remEl = el("profile-quota-remaining-text");
+    var barEl = el("profile-quota-bar");
+
+    if (titleEl) titleEl.textContent = planName;
+    if (badgeEl) badgeEl.textContent = remaining + " Available";
+    if (usedEl) usedEl.innerHTML = '<i class="fas fa-chart-pie text-purple-500 mr-1.5"></i>' + used + " / " + total + " Used";
+    if (remEl) remEl.textContent = remaining + " Remaining";
+    if (barEl) barEl.style.width = pct + "%";
+  }
+
   It.app.boot(function (user) {
     if (!user) return;
     lead.textContent = "Logged in as " + ((user.roles || []).join(", ") || "member") +
@@ -53,6 +74,7 @@
     if (bioInput) bioInput.value = user.bio || "";
 
     renderAvatar(user);
+    renderQuotaBar(user);
 
     el("change-photo").addEventListener("click", function () { avatarInput.click(); });
 

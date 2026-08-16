@@ -101,6 +101,17 @@ class AuthController extends Controller
         $addrRecord = $user->address()->first();
         $formattedAddress = $addrRecord ? $addrRecord->line1 : $user->getAttribute('address');
 
+        $activeSub = $user->subscriptions()->where('status', 'active')->latest()->first();
+        $plan = $activeSub ? $activeSub->plan : null;
+
+        $planName = $plan ? $plan->name : 'Free Explorer';
+        $totalQuota = $plan ? (int) $plan->ai_quota_monthly : (int) config('ai.rate_limit_per_day', 500);
+        if ($totalQuota <= 0) {
+            $totalQuota = 500;
+        }
+        $usedQuota = (int) ($user->ai_generations_count ?? 0);
+        $remainingQuota = max(0, $totalQuota - $usedQuota);
+
         return ApiResponse::success([
             'user' => [
                 'id' => $user->id,
@@ -125,6 +136,15 @@ class AuthController extends Controller
                     ? (str_starts_with($user->profile_image, 'http') ? $user->profile_image : url($user->profile_image))
                     : null,
                 'email_verified_at' => $user->email_verified_at,
+                'subscription' => [
+                    'plan_id' => $plan ? $plan->id : null,
+                    'plan_name' => $planName,
+                    'status' => $activeSub ? $activeSub->status : 'active',
+                    'ai_quota_total' => $totalQuota,
+                    'ai_quota_used' => $usedQuota,
+                    'ai_quota_remaining' => $remainingQuota,
+                    'renews_at' => $activeSub ? $activeSub->renews_at : null,
+                ],
             ],
         ]);
     }

@@ -905,16 +905,25 @@
       setFeed(reviewsFeed, reviewsData.slice(0, 4), "No reviews submitted yet.", renderReviewsFeed);
       setFeed(paymentsFeed, paymentsData.slice(0, 4), "No payment history found.", renderPaymentsFeed);
 
-      // AI Quota
+      // AI Quota & Plan Status Bar
+      const subObj = (subRes && subRes.ok && subRes.body && subRes.body.data) ? subRes.body.data : (user && user.subscription ? user.subscription : {});
+      const planName = subObj.plan_name || (subObj.plan ? subObj.plan.name : "Pro Plan");
+      const totalQuota = subObj.ai_quota_total || (subObj.plan ? subObj.plan.ai_quota_monthly : 500);
+      const usedQuota = typeof (user && user.ai_generations_count) === "number" ? user.ai_generations_count : (subObj.ai_quota_used || 0);
+      const remainingQuota = Math.max(0, totalQuota - usedQuota);
+      const usagePct = Math.min(100, Math.round((usedQuota / totalQuota) * 100));
+
+      const planBadge = el("ai-plan-badge");
       const quotaVal = el("stat-val-quota");
-      if (quotaVal) {
-        if (subRes && subRes.ok && subRes.body && subRes.body.data) {
-          const quota = subRes.body.data.ai_quota_remaining ?? subRes.body.data.quota ?? "500 Remaining";
-          quotaVal.textContent = typeof quota === "number" ? `${quota} Remaining` : String(quota);
-        } else {
-          quotaVal.textContent = "500 Remaining";
-        }
-      }
+      const usedText = el("ai-quota-used-text");
+      const availText = el("ai-quota-avail-text");
+      const barEl = el("ai-quota-bar");
+
+      if (planBadge) planBadge.textContent = planName;
+      if (quotaVal) quotaVal.textContent = remainingQuota + " Available";
+      if (usedText) usedText.innerHTML = '<i class="fas fa-chart-pie text-purple-500 mr-1"></i> ' + usedQuota + " / " + totalQuota + " used";
+      if (availText) availText.textContent = remainingQuota + " available";
+      if (barEl) barEl.style.width = usagePct + "%";
 
     }).catch(function (err) {
       console.warn("Backend API unavailable, loading fallback mockup stats:", err);

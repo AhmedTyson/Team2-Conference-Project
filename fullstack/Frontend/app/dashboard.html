@@ -504,13 +504,30 @@
             </div>
           </a>
 
-          <div class="stat-card-glass" id="stat-ai-quota">
-            <div class="stat-card-glass__icon" style="background:rgba(168,85,247,0.15);color:#a855f7;">
-              <i class="fas fa-sparkles"></i>
+          <!-- AI Generation Quota & Plan Status Card -->
+          <div class="stat-card-glass flex-col items-start gap-2 col-span-full md:col-span-2 lg:col-span-1" id="stat-ai-quota" style="grid-column: span 2 / span 2;">
+            <div class="flex items-center justify-between w-full">
+              <div class="flex items-center gap-2.5">
+                <div class="stat-card-glass__icon" style="background:rgba(168,85,247,0.15);color:#a855f7;">
+                  <i class="fas fa-sparkles"></i>
+                </div>
+                <div>
+                  <span class="stat-card-glass__label" style="font-weight:700;">AI Generation Quota</span>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-600 dark:text-amber-300 border border-amber-400/30" id="ai-plan-badge">Pro Plan</span>
+                </div>
+              </div>
+              <span class="stat-card-glass__value text-base font-bold text-emerald-600 dark:text-emerald-400" id="stat-val-quota">500 Available</span>
             </div>
-            <div class="stat-card-glass__content">
-              <span class="stat-card-glass__label">AI Generation Quota</span>
-              <span class="stat-card-glass__value" id="stat-val-quota" style="font-size:1.3rem;">500 Remaining</span>
+
+            <!-- Progress Bar (n used / n available & remaining) -->
+            <div class="w-full mt-1">
+              <div class="flex items-center justify-between text-[11px] font-semibold text-gray-600 dark:text-white/70 mb-1">
+                <span id="ai-quota-used-text"><i class="fas fa-chart-pie text-purple-500 mr-1"></i> 0 / 500 used</span>
+                <span id="ai-quota-avail-text" class="text-emerald-600 dark:text-emerald-400 font-bold">500 available</span>
+              </div>
+              <div class="w-full h-2 rounded-full bg-gray-200 dark:bg-white/10 overflow-hidden">
+                <div id="ai-quota-bar" class="h-full rounded-full bg-gradient-to-r from-amber-500 via-purple-500 to-emerald-500 transition-all duration-500" style="width: 0%;"></div>
+              </div>
             </div>
           </div>
 
