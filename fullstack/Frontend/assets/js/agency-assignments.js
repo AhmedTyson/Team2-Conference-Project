@@ -28,6 +28,9 @@
     cancelled: "badge-off",
   };
 
+  let rawAssignments = [];
+  let currentFilter = "all";
+
   function respond(assignment, action) {
     It.apiPost("/agency/assignments/" + assignment.id + "/" + action, {}, { auth: true })
       .then(function () {
@@ -43,12 +46,28 @@
       });
   }
 
+  function filterAndRender() {
+    const q = (el("search-input") ? el("search-input").value : "").toLowerCase().trim();
+    const filtered = rawAssignments.filter(function (r) {
+      const status = r.status || "requested";
+      if (currentFilter !== "all" && status !== currentFilter) return false;
+      if (!q) return true;
+      const custName = r.customer ? (r.customer.name || r.customer.email || "") : "";
+      return (
+        String(r.id).includes(q) ||
+        custName.toLowerCase().includes(q) ||
+        status.toLowerCase().includes(q)
+      );
+    });
+    renderTable(filtered);
+  }
+
   function renderTable(rows) {
     const host = el("assignments-table");
     if (!host) return;
 
     if (!rows || !rows.length) {
-      host.innerHTML = '<div class="kit-empty">No assignments routed to you yet.</div>';
+      host.innerHTML = '<div class="kit-empty">No assignments found matching your filter.</div>';
       return;
     }
 
@@ -105,14 +124,33 @@
     host.appendChild(table);
   }
 
+  function setupControls() {
+    const searchInput = el("search-input");
+    if (searchInput) {
+      searchInput.addEventListener("input", filterAndRender);
+    }
+    const filterBtns = document.querySelectorAll("[data-status-filter]");
+    filterBtns.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        filterBtns.forEach(function (b) { b.classList.remove("is-active"); });
+        btn.classList.add("is-active");
+        currentFilter = btn.getAttribute("data-status-filter") || "all";
+        filterAndRender();
+      });
+    });
+  }
+
   function load() {
     It.apiGet("/agency/assignments", { auth: true }).then(function (res) {
-      const rows = (res && res.data) || res || [];
-      renderTable(rows);
+      rawAssignments = (res && res.data) || res || [];
+      filterAndRender();
     }).catch(function () {
       It.feedback.banner("Could not load assignments.", "is-error");
     });
   }
 
-  document.addEventListener("DOMContentLoaded", load);
+  document.addEventListener("DOMContentLoaded", function () {
+    setupControls();
+    load();
+  });
 })(window);

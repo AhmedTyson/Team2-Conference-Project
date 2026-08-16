@@ -191,10 +191,20 @@
   /* agency role — assignments + customer tools */
   var AGENCY_ITEMS = [
     {
-      section: null,
+      section: "Agency Desk",
       items: [
+        { href: "index.html", label: "Dashboard", icon: "dashboard" },
         { href: "assignments.html", label: "My Assignments", icon: "assignments" },
-        { href: "../index.html", label: "Customer Site", icon: "portal" },
+        { href: "proposals.html", label: "Trip Proposals", icon: "trips" },
+        { href: "inquiries.html", label: "Customer Inquiries", icon: "reviews" },
+      ],
+    },
+    {
+      section: "Management",
+      items: [
+        { href: "earnings.html", label: "Earnings & Payouts", icon: "analytics" },
+        { href: "settings.html", label: "Agency Profile", icon: "settings" },
+        { href: "../index.html", label: "Live Customer Site", icon: "portal" },
       ],
     },
   ];
