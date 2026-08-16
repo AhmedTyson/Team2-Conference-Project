@@ -55,10 +55,19 @@ class PaymobGateway implements PaymentGatewayInterface
         $frontendUrl = env('FRONTEND_URL', 'http://localhost:8080');
 
         if (empty($this->secretKey) || str_starts_with($this->secretKey, 'mock') || app()->environment('testing')) {
+            $simulatedCheckoutUrl = url('/api/v1/paymob/callback?') . http_build_query([
+                'merchant_order_id' => $referenceId,
+                'success' => 'true',
+                'id' => '516' . rand(100000, 999999),
+                'txn_response_code' => 'APPROVED',
+                'source_data_pan' => '1111',
+                'source_data_sub_type' => 'Visa',
+            ]);
+
             return [
                 'success' => true,
                 'client_secret' => 'simulated_cs_' . uniqid(),
-                'checkout_url' => rtrim($frontendUrl, '/') . '/app/payment-success.html?mock=1&success=true&order_id=' . urlencode($referenceId),
+                'checkout_url' => $simulatedCheckoutUrl,
                 'message' => 'Simulated test checkout created',
             ];
         }
@@ -107,7 +116,14 @@ class PaymobGateway implements PaymentGatewayInterface
                 if (app()->environment('local', 'testing') || str_contains($this->secretKey, 'test') || empty($this->secretKey) || str_starts_with($this->secretKey, 'mock')) {
                     Log::warning('Paymob Intention API returned error; falling back to simulated test checkout URL.', ['error' => $status['message'] ?? '']);
                     $clientSecret = 'simulated_cs_' . md5($referenceId);
-                    $checkoutUrl = rtrim($frontendUrl, '/') . '/app/payment-success.html?mock=1&success=true&order_id=' . urlencode($referenceId);
+                    $checkoutUrl = url('/api/v1/paymob/callback?') . http_build_query([
+                        'merchant_order_id' => $referenceId,
+                        'success' => 'true',
+                        'id' => '516' . rand(100000, 999999),
+                        'txn_response_code' => 'APPROVED',
+                        'source_data_pan' => '1111',
+                        'source_data_sub_type' => 'Visa',
+                    ]);
 
                     return [
                         'success' => true,
@@ -141,7 +157,14 @@ class PaymobGateway implements PaymentGatewayInterface
 
             if (app()->environment('local', 'testing')) {
                 $clientSecret = 'simulated_cs_' . md5($referenceId);
-                $checkoutUrl = rtrim($frontendUrl, '/') . '/app/payment-success.html?mock=1&success=true&order_id=' . urlencode($referenceId);
+                $checkoutUrl = url('/api/v1/paymob/callback?') . http_build_query([
+                    'merchant_order_id' => $referenceId,
+                    'success' => 'true',
+                    'id' => '516' . rand(100000, 999999),
+                    'txn_response_code' => 'APPROVED',
+                    'source_data_pan' => '1111',
+                    'source_data_sub_type' => 'Visa',
+                ]);
 
                 return [
                     'success' => true,
