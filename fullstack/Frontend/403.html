@@ -2,56 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>403 Forbidden · Itinera</title>
-  <link rel="stylesheet" href="assets/css/tokens.css" />
-  <link rel="stylesheet" href="assets/css/app.css" />
-  <script>/* FOUC prevention — default dark */
-    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
-    if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
-      document.documentElement.classList.add("dark","fouc-ready");
-    else document.documentElement.classList.add("fouc-ready");
-    })();
-  </script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-</head>
-<body data-page="error" data-layout="public">
-  <header class="app-nav-header"></header>
-  <div class="app app--center" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 2rem;">
-    <main class="app__main" style="max-width: 500px; width: 100%;">
-      <div class="error-state">
-        <span class="error-state__code" style="font-size: 5rem; font-weight: 900; opacity: 0.3; display: block;">403</span>
-        <h1 class="error-state__title" style="font-size: 1.8rem; font-weight: 700; margin: 0.5rem 0;">Access Restricted</h1>
-        <p class="error-state__text" style="opacity: 0.7; margin-bottom: 1.5rem;">You do not have the required permissions or role to view this page.</p>
-        
-        <div style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;">
-          <a id="btn-dashboard" href="app/dashboard.html" class="btn-primary" style="display:inline-flex; padding: 0.6rem 1.4rem; text-decoration: none; border-radius: var(--radius-md, 8px);">Go to My Dashboard</a>
-          <a href="auth/login.html" class="btn-outline" style="display:inline-flex; padding: 0.6rem 1.4rem; text-decoration: none; border-radius: var(--radius-md, 8px); border: 1px solid rgba(255,255,255,0.2); color: inherit;">Switch Account</a>
-          <a href="index.html" class="btn-outline" style="display:inline-flex; padding: 0.6rem 1.4rem; text-decoration: none; border-radius: var(--radius-md, 8px); border: 1px solid rgba(255,255,255,0.2); color: inherit;">Home</a>
-        </div>
-      </div>
-    </main>
-  </div>
-  
-  <script src="assets/js/config.js"></script>
-  <script src="assets/js/session.js"></script>
-  <script src="assets/js/core/navbar-component.js"></script>
-  <script src="assets/js/core/theme.js"></script>
-  <script src="assets/js/core/topbar.js"></script>
+  <meta http-equiv="refresh" content="0;url=./errors/403.html" />
   <script>
-    (function() {
-      try {
-        if (window.Itinari && window.Itinari.session) {
-          const user = window.Itinari.session.currentUserLocal();
-          const role = window.Itinari.session.roleOf(user);
-          const dashBtn = document.getElementById("btn-dashboard");
-          if (dashBtn) {
-            dashBtn.href = window.Itinari.session.getRedirectPath(role);
-          }
-        }
-      } catch(e) {}
-    })();
+    window.location.replace("./errors/403.html" + window.location.search + window.location.hash);
   </script>
+  <title>Redirecting...</title>
+</head>
+<body>
 </body>
 </html>
