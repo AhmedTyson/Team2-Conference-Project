@@ -365,6 +365,10 @@ Route::prefix('paymob')->name('paymob-v1.')->group(function () {
     Route::get('/callback', [PaymobWebhookController::class, 'callback'])->name('callback');
 });
 
+// Fallback named routes without 'api.' prefix to prevent Route [paymob-v1.callback] not defined exception
+Route::post('/paymob/webhook', [PaymobWebhookController::class, 'handle'])->name('paymob-v1.webhook');
+Route::get('/paymob/callback', [PaymobWebhookController::class, 'callback'])->name('paymob-v1.callback');
+
 Route::prefix('v1/paymob')->group(function () {
     Route::post('/webhook', [PaymobWebhookController::class, 'handle']);
     Route::get('/callback', [PaymobWebhookController::class, 'callback']);

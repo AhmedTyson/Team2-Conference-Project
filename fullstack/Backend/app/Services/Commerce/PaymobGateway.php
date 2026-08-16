@@ -103,8 +103,8 @@ class PaymobGateway implements PaymentGatewayInterface
                 ],
                 'extras' => ['merchant_intention_id' => $referenceId],
                 'special_reference' => $referenceId,
-                'notify_url' => route('paymob-v1.webhook'),
-                'return_url' => route('paymob-v1.callback'),
+                'notify_url' => url('/api/paymob/webhook'),
+                'return_url' => url('/api/paymob/callback'),
             ];
 
             $paymobReq = $this->makeClient();

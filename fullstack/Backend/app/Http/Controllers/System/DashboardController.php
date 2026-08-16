@@ -170,23 +170,6 @@ class DashboardController extends Controller
         }
 
         $latestPayment = $order->payments()->latest()->first();
-
-        // If order is pending, but lookup is requested with mock=1/success=true or payment paid, fulfill in DB
-        $currentStatus = $order->status instanceof \BackedEnum ? $order->status->value : (string) $order->status;
-        if ($currentStatus === 'pending') {
-            if ($request->boolean('mock') || $request->query('success') === 'true' || ($latestPayment && (string)$latestPayment->status === 'paid')) {
-                \Illuminate\Support\Facades\DB::transaction(function () use ($order, $latestPayment) {
-                    if ($latestPayment && (string)$latestPayment->status !== 'paid') {
-                        $latestPayment->update(['status' => 'paid']);
-                    }
-                    $order->update(['status' => 'fulfilled']);
-                    event(new \App\Events\PaymentSucceeded($latestPayment ?: new \App\Models\Commerce\Payment(['order_id' => $order->id])));
-                });
-                $order->refresh();
-                $latestPayment = $order->payments()->latest()->first();
-            }
-        }
-
         $statusStr = $order->status instanceof \BackedEnum ? $order->status->value : (string) $order->status;
 
         $totalCents = (int) ($order->total_cents ?? 0);
