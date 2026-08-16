@@ -100,6 +100,15 @@
       doc.body.insertBefore(navEl, doc.body.firstChild);
     }
 
+    // Ensure non-hero pages have top padding so content is never covered by the fixed navbar
+    var hasHero = !!doc.querySelector(".hero-wrapper");
+    if (!hasHero) {
+      var appWrap = doc.querySelector(".app-wrapper") || doc.querySelector("main");
+      if (appWrap && !appWrap.classList.contains("pt-24") && !appWrap.classList.contains("pt-28")) {
+        appWrap.style.paddingTop = "5.5rem";
+      }
+    }
+
     // 1. Fix all link Hrefs relative to current directory
     navEl.querySelectorAll("a[href]").forEach(function (a) {
       var rawHref = a.getAttribute("href");
