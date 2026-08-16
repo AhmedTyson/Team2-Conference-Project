@@ -109,10 +109,10 @@
 
     // Ensure non-hero pages have top padding so content is never covered by the fixed navbar
     var hasHero = !!doc.querySelector(".hero-wrapper");
-    var isAuth = !!doc.querySelector(".auth-main-wrapper") || doc.body.getAttribute("data-layout") === "auth";
+    var isAuth = !!doc.querySelector(".auth-main-wrapper") || (doc.body && doc.body.getAttribute("data-layout") === "auth");
     if (!hasHero && !isAuth) {
-      var appWrap = doc.querySelector(".app-wrapper") || doc.querySelector("main");
-      if (appWrap && !appWrap.classList.contains("pt-24") && !appWrap.classList.contains("pt-28")) {
+      var appWrap = doc.querySelector(".dashboard-shell") || doc.querySelector(".agency-shell") || doc.querySelector(".admin-shell") || doc.querySelector(".app-wrapper") || doc.querySelector("main");
+      if (appWrap) {
         appWrap.style.paddingTop = "5.5rem";
       }
     }

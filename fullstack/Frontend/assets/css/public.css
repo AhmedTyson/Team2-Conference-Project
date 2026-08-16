@@ -24,7 +24,7 @@ body {
   left: 0 !important;
   right: 0 !important;
   width: 100% !important;
-  z-index: 999999 !important;
+  z-index: 2147483647 !important;
   pointer-events: none !important;
 }
 
@@ -40,12 +40,15 @@ body {
   color: hsl(var(--foreground));
 }
 
-/* Ensure content on pages without hero start cleanly below the fixed floating navbar */
-.app-wrapper:not(:has(.hero-wrapper)),
-main:not(.hero-wrapper),
+/* Ensure content on non-hero pages starts cleanly below the 72px fixed navbar without being covered */
+body:not(:has(.hero-wrapper)) .app-wrapper,
+body:not(:has(.hero-wrapper)) main:not(.hero-wrapper),
+body:not(:has(.hero-wrapper)) .dashboard-shell,
+body:not(:has(.hero-wrapper)) .agency-shell,
+body:not(:has(.hero-wrapper)) .admin-shell,
 .page-content-wrapper,
 .app__body {
-  padding-top: 5.5rem;
+  padding-top: 5.5rem !important;
 }
 
 /* ── Hero wrapper ── */
