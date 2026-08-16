@@ -542,11 +542,70 @@
     }
   }
 
+  function fetchCountryWeather(lat, lon, countryName) {
+    if (!lat || !lon) return;
+    It.apiGet("/weather?lat=" + lat + "&lon=" + lon).then(function (res) {
+      if (!res.ok || !res.body) return;
+      var cw = res.body.current_weather || res.body;
+      var tempC = cw.temperature != null ? Math.round(cw.temperature) : 25;
+      var tempF = Math.round((tempC * 9 / 5) + 32);
+      var code = cw.weathercode != null ? cw.weathercode : (res.body.weathercode || 0);
+      var desc = WEATHER_DESCRIPTIONS[code] || "Clear & Pleasant";
+      var wind = cw.windspeed != null ? Math.round(cw.windspeed) : 12;
+      var hum = cw.relativehumidity != null ? cw.relativehumidity : 48;
+
+      var iconClass = "fas fa-sun";
+      if (code >= 1 && code <= 3) iconClass = "fas fa-cloud-sun";
+      else if (code >= 45 && code <= 48) iconClass = "fas fa-smog";
+      else if (code >= 51 && code <= 65) iconClass = "fas fa-cloud-rain";
+      else if (code >= 71 && code <= 75) iconClass = "fas fa-snowflake";
+      else if (code >= 80 && code <= 82) iconClass = "fas fa-cloud-showers-heavy";
+      else if (code >= 95) iconClass = "fas fa-bolt";
+
+      var cEl = el("wDisplayCity");
+      var coordsEl = el("wDisplayCoords");
+      var tempEl = el("wDisplayTemp");
+      var tempFEl = el("wDisplayTempF");
+      var descEl = el("wDisplayDesc");
+      var windEl = el("wDisplayWind");
+      var humEl = el("wDisplayHumidity");
+      var iconEl = el("wDisplayIcon");
+
+      if (cEl) cEl.textContent = countryName;
+      if (coordsEl) coordsEl.textContent = "Lat " + lat + "° · Lon " + lon + "°";
+      if (tempEl) tempEl.textContent = tempC + "°C";
+      if (tempFEl) tempFEl.textContent = tempF + "°F";
+      if (descEl) descEl.textContent = desc;
+      if (windEl) windEl.textContent = wind + " km/h";
+      if (humEl) humEl.textContent = hum + "%";
+      if (iconEl) iconEl.innerHTML = '<i class="' + iconClass + '"></i>';
+    }).catch(function () {});
+  }
+
+  function initCountryWeatherSelector() {
+    var select = el("countryWeatherSelect");
+    if (!select) return;
+    select.addEventListener("change", function () {
+      var opt = select.options[select.selectedIndex];
+      if (!opt) return;
+      var lat = opt.getAttribute("data-lat");
+      var lon = opt.getAttribute("data-lon");
+      var name = opt.textContent;
+      fetchCountryWeather(lat, lon, name);
+    });
+
+    var defaultOpt = select.options[0];
+    if (defaultOpt) {
+      fetchCountryWeather(defaultOpt.getAttribute("data-lat"), defaultOpt.getAttribute("data-lon"), defaultOpt.textContent);
+    }
+  }
+
   // ── Bootstrapping ──
   document.addEventListener("DOMContentLoaded", function () {
     initHeroCarousel();
     loadPlatformStats();
     loadRegionsAndDestinations();
+    initCountryWeatherSelector();
     initAuthModal();
     syncAuthState();
     initGSAPAnimations();

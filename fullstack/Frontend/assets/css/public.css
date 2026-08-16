@@ -44,12 +44,12 @@ body {
 .hero-wrapper {
   position: relative;
   z-index: 10;
-  height: 100vh;
   min-height: 100vh;
+  height: auto;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 2rem 2.5rem;
+  padding: 7rem 2.5rem 3.5rem;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
