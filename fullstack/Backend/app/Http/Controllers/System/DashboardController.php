@@ -133,4 +133,72 @@ class DashboardController extends Controller
             'User orders retrieved successfully.'
         );
     }
+
+    /**
+     * Lookup a specific order by reference, ID, or Paymob transaction ID.
+     */
+    public function lookupOrder(Request $request, string $orderRef): JsonResponse
+    {
+        $user = auth('api')->user();
+
+        $numericId = null;
+        if (is_numeric($orderRef)) {
+            $numericId = (int) $orderRef;
+        } elseif (preg_match('/ORDER_(\d+)/i', $orderRef, $matches)) {
+            $numericId = (int) $matches[1];
+        }
+
+        $order = null;
+        if ($numericId) {
+            $order = \App\Models\Commerce\Order::with(['items', 'payments', 'user'])->find($numericId);
+        }
+
+        if (! $order) {
+            $payment = \App\Models\Commerce\Payment::where('paymob_transaction_id', $orderRef)->first();
+            if ($payment) {
+                $order = \App\Models\Commerce\Order::with(['items', 'payments', 'user'])->find($payment->order_id);
+            }
+        }
+
+        if (! $order) {
+            return ApiResponse::fail('Order record not found', 'order_not_found', 404);
+        }
+
+        // Authorization check: ensure user owns the order if not admin
+        if ($user && ! $user->hasRole('admin') && (int) $order->user_id !== (int) $user->id) {
+            return ApiResponse::fail('Order record not found', 'order_not_found', 404);
+        }
+
+        $latestPayment = $order->payments()->latest()->first();
+        $statusStr = $order->status instanceof \BackedEnum ? $order->status->value : (string) $order->status;
+
+        $totalCents = (int) ($order->total_cents ?? 0);
+        $totalAmount = $totalCents > 0 ? ($totalCents / 100) : 0.0;
+
+        $raw = ($latestPayment && is_array($latestPayment->raw_payload)) ? $latestPayment->raw_payload : [];
+        $cardPan = $raw['source_data']['pan'] ?? ($raw['source_data_pan'] ?? '****');
+        $cardType = $raw['source_data']['sub_type'] ?? ($raw['source_data_sub_type'] ?? 'Credit / Debit Card');
+
+        return ApiResponse::success([
+            'order_id' => $order->id,
+            'merchant_order_id' => "ORDER_{$order->id}_" . ($order->created_at ? $order->created_at->timestamp : time()),
+            'status' => $statusStr,
+            'is_success' => in_array(strtolower($statusStr), ['paid', 'fulfilled', 'completed']),
+            'total_cents' => $totalCents,
+            'total_amount' => $totalAmount,
+            'currency' => $order->currency ?: 'EGP',
+            'payment_gateway' => 'paymob',
+            'transaction_id' => $latestPayment ? ($latestPayment->paymob_transaction_id ?: "PAYMOB-{$order->id}") : "ORDER-{$order->id}",
+            'card_pan' => $cardPan,
+            'card_type' => $cardType,
+            'created_at' => $order->created_at ? $order->created_at->toIso8601String() : now()->toIso8601String(),
+            'items' => $order->items->map(function ($item) {
+                return [
+                    'product_type' => $item->product_type,
+                    'name' => $item->metadata['name'] ?? ($item->product_type === 'subscription' ? 'Plan Subscription' : 'Trip Package'),
+                    'price_cents' => $item->price_cents,
+                ];
+            }),
+        ], 'Order details retrieved successfully');
+    }
 }

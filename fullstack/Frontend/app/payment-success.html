@@ -96,98 +96,148 @@
       if (y) y.textContent = new Date().getFullYear();
 
       const params = new URLSearchParams(window.location.search);
-      const isSuccess = params.get("success") === "true" || params.get("txn_response_code") === "APPROVED" || params.get("pending") === "false";
-      const txnId = params.get("id") || params.get("transaction_id") || "N/A";
-      const orderRef = params.get("merchant_order_id") || params.get("order_id") || params.get("order") || "N/A";
-      const rawAmount = params.get("amount") || params.get("amount_cents");
-      const currency = params.get("currency") || "EGP";
-      const pan = params.get("source_data.pan") || params.get("pan") || "****";
-      const cardType = params.get("source_data.sub_type") || params.get("card_type") || "Credit / Debit Card";
-      const createdAt = params.get("created_at") ? new Date(params.get("created_at")).toLocaleString() : new Date().toLocaleString();
-
-      let formattedAmount = "—";
-      if (rawAmount) {
-        let num = parseFloat(rawAmount);
-        if (num > 1000 && rawAmount.indexOf('.') === -1) num = num / 100;
-        formattedAmount = new Intl.NumberFormat('en-US', { style: 'currency', currency: currency }).format(num);
-      }
-
+      const querySuccess = params.get("success") === "true" || params.get("txn_response_code") === "APPROVED" || params.get("pending") === "false";
+      const paramOrderRef = params.get("merchant_order_id") || params.get("order_id") || params.get("order") || params.get("id");
       const root = document.getElementById("successCardRoot");
 
-      if (isSuccess) {
-        root.innerHTML = `
-          <div class="absolute top-0 right-0 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+      function renderCard(data) {
+        const isSuccess = data.isSuccess;
+        const txnId = data.txnId;
+        const orderRef = data.orderRef;
+        const formattedAmount = data.formattedAmount;
+        const cardType = data.cardType;
+        const pan = data.pan;
+        const createdAt = data.createdAt;
 
-          <div class="check-ring bg-emerald-500/20 text-emerald-400 border-2 border-emerald-400/50 shadow-lg shadow-emerald-500/20">
-            <i class="fas fa-check text-4xl"></i>
-          </div>
+        if (isSuccess) {
+          root.innerHTML = `
+            <div class="absolute top-0 right-0 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
-          <div class="text-center mb-6">
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold text-emerald-400 status-badge-paid uppercase tracking-wider mb-2">
-              <i class="fas fa-shield-check"></i> Payment Confirmed
-            </span>
-            <h1 class="text-3xl font-black text-white">Payment Successful!</h1>
-            <p class="text-sm text-white/60 mt-1.5">Thank you for your booking with Itinera. Your payment has been processed and verified via 3D-Secure.</p>
-          </div>
+            <div class="check-ring bg-emerald-500/20 text-emerald-400 border-2 border-emerald-400/50 shadow-lg shadow-emerald-500/20">
+              <i class="fas fa-check text-4xl"></i>
+            </div>
 
-          <div class="bg-white/5 rounded-xl p-5 border border-white/10 space-y-1 mb-8">
-            <div class="detail-row">
-              <span class="text-white/60"><i class="fas fa-hashtag text-amber-400 mr-2"></i>Paymob Transaction ID</span>
-              <span class="font-mono font-bold text-amber-400">${txnId}</span>
+            <div class="text-center mb-6">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold text-emerald-400 status-badge-paid uppercase tracking-wider mb-2">
+                <i class="fas fa-shield-check"></i> Payment Confirmed
+              </span>
+              <h1 class="text-3xl font-black text-white">Payment Successful!</h1>
+              <p class="text-sm text-white/60 mt-1.5">Thank you for your order with Itinera. Your payment has been processed and signed in the database.</p>
             </div>
-            <div class="detail-row">
-              <span class="text-white/60"><i class="fas fa-receipt text-amber-400 mr-2"></i>Order Reference</span>
-              <span class="font-mono text-white/90">${orderRef}</span>
-            </div>
-            <div class="detail-row">
-              <span class="text-white/60"><i class="fas fa-credit-card text-amber-400 mr-2"></i>Payment Method</span>
-              <span class="font-semibold text-white/90">${cardType} (Ending ${pan})</span>
-            </div>
-            <div class="detail-row">
-              <span class="text-white/60"><i class="fas fa-coins text-amber-400 mr-2"></i>Amount Paid</span>
-              <span class="text-lg font-black text-emerald-400">${formattedAmount}</span>
-            </div>
-            <div class="detail-row">
-              <span class="text-white/60"><i class="fas fa-clock text-amber-400 mr-2"></i>Date & Time</span>
-              <span class="text-xs text-white/70">${createdAt}</span>
-            </div>
-          </div>
 
-          <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-            <a href="dashboard.html" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-sm transition text-center shadow-lg shadow-amber-400/20">
-              <i class="fas fa-tachometer-alt mr-2"></i>Go to Dashboard
-            </a>
-            <a href="receipt.html?order_id=${encodeURIComponent(orderRef)}&id=${encodeURIComponent(txnId)}" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm transition text-center border border-white/15">
-              <i class="fas fa-receipt mr-2"></i>View Receipt
-            </a>
-            <button type="button" onclick="window.print()" class="w-full sm:w-auto px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white font-medium text-sm transition text-center border border-white/10">
-              <i class="fas fa-print mr-2"></i>Print
-            </button>
-          </div>
-        `;
+            <div class="bg-white/5 rounded-xl p-5 border border-white/10 space-y-1 mb-8">
+              <div class="detail-row">
+                <span class="text-white/60"><i class="fas fa-hashtag text-amber-400 mr-2"></i>Paymob Transaction ID</span>
+                <span class="font-mono font-bold text-amber-400">${txnId}</span>
+              </div>
+              <div class="detail-row">
+                <span class="text-white/60"><i class="fas fa-receipt text-amber-400 mr-2"></i>Order Reference</span>
+                <span class="font-mono text-white/90">${orderRef}</span>
+              </div>
+              <div class="detail-row">
+                <span class="text-white/60"><i class="fas fa-credit-card text-amber-400 mr-2"></i>Payment Method</span>
+                <span class="font-semibold text-white/90">${cardType} (Ending ${pan})</span>
+              </div>
+              <div class="detail-row">
+                <span class="text-white/60"><i class="fas fa-coins text-amber-400 mr-2"></i>Amount Paid</span>
+                <span class="text-lg font-black text-emerald-400">${formattedAmount}</span>
+              </div>
+              <div class="detail-row">
+                <span class="text-white/60"><i class="fas fa-clock text-amber-400 mr-2"></i>Date & Time</span>
+                <span class="text-xs text-white/70">${createdAt}</span>
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <a href="dashboard.html" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-sm transition text-center shadow-lg shadow-amber-400/20">
+                <i class="fas fa-tachometer-alt mr-2"></i>Go to Dashboard
+              </a>
+              <a href="receipt.html?order_id=${encodeURIComponent(orderRef)}&id=${encodeURIComponent(txnId)}" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm transition text-center border border-white/15">
+                <i class="fas fa-receipt mr-2"></i>View Receipt
+              </a>
+              <button type="button" onclick="window.print()" class="w-full sm:w-auto px-4 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white font-medium text-sm transition text-center border border-white/10">
+                <i class="fas fa-print mr-2"></i>Print
+              </button>
+            </div>
+          `;
+        } else {
+          root.innerHTML = `
+            <div class="check-ring bg-rose-500/20 text-rose-400 border-2 border-rose-400/50">
+              <i class="fas fa-times text-4xl"></i>
+            </div>
+
+            <div class="text-center mb-6">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold text-rose-400 status-badge-failed uppercase tracking-wider mb-2">
+                <i class="fas fa-exclamation-circle"></i> Payment Failed
+              </span>
+              <h1 class="text-3xl font-black text-white">Payment Could Not Be Processed</h1>
+              <p class="text-sm text-white/60 mt-1.5">Your payment was declined or cancelled by the card issuer/gateway. No charges were captured.</p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
+              <a href="../plans.html" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-sm transition text-center">
+                <i class="fas fa-rotate-right mr-2"></i>Try Again
+              </a>
+              <a href="dashboard.html" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm transition text-center">
+                Go to Dashboard
+              </a>
+            </div>
+          `;
+        }
+      }
+
+      // If an orderRef exists in URL parameters, fetch real database details
+      if (paramOrderRef && window.Itinari && window.Itinari.apiGet) {
+        window.Itinari.apiGet("/orders/lookup/" + encodeURIComponent(paramOrderRef), { auth: true })
+          .then(function (res) {
+            if (res.ok && res.body && res.body.data) {
+              const o = res.body.data;
+              const formattedAmt = new Intl.NumberFormat('en-US', { style: 'currency', currency: o.currency || 'EGP' }).format(o.total_amount || 0);
+              renderCard({
+                isSuccess: o.is_success,
+                txnId: o.transaction_id || "N/A",
+                orderRef: o.merchant_order_id || ("ORDER_" + o.order_id),
+                formattedAmount: formattedAmt,
+                cardType: o.card_type || "Paymob Gateway",
+                pan: o.card_pan || "****",
+                createdAt: o.created_at ? new Date(o.created_at).toLocaleString() : new Date().toLocaleString()
+              });
+            } else {
+              fallbackFromParams();
+            }
+          })
+          .catch(function () {
+            fallbackFromParams();
+          });
       } else {
-        root.innerHTML = `
-          <div class="check-ring bg-rose-500/20 text-rose-400 border-2 border-rose-400/50">
-            <i class="fas fa-times text-4xl"></i>
-          </div>
+        fallbackFromParams();
+      }
 
-          <div class="text-center mb-6">
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold text-rose-400 status-badge-failed uppercase tracking-wider mb-2">
-              <i class="fas fa-exclamation-circle"></i> Payment Failed
-            </span>
-            <h1 class="text-3xl font-black text-white">Payment Could Not Be Processed</h1>
-            <p class="text-sm text-white/60 mt-1.5">Your payment was declined or cancelled by the card issuer/gateway. No charges were captured.</p>
-          </div>
+      function fallbackFromParams() {
+        const txnId = params.get("id") || params.get("transaction_id") || "N/A";
+        const orderRef = paramOrderRef || "N/A";
+        const rawAmount = params.get("amount") || params.get("amount_cents");
+        const currency = params.get("currency") || "EGP";
+        const pan = params.get("source_data.pan") || params.get("pan") || "****";
+        const cardType = params.get("source_data.sub_type") || params.get("card_type") || "Credit / Debit Card";
+        const createdAt = params.get("created_at") ? new Date(params.get("created_at")).toLocaleString() : new Date().toLocaleString();
 
-          <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mt-8">
-            <a href="../plans.html" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-sm transition text-center">
-              <i class="fas fa-rotate-right mr-2"></i>Try Again
-            </a>
-            <a href="dashboard.html" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm transition text-center">
-              Go to Dashboard
-            </a>
-          </div>
-        `;
+        let formattedAmount = "—";
+        if (rawAmount) {
+          let num = parseFloat(rawAmount);
+          if (num > 1000 && rawAmount.indexOf('.') === -1) num = num / 100;
+          formattedAmount = new Intl.NumberFormat('en-US', { style: 'currency', currency: currency }).format(num);
+        }
+
+        renderCard({
+          isSuccess: querySuccess,
+          txnId: txnId,
+          orderRef: orderRef,
+          formattedAmount: formattedAmount,
+          cardType: cardType,
+          pan: pan,
+          createdAt: createdAt
+        });
       }
     });
   </script>

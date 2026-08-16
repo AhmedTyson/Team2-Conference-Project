@@ -402,6 +402,7 @@ Route::middleware(['auth:api', 'verified'])->prefix('dashboard')->name('dashboar
 Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::get('/orders', [DashboardController::class, 'orders']);
     Route::get('/me/orders', [DashboardController::class, 'orders']);
+    Route::get('/orders/lookup/{orderRef}', [DashboardController::class, 'lookupOrder']);
 });
 
 // ---- Notifications

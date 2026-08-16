@@ -64,7 +64,6 @@ class PaymobPaymentCycleTest extends TestCase
             'status' => 'pending',
             'total_cents' => 829500,
             'currency' => 'EGP',
-            'merchant_order_id' => 'ORDER_61_1786905129',
         ]);
 
         $payment = Payment::create([
@@ -89,5 +88,36 @@ class PaymobPaymentCycleTest extends TestCase
 
         $this->assertEquals('fulfilled', $orderStatus);
         $this->assertEquals('paid', $paymentStatus);
+    }
+
+    public function test_order_lookup_by_merchant_order_id(): void
+    {
+        $user = User::factory()->create(['email_verified_at' => now()]);
+        $user->assignRole('user');
+
+        $order = Order::create([
+            'user_id' => $user->id,
+            'status' => 'fulfilled',
+            'total_cents' => 829500,
+            'currency' => 'EGP',
+        ]);
+
+        Payment::create([
+            'order_id' => $order->id,
+            'paymob_transaction_id' => '516712546',
+            'amount_cents' => 829500,
+            'currency' => 'EGP',
+            'status' => 'paid',
+            'hmac_valid' => true,
+            'raw_payload' => ['source_data' => ['pan' => '1111', 'sub_type' => 'Visa']],
+        ]);
+
+        $response = $this->actingAs($user, 'api')->getJson("/api/orders/lookup/ORDER_{$order->id}_1786910287");
+
+        $response->assertStatus(200)
+            ->assertJsonPath('data.order_id', $order->id)
+            ->assertJsonPath('data.transaction_id', '516712546')
+            ->assertJsonPath('data.is_success', true)
+            ->assertJsonPath('data.card_pan', '1111');
     }
 }
