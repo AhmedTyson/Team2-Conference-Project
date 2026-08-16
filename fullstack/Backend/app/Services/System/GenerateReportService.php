@@ -195,71 +195,15 @@ class GenerateReportService
         $path = public_path('images/logo.png');
 
         if (! file_exists($path)) {
+            $path = base_path('../Frontend/branc-assets/Logo_without_name.png');
+        }
+
+        if (! file_exists($path)) {
             return '';
         }
 
         $mime = mime_content_type($path) ?: 'image/png';
         $data = (string) file_get_contents($path);
-
-        // DomPDF does not respect PNG alpha, so transparent pixels render as
-        // white. Re-render the logo on a solid navy (#0F2854) background and
-        // recolor the artwork to white / ice-blue (#BDE8F5) using its alpha
-        // channel as a mask, so it is fully visible on the navy cover and
-        // page-header strips without any white box.
-        if (function_exists('imagecreatefrompng') && str_starts_with($mime, 'image/png')) {
-            try {
-                $source = imagecreatefromstring($data);
-
-                if ($source !== false) {
-                    $width = imagesx($source);
-                    $height = imagesy($source);
-
-                    $flat = imagecreatetruecolor($width, $height);
-                    $navy = imagecolorallocate($flat, 15, 40, 84);
-                    imagefill($flat, 0, 0, $navy);
-
-                    // Ice-blue (#BDE8F5) tint used for the feathered edges.
-                    $ice = [189, 232, 245];
-                    $white = [255, 255, 255];
-
-                    for ($y = 0; $y < $height; $y++) {
-                        for ($x = 0; $x < $width; $x++) {
-                            $rgba = imagecolorat($source, $x, $y);
-                            $alpha = ($rgba >> 24) & 0x7F;
-
-                            if ($alpha >= 127) {
-                                continue; // fully transparent: keep navy
-                            }
-
-                            if ($alpha <= 60) {
-                                // Opaque core: white fading to ice-blue.
-                                $k = (60 - $alpha) / 60;
-                            } else {
-                                // Feather edge: ice-blue fading to navy.
-                                $k = (127 - $alpha) / 67;
-                                $r = (int) round($ice[0] * $k + 15 * (1 - $k));
-                                $g = (int) round($ice[1] * $k + 40 * (1 - $k));
-                                $b = (int) round($ice[2] * $k + 84 * (1 - $k));
-                                imagesetpixel($flat, $x, $y, imagecolorallocate($flat, $r, $g, $b));
-
-                                continue;
-                            }
-
-                            $r = (int) round($white[0] * $k + $ice[0] * (1 - $k));
-                            $g = (int) round($white[1] * $k + $ice[1] * (1 - $k));
-                            $b = (int) round($white[2] * $k + $ice[2] * (1 - $k));
-                            imagesetpixel($flat, $x, $y, imagecolorallocate($flat, $r, $g, $b));
-                        }
-                    }
-
-                    ob_start();
-                    imagepng($flat);
-                    $data = (string) ob_get_clean();
-                }
-            } catch (\Throwable) {
-                // Fall back to the original bytes if recoloring fails.
-            }
-        }
 
         return 'data:'.$mime.';base64,'.base64_encode($data);
     }
