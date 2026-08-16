@@ -222,27 +222,70 @@
 
     // 5. Theme Toggle Setup
     var themeBtn = el("theme-toggle");
+    function syncThemeIcon() {
+      if (!themeBtn) return;
+      var icon = themeBtn.querySelector("i") || el("theme-toggle-icon");
+      if (!icon) return;
+      var isDark = doc.documentElement.classList.contains("dark");
+      if (isDark) {
+        icon.className = "fas fa-sun text-sm text-amber-400";
+      } else {
+        icon.className = "fas fa-moon text-sm text-gray-700";
+      }
+    }
+    syncThemeIcon();
+
     if (themeBtn) {
       themeBtn.addEventListener("click", function (e) {
         e.preventDefault();
-        if (global.ItTheme) global.ItTheme.toggle();
-        else {
+        if (global.ItTheme) {
+          global.ItTheme.toggle();
+        } else {
           var isDark = doc.documentElement.classList.toggle("dark");
           try { localStorage.setItem("itinari_theme", isDark ? "dark" : "light"); } catch (err) {}
         }
+        syncThemeIcon();
       });
     }
 
-    // 6. Mobile Drawer Setup
+    // 6. Responsive Mobile Drawer Setup
     var burgerBtn = el("mobile-hamburger-btn");
+    var closeBtn = el("mobile-close-btn");
+    var mobileDrawer = el("mobile-nav-drawer");
+    var mobileContent = el("mobile-nav-content");
+
+    function openMobileDrawer() {
+      if (mobileDrawer && mobileContent) {
+        mobileDrawer.classList.remove("opacity-0", "pointer-events-none");
+        mobileContent.classList.remove("translate-x-full");
+      }
+    }
+
+    function closeMobileDrawer() {
+      if (mobileDrawer && mobileContent) {
+        mobileDrawer.classList.add("opacity-0", "pointer-events-none");
+        mobileContent.classList.add("translate-x-full");
+      }
+    }
+
     if (burgerBtn) {
       burgerBtn.addEventListener("click", function (e) {
         e.stopPropagation();
-        if (global.ItTopbar && global.ItTopbar.toggleMobileNav) {
-          global.ItTopbar.toggleMobileNav();
-        } else {
-          var drawer = doc.querySelector(".mobile-nav-overlay");
-          if (drawer) drawer.classList.toggle("is-open");
+        openMobileDrawer();
+      });
+    }
+
+    if (closeBtn) {
+      closeBtn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        closeMobileDrawer();
+      });
+    }
+
+    if (mobileDrawer) {
+      mobileDrawer.addEventListener("click", function (e) {
+        if (e.target === mobileDrawer) {
+          closeMobileDrawer();
         }
       });
     }
