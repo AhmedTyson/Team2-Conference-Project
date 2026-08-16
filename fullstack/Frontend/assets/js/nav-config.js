@@ -132,12 +132,16 @@
         ]
       },
       {
-        label: "Agency Tools",
+        label: "Agency Portal",
         icon: "agency",
         dropdown: [
-          { to: "/agency/index.html", label: "Agency Dashboard", icon: "dashboard" },
+          { to: "/agency/index.html", label: "Dashboard", icon: "dashboard" },
           { to: "/agency/assignments.html", label: "My Assignments", icon: "assignments" },
-          { to: "/agency/create-trip.html", label: "Create Package", icon: "trips" },
+          { to: "/agency/create-trip.html", label: "Create Trip Proposal", icon: "trips" },
+          { to: "/agency/proposals.html", label: "Trip Proposals", icon: "trips" },
+          { to: "/agency/inquiries.html", label: "Customer Inquiries", icon: "reviews" },
+          { to: "/agency/earnings.html", label: "Earnings & Payouts", icon: "analytics" },
+          { to: "/agency/settings.html", label: "Agency Profile", icon: "settings" },
         ]
       },
       { to: "/contact.html", label: "Contact", icon: "contact" },
@@ -149,34 +153,33 @@
   /* ------------------------------------------------------------------ */
 
   var ADMIN_ITEMS = [
-    { section: null, items: [{ href: "index.html", label: "Overview", icon: "dashboard" }] },
     {
-      section: "Catalog Inventory",
+      section: "Overview",
+      items: [
+        { href: "dashboard.html", label: "Dashboard", icon: "dashboard" },
+        { href: "analytics.html", label: "Analytics", icon: "analytics" },
+        { href: "activity.html", label: "Audit Logs", icon: "activity" },
+      ],
+    },
+    {
+      section: "Catalog Management",
       items: [
         { href: "destinations.html", label: "Destinations", icon: "destinations" },
-        { href: "hotels.html", label: "Hotels", icon: "hotels" },
-        { href: "restaurants.html", label: "Restaurants", icon: "restaurants" },
-        { href: "attractions.html", label: "Attractions", icon: "attractions" },
-        { href: "flights.html", label: "Flights", icon: "bookings" },
-        { href: "categories.html", label: "Categories", icon: "explore" },
-        { href: "countries.html", label: "Countries", icon: "countries" },
+        { href: "hotels.html", label: "Hotels & Stays", icon: "hotels" },
+        { href: "attractions.html", label: "Attractions & Sights", icon: "attractions" },
+        { href: "restaurants.html", label: "Dining & Restaurants", icon: "restaurants" },
+        { href: "flights.html", label: "Flights Catalog", icon: "flights" },
+        { href: "categories.html", label: "Categories", icon: "categories" },
       ],
     },
     {
-      section: "Community & Planning",
+      section: "Operations & Governance",
       items: [
-        { href: "users.html", label: "Users & Roles", icon: "users" },
-        { href: "trips.html", label: "Trips & Itineraries", icon: "trips" },
-        { href: "reviews.html", label: "Reviews Moderation", icon: "reviews", badgeKey: "reviews" },
+        { href: "users.html", label: "User Accounts", icon: "users" },
+        { href: "trips.html", label: "All Trip Plans", icon: "trips" },
+        { href: "reviews.html", label: "Review Moderation", icon: "reviews" },
+        { href: "flags.html", label: "Reported Content", icon: "flags", badgeKey: "flags" },
         { href: "agency-requests.html", label: "Agency Proposals", icon: "agency", badgeKey: "agency" },
-      ],
-    },
-    {
-      section: "Platform Operations",
-      items: [
-        { href: "analytics.html", label: "Revenue & Analytics", icon: "analytics" },
-        { href: "reports.html", label: "Financial Reports", icon: "dashboard" },
-        { href: "flags.html", label: "Disputes & Flags", icon: "users", badgeKey: "flags" },
         { href: "contacts.html", label: "Support Messages", icon: "contacts", badgeKey: "contacts" },
         { href: "notifications.html", label: "System Broadcasts", icon: "dashboard" },
         { href: "settings.html", label: "Platform Settings", icon: "settings" },
@@ -193,16 +196,17 @@
   /* agency role — assignments + customer tools */
   var AGENCY_ITEMS = [
     {
-      section: "Agency Desk",
+      section: "Agency Operations",
       items: [
         { href: "index.html", label: "Dashboard", icon: "dashboard" },
         { href: "assignments.html", label: "My Assignments", icon: "assignments" },
+        { href: "create-trip.html", label: "Create Trip Proposal", icon: "trips" },
         { href: "proposals.html", label: "Trip Proposals", icon: "trips" },
         { href: "inquiries.html", label: "Customer Inquiries", icon: "reviews" },
       ],
     },
     {
-      section: "Management",
+      section: "Financials & Account",
       items: [
         { href: "earnings.html", label: "Earnings & Payouts", icon: "analytics" },
         { href: "settings.html", label: "Agency Profile", icon: "settings" },
