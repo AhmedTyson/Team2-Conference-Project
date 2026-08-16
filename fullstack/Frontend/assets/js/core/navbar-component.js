@@ -109,10 +109,15 @@
       }
     }
 
-    // 1. Fix all link Hrefs relative to current directory
+    // 1. Fix all link Hrefs & image Srcs relative to current directory
     navEl.querySelectorAll("a[href]").forEach(function (a) {
       var rawHref = a.getAttribute("href");
       a.setAttribute("href", adjustRelativeHref(rawHref, prefix));
+    });
+
+    navEl.querySelectorAll("img[src]").forEach(function (img) {
+      var rawSrc = img.getAttribute("src");
+      img.setAttribute("src", adjustRelativeHref(rawSrc, prefix));
     });
 
     // 2. Active Tab Highlight
