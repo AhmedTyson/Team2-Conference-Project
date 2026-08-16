@@ -30,9 +30,15 @@ class UpdateProfileRequest extends FormRequest
             'phone' => ['sometimes', 'nullable', 'string', 'max:25', 'unique:users,phone,'.$userId],
             'bio' => ['sometimes', 'nullable', 'string', 'max:1000'],
             'country' => ['sometimes', 'nullable', 'string', 'max:100'],
+            'address' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'line1' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'line2' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'city' => ['sometimes', 'nullable', 'string', 'max:100'],
+            'state' => ['sometimes', 'nullable', 'string', 'max:100'],
+            'postal_code' => ['sometimes', 'nullable', 'string', 'max:20'],
             'preferred_currency' => ['sometimes', 'nullable', 'string', 'max:10'],
             'emergency_contact' => ['sometimes', 'nullable', 'string', 'max:255'],
-            'profile_image' => ['sometimes', 'nullable', 'image', 'mimes:jpeg,png,webp,gif', 'max:2048'],
+            'profile_image' => ['sometimes', 'nullable'],
             'password' => ['sometimes', 'string', 'min:8', 'confirmed'],
         ];
     }

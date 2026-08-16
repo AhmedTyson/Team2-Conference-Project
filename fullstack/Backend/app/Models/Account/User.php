@@ -36,6 +36,7 @@ class User extends Authenticatable implements JWTSubject
         'phone',
         'bio',
         'country',
+        'address',
         'preferred_currency',
         'emergency_contact',
         'password',
@@ -104,6 +105,11 @@ class User extends Authenticatable implements JWTSubject
     }
 
     // 1:M - has Trip
+    public function address(): \Illuminate\Database\Eloquent\Relations\MorphOne
+    {
+        return $this->morphOne(\App\Models\Commerce\Address::class, 'addressable');
+    }
+
     public function trips(): HasMany
     {
         return $this->hasMany(Trip::class);

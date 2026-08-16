@@ -77,7 +77,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/email/resend', [AuthController::class, 'resendVerificationEmail'])
         ->middleware(['throttle:6,1'])
         ->name('verification.resend');
-    Route::patch('/profile', [AuthController::class, 'updateProfile']);
+    Route::match(['patch', 'post'], '/profile', [AuthController::class, 'updateProfile']);
 });
 
 Route::middleware(['auth:api', 'verified'])->group(function () {
@@ -131,6 +131,9 @@ Route::group([], function () {
     // Attractions
     Route::get('/attractions', [AttractionController::class, 'index']);
     Route::get('/attractions/{id}', [AttractionController::class, 'show']);
+
+    // Public Reviews
+    Route::get('/reviews/{type}/{id}', [InteractionController::class, 'getEntityReviews']);
 
     // Public site settings (cached, no auth)
     Route::get('/site-settings', [SiteSettingsController::class, 'index'])->name('site-settings.index');

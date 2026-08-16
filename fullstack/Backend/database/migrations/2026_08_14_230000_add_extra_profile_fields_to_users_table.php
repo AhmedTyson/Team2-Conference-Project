@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->text('bio')->nullable()->after('phone');
             $table->string('country', 100)->nullable()->after('bio');
-            $table->string('preferred_currency', 10)->default('USD')->after('country');
+            $table->string('address', 255)->nullable()->after('country');
+            $table->string('preferred_currency', 10)->default('USD')->after('address');
             $table->string('emergency_contact')->nullable()->after('preferred_currency');
         });
     }
@@ -25,7 +26,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['bio', 'country', 'preferred_currency', 'emergency_contact']);
+            $table->dropColumn(['bio', 'country', 'address', 'preferred_currency', 'emergency_contact']);
         });
     }
 };

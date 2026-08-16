@@ -48,6 +48,14 @@
       badges = '<span class="dest-badge">' + esc(kicker) + '</span>' +
         '<span class="dest-badge text-emerald-400">' + esc(item.price_range || "$$$$") + '</span>' +
         '<span class="dest-badge text-amber-400"><i class="fas fa-star mr-1"></i>' + (item.rating || 4.9) + '</span>';
+    } else if (type === "flights") {
+      name = item.airline || item.airline_name || "Global Flight";
+      sub = (item.origin || item.from || "NYC") + " ➔ " + (item.destination || item.to || "PAR");
+      kicker = item.flight_number || "Flight";
+      badges = '<span class="dest-badge font-mono text-sky-400">' + esc(kicker) + '</span>' +
+        '<span class="dest-badge text-emerald-400 font-bold">' + (item.price != null ? "$" + Number(item.price).toLocaleString() : "$320") + '</span>' +
+        '<span class="dest-badge text-amber-400">' + (item.available_seats != null ? item.available_seats + " seats" : "Available") + '</span>';
+      href = "flight-details.html?id=" + item.id;
     } else {
       kicker = (item.category && item.category.name) || "Cultural Landmark";
       sub = (item.destination && item.destination.name) || (item.city_name || "Must-Visit");
@@ -196,6 +204,16 @@
   }
 
   function boot() {
+    var defaultTab = document.body && document.body.getAttribute("data-default-tab");
+    if (defaultTab) TAB = defaultTab;
+    if (tabs) {
+      tabs.querySelectorAll("[data-tab]").forEach(function (b) {
+        var on = b.getAttribute("data-tab") === TAB;
+        b.classList.toggle("tab--on", on);
+        b.classList.toggle("on", on);
+        b.setAttribute("aria-selected", String(on));
+      });
+    }
     loadRegions();
     load(TAB);
   }

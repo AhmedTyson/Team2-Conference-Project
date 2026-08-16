@@ -156,7 +156,12 @@
         Api.get('/v1/destinations'),
       ]);
       if (hotels.status === 'fulfilled') all = hotels.value;
-      if (dests.status === 'fulfilled') destinations = Ui.uniqueBy((dests.value.data && dests.value.data.data) || [], (d) => d.city_name || d.name);
+      if (dests.status === 'fulfilled') {
+        const dRes = dests.value;
+        const dBody = dRes.data !== undefined ? dRes.data : dRes;
+        const dItems = Array.isArray(dBody) ? dBody : (dBody && Array.isArray(dBody.data) ? dBody.data : (dBody && dBody.data && Array.isArray(dBody.data.data) ? dBody.data.data : []));
+        destinations = Ui.uniqueBy(dItems, (d) => d.city_name || d.name);
+      }
       await favsReady;
       renderChips();
       render();

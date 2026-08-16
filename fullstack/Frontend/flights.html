@@ -1,62 +1,113 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Flights — Itinera</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <script>(function(){try{if(localStorage.getItem('itinari_theme')==='dark')document.documentElement.classList.add('dark');}catch(e){}})();</script>
-  <link rel="stylesheet" href="assets/css/tokens.css">
-  <link rel="stylesheet" href="assets/css/app.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flights Catalog · Itinera</title>
+  <meta name="description" content="Browse international flight routes and connections with Itinera." />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome 6 Free -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Custom Luxury Stylesheet -->
+  <link rel="stylesheet" href="assets/css/public.css" />
   <script>/* FOUC prevention — default dark */
     (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
     if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
       document.documentElement.classList.add("dark","fouc-ready");
     else document.documentElement.classList.add("fouc-ready");
     })();
-  </script>  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  </script>
 </head>
-<body data-page="flights" class="is-booting" data-layout="public">
-  <div class="app">
-      <!-- Top Navigation Header -->
-  <header class="app-nav-header"></header>
+<body class="bg-[#0a0a0a] text-white bg-sculpture-relief" data-layout="public" data-default-tab="flights">
 
-    <main class="app__main">
-      <div class="page">
-        <header class="page-header" style="margin-bottom: var(--space-8);">
-          <p class="page-header__eyebrow">Airlines & Routes</p>
-          <h1 class="page-header__title">Flights Catalog</h1>
-          <p class="page-header__lead">Browse all available flights and connections across the globe.</p>
-        </header>
+  <div class="app-wrapper">
 
-        <div class="toolbar" style="display:flex; justify-content:space-between; align-items:center; margin-bottom: var(--space-6);">
-          <label style="display:flex; align-items:center; gap:var(--space-2); background:var(--surface-2); padding:var(--space-2) var(--space-3); border-radius:var(--radius-full);">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="search" id="searchInput" placeholder="Search flights..." style="background:transparent; border:none; outline:none; font-family:inherit; font-size:var(--fs-sm); color:var(--text);" autocomplete="off">
-          </label>
+    <!-- Top Navigation Header -->
+    <header class="app-nav-header"></header>
+
+    <!-- Main Catalog Section -->
+    <main class="max-w-7xl mx-auto px-6 py-8">
+      
+      <!-- Header -->
+      <div class="mb-10">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-semibold uppercase tracking-wider text-amber-400 mb-3">
+          <span>Flight Inventory</span>
+        </div>
+        <h1 class="text-3xl sm:text-5xl font-black tracking-tight text-white">Airlines & Routes</h1>
+        <p class="text-white/60 text-base max-w-2xl mt-2">
+          Browse global air travel connections, flight numbers, schedules, and cabin availability.
+        </p>
+      </div>
+
+      <!-- Category Filter Tabs -->
+      <!-- <div class="flex items-center gap-2 border-b border-white/10 pb-4 mb-6 overflow-x-auto" id="catalog-tabs" role="tablist">
+        <button class="chip" data-tab="destinations"><i class="fas fa-location-dot mr-1"></i> Destinations</button>
+        <button class="chip" data-tab="hotels"><i class="fas fa-hotel mr-1"></i> Hotels</button>
+        <button class="chip" data-tab="restaurants"><i class="fas fa-utensils mr-1"></i> Restaurants</button>
+        <button class="chip" data-tab="attractions"><i class="fas fa-landmark mr-1"></i> Attractions</button>
+        <button class="chip on" data-tab="flights"><i class="fas fa-plane mr-1"></i> Flights</button>
+      </div> -->
+
+      <!-- Controls: Search & Region Pills -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        
+        <!-- Search Input -->
+        <div class="relative w-full md:max-w-xs">
+          <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40 text-xs"></i>
+          <input
+            type="search"
+            id="catalog-search"
+            placeholder="Search flights by airline, origin, destination..."
+            class="w-full bg-white/5 border border-white/10 rounded-full pl-9 pr-4 py-2 text-sm text-white placeholder-white/40 outline-none focus:border-white/40 transition"
+          />
         </div>
 
-        <div id="results" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-4);">
-          <!-- Skeletons -->
-          <div class="skeleton skeleton--card"></div>
-          <div class="skeleton skeleton--card"></div>
-          <div class="skeleton skeleton--card"></div>
+        <!-- Region Filter Pills -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1" id="region-pills" role="radiogroup">
+          <!-- Dynamic region pills loaded via explore.js -->
+        </div>
+
+      </div>
+
+      <!-- Catalog Grid -->
+      <div id="catalog-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div class="col-span-full py-16 text-center text-white/50">
+          <i class="fas fa-circle-notch fa-spin mr-2"></i> Loading flight routes...
         </div>
       </div>
+
     </main>
 
-    <footer class="app__footer"></footer>
+    <!-- Footer -->
+    <footer class="app-footer mt-20">
+      <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-white/40 gap-4">
+        <span>&copy; <span id="footerYear"></span> Itinera · Team 2 Conference Project. All rights reserved.</span>
+        <div class="flex gap-6">
+          <a href="about.html">About</a>
+          <a href="contact.html">Contact</a>
+          <a href="help.html">Help Center</a>
+        </div>
+      </div>
+    </footer>
+
   </div>
 
+  <!-- Scripts -->
   <script src="assets/js/config.js"></script>
   <script src="assets/js/api.js"></script>
   <script src="assets/js/session.js"></script>
   <script src="assets/js/nav-config.js"></script>
-  <script src="assets/js/app-shell.js"></script>
-  <script src="assets/js/flights.js"></script>
+  <script src="assets/js/utils/unsplash-helper.js"></script>
+  <script src="assets/js/explore.js"></script>
   <script src="./assets/js/core/navbar-component.js"></script>
   <script src="./assets/js/core/theme.js"></script>
   <script src="assets/js/core/topbar.js"></script>

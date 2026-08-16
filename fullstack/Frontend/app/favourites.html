@@ -3,57 +3,111 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Your Favourites · Travel Planner</title>
-  <link rel="stylesheet" href="../assets/css/tokens.css" />
-  <link rel="stylesheet" href="../assets/css/app.css" />
+  <title>Your Saved Favourites · Itinera</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome 6 Free -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Custom Luxury Stylesheet -->
+  <link rel="stylesheet" href="../assets/css/public.css" />
   <script>/* FOUC prevention — default dark */
     (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
     if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
       document.documentElement.classList.add("dark","fouc-ready");
     else document.documentElement.classList.add("fouc-ready");
     })();
-  </script>  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  </script>
 </head>
-<body data-page="favourites" class="is-booting" data-layout="app">
-  <div class="app">
+<body class="bg-[#0a0a0a] text-white bg-sculpture-relief" data-layout="app">
+
+  <div class="app-wrapper">
+
     <!-- Top Navigation Header -->
     <header class="app-nav-header"></header>
-      <div id="app-user" class="app__user">
-        <button id="theme-toggle" type="button" class="btn btn--ghost" aria-label="Toggle theme">◐</button>
-      </div>
-    </header>
 
-    <main class="app__main">
-      <div class="page">
-        <header class="page-header">
-          <p class="page-header__eyebrow">Saved Places</p>
-          <h1 class="page-header__title">Your favourites</h1>
-          <p class="page-header__lead">The places you've hearted across the catalog — ready for your next plan.</p>
-        </header>
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-6 py-8" id="favourites-page">
 
-        <div id="fav-grid" class="grid">
-          <div class="skeleton skeleton--card"></div>
-          <div class="skeleton skeleton--card"></div>
+      <!-- Hero Header Section -->
+      <div class="mb-10 text-center sm:text-left flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-white/10 pb-8">
+        <div>
+          <span class="px-3.5 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-semibold uppercase tracking-wider mb-4 inline-block shadow-sm">
+            <i class="fas fa-heart mr-1.5 text-rose-400"></i> Saved Collection
+          </span>
+          <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight">Your Saved Favourites</h1>
+          <p class="text-sm sm:text-base text-white/60 mt-2 max-w-2xl">
+            The destinations, luxury hotels, fine restaurants, and attractions you've bookmarked for your upcoming journeys.
+          </p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <a href="../explore.html" class="px-5 py-2.5 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-bold text-xs transition shadow-lg flex items-center gap-2">
+            <i class="fas fa-compass"></i> Explore Catalog
+          </a>
         </div>
       </div>
+
+      <!-- Type Filter Pills Bar -->
+      <div class="mb-8 flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none" id="fav-type-filters">
+        <button type="button" class="fav-filter-btn active px-4 py-2 rounded-full bg-amber-400 text-black font-bold text-xs transition shadow-md" data-filter="all">
+          <i class="fas fa-layer-group mr-1.5"></i> All Saved (<span id="count-all">0</span>)
+        </button>
+        <button type="button" class="fav-filter-btn px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 font-semibold text-xs transition" data-filter="destination">
+          <i class="fas fa-map-location-dot mr-1.5 text-amber-400"></i> Destinations (<span id="count-destinations">0</span>)
+        </button>
+        <button type="button" class="fav-filter-btn px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 font-semibold text-xs transition" data-filter="hotel">
+          <i class="fas fa-hotel mr-1.5 text-emerald-400"></i> Hotels (<span id="count-hotels">0</span>)
+        </button>
+        <button type="button" class="fav-filter-btn px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 font-semibold text-xs transition" data-filter="restaurant">
+          <i class="fas fa-utensils mr-1.5 text-purple-400"></i> Restaurants (<span id="count-restaurants">0</span>)
+        </button>
+        <button type="button" class="fav-filter-btn px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 font-semibold text-xs transition" data-filter="attraction">
+          <i class="fas fa-ticket mr-1.5 text-sky-400"></i> Attractions (<span id="count-attractions">0</span>)
+        </button>
+      </div>
+
+      <!-- Favourites Grid Container -->
+      <div id="fav-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <!-- Loading Skeleton Cards -->
+        <div class="h-80 rounded-2xl bg-white/5 border border-white/10 animate-pulse"></div>
+        <div class="h-80 rounded-2xl bg-white/5 border border-white/10 animate-pulse"></div>
+        <div class="h-80 rounded-2xl bg-white/5 border border-white/10 animate-pulse"></div>
+        <div class="h-80 rounded-2xl bg-white/5 border border-white/10 animate-pulse"></div>
+      </div>
+
     </main>
 
-    <footer class="app__footer">
-      <span>Travel Planner</span>
-      <span>•</span>
-      <span>Plan. Explore. Remember.</span>
+    <!-- Footer -->
+    <footer class="app-footer mt-20">
+      <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-white/40 gap-4 px-6">
+        <span>&copy; <span id="footerYear"></span> Itinera · Team 2 Conference Project. All rights reserved.</span>
+        <div class="flex gap-6">
+          <a href="../about.html">About</a>
+          <a href="../contact.html">Contact</a>
+          <a href="../help.html">Help Center</a>
+        </div>
+      </div>
     </footer>
+
   </div>
 
-  <script src="../assets/js/core/config.js"></script>
-  <script src="../assets/js/core/api.js"></script>
-  <script src="../assets/js/core/session.js"></script>
-  <script src="../assets/js/core/nav-config.js"></script>
-  <script src="../assets/js/core/app-shell.js"></script>
+  <!-- Scripts -->
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/session.js"></script>
+  <script src="../assets/js/nav-config.js"></script>
+  <script src="../assets/js/utils/unsplash-helper.js"></script>
   <script src="../assets/js/favourites.js"></script>
   <script src="../assets/js/core/navbar-component.js"></script>
-  <script src="../assets/js/core/topbar.js"></script>
   <script src="../assets/js/core/theme.js"></script>
-  </body>
+  <script src="../assets/js/core/topbar.js"></script>
+</body>
 </html>

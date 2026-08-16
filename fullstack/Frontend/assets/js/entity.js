@@ -1,8 +1,8 @@
 /**
  * entity.js — Dynamic multi-resource entity detail page router (entity.html).
  * Supports destinations, hotels, restaurants, attractions, and flights.
- * Handles rich media hero, gallery, metadata, interactive maps, reviews,
- * and user actions (Add to Trip, Save to Favourites, Submit Review).
+ * Features luxury hero image, metadata badges, interactive itinerary attachment,
+ * and 100% dynamic Reviews Section with skeleton loader, empty states, and PENDING admin approval cycle.
  */
 (function (global) {
   "use strict";
@@ -30,11 +30,12 @@
     }
   }
 
-  function starsHtml(rating) {
+  function starsHtml(rating, starClass) {
     var r = Math.round(Number(rating) || 5);
     var stars = "";
+    var color = starClass || "text-amber-400";
     for (var i = 1; i <= 5; i++) {
-      stars += '<i class="fas fa-star text-xs ' + (i <= r ? 'text-amber-400' : 'text-white/20') + ' mr-0.5"></i>';
+      stars += '<i class="fas fa-star text-xs ' + (i <= r ? color : 'text-white/20') + ' mr-0.5"></i>';
     }
     return '<span class="inline-flex items-center">' + stars + '</span>';
   }
@@ -45,9 +46,9 @@
       ? global.Itinari.getUnsplashImage(queryName, entityType || type, country) 
       : "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1200&q=80";
     var url = src || unsplashFallback;
-    return '<div class="relative overflow-hidden rounded-2xl border border-white/10 mb-6 bg-white/5 shadow-2xl">' +
-      '<img src="' + url + '" alt="' + esc(alt) + '" class="w-full h-[360px] sm:h-[440px] object-cover" onerror="this.onerror=null;this.src=\'' + unsplashFallback + '\';" />' +
-      '<div class="absolute inset-0 bg-gradient-to-t from-[#0d0d0c] via-transparent to-transparent"></div></div>';
+    return '<div class="relative overflow-hidden rounded-3xl border border-white/10 mb-8 bg-white/5 shadow-2xl">' +
+      '<img src="' + url + '" alt="' + esc(alt) + '" class="w-full h-[360px] sm:h-[460px] object-cover" onerror="this.onerror=null;this.src=\'' + unsplashFallback + '\';" />' +
+      '<div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent opacity-90"></div></div>';
   }
 
   var TYPE_LABEL = {
@@ -92,29 +93,340 @@
     if (type === "hotel" || type === "hotels") {
       return '<div class="flex items-center gap-3 flex-wrap">' + starsHtml(e.rating || e.stars) +
         '<span class="text-sm font-bold text-white">' + (e.price_per_night != null ? "$" + Number(e.price_per_night).toLocaleString() + " / night" : "Price on request") + "</span>" +
-        '<span class="dest-badge">' + (e.is_available !== false ? "Available" : "Booked") + "</span></div>";
+        '<span class="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">' + (e.is_available !== false ? "Available" : "Booked") + "</span></div>";
     }
     if (type === "restaurant" || type === "restaurants") {
       return '<div class="flex items-center gap-3 flex-wrap">' + starsHtml(e.rating) +
         '<span class="text-sm font-bold text-emerald-400">' + esc(e.price_range || "$$$$") + "</span>" +
-        '<span class="dest-badge">' + esc(e.cuisine || "Fine Dining") + "</span></div>";
+        '<span class="px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-400 text-xs font-semibold">' + esc(e.cuisine || "Fine Dining") + "</span></div>";
     }
     if (type === "flight" || type === "flights") {
       return '<div class="flex items-center gap-3 flex-wrap">' +
-        '<span class="dest-badge">' + esc(e.airline || "Commercial Airline") + "</span>" +
+        '<span class="px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold">' + esc(e.airline || "Commercial Airline") + "</span>" +
         '<span class="text-sm font-bold text-white">' + (e.price != null ? "$" + Number(e.price).toLocaleString() : "$550") + "</span>" +
-        (e.duration ? '<span class="dest-badge">' + esc(e.duration) + '</span>' : '') + "</div>";
+        (e.duration ? '<span class="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-white/70">' + esc(e.duration) + '</span>' : '') + "</div>";
     }
     var d = e;
     var regionLabel = (d.region && d.region.label) || d.region_name || "";
     var countryName = (d.country && d.country.name) || d.country || "Destination";
     return '<div class="flex items-center gap-3 flex-wrap">' +
-      '<span class="dest-badge">' + esc(regionLabel ? regionLabel + " · " + countryName : countryName) + "</span>" +
-      (d.hotels_count != null ? '<span class="dest-badge">' + d.hotels_count + ' hotels</span>' : '') +
-      (d.tours_count != null ? '<span class="dest-badge">' + d.tours_count + ' tours</span>' : '') +
+      '<span class="px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-400 text-xs font-semibold">' + esc(regionLabel ? regionLabel + " · " + countryName : countryName) + "</span>" +
+      (d.hotels_count != null ? '<span class="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-white/70">' + d.hotels_count + ' hotels</span>' : '') +
+      (d.tours_count != null ? '<span class="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-white/70">' + d.tours_count + ' tours</span>' : '') +
       '<span class="text-xs text-white/50">' + (d.latitude != null && d.longitude != null
         ? Number(d.latitude).toFixed(2) + "°, " + Number(d.longitude).toFixed(2) + "°"
         : "GPS Mapped") + "</span></div>";
+  }
+
+  /** Skeleton loading state for reviews container */
+  function renderReviewsSkeleton() {
+    return '<div class="p-6 sm:p-8 rounded-3xl bg-white/5 border border-white/10 animate-pulse space-y-6 mt-10">' +
+      '<div class="flex justify-between items-center">' +
+        '<div class="h-8 w-40 bg-white/10 rounded-full"></div>' +
+        '<div class="h-10 w-32 bg-white/10 rounded-full"></div>' +
+      '</div>' +
+      '<div class="h-36 bg-white/10 rounded-2xl"></div>' +
+      '<div class="space-y-4 pt-4">' +
+        '<div class="h-20 bg-white/10 rounded-2xl"></div>' +
+        '<div class="h-20 bg-white/10 rounded-2xl"></div>' +
+      '</div>' +
+    '</div>';
+  }
+
+  /** Render 100% Dynamic Reviews Section matching site luxury design system & PENDING approval status cycle */
+  function renderReviewsSection(entity, apiPayload) {
+    var name = entityName(entity);
+    var summary = (apiPayload && apiPayload.summary) || {
+      rating: 0,
+      total_reviews: 0,
+      distribution: {
+        "5": { count: 0, percentage: 0 },
+        "4": { count: 0, percentage: 0 },
+        "3": { count: 0, percentage: 0 },
+        "2": { count: 0, percentage: 0 },
+        "1": { count: 0, percentage: 0 }
+      },
+      sub_scores: { cleanliness: 0, safety: 0, staff: 0, amenities: 0, location: 0 }
+    };
+
+    var dbReviews = (apiPayload && Array.isArray(apiPayload.reviews)) ? apiPayload.reviews : [];
+
+    var ratingDisplay = summary.rating ? Number(summary.rating).toFixed(1) : "0.0";
+    var totalDisplay = summary.total_reviews ? summary.total_reviews.toLocaleString() + " verified ratings" : "No verified ratings yet";
+    var dist = summary.distribution || {};
+    var sub = summary.sub_scores || {};
+
+    var reviewsFeedHtml = "";
+    if (dbReviews.length === 0) {
+      reviewsFeedHtml = '<div class="p-8 sm:p-12 text-center text-white/50 bg-white/5 rounded-3xl border border-white/10 my-4">' +
+        '<div class="w-16 h-16 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-400 flex items-center justify-center mx-auto mb-4 text-2xl shadow-lg shadow-amber-500/10">' +
+          '<i class="fas fa-comments"></i>' +
+        '</div>' +
+        '<h3 class="text-xl font-bold text-white mb-2">No Approved Reviews Yet</h3>' +
+        '<p class="text-sm text-white/60 mb-6 max-w-md mx-auto">' +
+          'Be the first traveler to share your verdict and experience about this experience!' +
+        '</p>' +
+      '</div>';
+    } else {
+      reviewsFeedHtml = dbReviews.map(function(rev) {
+        var userAvatar = rev.user_avatar || ("https://ui-avatars.com/api/?name=" + encodeURIComponent(rev.user_name || "User") + "&background=262626&color=fbbf24&bold=true");
+
+        var statusBadgeHtml = "";
+        if (rev.is_pending || rev.status === "pending") {
+          statusBadgeHtml = '<span class="px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-400 text-xs font-bold flex items-center gap-1.5 shadow-sm">' +
+            '<i class="fas fa-clock text-amber-400"></i> Pending Admin Approval' +
+          '</span>';
+        } else {
+          statusBadgeHtml = '<div class="flex items-center gap-1.5 bg-white/5 border border-white/10 px-3 py-1 rounded-full text-xs font-bold">' +
+            '<span class="text-white font-extrabold">' + Number(rev.rating).toFixed(1) + '</span>' +
+            starsHtml(rev.rating, "text-amber-400") +
+          '</div>';
+        }
+
+        return '<div class="border-t border-white/10 pt-6 first:border-0 first:pt-0 space-y-2.5">' +
+          '<div class="flex items-center justify-between flex-wrap gap-2">' +
+            '<div class="flex items-center gap-3">' +
+              '<img src="' + esc(userAvatar) + '" alt="' + esc(rev.user_name) + '" class="w-10 h-10 rounded-full object-cover border border-amber-400/30 shadow-md" onerror="this.src=\'https://ui-avatars.com/api/?name=User&background=262626&color=fbbf24&bold=true\';" />' +
+              '<div>' +
+                '<h4 class="text-sm font-bold text-white leading-tight flex items-center gap-2">' + esc(rev.user_name) + '</h4>' +
+                '<span class="text-[11px] text-white/40">' + esc(rev.time_ago || "Recently") + '</span>' +
+              '</div>' +
+            '</div>' +
+            statusBadgeHtml +
+          '</div>' +
+          '<p class="text-xs sm:text-sm text-white/80 leading-relaxed pt-1">' + esc(rev.comment) + '</p>' +
+        '</div>';
+      }).join("");
+    }
+
+    return '<div class="p-6 sm:p-8 rounded-3xl bg-white/5 border border-white/10 shadow-2xl backdrop-blur-md space-y-8 mt-10" id="reviews-card-section">' +
+      '<!-- Reviews Header -->' +
+      '<div class="flex items-center justify-between border-b border-white/10 pb-4 flex-wrap gap-4">' +
+        '<div>' +
+          '<span class="text-xs uppercase font-semibold tracking-wider text-amber-400 mb-1 block"><i class="fas fa-comments mr-1"></i> Guest Feedback</span>' +
+          '<h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight">Verified Reviews</h2>' +
+        '</div>' +
+        '<button type="button" id="toggle-review-form-btn" class="px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold text-xs transition shadow-lg shadow-amber-500/20 flex items-center gap-1.5">' +
+          '<i class="fas fa-pen-to-square"></i> Write a Review' +
+        '</button>' +
+      '</div>' +
+
+      '<!-- Interactive Review Submission Accordion with Dynamic Star Hover Rating -->' +
+      '<div id="write-review-accordion" class="hidden p-6 sm:p-8 rounded-2xl bg-white/5 border border-amber-400/30 space-y-5 shadow-xl">' +
+        '<div>' +
+          '<h3 class="text-base sm:text-lg font-bold text-white mb-1">' +
+            'We love to hear from you! How\'s your experience with <span class="text-amber-400">' + esc(name) + '</span>?' +
+          '</h3>' +
+          '<p class="text-xs text-white/50">Hover over the stars below to rate your experience. Submitted reviews undergo admin review before public posting.</p>' +
+        '</div>' +
+
+        '<!-- Interactive 5 Gold Stars Widget with Hover Fill -->' +
+        '<div class="space-y-2 py-1">' +
+          '<div class="flex items-center gap-3.5" id="interactive-star-rating" data-selected="5">' +
+            '<i class="fas fa-star text-4xl sm:text-5xl text-amber-400 cursor-pointer transition-all duration-200 hover:scale-110 drop-shadow-[0_0_12px_rgba(251,191,36,0.6)] star-icon" data-rating="1"></i>' +
+            '<i class="fas fa-star text-4xl sm:text-5xl text-amber-400 cursor-pointer transition-all duration-200 hover:scale-110 drop-shadow-[0_0_12px_rgba(251,191,36,0.6)] star-icon" data-rating="2"></i>' +
+            '<i class="fas fa-star text-4xl sm:text-5xl text-amber-400 cursor-pointer transition-all duration-200 hover:scale-110 drop-shadow-[0_0_12px_rgba(251,191,36,0.6)] star-icon" data-rating="3"></i>' +
+            '<i class="fas fa-star text-4xl sm:text-5xl text-amber-400 cursor-pointer transition-all duration-200 hover:scale-110 drop-shadow-[0_0_12px_rgba(251,191,36,0.6)] star-icon" data-rating="4"></i>' +
+            '<i class="fas fa-star text-4xl sm:text-5xl text-amber-400 cursor-pointer transition-all duration-200 hover:scale-110 drop-shadow-[0_0_12px_rgba(251,191,36,0.6)] star-icon" data-rating="5"></i>' +
+          '</div>' +
+
+          '<!-- Dynamic Sentiment Subtitle Text -->' +
+          '<p class="text-sm font-semibold text-amber-300/90 transition-all duration-200 flex items-center gap-2" id="rating-sentiment-label">' +
+            '<i class="fas fa-face-grin-stars text-amber-400"></i> Amazing experience! Love it!' +
+          '</p>' +
+        '</div>' +
+
+        '<!-- Review Comment Input -->' +
+        '<textarea id="review-comment" rows="3" class="w-full bg-black/40 border border-white/15 text-white text-sm rounded-xl p-3.5 focus:border-amber-400 focus:outline-none transition" placeholder="Share more details about your stay, food, or adventure..."></textarea>' +
+
+        '<div class="flex justify-end gap-3">' +
+          '<button type="button" id="cancel-review-form-btn" class="px-5 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition">Cancel</button>' +
+          '<button type="button" id="review-btn" class="px-6 py-2 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold text-xs transition shadow-lg shadow-amber-500/20">Submit Review</button>' +
+        '</div>' +
+      '</div>' +
+
+      '<!-- Dynamic Rating Overview & Breakdown Grid -->' +
+      '<div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-center bg-white/5 p-6 rounded-2xl border border-white/10">' +
+        '<!-- Left Big Score Box -->' +
+        '<div class="md:col-span-1 border-b md:border-b-0 md:border-r border-white/10 pb-6 md:pb-0 md:pr-6 text-center md:text-left">' +
+          '<div class="text-5xl font-black text-white tracking-tight mb-1" id="dyn-overall-rating">' + esc(ratingDisplay) + '</div>' +
+          '<div class="flex items-center justify-center md:justify-start gap-1 mb-1">' +
+            starsHtml(summary.rating, "text-amber-400") +
+          '</div>' +
+          '<p class="text-xs text-white/50 font-semibold" id="dyn-total-count">' + esc(totalDisplay) + '</p>' +
+        '</div>' +
+
+        '<!-- Right Star Rating Distribution Bars -->' +
+        '<div class="md:col-span-2 space-y-2.5 text-xs font-semibold text-white/70">' +
+          [5, 4, 3, 2, 1].map(function(lvl) {
+            var levelData = (dist && dist[lvl]) || { count: 0, percentage: 0 };
+            var pct = levelData.percentage || 0;
+            var cnt = levelData.count || 0;
+            return '<div class="flex items-center gap-3">' +
+              '<span class="w-6 text-right font-bold text-white">' + lvl.toFixed(1) + '</span>' +
+              '<div class="h-2 rounded-full bg-white/10 overflow-hidden flex-1">' +
+                '<div class="h-full bg-gradient-to-r from-amber-500 to-amber-400 rounded-full transition-all duration-500" style="width: ' + pct + '%"></div>' +
+              '</div>' +
+              '<span class="w-24 text-right text-white/40 font-medium">' + cnt.toLocaleString() + ' reviews</span>' +
+            '</div>';
+          }).join("") +
+        '</div>' +
+      '</div>' +
+
+      '<!-- Dynamic Sub-Category Score Badges Row -->' +
+      '<div class="flex items-center gap-3 flex-wrap pt-2">' +
+        '<div class="px-4 py-2 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-2 text-xs font-semibold shadow-sm">' +
+          '<span class="text-emerald-400 font-black text-sm">' + (sub.cleanliness || 0).toFixed(1) + '</span>' +
+          '<span class="text-white/80">Cleanliness</span>' +
+        '</div>' +
+        '<div class="px-4 py-2 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-2 text-xs font-semibold shadow-sm">' +
+          '<span class="text-emerald-400 font-black text-sm">' + (sub.safety || 0).toFixed(1) + '</span>' +
+          '<span class="text-white/80">Safety & Security</span>' +
+        '</div>' +
+        '<div class="px-4 py-2 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-2 text-xs font-semibold shadow-sm">' +
+          '<span class="text-emerald-400 font-black text-sm">' + (sub.staff || 0).toFixed(1) + '</span>' +
+          '<span class="text-white/80">Staff</span>' +
+        '</div>' +
+        '<div class="px-4 py-2 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-2 text-xs font-semibold shadow-sm">' +
+          '<span class="text-amber-400 font-black text-sm">' + (sub.amenities || 0).toFixed(1) + '</span>' +
+          '<span class="text-white/80">Amenities</span>' +
+        '</div>' +
+        '<div class="px-4 py-2 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-2 text-xs font-semibold shadow-sm">' +
+          '<span class="text-amber-400 font-black text-sm">' + (sub.location || 0).toFixed(1) + '</span>' +
+          '<span class="text-white/80">Location</span>' +
+        '</div>' +
+      '</div>' +
+
+      '<!-- Individual Reviews Feed -->' +
+      '<div class="space-y-6 pt-4" id="reviews-feed-container">' +
+        reviewsFeedHtml +
+      '</div>' +
+    '</div>';
+  }
+
+  function fetchAndRenderReviews(entity) {
+    var reviewsCont = el("entity-reviews-container");
+    if (reviewsCont) {
+      reviewsCont.innerHTML = renderReviewsSkeleton();
+    }
+
+    It.apiGet("/reviews/" + type + "/" + id, { auth: true }).then(function (res) {
+      var raw = res.data !== undefined ? res.data : (res.body ? (res.body.data || res.body) : res);
+      if (reviewsCont) {
+        reviewsCont.innerHTML = renderReviewsSection(entity, raw);
+        wireReviewEvents(entity);
+      }
+    }).catch(function () {
+      if (reviewsCont) {
+        reviewsCont.innerHTML = renderReviewsSection(entity, null);
+        wireReviewEvents(entity);
+      }
+    });
+  }
+
+  function wireReviewEvents(entity) {
+    var toggleBtn = el("toggle-review-form-btn");
+    var cancelBtn = el("cancel-review-form-btn");
+    var accordion = el("write-review-accordion");
+
+    if (toggleBtn && accordion) {
+      toggleBtn.addEventListener("click", function () {
+        accordion.classList.toggle("hidden");
+      });
+    }
+    if (cancelBtn && accordion) {
+      cancelBtn.addEventListener("click", function () {
+        accordion.classList.add("hidden");
+      });
+    }
+
+    var SENTIMENTS = {
+      1: "Disappointing / Below expectations",
+      2: "Could be better",
+      3: "Average / Decent experience",
+      4: "Great experience / Very good!",
+      5: "Amazing experience! Love it!"
+    };
+
+    var SENTIMENT_ICONS = {
+      1: "fa-face-frown text-rose-400",
+      2: "fa-face-meh text-amber-400",
+      3: "fa-face-smile text-amber-400",
+      4: "fa-face-laugh text-amber-400",
+      5: "fa-face-grin-stars text-amber-400"
+    };
+
+    var starWidget = el("interactive-star-rating");
+    var sentimentLabel = el("rating-sentiment-label");
+    var selectedRating = 5;
+
+    if (starWidget) {
+      var stars = starWidget.querySelectorAll(".star-icon");
+
+      function updateStarsDisplay(val) {
+        stars.forEach(function (star) {
+          var r = Number(star.getAttribute("data-rating"));
+          if (r <= val) {
+            star.className = "fas fa-star text-4xl sm:text-5xl text-amber-400 cursor-pointer transition-all duration-200 hover:scale-110 drop-shadow-[0_0_12px_rgba(251,191,36,0.6)] star-icon";
+          } else {
+            star.className = "fas fa-star text-4xl sm:text-5xl text-white/20 cursor-pointer transition-all duration-200 hover:scale-110 drop-shadow-none star-icon";
+          }
+        });
+
+        if (sentimentLabel) {
+          var text = SENTIMENTS[val] || "Rate your experience";
+          var icon = SENTIMENT_ICONS[val] || "fa-face-smile text-amber-400";
+          sentimentLabel.innerHTML = '<i class="fas ' + icon + '"></i> ' + text;
+        }
+      }
+
+      stars.forEach(function (star) {
+        star.addEventListener("mouseenter", function () {
+          var hoverVal = Number(star.getAttribute("data-rating"));
+          updateStarsDisplay(hoverVal);
+        });
+
+        star.addEventListener("click", function () {
+          selectedRating = Number(star.getAttribute("data-rating"));
+          starWidget.setAttribute("data-selected", selectedRating);
+          updateStarsDisplay(selectedRating);
+        });
+      });
+
+      starWidget.addEventListener("mouseleave", function () {
+        updateStarsDisplay(selectedRating);
+      });
+    }
+
+    var reviewBtn = el("review-btn");
+    if (reviewBtn) {
+      reviewBtn.addEventListener("click", function () {
+        if (!It.session || !It.session.hasToken()) {
+          showToast("Please sign in to submit a review.", "error");
+          return;
+        }
+        var comment = (el("review-comment") && el("review-comment").value.trim()) || "";
+        reviewBtn.disabled = true;
+        reviewBtn.textContent = "Submitting…";
+        It.apiPost("/reviews/" + type + "/" + id, { rating: selectedRating, comment: comment }, { auth: true }).then(function (res) {
+          if (res.ok) {
+            showToast("Review submitted successfully! It is now pending admin approval.", "success");
+            if (el("review-comment")) el("review-comment").value = "";
+            if (accordion) accordion.classList.add("hidden");
+            // Re-fetch dynamic reviews from API to update overall rating & feed in real time
+            fetchAndRenderReviews(entity);
+          } else {
+            showToast((res.body && res.body.message) || "Could not submit review.", "error");
+            reviewBtn.disabled = false;
+            reviewBtn.textContent = "Submit Review";
+          }
+        }).catch(function () {
+          showToast("Network error submitting review.", "error");
+          reviewBtn.disabled = false;
+          reviewBtn.textContent = "Submit Review";
+        });
+      });
+    }
   }
 
   function render(e) {
@@ -123,57 +435,53 @@
 
     var attachBlock = "";
     if (ATTACH_TYPE[type]) {
-      attachBlock = '<div class="glass-card p-6 mb-6">' +
+      attachBlock = '<div class="glass-card p-6 mb-6 rounded-2xl bg-white/5 border border-white/10">' +
         '<h4 class="text-sm font-bold text-white mb-2 flex items-center gap-2"><i class="fas fa-suitcase-rolling text-amber-400"></i> Add to your Trip Itinerary</h4>' +
         '<p class="text-xs text-white/50 mb-4">Attach this experience directly to one of your active trip plans.</p>' +
         '<div class="flex gap-2">' +
         '<select id="trip-select" class="bg-black/40 border border-white/15 text-white text-sm rounded-lg px-3 py-2 flex-1 focus:outline-none">' +
         '<option value="">Select an active trip...</option></select>' +
-        '<button type="button" id="attach-btn" class="btn-primary text-sm px-4 py-2" disabled>Attach</button>' +
+        '<button type="button" id="attach-btn" class="px-4 py-2 rounded-full bg-amber-400 text-black font-bold text-sm" disabled>Attach</button>' +
         '</div></div>';
     }
-
-    var reviewBlock = '<div class="glass-card p-6">' +
-      '<h4 class="text-sm font-bold text-white mb-3 flex items-center gap-2"><i class="fas fa-star text-amber-400"></i> Submit a Review</h4>' +
-      '<div class="flex items-center gap-2 mb-3" id="rating-chips">' +
-      [1, 2, 3, 4, 5].map(function (n) {
-        return '<button type="button" class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 hover:border-amber-400/50 flex items-center justify-center text-xs font-bold transition rating-chip" data-rating="' + n + '">' + n + '★</button>';
-      }).join("") +
-      '</div>' +
-      '<textarea id="review-comment" rows="3" class="w-full bg-black/40 border border-white/15 text-white text-sm rounded-lg p-3 mb-3 focus:outline-none" placeholder="Share your verdict and highlights..."></textarea>' +
-      '<button type="button" id="review-btn" class="btn-primary text-xs px-4 py-2">Submit Review</button>' +
-      '</div>';
 
     page.innerHTML =
       '<div class="mb-6"><a href="explore.html" class="inline-flex items-center gap-2 text-sm text-white/50 hover:text-white transition"><i class="fas fa-arrow-left text-xs"></i> Back to Explore</a></div>' +
       imageHtml(entityImage(e), name, name, type, (e.country && e.country.name) || e.country) +
       '<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">' +
-      '<div class="lg:col-span-2 space-y-6">' +
-      '<div>' +
-      '<span class="text-xs uppercase tracking-widest font-semibold text-amber-400/80 mb-1 block">' + (TYPE_LABEL[type] || "Experience") + '</span>' +
-      '<h1 class="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-2">' + esc(name) + '</h1>' +
-      (sub ? '<p class="text-base text-white/60 mb-4 flex items-center gap-1.5"><i class="fas fa-location-dot text-amber-400 text-xs"></i> ' + esc(sub) + '</p>' : '') +
-      metaHtml(e) +
-      '</div>' +
-      '<div class="glass-card p-6">' +
-      '<h3 class="text-base font-bold text-white mb-3">Overview & Highlights</h3>' +
-      '<p class="text-white/70 text-sm leading-relaxed whitespace-pre-line">' + esc(e.description || "Discover bespoke luxury highlights, breathtaking atmosphere, and world-class hospitality curated exclusively by Itinera.") + '</p>' +
-      '</div>' +
-      '<div id="entity-extra-section"></div>' +
-      '</div>' +
-      '<div class="space-y-6">' +
-      '<div class="glass-card p-6">' +
-      '<div class="flex items-center justify-between mb-4">' +
-      '<span class="text-xs uppercase font-semibold tracking-wider text-white/40">Quick Actions</span>' +
-      '<button type="button" id="fav-btn" class="text-xs flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 text-white transition">' +
-      '<i class="far fa-heart"></i> Save to Favourites</button>' +
-      '</div>' +
-      '<p class="text-xs text-white/50">Save this place to your private collection for easy access during your planning.</p>' +
-      '</div>' +
-      attachBlock +
-      reviewBlock +
-      '</div>' +
+        '<div class="lg:col-span-2 space-y-6">' +
+          '<div>' +
+            '<span class="text-xs uppercase tracking-widest font-semibold text-amber-400/80 mb-1 block">' + (TYPE_LABEL[type] || "Experience") + '</span>' +
+            '<h1 class="text-3xl sm:text-4xl font-bold text-white tracking-tight mb-2">' + esc(name) + '</h1>' +
+            (sub ? '<p class="text-base text-white/60 mb-4 flex items-center gap-1.5"><i class="fas fa-location-dot text-amber-400 text-xs"></i> ' + esc(sub) + '</p>' : '') +
+            metaHtml(e) +
+          '</div>' +
+
+          '<div class="p-6 rounded-2xl bg-white/5 border border-white/10">' +
+            '<h3 class="text-base font-bold text-white mb-3">Overview & Highlights</h3>' +
+            '<p class="text-white/70 text-sm leading-relaxed whitespace-pre-line">' + esc(e.description || "Discover bespoke luxury highlights, breathtaking atmosphere, and world-class hospitality curated exclusively by Itinera.") + '</p>' +
+          '</div>' +
+
+          '<div id="entity-reviews-container">' + renderReviewsSkeleton() + '</div>' +
+          '<div id="entity-extra-section"></div>' +
+        '</div>' +
+
+        '<div class="space-y-6">' +
+          '<div class="p-6 rounded-2xl bg-white/5 border border-white/10">' +
+            '<div class="flex items-center justify-between mb-4">' +
+              '<span class="text-xs uppercase font-semibold tracking-wider text-white/40">Quick Actions</span>' +
+              '<button type="button" id="fav-btn" class="text-xs flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 text-white transition">' +
+                '<i class="far fa-heart"></i> Save to Favourites' +
+              '</button>' +
+            '</div>' +
+            '<p class="text-xs text-white/50">Save this place to your private collection for easy access during your planning.</p>' +
+          '</div>' +
+          attachBlock +
+        '</div>' +
       '</div>';
+
+    // Fetch dynamic reviews and summary metrics from API
+    fetchAndRenderReviews(e);
 
     // Populate trips select
     if (ATTACH_TYPE[type] && It.session && It.session.hasToken()) {
@@ -246,49 +554,6 @@
       });
     }
 
-    // Wire review submission
-    var selectedRating = 5;
-    var ratingChips = el("rating-chips");
-    if (ratingChips) {
-      ratingChips.addEventListener("click", function (evt) {
-        var btn = evt.target.closest(".rating-chip");
-        if (!btn) return;
-        selectedRating = Number(btn.getAttribute("data-rating")) || 5;
-        ratingChips.querySelectorAll(".rating-chip").forEach(function (b) {
-          var r = Number(b.getAttribute("data-rating"));
-          b.className = "w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold transition rating-chip " +
-            (r <= selectedRating ? "bg-amber-400 text-black border-amber-400" : "bg-white/5 border border-white/10 text-white");
-        });
-      });
-    }
-
-    var reviewBtn = el("review-btn");
-    if (reviewBtn) {
-      reviewBtn.addEventListener("click", function () {
-        if (!It.session || !It.session.hasToken()) {
-          showToast("Please sign in to submit a review.", "error");
-          return;
-        }
-        var comment = (el("review-comment") && el("review-comment").value.trim()) || "";
-        reviewBtn.disabled = true;
-        reviewBtn.textContent = "Submitting…";
-        It.apiPost("/reviews/" + type + "/" + id, { rating: selectedRating, comment: comment }, { auth: true }).then(function (res) {
-          if (res.ok) {
-            showToast("Review submitted successfully!", "success");
-            if (el("review-comment")) el("review-comment").value = "";
-          } else {
-            showToast((res.body && res.body.message) || "Could not submit review.", "error");
-          }
-          reviewBtn.disabled = false;
-          reviewBtn.textContent = "Submit Review";
-        }).catch(function () {
-          showToast("Network error submitting review.", "error");
-          reviewBtn.disabled = false;
-          reviewBtn.textContent = "Submit Review";
-        });
-      });
-    }
-
     // Fetch related accommodations for destinations
     if (type === "destination" || type === "destinations") {
       It.apiGet("/destinations/" + id + "/hotels").then(function (res) {
@@ -296,12 +561,12 @@
         if (!Array.isArray(hotels) || !hotels.length) return;
         var extra = el("entity-extra-section");
         if (!extra) return;
-        extra.innerHTML = '<div class="glass-card p-6">' +
+        extra.innerHTML = '<div class="p-6 rounded-2xl bg-white/5 border border-white/10">' +
           '<h3 class="text-base font-bold text-white mb-4 flex items-center gap-2"><i class="fas fa-hotel text-amber-400"></i> Recommended Accommodations</h3>' +
           '<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">' +
           hotels.slice(0, 4).map(function (h) {
-            return '<a href="entity.html?type=hotel&id=' + h.id + '" class="p-3 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 transition block">' +
-              '<div class="font-bold text-sm text-white mb-1">' + esc(h.name) + '</div>' +
+            return '<a href="entity.html?type=hotel&id=' + h.id + '" class="p-3.5 rounded-xl bg-white/5 border border-white/10 hover:border-white/20 transition block group">' +
+              '<div class="font-bold text-sm text-white group-hover:text-amber-400 transition mb-1">' + esc(h.name) + '</div>' +
               '<div class="text-xs text-white/50">' + (h.price_per_night ? '$' + h.price_per_night + '/night' : '5-Star Resort') + '</div></a>';
           }).join("") + '</div></div>';
       }).catch(function () {});
@@ -310,9 +575,9 @@
 
   function start() {
     if (!TYPE_LABEL[type] || !id) {
-      page.innerHTML = '<div class="glass-card p-12 text-center max-w-lg mx-auto"><h2 class="text-2xl font-bold text-white mb-4">Item Not Found</h2>' +
+      page.innerHTML = '<div class="p-12 text-center max-w-lg mx-auto bg-white/5 rounded-3xl border border-white/10"><h2 class="text-2xl font-bold text-white mb-4">Item Not Found</h2>' +
         '<p class="text-white/60 mb-6">The requested experience could not be located.</p>' +
-        '<a href="explore.html" class="btn-primary">Back to Catalog Explorer</a></div>';
+        '<a href="explore.html" class="px-5 py-2.5 rounded-full bg-amber-400 text-black text-xs font-bold">Back to Catalog Explorer</a></div>';
       return;
     }
 
@@ -322,13 +587,13 @@
         var item = (It.unwrapData && It.unwrapData(res)) || (res.body && res.body.data) || res.body;
         render(item);
       } else {
-        page.innerHTML = '<div class="glass-card p-12 text-center max-w-lg mx-auto"><h2 class="text-2xl font-bold text-white mb-4">Could Not Load Experience</h2>' +
-          '<a href="explore.html" class="btn-primary">Back to Catalog Explorer</a></div>';
+        page.innerHTML = '<div class="p-12 text-center max-w-lg mx-auto bg-white/5 rounded-3xl border border-white/10"><h2 class="text-2xl font-bold text-white mb-4">Could Not Load Experience</h2>' +
+          '<a href="explore.html" class="px-5 py-2.5 rounded-full bg-amber-400 text-black text-xs font-bold">Back to Catalog Explorer</a></div>';
       }
     }).catch(function () {
-      page.innerHTML = '<div class="glass-card p-12 text-center max-w-lg mx-auto"><h2 class="text-2xl font-bold text-white mb-4">Network Error</h2>' +
+      page.innerHTML = '<div class="p-12 text-center max-w-lg mx-auto bg-white/5 rounded-3xl border border-white/10"><h2 class="text-2xl font-bold text-white mb-4">Network Error</h2>' +
         '<p class="text-white/60 mb-6">Could not reach the server to fetch item details.</p>' +
-        '<a href="explore.html" class="btn-primary">Back to Catalog Explorer</a></div>';
+        '<a href="explore.html" class="px-5 py-2.5 rounded-full bg-amber-400 text-black text-xs font-bold">Back to Catalog Explorer</a></div>';
     });
   }
 

@@ -129,8 +129,10 @@
   async function load() {
     resultsEl.innerHTML = Ui.skeletonGrid(9);
     try {
-      const body = await Api.get('/v1/attractions');
-      all = Array.isArray(body.data.data) ? body.data.data : [];
+      const res = await Api.get('/v1/attractions');
+      const body = res.data !== undefined ? res.data : res;
+      const items = Array.isArray(body) ? body : (body && Array.isArray(body.data) ? body.data : (body && body.data && Array.isArray(body.data.data) ? body.data.data : []));
+      all = items;
       await favsReady;
       renderChips();
       render();

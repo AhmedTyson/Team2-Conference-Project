@@ -98,6 +98,8 @@ class AuthController extends Controller
     public function me(): JsonResponse
     {
         $user = auth('api')->user();
+        $addrRecord = $user->address()->first();
+        $formattedAddress = $addrRecord ? $addrRecord->line1 : $user->getAttribute('address');
 
         return ApiResponse::success([
             'user' => [
@@ -106,6 +108,23 @@ class AuthController extends Controller
                 'email' => $user->email,
                 'roles' => $user->getRoleNames(),
                 'phone' => $user->phone,
+                'bio' => $user->bio,
+                'country' => $user->country,
+                'address' => $formattedAddress,
+                'address_details' => $addrRecord ? [
+                    'line1' => $addrRecord->line1,
+                    'line2' => $addrRecord->line2,
+                    'city' => $addrRecord->city,
+                    'state' => $addrRecord->state,
+                    'country' => $addrRecord->country,
+                    'postal_code' => $addrRecord->postal_code,
+                ] : null,
+                'preferred_currency' => $user->preferred_currency,
+                'emergency_contact' => $user->emergency_contact,
+                'profile_image' => $user->profile_image
+                    ? (str_starts_with($user->profile_image, 'http') ? $user->profile_image : url($user->profile_image))
+                    : null,
+                'email_verified_at' => $user->email_verified_at,
             ],
         ]);
     }
@@ -215,12 +234,32 @@ class AuthController extends Controller
         $data = $request->validated();
 
         if ($request->hasFile('profile_image')) {
-            if ($user->profile_image) {
-                Storage::disk('public')->delete($user->profile_image);
+            $file = $request->file('profile_image');
+            $ext = strtolower($file->getClientOriginalExtension()) ?: 'png';
+            $fileName = time() . '_' . uniqid() . '.' . $ext;
+            $uploadDir = public_path('uploads/profile-images');
+            if (!file_exists($uploadDir)) {
+                @mkdir($uploadDir, 0777, true);
             }
-
-            $data['profile_image'] = $request->file('profile_image')
-                ->store('profile-images', 'public');
+            $file->move($uploadDir, $fileName);
+            $data['profile_image'] = 'uploads/profile-images/' . $fileName;
+        } elseif (!empty($data['profile_image']) && is_string($data['profile_image'])) {
+            if (str_starts_with($data['profile_image'], 'data:image/')) {
+                try {
+                    preg_match('/data:image\/(?<type>.*?);base64,(?<data>.*)/', $data['profile_image'], $matches);
+                    $imageType = $matches['type'] ?? 'png';
+                    $imageData = base64_decode($matches['data'] ?? '');
+                    $fileName = time() . '_' . uniqid() . '.' . $imageType;
+                    $uploadDir = public_path('uploads/profile-images');
+                    if (!file_exists($uploadDir)) {
+                        @mkdir($uploadDir, 0777, true);
+                    }
+                    file_put_contents($uploadDir . '/' . $fileName, $imageData);
+                    $data['profile_image'] = 'uploads/profile-images/' . $fileName;
+                } catch (\Throwable $e) {
+                    // Ignore malformed base64
+                }
+            }
         }
 
         if (isset($data['password'])) {
@@ -238,9 +277,29 @@ class AuthController extends Controller
 
         $user->update($data);
 
+        if (isset($data['address']) || isset($data['line1'])) {
+            $line1 = $data['line1'] ?? $data['address'];
+            if ($line1) {
+                $user->address()->updateOrCreate(
+                    ['addressable_id' => $user->id, 'addressable_type' => get_class($user)],
+                    [
+                        'line1' => $line1,
+                        'line2' => $data['line2'] ?? null,
+                        'city' => $data['city'] ?? ($data['country'] ?? 'Cairo'),
+                        'state' => $data['state'] ?? null,
+                        'country' => $data['country'] ?? ($user->country ?? 'Egypt'),
+                        'postal_code' => $data['postal_code'] ?? null,
+                    ]
+                );
+            }
+        }
+
         if ($emailChanged) {
             $user->sendEmailVerificationNotification();
         }
+
+        $addrRecord = $user->address()->first();
+        $formattedAddress = $addrRecord ? $addrRecord->line1 : $user->getAttribute('address');
 
         return ApiResponse::success([
             'user' => [
@@ -250,10 +309,19 @@ class AuthController extends Controller
                 'phone' => $user->phone,
                 'bio' => $user->bio,
                 'country' => $user->country,
+                'address' => $formattedAddress,
+                'address_details' => $addrRecord ? [
+                    'line1' => $addrRecord->line1,
+                    'line2' => $addrRecord->line2,
+                    'city' => $addrRecord->city,
+                    'state' => $addrRecord->state,
+                    'country' => $addrRecord->country,
+                    'postal_code' => $addrRecord->postal_code,
+                ] : null,
                 'preferred_currency' => $user->preferred_currency,
                 'emergency_contact' => $user->emergency_contact,
                 'profile_image' => $user->profile_image
-                    ? Storage::disk('public')->url($user->profile_image)
+                    ? (str_starts_with($user->profile_image, 'http') ? $user->profile_image : url($user->profile_image))
                     : null,
                 'roles' => $user->getRoleNames(),
             ],

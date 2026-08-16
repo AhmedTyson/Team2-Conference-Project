@@ -1,261 +1,496 @@
 /**
- * profile.js — profile overview (converted from React ProfileOverviewPage).
- * Hero + stat strip + activity feed + travel style card + trips/favourites/reviews previews.
- * Depends on app-shell.js (It.app).
+ * profile.js — Dedicated User Profile, Address & Avatar Settings Manager.
+ * Instant-renders from session storage, UI Avatars default fallback, photo upload & instant sync.
  */
 (function (global) {
   "use strict";
 
   var It = global.Itinari;
-  if (!It || !It.app) return;
+  if (!It) return;
 
   var page = document.getElementById("profile-page");
 
-  var TYPE_LABEL = {
-    hotel: "Hotel", restaurant: "Restaurant", attraction: "Attraction",
-    destination: "Destination", flight: "Flight"
-  };
-  var MARKERS = { trip: "\u2708", favourite: "\u2665", review: "\u2605", survey: "\u2726" };
-  var ROLE_LABELS = { user: "Member", admin: "Admin", super_admin: "Super Admin" };
-  var TRAVELER_LABELS = {
-    solo: "Solo Traveler", couple: "Couple Traveler", family: "Family Traveler",
-    friends: "Group Traveler", business: "Business Traveler"
-  };
-
-  function esc(v) { return It.app.esc(v); }
-  function el(id) { return document.getElementById(id); }
-
-  function roleLabel(role) {
-    return ROLE_LABELS[role] || String(role).replaceAll("_", " ");
+  function esc(v) {
+    if (v == null) return "";
+    return String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
 
-  function travelerLabel(style) {
-    if (!style || !style.trim()) return null;
-    var key = style.trim().toLowerCase();
-    if (TRAVELER_LABELS[key]) return TRAVELER_LABELS[key].toUpperCase();
-    var words = style.trim().split(/\s+/).map(function (word) {
-      var lower = word.toLowerCase();
-      if (lower.length > 4 && lower.endsWith("ing")) return word.slice(0, -3) + "er";
-      return word;
-    });
-    var last = words[words.length - 1] || "";
-    var label = last.toLowerCase().endsWith("er") ? words.join(" ") : words.join(" ") + " Traveler";
-    return label.toUpperCase();
+  function getDefaultAvatar(name) {
+    var n = encodeURIComponent(name && name.trim() ? name.trim() : "User");
+    return "https://ui-avatars.com/api/?name=" + n + "&background=262626&color=fbbf24&bold=true&size=256";
   }
 
-  function relativeTime(iso) {
-    var then = new Date(iso).getTime();
-    if (isNaN(then)) return "";
-    var diff = Math.max(0, Date.now() - then);
-    var minutes = Math.floor(diff / 60000);
-    if (minutes < 1) return "just now";
-    if (minutes < 60) return minutes + "m ago";
-    var hours = Math.floor(minutes / 60);
-    if (hours < 24) return hours + "h ago";
-    var days = Math.floor(hours / 24);
-    if (days < 7) return days + "d ago";
-    if (days < 30) return Math.floor(days / 7) + "w ago";
-    if (days < 365) return Math.floor(days / 30) + "mo ago";
-    return new Date(iso).toLocaleDateString();
-  }
-
-  function favName(f) {
-    var item = f.item || null;
-    return (item && (item.name || item.flight_number)) || TYPE_LABEL[f.favorable_type] || "Saved item";
-  }
-
-  function buildActivity(trips, favourites, reviews, surveys) {
-    var entries = [];
-    (trips || []).forEach(function (t) {
-      entries.push({ kind: "trip", label: "Trip planned", title: t.title, href: "/trip.html?id=" + t.id, date: t.created_at });
-    });
-    (favourites || []).forEach(function (f) {
-      entries.push({ kind: "favourite", label: "Saved to favourites", title: favName(f), href: "/entity.html?type=" + f.favorable_type + "&id=" + f.favorable_id, date: f.created_at });
-    });
-    (reviews || []).forEach(function (r) {
-      entries.push({ kind: "review", label: "Reviewed · " + r.rating + "/5", title: (r.reviewable && r.reviewable.title) || "Item", href: "/entity.html?type=" + r.reviewable_type + "&id=" + r.reviewable_id, date: r.created_at });
-    });
-    (surveys || []).forEach(function (s) {
-      entries.push({ kind: "survey", label: "Survey submitted", title: s.travel_style + " travel style", href: "/survey.html?id=" + s.id, date: s.created_at });
-    });
-    return entries.sort(function (a, b) { return new Date(b.date) - new Date(a.date); }).slice(0, 8);
-  }
-
-  function activityHtml(entries) {
-    if (!entries.length) {
-      return '<div class="profile-empty"><p>No activity yet — every trip you plan, place you save, review you write and survey you submit will land here.</p>' +
-        '<div class="btn-row"><a href="/trip-form.html" class="btn btn--primary">Plan a trip</a>' +
-        '<a href="/explore.html" class="btn btn--ghost">Explore</a></div></div>';
+  function formatAvatarUrl(url, userName) {
+    if (!url || typeof url !== "string") return getDefaultAvatar(userName);
+    if (url.indexOf("http://") === 0 || url.indexOf("https://") === 0 || url.indexOf("data:image/") === 0) {
+      return url;
     }
-    return '<div class="activity-feed">' + entries.map(function (entry, index) {
-      return '<a href="' + esc(entry.href || "#") + '" class="activity-item anim-rise" style="animation-delay:' + Math.min(index * 55, 400) + 'ms;">' +
-        '<span class="activity-item__marker activity-item__marker--' + entry.kind + '" aria-hidden="true">' + MARKERS[entry.kind] + "</span>" +
-        '<span class="activity-item__body">' +
-        '<span class="activity-item__label">' + esc(entry.label) + "</span>" +
-        '<span class="activity-item__title">' + esc(entry.title) + "</span>" +
-        '<span class="activity-item__date">' + relativeTime(entry.date) + "</span></span></a>";
-    }).join("") + "</div>";
+    // Relative path e.g. uploads/profile-images/xxx.png or storage/profile-images/xxx.png
+    var base = (It.getApiBase ? It.getApiBase() : "http://localhost:8000/api").replace(/\/api\/?$/, "");
+    return base + "/" + url.replace(/^\/+/, "");
   }
 
-  function tripsPreviewHtml(trips) {
-    var head = '<div class="profile-section__head"><div><p class="page-section__eyebrow">Planner</p>' +
-      '<h2 class="page-section__title">Your trips</h2></div><a href="/trips.html" class="profile-section__more">All trips →</a></div>';
-    if (!trips.length) {
-      return '<section class="profile-section">' + head + '<div class="profile-empty"><p>No trips planned yet.</p>' +
-        '<a href="/trip-form.html" class="btn btn--primary">Plan your first trip</a></div></section>';
+  function getStoredUser() {
+    try {
+      var raw = (It.readUser && It.readUser()) || localStorage.getItem("itinari_user");
+      if (raw) {
+        var obj = typeof raw === "string" ? JSON.parse(raw) : raw;
+        if (obj && obj.user && typeof obj.user === "object") return obj.user;
+        return obj;
+      }
+    } catch (e) {}
+    return null;
+  }
+
+  function hasStoredToken() {
+    try {
+      var tok = (It.readToken && It.readToken()) || localStorage.getItem("itinari_token");
+      return !!tok;
+    } catch (e) {
+      return false;
     }
-    return '<section class="profile-section">' + head + '<div class="preview-grid">' +
-      trips.slice(0, 4).map(function (t, index) {
-        return '<a href="/trip.html?id=' + t.id + '" class="preview-card anim-rise" style="animation-delay:' + Math.min(index * 70, 400) + 'ms;">' +
-          '<div class="preview-card__top"><h3 class="preview-card__title">' + esc(t.title) + "</h3>" +
-          '<span class="trip-status trip-status--' + esc(t.status) + '">' + esc(t.status) + "</span></div>" +
-          '<div class="preview-card__meta">' +
-          '<span class="preview-card__meta-item"><b>' + esc(String(t.start_date || "").slice(0, 10)) + "</b>" +
-          (t.end_date ? " → " + esc(String(t.end_date).slice(0, 10)) : "") + "</span>" +
-          '<span class="preview-card__meta-item">' + t.no_of_days + " day" + (t.no_of_days === 1 ? "" : "s") + "</span>" +
-          '<span class="preview-card__meta-item">' + t.no_of_travelers + " traveler" + (t.no_of_travelers === 1 ? "" : "s") + "</span>" +
-          "</div></a>";
-      }).join("") + "</div></section>";
   }
 
-  function favouritesPreviewHtml(favourites) {
-    var head = '<div class="profile-section__head"><div><p class="page-section__eyebrow">Saved places</p>' +
-      '<h2 class="page-section__title">Favourites</h2></div><a href="/favourites.html" class="profile-section__more">All favourites →</a></div>';
-    if (!favourites.length) {
-      return '<section class="profile-section">' + head + '<div class="profile-empty"><p>Nothing saved yet.</p>' +
-        '<a href="/explore.html" class="btn btn--primary">Browse the catalog</a></div></section>';
-    }
-    return '<section class="profile-section">' + head + '<div class="mini-tiles">' +
-      favourites.slice(0, 4).map(function (f, index) {
-        var item = f.item || null;
-        var name = (item && (item.name || item.flight_number)) || "Saved item";
-        var city = (item && item.destination && item.destination.city_name) || (item && item.city_name) || null;
-        return '<a href="/entity.html?type=' + esc(f.favorable_type) + "&id=" + f.favorable_id + '" class="mini-tile anim-rise" style="animation-delay:' + Math.min(index * 60, 400) + 'ms;">' +
-          It.app.imageHtml(item && item.image, name, "mini-tile__image") +
-          '<span class="mini-tile__name">' + esc(name) + "</span>" +
-          '<span class="mini-tile__sub">' + (TYPE_LABEL[f.favorable_type] || f.favorable_type) + (city ? " · " + esc(city) : "") + "</span></a>";
-      }).join("") + "</div></section>";
+  function renderLoginPrompt() {
+    if (!page) return;
+    page.innerHTML = '<div class="py-16 text-center text-white/50">' +
+      '<h2 class="text-xl font-bold text-white mb-2">Please Log In</h2>' +
+      '<p class="text-sm text-white/60 mb-4">You need an active session to manage your account details.</p>' +
+      '<a href="../auth/login.html" class="px-5 py-2.5 rounded-full bg-amber-400 text-black text-xs font-bold hover:bg-amber-300 transition">Log In</a></div>';
   }
 
-  function reviewPreviewHtml(reviews) {
-    var head = '<div class="profile-section__head"><div><p class="page-section__eyebrow">Reviews</p>' +
-      '<h2 class="page-section__title">Your verdicts</h2></div><a href="/my-reviews.html" class="profile-section__more">All reviews →</a></div>';
-    var latest = (reviews || []).slice().sort(function (a, b) { return new Date(b.created_at) - new Date(a.created_at); })[0];
-    if (!latest) {
-      return '<section class="profile-section">' + head + '<div class="profile-empty"><p>Nothing rated yet — visit the Explore pages and share your verdict.</p>' +
-        '<a href="/explore.html" class="btn btn--primary">Start reviewing</a></div></section>';
-    }
-    return '<section class="profile-section">' + head +
-      '<div class="review-preview anim-rise" style="animation-delay:0.2s;">' +
-      '<div class="review-preview__top"><p class="review-preview__title">' + esc((latest.reviewable && latest.reviewable.title) || "Rated item") + "</p>" +
-      '<span class="review-preview__date">' + relativeTime(latest.created_at) + "</span></div>" +
-      It.app.starsHtml(latest.rating) +
-      (latest.comment ? '<p class="review-preview__comment">' + esc(latest.comment) + "</p>" : "") +
-      "</div></section>";
-  }
+  function renderProfileForm(user) {
+    if (!page || !user) return;
 
-  function travelStyleCard(surveys) {
-    var latest = (surveys || []).slice().sort(function (a, b) { return new Date(b.created_at) - new Date(a.created_at); })[0];
-    var head = '<div class="profile-section__head"><div><p class="page-section__eyebrow">Travel style</p>' +
-      '<h2 class="page-section__title">On record</h2></div>';
-    if (!latest) {
-      return '<section class="profile-section">' + head + '<a href="/survey-form.html" class="profile-section__more">New survey →</a></div>' +
-        '<div class="profile-empty"><p>No surveys yet — tell us how you like to travel.</p>' +
-        '<a href="/survey-form.html" class="btn btn--primary">Create your first survey</a></div></section>';
-    }
-    var interests = latest.interests || [];
-    return '<section class="profile-section">' + head + '<a href="/survey.html?id=' + latest.id + '" class="profile-section__more">View survey →</a></div>' +
-      '<a href="/survey.html?id=' + latest.id + '" class="travel-style anim-rise" style="animation-delay:0.15s;">' +
-      '<p class="travel-style__eyebrow">Latest survey</p>' +
-      '<p class="travel-style__name">' + esc(latest.travel_style) + "</p>" +
-      '<div class="travel-style__chips"><span class="chip chip--on-dark">' +
-      esc(String(latest.budget_level || "").charAt(0).toUpperCase() + String(latest.budget_level || "").slice(1)) + " budget</span></div>" +
-      (interests.length ? '<div class="travel-style__interests">' + interests.slice(0, 6).map(function (i) {
-        return '<span class="chip chip--on-dark">' + esc(i) + "</span>";
-      }).join("") + "</div>" : "") +
-      "</a></section>";
-  }
+    var avatarSrc = formatAvatarUrl(user.profile_image, user.name);
+    var fallbackAvatar = getDefaultAvatar(user.name);
+    var roles = (user.roles && user.roles.length) ? (Array.isArray(user.roles) ? user.roles.join(", ") : String(user.roles)).toUpperCase() : "MEMBER";
+    var isVerified = !!user.email_verified_at;
 
-  It.app.boot(function (user) {
-    if (!user) return;
-    Promise.all([
-      It.apiGet("/stats/summary", { auth: true }),
-      It.apiGet("/dashboard/trips", { auth: true }),
-      It.apiGet("/dashboard/favourites", { auth: true }),
-      It.apiGet("/me/reviews", { auth: true }),
-      It.apiGet("/surveys", { auth: true })
-    ]).then(function (results) {
-      var stats = It.app.unwrapData(results[0]) || {};
-      var trips = It.app.unwrapData(results[1]);
-      var favourites = It.app.unwrapData(results[2]);
-      var reviews = It.app.unwrapData(results[3]);
-      var surveys = It.app.unwrapData(results[4]);
-      if (!Array.isArray(trips)) trips = [];
-      if (!Array.isArray(favourites)) favourites = [];
-      if (!Array.isArray(reviews)) reviews = [];
-      if (!Array.isArray(surveys)) surveys = [];
+    page.innerHTML =
+      '<!-- User Profile Header & Avatar Manager -->' +
+      '<div class="p-6 sm:p-8 rounded-3xl bg-white/5 border border-white/10 mb-8 flex flex-col md:flex-row items-center justify-between gap-6 hover:border-amber-400/30 transition duration-300 group">' +
+        '<div class="flex flex-col sm:flex-row items-center gap-6 text-center sm:text-left">' +
+          '<!-- Interactive Avatar Container with Hover Cue -->' +
+          '<div class="relative group/avatar cursor-pointer" id="avatar-container" title="Click to update profile photo">' +
+            '<img id="user-avatar-img" src="' + esc(avatarSrc) + '" alt="' + esc(user.name || "User") + '" class="w-24 h-24 rounded-full object-cover border-4 border-amber-400/40 shadow-2xl transition duration-300 group-hover/avatar:opacity-80 group-hover/avatar:scale-105" onerror="this.onerror=null; this.src=\'' + esc(fallbackAvatar) + '\';" />' +
+            '<div class="absolute inset-0 rounded-full bg-black/60 opacity-0 group-hover/avatar:opacity-100 flex flex-col items-center justify-center text-white transition duration-300 shadow-inner">' +
+              '<i class="fas fa-camera text-lg mb-1 text-amber-400 group-hover/avatar:scale-110 transition"></i>' +
+              '<span class="text-[10px] font-bold uppercase tracking-wider">Change</span>' +
+            '</div>' +
+            '<input type="file" id="input-avatar-file" accept="image/*" class="hidden" />' +
+          '</div>' +
 
-      var statItems = [
-        { label: "Trips planned", value: stats.total_trips },
-        { label: "Trips completed", value: stats.trip_statistics && stats.trip_statistics.completed },
-        { label: "Favourites", value: stats.total_favourites },
-        { label: "Reviews", value: reviews.length },
-        { label: "Surveys", value: surveys.length }
-      ];
-      var latestSurvey = surveys.slice().sort(function (a, b) { return new Date(b.created_at) - new Date(a.created_at); })[0];
-      var label = travelerLabel(latestSurvey && latestSurvey.travel_style);
-      var surveyHref = latestSurvey ? "/survey.html?id=" + latestSurvey.id : "/survey-form.html";
-
-      page.innerHTML =
-        '<section class="profile-hero anim-rise">' +
-        '<div class="profile-hero__identity anim-rise anim-rise--delay-1">' +
-        '<p class="page-header__eyebrow">Profile</p>' +
-        '<div class="profile-hero__avatar-frame">' +
-        It.app.imageHtml(user.profile_image, user.name, "profile-hero__avatar") +
-        "</div>" +
-        '<h1 class="profile-hero__name">' + esc(user.name) + "</h1>" +
-        '<p class="profile-hero__email">' + esc(user.email) + (user.phone ? ' · ' + esc(user.phone) : '') + "</p>" +
-        (user.bio ? '<p class="profile-hero__bio" style="margin: 8px 0; color: var(--color-text-muted); font-size: 0.9em; max-width: 500px;">' + esc(user.bio) + '</p>' : '') +
-        '<div class="profile-hero__details" style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:8px 0;font-size:0.85em;color:var(--color-text-dim);">' +
-          (user.country ? '<span>📍 ' + esc(user.country) + '</span>' : '') +
-          (user.preferred_currency ? '<span>💳 Currency: ' + esc(user.preferred_currency) + '</span>' : '') +
-          (user.emergency_contact ? '<span>🆘 Emergency: ' + esc(user.emergency_contact) + '</span>' : '') +
+          '<div>' +
+            '<div class="flex items-center justify-center sm:justify-start gap-2 mb-1.5 flex-wrap">' +
+              '<span class="px-3 py-0.5 rounded-full bg-amber-400/10 text-amber-400 text-xs font-semibold uppercase tracking-wider">' +
+                '<i class="fas fa-user-shield mr-1"></i>' + esc(roles) +
+              '</span>' +
+              '<span class="px-3 py-0.5 rounded-full ' + (isVerified ? 'bg-emerald-400/10 text-emerald-400' : 'bg-amber-400/10 text-amber-400') + ' text-xs font-semibold uppercase tracking-wider">' +
+                '<i class="fas ' + (isVerified ? 'fa-circle-check' : 'fa-clock') + ' mr-1"></i>' + (isVerified ? 'Verified Account' : 'Active Account') +
+              '</span>' +
+            '</div>' +
+            '<h1 class="text-2xl sm:text-4xl font-black text-white tracking-tight" id="profile-display-name">' + esc(user.name || "Member Profile") + '</h1>' +
+            '<p class="text-xs text-white/60 mt-1 flex items-center justify-center sm:justify-start gap-3 flex-wrap">' +
+              '<span><i class="fas fa-envelope mr-1 text-white/30"></i>' + esc(user.email || "No email on record") + '</span>' +
+              (user.phone ? '<span><i class="fas fa-phone mr-1 text-white/30"></i>' + esc(user.phone) + '</span>' : '') +
+              (user.country ? '<span><i class="fas fa-location-dot mr-1 text-white/30"></i>' + esc(user.country) + '</span>' : '') +
+            '</p>' +
+          '</div>' +
         '</div>' +
-        '<div class="profile-hero__roles" style="margin-top:10px;">' + (user.roles || []).map(function (r) {
-          return '<span class="chip">' + esc(roleLabel(r)) + "</span>";
-        }).join("") + "</div>" +
-        '<div class="profile-hero__actions" style="margin-top:12px;display:flex;gap:8px;justify-content:center;">' +
-          '<a href="/profile-settings.html" class="btn btn--ghost">Edit profile & settings</a>' +
-          '<a href="/notifications.html" class="btn btn--ghost">My Notifications</a>' +
-          '<a href="/my-reviews.html" class="btn btn--ghost">My Reviews</a>' +
-        '</div></div>' +
 
-        '<a href="' + surveyHref + '" class="identity-plate anim-rise anim-rise--delay-2">' +
-        '<span class="identity-plate__monogram" aria-hidden="true">' + esc(String(user.name || "?").trim().charAt(0).toUpperCase() || "?") + "</span>" +
-        '<p class="identity-plate__eyebrow">✦ Travel identity</p>' +
-        (label ? '<p class="identity-plate__label">' + esc(label) + "</p>"
-               : '<p class="identity-plate__empty">No travel identity on record yet.</p>') +
-        '<span class="identity-plate__foot">' + (latestSurvey ? "View survey" : "Create survey") +
-        '<span class="identity-plate__arrow" aria-hidden="true">→</span></span></a>' +
+        '<!-- Avatar Upload Action Buttons -->' +
+        '<div id="avatar-actions" class="hidden flex flex-col gap-2">' +
+          '<button type="button" id="upload-avatar-btn" class="px-5 py-2 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-bold text-xs transition shadow-lg flex items-center justify-center gap-1.5">' +
+            '<i class="fas fa-cloud-arrow-up"></i> Save New Avatar' +
+          '</button>' +
+          '<button type="button" id="cancel-avatar-btn" class="px-5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition text-center">' +
+            'Cancel' +
+          '</button>' +
+        '</div>' +
+      '</div>' +
 
-        '<div class="stat-strip anim-rise anim-rise--delay-2">' + statItems.map(function (item) {
-          return '<div class="stat-strip__item"><span class="stat-strip__value">' +
-            (item.value === undefined || item.value === null ? "—" : esc(String(item.value))) + "</span>" +
-            '<span class="stat-strip__label">' + esc(item.label) + "</span></div>";
-        }).join("") + "</div></section>" +
+      '<!-- User Account Navigation Hub Bar -->' +
+      '<div class="mb-8 p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-amber-400/30 transition duration-300 group">' +
+        '<div class="text-xs font-semibold uppercase tracking-wider text-amber-400 mb-3 px-1 flex items-center justify-between">' +
+          '<span><i class="fas fa-compass mr-1.5"></i> My Account Navigation Hub</span>' +
+        '</div>' +
+        '<div class="grid grid-cols-2 sm:grid-cols-5 gap-3">' +
+          '<a href="trips.html" class="p-3 rounded-xl bg-white/5 hover:bg-amber-400/10 border border-white/10 hover:border-amber-400/30 text-center transition group/btn">' +
+            '<i class="fas fa-route text-amber-400 text-lg mb-1 block group-hover/btn:scale-110 transition"></i>' +
+            '<span class="text-xs font-semibold text-white block">My Trips</span>' +
+          '</a>' +
+          '<a href="bookings.html" class="p-3 rounded-xl bg-white/5 hover:bg-emerald-400/10 border border-white/10 hover:border-emerald-400/30 text-center transition group/btn">' +
+            '<i class="fas fa-ticket text-emerald-400 text-lg mb-1 block group-hover/btn:scale-110 transition"></i>' +
+            '<span class="text-xs font-semibold text-white block">Bookings</span>' +
+          '</a>' +
+          '<a href="favourites.html" class="p-3 rounded-xl bg-white/5 hover:bg-rose-400/10 border border-white/10 hover:border-rose-400/30 text-center transition group/btn">' +
+            '<i class="fas fa-heart text-rose-400 text-lg mb-1 block group-hover/btn:scale-110 transition"></i>' +
+            '<span class="text-xs font-semibold text-white block">Favourites</span>' +
+          '</a>' +
+          '<a href="surveys.html" class="p-3 rounded-xl bg-white/5 hover:bg-purple-400/10 border border-white/10 hover:border-purple-400/30 text-center transition group/btn">' +
+            '<i class="fas fa-clipboard-check text-purple-400 text-lg mb-1 block group-hover/btn:scale-110 transition"></i>' +
+            '<span class="text-xs font-semibold text-white block">My Surveys</span>' +
+          '</a>' +
+          '<a href="chat.html" class="p-3 rounded-xl bg-white/5 hover:bg-sky-400/10 border border-white/10 hover:border-sky-400/30 text-center transition group/btn col-span-2 sm:col-span-1">' +
+            '<i class="fas fa-comments text-sky-400 text-lg mb-1 block group-hover/btn:scale-110 transition"></i>' +
+            '<span class="text-xs font-semibold text-white block">Support Chat</span>' +
+          '</a>' +
+        '</div>' +
+      '</div>' +
 
-        '<section class="profile-section"><div class="profile-section__head"><div>' +
-        '<p class="page-section__eyebrow">Activity</p><h2 class="page-section__title">Recent activity</h2></div></div>' +
-        activityHtml(buildActivity(trips, favourites, reviews, surveys)) + "</section>" +
+      '<!-- Profile & Address Settings Forms -->' +
+      '<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">' +
 
-        travelStyleCard(surveys) +
+        '<!-- Personal Information & Address Form with Hover Change Overlay -->' +
+        '<div class="lg:col-span-2 space-y-6">' +
+          '<form id="profile-info-form" class="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-amber-400/40 hover:bg-white/[0.07] transition-all duration-300 space-y-5 group/personal relative shadow-lg hover:shadow-amber-500/10">' +
+            '<!-- Header with Hover Edit Badge -->' +
+            '<div class="flex items-center justify-between border-b border-white/10 pb-4 mb-2">' +
+              '<h2 class="text-base font-bold text-white flex items-center gap-2">' +
+                '<i class="fas fa-address-card text-amber-400 text-sm"></i> Personal & Address Details' +
+              '</h2>' +
+              '<span class="px-2.5 py-1 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-400 text-[11px] font-bold uppercase tracking-wider opacity-60 group-hover/personal:opacity-100 transition-all duration-300 flex items-center gap-1.5 shadow-sm">' +
+                '<i class="fas fa-pen-to-square text-xs text-amber-400 group-hover/personal:rotate-12 transition transform"></i> Click to Edit' +
+              '</span>' +
+            '</div>' +
 
-        '<div class="profile-body">' +
-        tripsPreviewHtml(trips) +
-        '<div class="profile-rail">' + favouritesPreviewHtml(favourites) + reviewPreviewHtml(reviews) + "</div></div>";
+            '<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">' +
+              '<!-- Full Name Field -->' +
+              '<div class="group/field relative">' +
+                '<label class="block text-xs font-semibold text-white/70 group-hover/field:text-amber-400 transition uppercase tracking-wider mb-1.5 flex items-center justify-between" for="input-name">' +
+                  '<span>Full Name</span>' +
+                  '<i class="fas fa-pen opacity-0 group-hover/field:opacity-100 text-[10px] text-amber-400 transition"></i>' +
+                '</label>' +
+                '<input type="text" id="input-name" class="w-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-amber-400/50 focus:border-amber-400 focus:ring-1 focus:ring-amber-400/30 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none transition-all duration-200" value="' + esc(user.name || "") + '" required />' +
+              '</div>' +
+
+              '<!-- Email Field -->' +
+              '<div class="group/field relative">' +
+                '<label class="block text-xs font-semibold text-white/70 group-hover/field:text-amber-400 transition uppercase tracking-wider mb-1.5 flex items-center justify-between" for="input-email">' +
+                  '<span>Email Address</span>' +
+                  '<i class="fas fa-pen opacity-0 group-hover/field:opacity-100 text-[10px] text-amber-400 transition"></i>' +
+                '</label>' +
+                '<input type="email" id="input-email" class="w-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-amber-400/50 focus:border-amber-400 focus:ring-1 focus:ring-amber-400/30 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none transition-all duration-200" value="' + esc(user.email || "") + '" required />' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">' +
+              '<!-- Phone Field -->' +
+              '<div class="group/field relative">' +
+                '<label class="block text-xs font-semibold text-white/70 group-hover/field:text-amber-400 transition uppercase tracking-wider mb-1.5 flex items-center justify-between" for="input-phone">' +
+                  '<span>Phone Number</span>' +
+                  '<i class="fas fa-pen opacity-0 group-hover/field:opacity-100 text-[10px] text-amber-400 transition"></i>' +
+                '</label>' +
+                '<input type="tel" id="input-phone" class="w-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-amber-400/50 focus:border-amber-400 focus:ring-1 focus:ring-amber-400/30 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none transition-all duration-200" placeholder="+1 (555) 000-0000" value="' + esc(user.phone || "") + '" />' +
+              '</div>' +
+
+              '<!-- Address Field -->' +
+              '<div class="group/field relative">' +
+                '<label class="block text-xs font-semibold text-white/70 group-hover/field:text-amber-400 transition uppercase tracking-wider mb-1.5 flex items-center justify-between" for="input-address">' +
+                  '<span>Street Address / City</span>' +
+                  '<i class="fas fa-pen opacity-0 group-hover/field:opacity-100 text-[10px] text-amber-400 transition"></i>' +
+                '</label>' +
+                '<input type="text" id="input-address" class="w-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-amber-400/50 focus:border-amber-400 focus:ring-1 focus:ring-amber-400/30 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none transition-all duration-200" placeholder="e.g. 124 El Tahrir St, Cairo" value="' + esc(user.address || (user.address_details && user.address_details.line1) || "") + '" />' +
+              '</div>' +
+            '</div>' +
+
+            '<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">' +
+              '<!-- Country Field -->' +
+              '<div class="group/field relative">' +
+                '<label class="block text-xs font-semibold text-white/70 group-hover/field:text-amber-400 transition uppercase tracking-wider mb-1.5 flex items-center justify-between" for="input-country">' +
+                  '<span>Country</span>' +
+                  '<i class="fas fa-pen opacity-0 group-hover/field:opacity-100 text-[10px] text-amber-400 transition"></i>' +
+                '</label>' +
+                '<input type="text" id="input-country" class="w-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-amber-400/50 focus:border-amber-400 focus:ring-1 focus:ring-amber-400/30 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none transition-all duration-200" placeholder="e.g. Egypt, France, USA" value="' + esc(user.country || "") + '" />' +
+              '</div>' +
+
+              '<!-- Currency Field -->' +
+              '<div class="group/field relative">' +
+                '<label class="block text-xs font-semibold text-white/70 group-hover/field:text-amber-400 transition uppercase tracking-wider mb-1.5 flex items-center justify-between" for="input-currency">' +
+                  '<span>Preferred Currency</span>' +
+                  '<i class="fas fa-pen opacity-0 group-hover/field:opacity-100 text-[10px] text-amber-400 transition"></i>' +
+                '</label>' +
+                '<select id="input-currency" class="w-full bg-[#161616] hover:bg-[#1f1f1f] border border-white/10 hover:border-amber-400/50 focus:border-amber-400 focus:ring-1 focus:ring-amber-400/30 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none transition-all duration-200">' +
+                  '<option value="USD"' + (user.preferred_currency === "USD" ? " selected" : "") + '>USD ($)</option>' +
+                  '<option value="EUR"' + (user.preferred_currency === "EUR" ? " selected" : "") + '>EUR (€)</option>' +
+                  '<option value="EGP"' + (user.preferred_currency === "EGP" ? " selected" : "") + '>EGP (E£)</option>' +
+                  '<option value="GBP"' + (user.preferred_currency === "GBP" ? " selected" : "") + '>GBP (£)</option>' +
+                '</select>' +
+              '</div>' +
+            '</div>' +
+
+            '<!-- Emergency Contact Field -->' +
+            '<div class="group/field relative">' +
+              '<label class="block text-xs font-semibold text-white/70 group-hover/field:text-amber-400 transition uppercase tracking-wider mb-1.5 flex items-center justify-between" for="input-emergency">' +
+                '<span>Emergency Contact</span>' +
+                '<i class="fas fa-pen opacity-0 group-hover/field:opacity-100 text-[10px] text-amber-400 transition"></i>' +
+              '</label>' +
+              '<input type="text" id="input-emergency" class="w-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-amber-400/50 focus:border-amber-400 focus:ring-1 focus:ring-amber-400/30 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none transition-all duration-200" placeholder="Name / Phone Number" value="' + esc(user.emergency_contact || "") + '" />' +
+            '</div>' +
+
+            '<!-- Bio Field -->' +
+            '<div class="group/field relative">' +
+              '<label class="block text-xs font-semibold text-white/70 group-hover/field:text-amber-400 transition uppercase tracking-wider mb-1.5 flex items-center justify-between" for="input-bio">' +
+                '<span>Bio / Travel Notes</span>' +
+                '<i class="fas fa-pen opacity-0 group-hover/field:opacity-100 text-[10px] text-amber-400 transition"></i>' +
+              '</label>' +
+              '<textarea id="input-bio" rows="3" class="w-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-amber-400/50 focus:border-amber-400 focus:ring-1 focus:ring-amber-400/30 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none transition-all duration-200" placeholder="Share your travel preferences or notes...">' + esc(user.bio || "") + '</textarea>' +
+            '</div>' +
+
+            '<div class="pt-2 flex justify-end">' +
+              '<button type="submit" id="save-info-btn" class="px-6 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold text-xs transition shadow-lg shadow-amber-500/20 flex items-center gap-2 group-hover/personal:scale-[1.02] transition-transform">' +
+                '<i class="fas fa-floppy-disk"></i> Save Profile & Address' +
+              '</button>' +
+            '</div>' +
+          '</form>' +
+        '</div>' +
+
+        '<!-- Password & Security Sidebar -->' +
+        '<div class="lg:col-span-1 space-y-6">' +
+          '<form id="profile-password-form" class="p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-amber-400/40 hover:bg-white/[0.07] transition-all duration-300 space-y-4 group/security relative shadow-lg hover:shadow-amber-500/10">' +
+            '<div class="border-b border-white/10 pb-4 mb-2 flex items-center justify-between">' +
+              '<div>' +
+                '<h3 class="text-sm font-bold text-white flex items-center gap-2"><i class="fas fa-lock text-amber-400"></i> Change Password</h3>' +
+                '<p class="text-xs text-white/40 mt-0.5">Ensure your account stays secure.</p>' +
+              '</div>' +
+              '<span class="px-2 py-0.5 rounded-full bg-amber-400/10 text-amber-400 text-[10px] font-bold uppercase opacity-60 group-hover/security:opacity-100 transition"><i class="fas fa-key"></i></span>' +
+            '</div>' +
+
+            '<div class="group/field relative">' +
+              '<label class="block text-xs font-semibold text-white/70 group-hover/field:text-amber-400 transition uppercase tracking-wider mb-1.5 flex items-center justify-between" for="input-password">' +
+                '<span>New Password</span>' +
+                '<i class="fas fa-pen opacity-0 group-hover/field:opacity-100 text-[10px] text-amber-400 transition"></i>' +
+              '</label>' +
+              '<input type="password" id="input-password" class="w-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-amber-400/50 focus:border-amber-400 focus:ring-1 focus:ring-amber-400/30 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none transition-all duration-200" placeholder="Min. 8 characters" required />' +
+            '</div>' +
+
+            '<div class="group/field relative">' +
+              '<label class="block text-xs font-semibold text-white/70 group-hover/field:text-amber-400 transition uppercase tracking-wider mb-1.5 flex items-center justify-between" for="input-password-confirm">' +
+                '<span>Confirm Password</span>' +
+                '<i class="fas fa-pen opacity-0 group-hover/field:opacity-100 text-[10px] text-amber-400 transition"></i>' +
+              '</label>' +
+              '<input type="password" id="input-password-confirm" class="w-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-amber-400/50 focus:border-amber-400 focus:ring-1 focus:ring-amber-400/30 rounded-xl px-3.5 py-2.5 text-sm text-white outline-none transition-all duration-200" placeholder="Re-enter password" required />' +
+            '</div>' +
+
+            '<div class="pt-2">' +
+              '<button type="submit" id="save-pass-btn" class="w-full py-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold text-xs transition flex items-center justify-center gap-2 group-hover/security:border-amber-400/40">' +
+                '<i class="fas fa-key"></i> Update Password' +
+              '</button>' +
+            '</div>' +
+          '</form>' +
+        '</div>' +
+
+      '</div>';
+
+    // Image Upload Handlers
+    var avatarContainer = document.getElementById("avatar-container");
+    var fileInput = document.getElementById("input-avatar-file");
+    var avatarImg = document.getElementById("user-avatar-img");
+    var avatarActions = document.getElementById("avatar-actions");
+    var uploadAvatarBtn = document.getElementById("upload-avatar-btn");
+    var cancelAvatarBtn = document.getElementById("cancel-avatar-btn");
+    var selectedFile = null;
+
+    if (avatarContainer && fileInput) {
+      avatarContainer.addEventListener("click", function () {
+        fileInput.click();
+      });
+
+      fileInput.addEventListener("change", function (e) {
+        var files = e.target.files;
+        if (files && files.length > 0) {
+          selectedFile = files[0];
+          var reader = new FileReader();
+          reader.onload = function (event) {
+            if (avatarImg) avatarImg.src = event.target.result;
+            if (avatarActions) avatarActions.classList.remove("hidden");
+          };
+          reader.readAsDataURL(selectedFile);
+        }
+      });
+    }
+
+    if (cancelAvatarBtn) {
+      cancelAvatarBtn.addEventListener("click", function () {
+        selectedFile = null;
+        if (fileInput) fileInput.value = "";
+        if (avatarImg) avatarImg.src = avatarSrc;
+        if (avatarActions) avatarActions.classList.add("hidden");
+      });
+    }
+
+    if (uploadAvatarBtn) {
+      uploadAvatarBtn.addEventListener("click", function () {
+        if (!selectedFile) return;
+
+        uploadAvatarBtn.disabled = true;
+        uploadAvatarBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Saving Avatar…';
+
+        var formData = new FormData();
+        formData.append("profile_image", selectedFile);
+        formData.append("_method", "PATCH");
+
+        It.apiPost("/profile", formData, { auth: true }).then(function (res) {
+          uploadAvatarBtn.disabled = false;
+          uploadAvatarBtn.innerHTML = '<i class="fas fa-cloud-arrow-up"></i> Save New Avatar';
+          if (res.ok) {
+            It.app.showToast("Profile avatar saved & updated!", "success");
+            if (avatarActions) avatarActions.classList.add("hidden");
+
+            var resData = res.data !== undefined ? res.data : (res.body ? (res.body.data || res.body) : res);
+            var updatedUser = (resData && resData.user) ? resData.user : resData;
+
+            if (updatedUser && updatedUser.profile_image) {
+              var newAvatarUrl = formatAvatarUrl(updatedUser.profile_image, updatedUser.name);
+              if (avatarImg) avatarImg.src = newAvatarUrl;
+              avatarSrc = newAvatarUrl;
+
+              // Synchronize local session user
+              var currentSessionUser = getStoredUser() || {};
+              currentSessionUser.profile_image = updatedUser.profile_image;
+              try { localStorage.setItem("itinari_user", JSON.stringify(currentSessionUser)); } catch (e) {}
+
+              // Synchronize topbar header nav avatar
+              var topNavAvatar = document.querySelector(".app-nav-header img");
+              if (topNavAvatar) topNavAvatar.src = newAvatarUrl;
+            }
+          } else {
+            var msg = (res.body && (res.body.message || (res.body.errors && Object.values(res.body.errors)[0]))) || "Could not upload image.";
+            It.app.showToast(msg, "error");
+          }
+        }).catch(function (err) {
+          uploadAvatarBtn.disabled = false;
+          uploadAvatarBtn.innerHTML = '<i class="fas fa-cloud-arrow-up"></i> Save New Avatar';
+          It.app.showToast(err.message || "Failed to save profile avatar.", "error");
+        });
+      });
+    }
+
+    // Submit Handler: Information & Address Update
+    var infoForm = document.getElementById("profile-info-form");
+    if (infoForm) {
+      infoForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var saveBtn = document.getElementById("save-info-btn");
+        saveBtn.disabled = true;
+        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Saving…';
+
+        var addressVal = document.getElementById("input-address").value.trim();
+        var payload = {
+          name: document.getElementById("input-name").value.trim(),
+          email: document.getElementById("input-email").value.trim(),
+          phone: document.getElementById("input-phone").value.trim() || null,
+          country: document.getElementById("input-country").value.trim() || null,
+          preferred_currency: document.getElementById("input-currency").value,
+          emergency_contact: document.getElementById("input-emergency").value.trim() || null,
+          bio: document.getElementById("input-bio").value.trim() || null,
+        };
+
+        if (addressVal) {
+          payload.address = addressVal;
+          payload.line1 = addressVal;
+        }
+
+        It.apiPatch("/profile", payload, { auth: true }).then(function (res) {
+          saveBtn.disabled = false;
+          saveBtn.innerHTML = '<i class="fas fa-floppy-disk"></i> Save Profile & Address';
+          if (res.ok) {
+            It.app.showToast("Profile & address details saved successfully!", "success");
+            var updatedUser = res.data !== undefined ? res.data : (res.body ? (res.body.data || res.body) : res);
+            if (updatedUser && updatedUser.user) updatedUser = updatedUser.user;
+            if (addressVal && updatedUser) updatedUser.address = addressVal;
+            if (updatedUser && updatedUser.name) {
+              try { localStorage.setItem("itinari_user", JSON.stringify(updatedUser)); } catch (e) {}
+              var displayTitle = document.getElementById("profile-display-name");
+              if (displayTitle) displayTitle.textContent = updatedUser.name;
+            }
+          } else {
+            var msg = (res.body && (res.body.message || (res.body.errors && Object.values(res.body.errors)[0]))) || "Could not update profile.";
+            It.app.showToast(msg, "error");
+          }
+        }).catch(function (err) {
+          saveBtn.disabled = false;
+          saveBtn.innerHTML = '<i class="fas fa-floppy-disk"></i> Save Profile & Address';
+          It.app.showToast(err.message || "Failed to save profile details.", "error");
+        });
+      });
+    }
+
+    // Submit Handler: Password Update
+    var passForm = document.getElementById("profile-password-form");
+    if (passForm) {
+      passForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        var pass = document.getElementById("input-password").value;
+        var passConfirm = document.getElementById("input-password-confirm").value;
+
+        if (pass.length < 8) {
+          It.app.showToast("Password must be at least 8 characters.", "warn");
+          return;
+        }
+        if (pass !== passConfirm) {
+          It.app.showToast("Passwords do not match.", "warn");
+          return;
+        }
+
+        var savePassBtn = document.getElementById("save-pass-btn");
+        savePassBtn.disabled = true;
+        savePassBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Updating…';
+
+        It.apiPatch("/profile", {
+          password: pass,
+          password_confirmation: passConfirm
+        }, { auth: true }).then(function (res) {
+          savePassBtn.disabled = false;
+          savePassBtn.innerHTML = '<i class="fas fa-key"></i> Update Password';
+          if (res.ok) {
+            It.app.showToast("Password updated successfully!", "success");
+            document.getElementById("input-password").value = "";
+            document.getElementById("input-password-confirm").value = "";
+          } else {
+            var msg = (res.body && (res.body.message || (res.body.errors && Object.values(res.body.errors)[0]))) || "Could not update password.";
+            It.app.showToast(msg, "error");
+          }
+        }).catch(function (err) {
+          savePassBtn.disabled = false;
+          savePassBtn.innerHTML = '<i class="fas fa-key"></i> Update Password';
+          It.app.showToast(err.message || "Failed to update password.", "error");
+        });
+      });
+    }
+  }
+
+  function loadProfile() {
+    var cachedUser = getStoredUser();
+
+    // Instant-render if user object is cached in session storage
+    if (cachedUser && (cachedUser.id || cachedUser.name || cachedUser.email)) {
+      renderProfileForm(cachedUser);
+    }
+
+    // Fetch fresh user data from backend API
+    It.apiGet("/user", { auth: true }).then(function (userRes) {
+      var raw = userRes.data !== undefined ? userRes.data : (userRes.body ? (userRes.body.data || userRes.body) : userRes);
+      var user = (raw && raw.user) ? raw.user : raw;
+      if (user && (user.id || user.name || user.email)) {
+        try { localStorage.setItem("itinari_user", JSON.stringify(user)); } catch (e) {}
+        renderProfileForm(user);
+        return;
+      }
+      if (!cachedUser && !hasStoredToken()) {
+        renderLoginPrompt();
+      }
     }).catch(function () {
-      page.innerHTML = '<div class="error-card"><p>Could not load your profile.</p>' +
-        '<button type="button" class="btn btn--primary" onclick="location.reload()">Retry</button></div>';
+      if (!cachedUser && !hasStoredToken()) {
+        renderLoginPrompt();
+      }
     });
-  });
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", loadProfile);
+  } else {
+    loadProfile();
+  }
 })(window);

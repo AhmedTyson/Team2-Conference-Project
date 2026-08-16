@@ -161,8 +161,10 @@
   async function load() {
     resultsEl.innerHTML = Ui.skeletonGrid(9);
     try {
-      const body = await Api.get('/v1/destinations');
-      all = Ui.uniqueBy(Array.isArray(body.data.data) ? body.data.data : [], (d) => d.city_name || d.name);
+      const res = await Api.get('/v1/destinations');
+      const body = res.data !== undefined ? res.data : res;
+      const items = Array.isArray(body) ? body : (body && Array.isArray(body.data) ? body.data : (body && body.data && Array.isArray(body.data.data) ? body.data.data : []));
+      all = Ui.uniqueBy(items, (d) => d.city_name || d.name);
       await favsReady;
       renderChips();
       render();

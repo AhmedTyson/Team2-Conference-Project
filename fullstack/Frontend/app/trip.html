@@ -1,49 +1,68 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Trip · Travel Planner</title>
-  <link rel="stylesheet" href="../assets/css/tokens.css" />
-  <link rel="stylesheet" href="../assets/css/app.css" />
+  <title>Trip Details · Itinera</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome 6 Free -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Custom Luxury Stylesheet -->
+  <link rel="stylesheet" href="../assets/css/public.css" />
   <script>/* FOUC prevention — default dark */
     (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
     if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
       document.documentElement.classList.add("dark","fouc-ready");
     else document.documentElement.classList.add("fouc-ready");
     })();
-  </script>  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  </script>
 </head>
-<body data-page="trips" class="is-booting" data-layout="app">
-  <div class="app">
+<body class="bg-[#0a0a0a] text-white bg-sculpture-relief" data-layout="app">
+
+  <div class="app-wrapper">
+
     <!-- Top Navigation Header -->
     <header class="app-nav-header"></header>
-      <div id="app-user" class="app__user">
-        <button id="theme-toggle" type="button" class="btn btn--ghost" aria-label="Toggle theme">◐</button>
-      </div>
-    </header>
 
-    <main class="app__main">
-      <div class="page" id="trip-page">
-        <div class="skeleton skeleton--title"></div>
-        <div class="skeleton skeleton--card"></div>
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-6 py-8" id="trip-page">
+      <div class="py-16 text-center text-white/50">
+        <i class="fas fa-circle-notch fa-spin mr-2"></i> Loading trip details...
       </div>
     </main>
 
-    <footer class="app__footer">
-      <span>Travel Planner</span>
-      <span>•</span>
-      <span>Plan. Explore. Remember.</span>
+    <!-- Footer -->
+    <footer class="app-footer mt-20">
+      <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-white/40 gap-4">
+        <span>&copy; <span id="footerYear"></span> Itinera · Team 2 Conference Project. All rights reserved.</span>
+        <div class="flex gap-6">
+          <a href="../about.html">About</a>
+          <a href="../contact.html">Contact</a>
+          <a href="../help.html">Help Center</a>
+        </div>
+      </div>
     </footer>
+
   </div>
 
-  <script src="../assets/js/core/config.js"></script>
-  <script src="../assets/js/core/api.js"></script>
-  <script src="../assets/js/core/session.js"></script>
-  <script src="../assets/js/core/nav-config.js"></script>
-  <script src="../assets/js/core/app-shell.js"></script>
+  <!-- Scripts -->
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/session.js"></script>
+  <script src="../assets/js/nav-config.js"></script>
+  <script src="../assets/js/utils/unsplash-helper.js"></script>
   <script src="../assets/js/trip.js"></script>
-    <script src="../assets/js/core/navbar-component.js"></script>
+  <script src="../assets/js/core/navbar-component.js"></script>
+  <script src="../assets/js/core/theme.js"></script>
+  <script src="../assets/js/core/topbar.js"></script>
 </body>
 </html>

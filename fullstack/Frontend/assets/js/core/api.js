@@ -102,11 +102,19 @@
    * opts.headers → extra headers merged in.
    * Returns { ok, status, body }.
    */
+  function getApiBase() {
+    if (It.CONFIG && It.CONFIG.apiBase) return It.CONFIG.apiBase.replace(/\/$/, "");
+    if (global.location && global.location.hostname) {
+      var h = global.location.hostname;
+      if (h === "localhost" || h === "127.0.0.1") return global.location.protocol + "//" + h + ":8000/api";
+    }
+    return "http://127.0.0.1:8000/api";
+  }
+
   async function request(method, path, data, opts) {
     opts = opts || {};
     const normalizedPath = normalizePath(path);
-    const defaultFallback = (global.location && global.location.origin && !global.location.origin.includes("null") && !global.location.origin.startsWith("file:")) ? global.location.origin.replace(/\/$/, "") + "/api" : "http://127.0.0.1:8000/api";
-    const apiBase = (It.CONFIG && It.CONFIG.apiBase) ? It.CONFIG.apiBase.replace(/\/$/, "") : defaultFallback;
+    const apiBase = getApiBase();
     
     const headers = Object.assign(
       {
@@ -118,7 +126,7 @@
       },
       opts.headers || {}
     );
-    if (data !== undefined) headers["Content-Type"] = "application/json";
+    if (data !== undefined && !(data instanceof FormData)) headers["Content-Type"] = "application/json";
 
     // Auto-attach token if available
     const token = (It.readToken && It.readToken()) || localStorage.getItem("itinari_token");
@@ -131,7 +139,7 @@
       res = await fetch(apiBase + normalizedPath, {
         method: method,
         headers: headers,
-        body: data !== undefined ? JSON.stringify(data) : undefined,
+        body: data !== undefined ? (data instanceof FormData ? data : JSON.stringify(data)) : undefined,
       });
     } catch (e) {
       let altBase = null;
@@ -366,20 +374,30 @@
     return '<img class="' + (cls || '') + '" src="' + esc(finalSrc) + '" alt="' + safeName + '" loading="lazy" onerror="this.onerror=null; this.src=\'' + unsplashFallback + '\';">';
   }
 
-  function appBoot(callback) {
-    if (!It.session) return;
-    if (!It.session.hasToken()) {
-      It.session.redirectToLogin();
+  function appBoot(callback, opts) {
+    var isPublic = (opts && opts.public) || (document.body && document.body.getAttribute("data-layout") === "public");
+    if (!It.session || !It.session.hasToken()) {
+      if (!isPublic) {
+        if (It.session) It.session.redirectToLogin();
+      } else if (callback) {
+        callback(null, "guest");
+      }
       return;
     }
     It.session.currentUser().then(function (user) {
       if (!user) {
-        It.session.clearSession();
-        It.session.redirectToLogin();
+        if (!isPublic) {
+          It.session.clearSession();
+          It.session.redirectToLogin();
+        } else if (callback) {
+          callback(null, "guest");
+        }
         return;
       }
       var role = It.session.roleOf(user);
       if (callback) callback(user, role);
+    }).catch(function () {
+      if (isPublic && callback) callback(null, "guest");
     });
   }
 
