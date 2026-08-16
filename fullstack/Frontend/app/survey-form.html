@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>New Survey · Travel Planner</title>
+  <title>Traveler Survey · Travel Planner</title>
   <link rel="stylesheet" href="../assets/css/tokens.css" />
   <link rel="stylesheet" href="../assets/css/app.css" />
   <script>/* FOUC prevention — default dark */
@@ -12,66 +12,47 @@
       document.documentElement.classList.add("dark","fouc-ready");
     else document.documentElement.classList.add("fouc-ready");
     })();
-  </script>  <script src="https://cdn.tailwindcss.com"></script>
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
-<body data-page="surveys" class="is-booting" data-layout="app">
+<body data-page="survey" class="is-booting" data-layout="app">
   <div class="app">
     <!-- Top Navigation Header -->
     <header class="app-nav-header"></header>
-      <div id="app-user" class="app__user">
-        <button id="theme-toggle" type="button" class="btn btn--ghost" aria-label="Toggle theme">◐</button>
-      </div>
-    </header>
 
     <main class="app__main">
       <div class="page">
         <header class="page-header">
-          <p class="page-header__eyebrow" id="form-eyebrow">Your Profile</p>
-          <h1 class="page-header__title" id="form-title">New survey</h1>
-          <p class="page-header__lead">Three quick questions shape how we plan with you.</p>
+          <p class="page-header__eyebrow">Preferences</p>
+          <h1 class="page-header__title">Traveler preference survey</h1>
+          <p class="page-header__lead">Tell us your preferred destinations, budget, and travel style to personalize AI recommendations.</p>
         </header>
 
         <form class="form" id="survey-form" novalidate>
-          <div class="field">
-            <span class="field__label">Travel style</span>
-            <div class="chip-row" id="style-chips">
-              <button type="button" class="chip" data-value="solo">Solo</button>
-              <button type="button" class="chip" data-value="couple">Couple</button>
-              <button type="button" class="chip" data-value="family">Family</button>
-              <button type="button" class="chip" data-value="friends">Friends</button>
-              <button type="button" class="chip" data-value="business">Business</button>
+          <div class="form__card border border-white/10 p-6 rounded-2xl bg-white/5">
+            <div class="field mb-4">
+              <label class="field__label block text-xs font-bold text-white/70 uppercase mb-1" for="pref-dest">Favorite Destination Types</label>
+              <input id="pref-dest" class="input w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm" type="text" placeholder="e.g. Beaches, Historic Cities, Mountains" required />
             </div>
-            <p class="field__error" id="style-error" hidden></p>
-          </div>
 
-          <div class="field">
-            <span class="field__label">Budget level</span>
-            <div class="chip-row" id="budget-chips">
-              <button type="button" class="chip" data-value="low">Low</button>
-              <button type="button" class="chip" data-value="medium">Medium</button>
-              <button type="button" class="chip" data-value="high">High</button>
-              <button type="button" class="chip" data-value="luxury">Luxury</button>
+            <div class="field mb-4">
+              <label class="field__label block text-xs font-bold text-white/70 uppercase mb-1" for="pref-budget">Target Budget Range</label>
+              <select id="pref-budget" class="input w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm" required>
+                <option value="economy">Economy ($500 - $1,500)</option>
+                <option value="comfort">Comfort ($1,500 - $3,500)</option>
+                <option value="luxury" selected>Luxury ($3,500+)</option>
+              </select>
             </div>
-            <p class="field__error" id="budget-error" hidden></p>
-          </div>
 
-          <div class="field">
-            <span class="field__label">Interests</span>
-            <div class="chip-row" id="interest-chips">
-              <button type="button" class="chip" data-value="Food">Food</button>
-              <button type="button" class="chip" data-value="History">History</button>
-              <button type="button" class="chip" data-value="Nature">Nature</button>
-              <button type="button" class="chip" data-value="Nightlife">Nightlife</button>
-              <button type="button" class="chip" data-value="Photography">Photography</button>
-              <button type="button" class="chip" data-value="Shopping">Shopping</button>
+            <div class="field mb-6">
+              <label class="field__label block text-xs font-bold text-white/70 uppercase mb-1" for="pref-notes">Additional Interests</label>
+              <textarea id="pref-notes" class="input w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm" rows="3" placeholder="Dietary needs, preferred airline, activity pace..."></textarea>
             </div>
-            <p class="field__error" id="interests-error" hidden></p>
-          </div>
 
-          <div class="btn-row">
-            <button type="submit" class="btn btn--primary">Save survey</button>
-            <a href="/surveys.html" class="btn btn--ghost">Cancel</a>
+            <div class="btn-row flex justify-end">
+              <button type="submit" class="btn px-6 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-sm transition">Save Preferences</button>
+            </div>
           </div>
         </form>
       </div>
@@ -90,6 +71,6 @@
   <script src="../assets/js/core/nav-config.js"></script>
   <script src="../assets/js/core/app-shell.js"></script>
   <script src="../assets/js/survey-form.js"></script>
-    <script src="../assets/js/core/navbar-component.js"></script>
+  <script src="../assets/js/core/navbar-component.js"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -14,265 +14,81 @@
   <!-- Font Awesome 6 (free) -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
-  <!-- GSAP -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-
   <!-- Shared styles -->
   <link rel="stylesheet" href="../assets/css/tokens.css" />
   <link rel="stylesheet" href="../assets/css/app.css" />
 
-
-  <script>window.APP_URL = ".";</script>
   <script>/* FOUC prevention — default dark */
     (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
     if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
       document.documentElement.classList.add("dark","fouc-ready");
     else document.documentElement.classList.add("fouc-ready");
     })();
-  </script></head>
+  </script>
+</head>
 <body class="page is-booting" data-layout="app">
 
   <!-- Top Navigation Header -->
-    <header class="app-nav-header"></header>
-    <div id="app-user" class="app__user">
-      <button id="theme-toggle" type="button" class="btn btn--ghost" aria-label="Toggle theme">◐</button>
-    </div>
-  </header>
+  <header class="app-nav-header"></header>
 
   <div class="toast" id="toast">
-  <i class="fas fa-check-circle text-green-400" aria-hidden="true"></i>
-  <span id="toastMessage">Success</span>
-</div>
+    <i class="fas fa-check-circle text-green-400" aria-hidden="true"></i>
+    <span id="toastMessage">Success</span>
+  </div>
 
-
-    <div class="page-scroll" style="padding-top: 80px;">
+  <div class="page-scroll" style="padding-top: 80px;">
     <div class="giant-text"><h1>BOOKING</h1></div>
-    <div class="content-layer">
 
-      <div class="max-w-4xl mx-auto w-full mt-8">
-        <div class="glass-card p-8">
-          <h2 class="section-title flex items-center gap-3"><i class="fas fa-plane text-white/40" aria-hidden="true"></i>Find Your Flight</h2>
-          <p class="section-sub mb-6">Round-trip flight search. Best rates for members — your search saves to your trips.</p>
+    <main class="page__content">
+      <section class="section">
+        <h2 class="section__title font-heading font-black tracking-tight" id="booking-heading">Complete your reservation</h2>
+        <div id="booking-item-details" class="card mb-6" style="padding: 1.5rem; display: none;"></div>
 
-          <div class="flight-grid">
-            <div><label for="bookingFrom"><i class="fas fa-map-pin mr-1" aria-hidden="true"></i>From</label><input type="text" id="bookingFrom" placeholder="City / Airport" /></div>
-            <div><label for="bookingTo"><i class="fas fa-flag mr-1" aria-hidden="true"></i>To</label><input type="text" id="bookingTo" placeholder="City / Airport" /></div>
-            <div><label for="bookingDate"><i class="far fa-calendar-alt mr-1" aria-hidden="true"></i>Depart</label><input type="date" id="bookingDate" /></div>
-            <div><label for="bookingReturn"><i class="far fa-calendar-alt mr-1" aria-hidden="true"></i>Return (optional)</label><input type="date" id="bookingReturn" /></div>
-            <div><label for="bookingPassengers"><i class="fas fa-user mr-1" aria-hidden="true"></i>Passengers</label>
-              <select id="bookingPassengers">
-                <option>1</option><option>2</option><option>3</option><option>4</option>
-                <option>5</option><option>6</option><option>7</option><option>8</option><option>9</option>
-              </select>
+        <form class="form" id="booking-form" novalidate>
+          <div class="form__card border border-white/10 p-6 rounded-2xl bg-white/5">
+            <div class="field mb-4">
+              <label class="field__label block text-xs font-bold text-white/70 uppercase mb-1" for="book-name">Full Name</label>
+              <input id="book-name" class="input w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm" type="text" maxlength="255" required />
             </div>
-            <div><label for="bookingClass"><i class="fas fa-crown mr-1" aria-hidden="true"></i>Class</label>
-              <select id="bookingClass">
-                <option value="economy">Economy</option>
-                <option value="premium">Premium</option>
-                <option value="business">Business</option>
-                <option value="first">First</option>
-              </select>
+
+            <div class="field mb-4">
+              <label class="field__label block text-xs font-bold text-white/70 uppercase mb-1" for="book-email">Email Address</label>
+              <input id="book-email" class="input w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm" type="email" maxlength="255" required />
+            </div>
+
+            <div class="field mb-4">
+              <label class="field__label block text-xs font-bold text-white/70 uppercase mb-1" for="book-phone">Phone Number</label>
+              <input id="book-phone" class="input w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm" type="tel" maxlength="50" placeholder="+20 100 123 4567" required />
+            </div>
+
+            <div class="field mb-4">
+              <label class="field__label block text-xs font-bold text-white/70 uppercase mb-1" for="book-guests">Number of Guests</label>
+              <input id="book-guests" class="input w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm" type="number" min="1" max="20" value="1" required />
+            </div>
+
+            <div class="field mb-6">
+              <label class="field__label block text-xs font-bold text-white/70 uppercase mb-1" for="book-notes">Special Requests / Notes</label>
+              <textarea id="book-notes" class="input w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white text-sm" rows="3" placeholder="Dietary requirements, room preferences, arrival times..."></textarea>
+            </div>
+
+            <div class="btn-row flex justify-end gap-3">
+              <button type="submit" class="btn px-6 py-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-bold text-sm transition">Proceed to Paymob Payment</button>
             </div>
           </div>
+        </form>
+      </section>
+    </main>
 
-          <div class="flex flex-wrap items-center gap-4 mt-6">
-            <button type="button" class="btn-primary" id="searchFlightsBtn">
-              <i class="fas fa-search" aria-hidden="true"></i>Search Flights
-            </button>
-            <span class="text-white/30 text-xs flex items-center gap-1.5"><i class="fas fa-info-circle" aria-hidden="true"></i>Demo — no actual routes are displayed; your search is saved as a trip request.</span>
-          </div>
-          <p id="bookingStatus" class="text-white/50 text-sm mt-3" role="status"></p>
-        </div>
-
-        <div id="bookingTripsShell">
-          <div class="flex justify-between items-baseline mt-6 mb-2">
-            <h3 class="text-lg font-semibold flex items-center gap-2"><i class="fas fa-suitcase text-white/40" aria-hidden="true"></i>Your Trips</h3>
-            <span class="text-white/40 text-xs" id="bookingTripsHint">saved searches &amp; plans</span>
-          </div>
-          <div id="bookingTrips"><div class="empty-state"><i class="fas fa-inbox mr-2" aria-hidden="true"></i>No trips yet — search above to save your first one! <i class="fas fa-rocket ml-1" aria-hidden="true"></i></div></div>
-        </div>
-      </div>
-
-      <footer class="app__footer"></footer>
-    </div>
+    <footer class="app__footer mt-16 py-6 border-t border-white/10 text-xs text-white/40 text-center">
+      <span>Travel Planner · Plan. Explore. Remember.</span>
+    </footer>
   </div>
 
   <script src="../assets/js/core/config.js"></script>
   <script src="../assets/js/core/api.js"></script>
   <script src="../assets/js/core/session.js"></script>
   <script src="../assets/js/core/nav-config.js"></script>
-  <script src="../assets/js/core/app-shell.js"></script>
-  <script>
-  (function () {
-    function addDays(dateStr, days) {
-      const d = new Date(dateStr + 'T00:00:00');
-      d.setDate(d.getDate() + days);
-      return d.toISOString().slice(0, 10);
-    }
-
-    function loadTrips() {
-      try { return JSON.parse(localStorage.getItem('itinera_trips') || '[]'); } catch (e) { return []; }
-    }
-
-    function saveTrip(trip) {
-      const trips = loadTrips();
-      trips.unshift(trip);
-      localStorage.setItem('itinera_trips', JSON.stringify(trips));
-    }
-
-    function renderTripCard(t) {
-      const icons = { pending: '⏳', planning: '📝', booked: '✅', completed: '✔', cancelled: '✖' };
-      const icon = icons[t.status] || '•';
-      return '<div class="trip-card">' +
-        '<div class="flex justify-between items-start gap-2"><h4 class="font-semibold">' + (t.title || 'Trip') + '</h4><span class="trip-status">' + icon + ' ' + t.status + '</span></div>' +
-        (t.destination ? '<p class="text-white/45 text-sm mt-1"><i class="fas fa-map-marker-alt mr-1" aria-hidden="true"></i>' + t.destination + '</p>' : '') +
-        '<div class="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-white/50 text-xs">' +
-        '<span><i class="far fa-calendar-alt mr-1" aria-hidden="true"></i>' + (t.start_date || '—') + ' → ' + (t.end_date || '—') + '</span>' +
-        '<span><i class="fas fa-user mr-1" aria-hidden="true"></i>' + (t.no_of_travelers || 0) + '</span>' +
-        '<span><i class="far fa-clock mr-1" aria-hidden="true"></i>' + (t.no_of_days || 0) + ' days</span>' +
-        '<span><i class="fas fa-dollar-sign mr-1" aria-hidden="true"></i>' + (t.budget || 0) + '</span>' +
-        '</div>' +
-        (t.interests && t.interests.length ? '<div class="flex flex-wrap gap-1 mt-2">' + t.interests.map(i => '<span class="bg-white/10 rounded-full px-2 py-0.5 text-xs text-white/60">' + i + '</span>').join('') + '</div>' : '') +
-        '</div>';
-    }
-
-    function renderTripsInto(box, trips, emptyMsg) {
-      if (!trips.length) {
-        box.innerHTML = '<div class="empty-state"><i class="fas fa-inbox mr-2" aria-hidden="true"></i>' + emptyMsg + '</div>';
-        return;
-      }
-      box.innerHTML = '<div class="trip-grid">' + trips.map(renderTripCard).join('') + '</div>';
-    }
-
-    function refreshTrips() {
-      const box = document.getElementById('bookingTrips');
-      const hint = document.getElementById('bookingTripsHint');
-      if (!box) return;
-      const trips = loadTrips();
-      if (hint) hint.textContent = trips.length + ' trips';
-      renderTripsInto(box, trips, 'No trips yet — plan your first one above! <i class="fas fa-rocket ml-1" aria-hidden="true"></i>');
-    }
-
-    function doBookingSearch(payload) {
-      const status = document.getElementById('bookingStatus');
-      status.textContent = '⏳ Saving your flight search…';
-      status.style.color = 'rgba(255,255,255,0.6)';
-      document.getElementById('searchFlightsBtn').disabled = true;
-
-      setTimeout(() => {
-        saveTrip({
-          id: Date.now(),
-          title: payload.title,
-          status: 'planning',
-          start_date: payload.start_date,
-          end_date: payload.end_date,
-          no_of_travelers: payload.no_of_travelers,
-          no_of_days: payload.no_of_days,
-          budget: payload.budget || 0,
-          interests: payload.interests || [],
-          destination: (payload.title.split('→')[1] || 'Unknown').split('·')[0].trim()
-        });
-        document.getElementById('searchFlightsBtn').disabled = false;
-        status.textContent = '✅ Search saved as a trip request.';
-        status.style.color = 'rgba(120,255,150,0.9)';
-        toast('Flight search saved — no live routes yet.');
-        refreshTrips();
-      }, 600);
-    }
-
-    function searchFlights() {
-      const status = document.getElementById('bookingStatus');
-      const from = document.getElementById('bookingFrom').value.trim();
-      const to = document.getElementById('bookingTo').value.trim();
-      const depart = document.getElementById('bookingDate').value;
-      const ret = document.getElementById('bookingReturn').value;
-      const pax = parseInt(document.getElementById('bookingPassengers').value || '1', 10);
-      const cls = document.getElementById('bookingClass').value;
-
-      if (!from && !to) {
-        status.textContent = '⚠️ Tell us where you want to go (From / To).';
-        status.style.color = 'rgba(255,120,120,0.9)';
-        return;
-      }
-      if (!depart) {
-        status.textContent = '⚠️ Pick a departure date first.';
-        status.style.color = 'rgba(255,120,120,0.9)';
-        return;
-      }
-      const end = ret || addDays(depart, 7);
-      const payload = {
-        title: (from || 'Anywhere') + ' → ' + (to || 'Everywhere') + ' · ' + depart,
-        travel_style: cls,
-        interests: [],
-        no_of_travelers: pax,
-        budget: 0,
-        no_of_days: Math.max(1, Math.round((new Date(end) - new Date(depart)) / 86400000)),
-        start_date: depart,
-        end_date: end
-      };
-      if (!window.isLoggedIn) {
-        sessionStorage.setItem('pending_booking_from', from);
-        sessionStorage.setItem('pending_booking_to', to);
-        sessionStorage.setItem('pending_booking_date', depart);
-        sessionStorage.setItem('pending_booking_return', ret);
-        sessionStorage.setItem('pending_booking_pax', pax);
-        sessionStorage.setItem('pending_booking_class', cls);
-        window.location.href = '/login.html';
-        return;
-      }
-      doBookingSearch(payload);
-    }
-
-    document.getElementById('searchFlightsBtn').addEventListener('click', searchFlights);
-    ['bookingFrom', 'bookingTo', 'bookingDate', 'bookingReturn'].forEach(id => {
-      document.getElementById(id).addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') searchFlights();
-      });
-    });
-
-    if (!document.getElementById('bookingDate').value) {
-      document.getElementById('bookingDate').value = addDays(new Date().toISOString().slice(0, 10), 14);
-    }
-
-    refreshTrips();
-
-    // Auto-restore and execute pending flight search if redirected from login
-    const pendingFrom = sessionStorage.getItem('pending_booking_from');
-    if (pendingFrom) {
-      document.getElementById('bookingFrom').value = pendingFrom;
-      document.getElementById('bookingTo').value = sessionStorage.getItem('pending_booking_to') || '';
-      document.getElementById('bookingDate').value = sessionStorage.getItem('pending_booking_date') || '';
-      document.getElementById('bookingReturn').value = sessionStorage.getItem('pending_booking_return') || '';
-      document.getElementById('bookingPassengers').value = sessionStorage.getItem('pending_booking_pax') || '1';
-      document.getElementById('bookingClass').value = sessionStorage.getItem('pending_booking_class') || 'economy';
-      
-      sessionStorage.removeItem('pending_booking_from');
-      sessionStorage.removeItem('pending_booking_to');
-      sessionStorage.removeItem('pending_booking_date');
-      sessionStorage.removeItem('pending_booking_return');
-      sessionStorage.removeItem('pending_booking_pax');
-      sessionStorage.removeItem('pending_booking_class');
-      
-      setTimeout(() => {
-        It.app.boot(function(user) {
-          if (user) {
-            window.currentUser = user;
-            window.isLoggedIn = true;
-            searchFlights();
-          }
-        });
-      }, 300);
-    } else {
-      It.app.boot(function(user) {
-        if (user) {
-          window.currentUser = user;
-          window.isLoggedIn = true;
-        }
-      });
-    }
-  })();
-</script>
-
-    <script src="../assets/js/core/navbar-component.js"></script>
+  <script src="../assets/js/booking.js"></script>
+  <script src="../assets/js/core/navbar-component.js"></script>
 </body>
 </html>
