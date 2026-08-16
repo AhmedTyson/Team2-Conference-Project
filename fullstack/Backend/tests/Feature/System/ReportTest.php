@@ -20,6 +20,7 @@ class ReportTest extends TestCase
     {
         parent::setUp();
 
+        Storage::fake('public');
         Role::create(['name' => 'admin', 'guard_name' => 'api']);
     }
 
