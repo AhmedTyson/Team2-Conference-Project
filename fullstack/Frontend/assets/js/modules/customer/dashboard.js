@@ -24,11 +24,12 @@
   function el(id) { return document.getElementById(id); }
 
   function setStat(id, value) {
+    const valEl = el(id.replace(/^stat-/, "stat-val-")) || el(id + "-val") || (el(id) ? el(id).querySelector(".stat-card-glass__value") : null) || (el(id) ? el(id).querySelector(".stat-value") : null);
+    if (valEl) {
+      valEl.textContent = value;
+    }
     const card = el(id);
-    if (!card) return;
-    const v = card.querySelector(".stat-value");
-    if (v) v.textContent = value;
-    card.classList.remove("skeleton");
+    if (card) card.classList.remove("skeleton");
   }
 
   function escapeHtml(str) {
@@ -880,41 +881,35 @@
       It.apiGet("/me/subscription", { auth: true }).catch(() => null),
     ]).then(function (results) {
       const [statsRes, tripsRes, favsRes, notifsRes, reviewsRes, paymentsRes, subRes] = results;
-      const stats = statsRes.ok && statsRes.body && statsRes.body.data ? statsRes.body.data : null;
-      if (stats) {
-        setStat("stat-total", stats.total_trips ?? "0");
-        setStat("stat-pending", stats.trip_statistics ? stats.trip_statistics.pending : "0");
-        setStat("stat-planning", stats.trip_statistics ? stats.trip_statistics.planning : "0");
-        setStat("stat-booked", stats.trip_statistics ? stats.trip_statistics.booked : "0");
-        setStat("stat-completed", stats.trip_statistics ? stats.trip_statistics.completed : "0");
-        setStat("stat-cancelled", stats.trip_statistics ? stats.trip_statistics.cancelled : "0");
-        setStat("stat-favs", stats.total_favourites ?? "0");
-      }
-
-      const tripsData = tripsRes.ok && tripsRes.body && tripsRes.body.data ? tripsRes.body.data : [];
-      setFeed(tripsList, tripsData.slice(0, 4), "No trips yet. Start planning your next adventure!", renderTrips);
-
-      const favsData = favsRes.ok && favsRes.body && favsRes.body.data ? favsRes.body.data : [];
-      setFeed(favsList, favsData.slice(0, 4), "No favourites saved yet.", renderFavs);
-
-      // Limit Notifications to top 3-4 items
+      const tripsData = tripsRes.ok && tripsRes.body && tripsRes.body.data ? tripsRes.body.data : mockTrips;
+      const favsData = favsRes.ok && favsRes.body && favsRes.body.data ? favsRes.body.data : mockFavs;
       const notifsData = notifsRes.ok && notifsRes.body && notifsRes.body.data ? notifsRes.body.data : mockNotifs;
-      setFeed(notifsList, notifsData.slice(0, 4), "No new notifications.", renderNotifications);
-
-      // Limit Reviews to top 3-4 items
       const reviewsData = reviewsRes && reviewsRes.ok && reviewsRes.body && reviewsRes.body.data ? reviewsRes.body.data : mockReviews;
-      setStat("stat-reviews", String(reviewsData.length));
-      setFeed(reviewsFeed, reviewsData.slice(0, 4), "No reviews submitted yet.", renderReviewsFeed);
-
-      // Render Payments Feed (top 3-4 items)
       const paymentsData = paymentsRes && paymentsRes.ok && paymentsRes.body && paymentsRes.body.data ? paymentsRes.body.data : mockPaymentsList;
+
+      // Compute stat counts dynamically
+      const totalTripsCount = (stats && stats.total_trips) ? stats.total_trips : tripsData.length;
+      const planningCount = (stats && stats.trip_statistics && stats.trip_statistics.planning) ? stats.trip_statistics.planning : tripsData.length;
+      const bookedCount = (stats && stats.trip_statistics && stats.trip_statistics.booked) ? stats.trip_statistics.booked : tripsData.filter(t => (t.status || '').toLowerCase() === 'booked' || (t.status || '').toLowerCase() === 'confirmed').length;
+      const favsCount = (stats && stats.total_favourites) ? stats.total_favourites : favsData.length;
+
+      setStat("stat-total", String(totalTripsCount));
+      setStat("stat-planning", String(planningCount));
+      setStat("stat-booked", String(bookedCount));
+      setStat("stat-favs", String(favsCount));
+      setStat("stat-reviews", String(reviewsData.length));
+
+      setFeed(tripsList, tripsData.slice(0, 4), "No trips yet. Start planning your next adventure!", renderTrips);
+      setFeed(favsList, favsData.slice(0, 4), "No favourites saved yet.", renderFavs);
+      setFeed(notifsList, notifsData.slice(0, 4), "No new notifications.", renderNotifications);
+      setFeed(reviewsFeed, reviewsData.slice(0, 4), "No reviews submitted yet.", renderReviewsFeed);
       setFeed(paymentsFeed, paymentsData.slice(0, 4), "No payment history found.", renderPaymentsFeed);
 
       // AI Quota
       const quotaVal = el("stat-val-quota");
       if (quotaVal) {
         if (subRes && subRes.ok && subRes.body && subRes.body.data) {
-          const quota = subRes.body.data.ai_quota_remaining ?? subRes.body.data.quota ?? "Active";
+          const quota = subRes.body.data.ai_quota_remaining ?? subRes.body.data.quota ?? "25 Remaining";
           quotaVal.textContent = typeof quota === "number" ? `${quota} Remaining` : String(quota);
         } else {
           quotaVal.textContent = "25 Remaining";
