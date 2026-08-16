@@ -58,7 +58,7 @@ class PaymobGateway implements PaymentGatewayInterface
             return [
                 'success' => true,
                 'client_secret' => 'simulated_cs_' . uniqid(),
-                'checkout_url' => rtrim($frontendUrl, '/') . '/app/receipt.html?mock=1&order_ref=' . urlencode($referenceId),
+                'checkout_url' => rtrim($frontendUrl, '/') . '/app/payment-success.html?mock=1&success=true&order_id=' . urlencode($referenceId),
                 'message' => 'Simulated test checkout created',
             ];
         }

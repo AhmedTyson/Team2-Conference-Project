@@ -36,12 +36,12 @@ class CheckoutController extends Controller
             // SEC-04: authorization guard — return 403, not 422.
             return ApiResponse::fail($e->getMessage(), 'forbidden', 403);
         } catch (Exception $e) {
-            // Log internals; never echo them — gateway/DB errors may leak
-            // infrastructure details to the client.
             report($e);
 
+            $msg = $e->getMessage() ?: 'Unable to initiate checkout. Please try again.';
+
             return ApiResponse::fail(
-                'Unable to initiate checkout. Please try again.',
+                $msg,
                 'checkout_failed',
                 422
             );
