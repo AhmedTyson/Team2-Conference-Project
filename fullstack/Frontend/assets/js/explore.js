@@ -405,6 +405,15 @@
         });
       }
 
+      if (SELECTED_REGION) {
+        var reg = SELECTED_REGION.toLowerCase();
+        items = items.filter(function (i) {
+          var itemRegion = ((i.country && i.country.region && i.country.region.name) || i.region_name || i.region || "").toLowerCase();
+          var itemCountry = (i.country_name || (i.country && i.country.name) || "").toLowerCase();
+          return itemRegion.indexOf(reg) !== -1 || itemCountry.indexOf(reg) !== -1;
+        });
+      }
+
       if (countLabel) {
         countLabel.textContent = "Showing " + items.length + " " + TAB + " experience(s)";
       }
@@ -422,7 +431,36 @@
     });
   }
 
+  var SELECTED_REGION = "";
+
+  function loadRegionPills() {
+    var pillsContainer = el("region-pills");
+    if (!pillsContainer) return;
+
+    var regions = ["All Regions", "Europe", "Asia", "Middle East", "Americas", "Africa"];
+    pillsContainer.innerHTML = regions.map(function (r, i) {
+      var isAll = i === 0;
+      var active = (isAll && !SELECTED_REGION) || (SELECTED_REGION === r);
+      return '<button type="button" class="px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all flex-shrink-0 cursor-pointer ' +
+        (active ? 'bg-amber-400 text-black shadow-md' : 'bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 hover:text-white') +
+        '" data-region="' + (isAll ? '' : esc(r)) + '">' + esc(r) + '</button>';
+    }).join("");
+
+    pillsContainer.querySelectorAll("[data-region]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        SELECTED_REGION = btn.getAttribute("data-region");
+        loadRegionPills();
+        loadCatalog();
+      });
+    });
+  }
+
   function start() {
+    var defaultTab = document.body.getAttribute("data-default-tab");
+    if (defaultTab) {
+      TAB = defaultTab;
+    }
+
     if (tabs) {
       tabs.addEventListener("click", function (e) {
         var btn = e.target.closest("[data-tab]");
@@ -456,6 +494,7 @@
       });
     }
 
+    loadRegionPills();
     loadCatalog();
   }
 
