@@ -519,18 +519,9 @@ html.dark .panel {
 }
 .ticket::before,
 .ticket::after {
-  content: "";
-  position: absolute;
-  bottom: calc(var(--motif-perf) * -1);
-  width: calc(var(--motif-perf) * 2);
-  height: calc(var(--motif-perf) * 2);
-  border-radius: 50%;
-  background: hsl(var(--background));
-  border: 1px solid hsl(var(--border));
-  z-index: 1;
+  display: none !important;
+  content: none !important;
 }
-.ticket::before { left: calc(var(--motif-perf) * -1); }
-.ticket::after  { right: calc(var(--motif-perf) * -1); }
 /* perforation strip above the notch line */
 .ticket-edge {
   position: absolute;
@@ -700,10 +691,10 @@ html.dark .panel {
   align-items: center;
   gap: var(--space-3);
   padding: 0.9rem 0;
-  border-bottom: 1px solid hsl(var(--border));
-  background: hsl(var(--background) / 0.85);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  border-bottom: none;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
 }
 .table-search-group {
   position: relative;
@@ -2129,44 +2120,11 @@ html.dark .ticket, html.dark .kpi, html.dark .panel {
    Glassmorphism Overrides & Background Blobs
    ===================================================================== */
 
-/* Dynamic glowing blobs in body background */
+/* Disable pseudo-element background cycles/blobs for admin */
 body[data-page="admin"]::before, body[data-page="admin"]::after,
 body[data-page="agency"]::before, body[data-page="agency"]::after {
-  content: "";
-  position: fixed;
-  width: 40vw;
-  height: 40vw;
-  max-width: 500px;
-  max-height: 500px;
-  border-radius: 50%;
-  filter: blur(140px);
-  z-index: -2;
-  opacity: 0.08;
-  pointer-events: none;
-  animation: float-blobs 25s ease-in-out infinite;
-}
-
-body[data-page="admin"]::before, body[data-page="agency"]::before {
-  top: -10%;
-  left: -10%;
-  background: radial-gradient(circle, #f59e0b, transparent 70%);
-}
-
-body[data-page="admin"]::after, body[data-page="agency"]::after {
-  bottom: -10%;
-  right: -10%;
-  background: radial-gradient(circle, #78716c, transparent 70%);
-  animation-delay: -5s;
-}
-
-html.dark body[data-page="admin"]::before, html.dark body[data-page="agency"]::before {
-  background: radial-gradient(circle, #f59e0b, transparent 70%);
-  opacity: 0.04;
-}
-
-html.dark body[data-page="admin"]::after, html.dark body[data-page="agency"]::after {
-  background: radial-gradient(circle, #27272a, transparent 70%);
-  opacity: 0.08;
+  display: none !important;
+  content: none !important;
 }
 
 /* Set container backgrounds transparent */
@@ -2187,17 +2145,18 @@ html.dark .sidebar {
   border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
-/* Glassmorphic Top Bar */
+/* Top Bar (Transparent background) */
 .topbar {
-  background: hsl(var(--card) / 0.9) !important;
-  backdrop-filter: blur(16px) saturate(120%) !important;
-  -webkit-backdrop-filter: blur(16px) saturate(120%) !important;
-  border-bottom: 1px solid hsl(var(--border)) !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
 }
 
 html.dark .topbar {
-  background: rgba(18, 18, 18, 0.9) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: transparent !important;
+  border-bottom: none !important;
 }
 
 /* Cards & Panels */
