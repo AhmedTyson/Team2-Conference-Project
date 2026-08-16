@@ -114,6 +114,7 @@ class DatabaseSeeder extends Seeder
             PlanSeeder::class,
             SettingsSeeder::class,
             User5Seeder::class,
+            ReportSeeder::class,
         ]);
 
         // 5. Re-enable FK constraints
