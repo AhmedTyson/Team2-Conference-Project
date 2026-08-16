@@ -26,6 +26,7 @@ class ApiExceptionHandler
         AuthenticationException::class => 'handleAuthenticationException',
         AccessDeniedHttpException::class => 'handleAuthorizationException',
         AuthorizationException::class => 'handleAuthorizationException',
+        \Spatie\Permission\Exceptions\UnauthorizedException::class => 'handleAuthorizationException',
         ValidationException::class => 'handleValidationException',
         ModelNotFoundException::class => 'handleNotFoundException',
         NotFoundHttpException::class => 'handleNotFoundException',
@@ -92,7 +93,7 @@ class ApiExceptionHandler
      * Handle authorization exceptions
      */
     public function handleAuthorizationException(
-        AuthorizationException|AccessDeniedHttpException $e,
+        Throwable $e,
         Request $request
     ): JsonResponse {
         $this->logException($e, 'Authorization failed');

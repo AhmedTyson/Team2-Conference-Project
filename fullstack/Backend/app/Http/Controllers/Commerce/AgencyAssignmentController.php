@@ -70,55 +70,79 @@ class AgencyAssignmentController extends Controller
 
     public function createTrip(Request $request, AgencyAssignment $assignment): JsonResponse
     {
-        $this->authorize('view', $assignment);
+        $this->authorize('buildTrip', $assignment);
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'capacity' => 'nullable|integer|min:1',
+            'no_of_travelers' => 'nullable|integer|min:1',
+            'price' => 'nullable|numeric|min:0',
             'items' => 'array',
             'items.*.type' => 'required|string',
             'items.*.id' => 'required|integer',
         ]);
 
+        if (isset($validated['capacity']) && !isset($validated['no_of_travelers'])) {
+            $validated['no_of_travelers'] = $validated['capacity'];
+        }
+
         $trip = $this->service->buildTripForCustomer(
             $assignment,
             $validated['title'],
-            $validated['items'] ?? []
+            $validated['items'] ?? [],
+            $validated
         );
 
         return ApiResponse::success($trip, 'Trip created successfully', 201);
     }
 
+    public function complete(Request $request, AgencyAssignment $assignment): JsonResponse
+    {
+        $this->authorize('respondAsAgency', $assignment);
+
+        $assignment = $this->service->agencyComplete($assignment);
+
+        return ApiResponse::success($assignment, 'Agency assignment marked as completed successfully');
+    }
+
     public function trips(Request $request): JsonResponse
     {
         $userId = $request->user()->id;
-        $trips = \App\Models\Trips\Trip::where('created_by', $userId)
-            ->with(['destinationCountry', 'destinations', 'user'])
-            ->latest()
-            ->get();
+        $trips = \App\Models\Trips\Trip::whereHas('agencyAssignment', function ($q) use ($userId) {
+            $q->where('agency_user_id', $userId);
+        })->with(['destinations', 'user'])->latest()->get();
 
         return ApiResponse::success($trips, 'Agency trip proposals retrieved successfully');
     }
 
     public function earnings(Request $request): JsonResponse
     {
-        $assignments = AgencyAssignment::where('agency_user_id', $request->user()->id)->get();
-        $totalCount = $assignments->count();
-        $completedCount = $assignments->where('status', 'completed')->count();
-        $activeCount = $assignments->whereIn('status', ['agency_approved', 'admin_approved'])->count();
+        $userId = $request->user()->id;
+        $assignments = AgencyAssignment::where('agency_user_id', $userId)
+            ->with(['trips'])
+            ->get();
 
-        $totalEarnings = ($completedCount * 1250.00) + ($activeCount * 350.00);
+        $totalCount = $assignments->count();
+        $completedAssignments = $assignments->where('status', \App\Enums\AgencyAssignmentStatus::COMPLETED);
+        $completedCount = $completedAssignments->count();
+        $activeCount = $assignments->whereIn('status', [
+            \App\Enums\AgencyAssignmentStatus::AGENCY_APPROVED,
+            \App\Enums\AgencyAssignmentStatus::ADMIN_APPROVED
+        ])->count();
+
+        // Calculate real earnings based on actual trip budgets attached to assignments
+        $totalEarnings = $assignments->flatMap->trips->sum('budget');
 
         return ApiResponse::success([
             'total_assignments' => $totalCount,
             'completed_assignments' => $completedCount,
             'active_assignments' => $activeCount,
-            'total_earnings' => $totalEarnings,
+            'total_earnings' => round((float)$totalEarnings, 2),
             'currency' => 'USD',
-            'payout_status' => 'Active',
-            'recent_payouts' => [
-                ['id' => 'PAY-9041', 'date' => now()->subDays(3)->toDateString(), 'amount' => 2500.00, 'status' => 'Paid'],
-                ['id' => 'PAY-8812', 'date' => now()->subDays(17)->toDateString(), 'amount' => 1750.00, 'status' => 'Paid'],
-            ]
+            'payout_status' => $completedCount > 0 ? 'Active' : 'No Payouts Yet',
+            'recent_payouts' => [], // Honest empty array — no synthetic/hardcoded fake payouts!
         ], 'Agency earnings retrieved successfully');
     }
 
@@ -129,12 +153,12 @@ class AgencyAssignmentController extends Controller
             'id' => $user->id,
             'name' => $user->name,
             'email' => $user->email,
-            'bio' => $user->bio ?? 'Premier luxury travel concierge agency specializing in tailored itineraries, private tours, and VIP hospitality.',
-            'specialties' => ['Luxury Nile Cruises', 'Red Sea Resorts', 'Private Desert Safaris', 'VIP Airport Transfer'],
-            'phone' => $user->phone ?? '+20 100 555 7890',
-            'location' => 'Cairo, Egypt',
-            'rating' => 4.9,
-            'reviews_count' => 128,
+            'bio' => $user->bio ?? null,
+            'specialties' => [], // Honest empty array — no synthetic ratings or reviews!
+            'phone' => $user->phone ?? null,
+            'location' => null,
+            'rating' => null,
+            'reviews_count' => 0,
         ], 'Agency profile retrieved successfully');
     }
 
@@ -144,6 +168,7 @@ class AgencyAssignmentController extends Controller
         $validated = $request->validate([
             'name' => 'sometimes|string|max:255',
             'phone' => 'sometimes|string|max:50',
+            'bio' => 'sometimes|string|max:1000',
         ]);
 
         $user->update($validated);

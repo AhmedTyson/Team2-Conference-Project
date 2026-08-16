@@ -99,21 +99,39 @@ class AgencyAssignmentService
         return $assignment;
     }
 
-    public function buildTripForCustomer(AgencyAssignment $assignment, string $title, array $items = []): Trip
+    public function agencyComplete(AgencyAssignment $assignment): AgencyAssignment
     {
         $this->assertStatus($assignment, AgencyAssignmentStatus::AGENCY_APPROVED);
 
-        return DB::transaction(function () use ($assignment, $title, $items) {
+        $this->repository->update($assignment, [
+            'status' => AgencyAssignmentStatus::COMPLETED,
+        ]);
+
+        return $assignment;
+    }
+
+    public function buildTripForCustomer(AgencyAssignment $assignment, string $title, array $items = [], array $options = []): Trip
+    {
+        $this->assertStatus($assignment, AgencyAssignmentStatus::AGENCY_APPROVED);
+
+        return DB::transaction(function () use ($assignment, $title, $items, $options) {
+            $startDate = !empty($options['start_date']) ? $options['start_date'] : now()->addDays(7)->toDateString();
+            $endDate = !empty($options['end_date']) ? $options['end_date'] : now()->addDays(14)->toDateString();
+            
+            $startCarbon = \Carbon\Carbon::parse($startDate);
+            $endCarbon = \Carbon\Carbon::parse($endDate);
+            $days = max(1, $startCarbon->diffInDays($endCarbon));
+
             $trip = Trip::create([
                 'user_id' => $assignment->customer_id,
                 'agency_assignment_id' => $assignment->id,
                 'title' => $title,
                 'travel_style' => 'custom',
-                'no_of_travelers' => 1,
-                'no_of_days' => 7,
-                'budget' => $this->budgetForLevel($assignment->budget_level),
-                'start_date' => now()->addDays(7)->toDateString(),
-                'end_date' => now()->addDays(14)->toDateString(),
+                'no_of_travelers' => $options['no_of_travelers'] ?? 1,
+                'no_of_days' => $days,
+                'budget' => !empty($options['price']) ? (float)$options['price'] : $this->budgetForLevel($assignment->budget_level),
+                'start_date' => $startDate,
+                'end_date' => $endDate,
                 'status' => TripStatus::PENDING,
             ]);
 

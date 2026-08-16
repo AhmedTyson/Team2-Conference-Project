@@ -88,6 +88,10 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        Gate::policy(\App\Models\Commerce\AgencyAssignment::class, \App\Policies\Commerce\AgencyAssignmentPolicy::class);
+        Gate::policy(\App\Models\System\Flag::class, \App\Policies\System\FlagPolicy::class);
+        Gate::policy(\App\Models\Trips\Trip::class, \App\Policies\Trips\TripPolicy::class);
+
         // Implicitly grant Super Admin all permissions
         Gate::before(function ($user, $ability) {
             return $user->hasRole('super_admin') ? true : null;

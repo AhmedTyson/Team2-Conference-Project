@@ -16,15 +16,26 @@ class FlagService
 
     public function fileComplaint(User $reporter, AgencyAssignment $assignment, string $reason, ?string $details = null): Flag
     {
-        return $this->repository->create([
-            'reporter_id' => $reporter->id,
-            'flaggable_type' => User::class,
-            'flaggable_id' => $assignment->agency_user_id,
+        $flag = $this->repository->create([
+            'reporter_id'          => $reporter->id,
+            'flaggable_type'       => 'user',
+            'flaggable_id'         => $assignment->agency_user_id,
             'agency_assignment_id' => $assignment->id,
-            'reason' => $reason,
-            'details' => $details,
-            'status' => FlagStatus::PENDING,
+            'reason'               => $reason,
+            'details'              => $details,
+            'status'               => FlagStatus::PENDING,
         ]);
+
+        $admins = User::role('admin')->get();
+        foreach ($admins as $admin) {
+            $admin->notify(new \App\Notifications\SystemNotification(
+                'Agency Complaint Filed',
+                "Customer {$reporter->name} filed a complaint regarding assignment #{$assignment->id}.",
+                '/admin/flags'
+            ));
+        }
+
+        return $flag;
     }
 
     public function approve(Flag $flag, User $reviewer): Flag

@@ -212,7 +212,7 @@ class AgencyTest extends TestCase
         $this->assertDatabaseHas('flags', [
             'reporter_id' => $assignment->customer_id,
             'agency_assignment_id' => $assignment->id,
-            'flaggable_type' => User::class,
+            'flaggable_type' => 'user',
             'flaggable_id' => $agency->id,
             'reason' => 'Overcharged on trip build',
             'status' => 'pending',
@@ -264,6 +264,7 @@ class AgencyTest extends TestCase
             "/api/agency-assignments/{$assignment->id}/report",
             ['reason' => 'Misleading itinerary']
         );
+        $report->assertStatus(201);
         $flagId = $report->json('data.id');
 
         $list = $this->actingAs($admin, 'api')->getJson('/api/admin/flags');
@@ -290,6 +291,7 @@ class AgencyTest extends TestCase
             "/api/agency-assignments/{$assignment->id}/report",
             ['reason' => 'Minor dispute']
         );
+        $report->assertStatus(201);
         $flagId = $report->json('data.id');
 
         $decline = $this->actingAs($admin, 'api')->postJson("/api/admin/flags/{$flagId}/decline");
@@ -317,6 +319,7 @@ class AgencyTest extends TestCase
             "/api/agency-assignments/{$assignment->id}/report",
             ['reason' => 'Anything']
         );
+        $report->assertStatus(201);
         $flagId = $report->json('data.id');
 
         $this->actingAs($agency, 'api')->getJson('/api/admin/flags')->assertForbidden();

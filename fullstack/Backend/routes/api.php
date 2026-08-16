@@ -323,7 +323,10 @@ Route::middleware(['auth:api', 'verified'])->prefix('admin')->name('admin.')->gr
     Route::patch('/reviews/{id}/approve', [AdminReviewController::class, 'approve'])->middleware('permission:manage reviews');
     Route::patch('/reviews/{id}/reject', [AdminReviewController::class, 'reject'])->middleware('permission:manage reviews');
     Route::delete('/reviews/{id}', [AdminReviewController::class, 'destroy'])->middleware('permission:manage reviews');
-    Route::patch('/reviews/{id}/restore', [AdminReviewController::class, 'restore'])->middleware('permission:manage reviews');
+    // Flags
+    Route::get('/flags', [AdminFlagController::class, 'index'])->middleware('role:admin|super_admin,api');
+    Route::post('/flags/{id}/approve', [AdminFlagController::class, 'approve'])->middleware('role:admin|super_admin,api');
+    Route::post('/flags/{id}/decline', [AdminFlagController::class, 'decline'])->middleware('role:admin|super_admin,api');
 });
 
 // ============================================================
@@ -439,10 +442,7 @@ Route::middleware(['auth:api', 'verified', 'role:admin|super_admin'])
         Route::get('/reports/{id}/download', [ReportController::class, 'download']);
     });
 
-Route::get('/reports/analytics/download', [ReportController::class, 'downloadAnalytics']);
-Route::get('/reports/{id}/download', [ReportController::class, 'download']);
-
-Route::middleware(['auth:api', 'verified'])->group(function () {
+Route::middleware(['auth:api'])->group(function () {
     Route::post('/agency-requests', [AgencyRequestController::class, 'store']);
     Route::get('/admin/agency-requests', [AdminAgencyController::class, 'adminIndex'])
         ->middleware('role:admin|super_admin')
@@ -460,8 +460,5 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::post('/agency-assignments/{assignment}/cancel', [AgencyAssignmentController::class, 'cancel']);
 
     // Plans
-    Route::post('/agency-assignments/{assignment}/report', [FlagController::class, 'store'])->middleware(['auth:api', 'verified']);
-    Route::get('/admin/flags', [AdminFlagController::class, 'index'])->middleware(['auth:api']);
-    Route::post('/admin/flags/{flag}/approve', [AdminFlagController::class, 'approve'])->middleware(['auth:api']);
-    Route::post('/admin/flags/{flag}/decline', [AdminFlagController::class, 'decline'])->middleware(['auth:api']);
+    Route::post('/agency-assignments/{assignment}/report', [FlagController::class, 'store'])->middleware(['auth:api']);
 });

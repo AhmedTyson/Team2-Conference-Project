@@ -101,6 +101,7 @@
           { to: "/app/favourites.html", label: "Saved Places", icon: "favourites" },
           { to: "/app/my-reviews.html", label: "My Reviews", icon: "myreviews" },
           { to: "/app/chat.html", label: "AI Concierge", icon: "reviews" },
+          { to: "/app/report-agency.html", label: "Report Agency Issue", icon: "contacts" },
           { to: "/app/notifications.html", label: "Notifications", icon: "dashboard" },
         ]
       },

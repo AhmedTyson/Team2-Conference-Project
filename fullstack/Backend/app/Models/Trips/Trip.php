@@ -101,4 +101,9 @@ class Trip extends Model
     {
         return $this->morphedByMany(Restaurant::class, 'item', 'trip_items')->withTimestamps();
     }
+
+    public function agencyAssignment(): BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Commerce\AgencyAssignment::class, 'agency_assignment_id');
+    }
 }

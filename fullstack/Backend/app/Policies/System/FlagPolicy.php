@@ -31,14 +31,12 @@ class FlagPolicy
             $user->email === 'admin@threedos.com';
     }
 
-    public function review(?User $user): bool
+    public function review(?User $user, mixed $flag = null): bool
     {
         if (!$user) return false;
         return $user->hasAnyRole(['admin', 'super_admin']) ||
             $user->email === 'admin@itinari.com' ||
-            $user->email === 'admin@threedos.com' ||
-            $user->hasPermissionTo('manage contacts') ||
-            $user->hasPermissionTo('manage users');
+            $user->email === 'admin@threedos.com';
     }
 
     public function update(User $user, Flag $flag): bool

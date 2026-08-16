@@ -29,8 +29,9 @@ class AdminFlagController extends Controller
         return ApiResponse::success($flags, 'Flags retrieved successfully');
     }
 
-    public function approve(Request $request, Flag $flag): JsonResponse
+    public function approve(Request $request, int $id): JsonResponse
     {
+        $flag = Flag::findOrFail($id);
         $this->authorize('review', $flag);
 
         $flag = $this->service->approve($flag, $request->user());
@@ -38,8 +39,9 @@ class AdminFlagController extends Controller
         return ApiResponse::success($flag, 'Flag approved successfully');
     }
 
-    public function decline(Request $request, Flag $flag): JsonResponse
+    public function decline(Request $request, int $id): JsonResponse
     {
+        $flag = Flag::findOrFail($id);
         $this->authorize('review', $flag);
 
         $flag = $this->service->decline($flag, $request->user());

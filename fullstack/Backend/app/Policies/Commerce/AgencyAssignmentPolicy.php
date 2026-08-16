@@ -25,6 +25,11 @@ class AgencyAssignmentPolicy
         return $user->id === $assignment->agency_user_id;
     }
 
+    public function buildTrip(User $user, AgencyAssignment $assignment): bool
+    {
+        return $user->id === $assignment->agency_user_id;
+    }
+
     public function cancel(User $user, AgencyAssignment $assignment): bool
     {
         return $user->id === $assignment->customer_id;
