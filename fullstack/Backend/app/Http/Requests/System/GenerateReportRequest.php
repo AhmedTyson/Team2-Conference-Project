@@ -17,9 +17,12 @@ class GenerateReportRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
+        $from = $this->input('from') ?: $this->input('from_date');
+        $to = $this->input('to') ?: $this->input('to_date');
+
         $this->merge([
-            'from' => $this->input('from') ?? $this->input('from_date') ?? now()->subDays(30)->format('Y-m-d'),
-            'to' => $this->input('to') ?? $this->input('to_date') ?? now()->format('Y-m-d'),
+            'from' => $from ?: '2000-01-01',
+            'to' => $to ?: now()->format('Y-m-d'),
         ]);
     }
 
@@ -31,8 +34,8 @@ class GenerateReportRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'from' => 'required|date',
-            'to' => 'required|date|after_or_equal:from',
+            'from' => 'nullable|date',
+            'to' => 'nullable|date|after_or_equal:from',
             'format' => 'nullable|in:pdf,excel',
         ];
     }

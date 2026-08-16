@@ -20,9 +20,9 @@ class ReportController extends Controller
         GenerateReportRequest $request,
         ReportQuery $reportQuery
     ): JsonResponse {
-        $from = $request->validated('from');
-        $to = $request->validated('to');
-        $format = $request->validated('format', 'pdf') ?? 'pdf';
+        $from = $request->input('from') ?: '2000-01-01';
+        $to = $request->input('to') ?: now()->format('Y-m-d');
+        $format = $request->input('format') ?? 'pdf';
 
         $report = Report::create([
             'user_id' => $request->user()->id,

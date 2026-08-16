@@ -52,6 +52,21 @@ class ReportTest extends TestCase
         Storage::disk('public')->assertExists($path);
     }
 
+    public function test_admin_can_generate_report_without_from_and_to_dates_defaulting_to_all_time(): void
+    {
+        Storage::fake('public');
+
+        // Omit 'from' and 'to' in request body
+        $response = $this->actingAs($this->admin(), 'api')->postJson('/api/admin/reports/generate', []);
+
+        $response->assertStatus(202)
+            ->assertJsonStructure(['data' => ['report' => ['id', 'file_path', 'status']]]);
+
+        $this->assertEquals('completed', $response->json('data.report.status'));
+        $this->assertTrue(str_starts_with($response->json('data.report.from_date'), '2000-01-01'));
+        $this->assertTrue(str_starts_with($response->json('data.report.to_date'), now()->format('Y-m-d')));
+    }
+
     public function test_report_reflects_real_order_and_payment_data(): void
     {
         Storage::fake('public');
