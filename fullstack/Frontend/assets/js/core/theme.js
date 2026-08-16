@@ -53,10 +53,10 @@
       btn.setAttribute("aria-label", dark ? "Switch to light mode" : "Switch to dark mode");
       btn.classList.toggle("is-dark", dark);
 
-      var sun = btn.querySelector(".icon-sun");
-      var moon = btn.querySelector(".icon-moon");
-      if (sun) sun.style.display = dark ? "none" : "block";
-      if (moon) moon.style.display = dark ? "block" : "none";
+      var sun = btn.querySelector(".icon-sun, .fa-sun");
+      var moon = btn.querySelector(".icon-moon, .fa-moon");
+      if (sun) sun.style.display = dark ? "inline-block" : "none";
+      if (moon) moon.style.display = dark ? "none" : "inline-block";
     }
 
     /* Dispatch theme event */

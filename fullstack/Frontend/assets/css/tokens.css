@@ -449,20 +449,26 @@ html.dark .auth-brand .brand-name,
   white-space: nowrap;
 }
 
+/* Glassmorphism Link Default (Light Mode) */
+.app-nav-link,
+.auth-nav-link {
+  color: #1e293b;
+}
+
 /* Glassmorphism Link Hover & Active (Light Mode) */
 .app-nav-link:hover,
 .auth-nav-link:hover {
-  color: #1c1917;
-  background: rgba(0, 0, 0, 0.05);
-  border-color: rgba(0, 0, 0, 0.08);
+  color: #0f172a;
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.1);
   transform: translateY(-0.5px);
 }
 
 .app-nav-link.active,
 .auth-nav-link.active {
   color: #d97706;
-  background: rgba(245, 158, 11, 0.12);
-  border-color: rgba(245, 158, 11, 0.25);
+  background: rgba(245, 158, 11, 0.15);
+  border-color: rgba(245, 158, 11, 0.3);
   font-weight: 600;
 }
 
@@ -470,18 +476,14 @@ html.dark .auth-brand .brand-name,
 html.dark .app-nav-link,
 html.dark .auth-nav-link,
 :root[data-theme="dark"] .app-nav-link,
-:root[data-theme="dark"] .auth-nav-link,
-[data-theme-luxury] .app-nav-link,
-[data-theme-luxury] .auth-nav-link {
-  color: rgba(255, 255, 255, 0.75) !important;
+:root[data-theme="dark"] .auth-nav-link {
+  color: rgba(255, 255, 255, 0.8) !important;
 }
 
 html.dark .app-nav-link:hover,
 html.dark .auth-nav-link:hover,
 :root[data-theme="dark"] .app-nav-link:hover,
-:root[data-theme="dark"] .auth-nav-link:hover,
-[data-theme-luxury] .app-nav-link:hover,
-[data-theme-luxury] .auth-nav-link:hover {
+:root[data-theme="dark"] .auth-nav-link:hover {
   color: #ffffff !important;
   background: rgba(255, 255, 255, 0.1) !important;
   border-color: rgba(255, 255, 255, 0.16) !important;
@@ -491,9 +493,7 @@ html.dark .auth-nav-link:hover,
 html.dark .app-nav-link.active,
 html.dark .auth-nav-link.active,
 :root[data-theme="dark"] .app-nav-link.active,
-:root[data-theme="dark"] .auth-nav-link.active,
-[data-theme-luxury] .app-nav-link.active,
-[data-theme-luxury] .auth-nav-link.active {
+:root[data-theme="dark"] .auth-nav-link.active {
   color: #fbbf24 !important;
   background: rgba(245, 158, 11, 0.18) !important;
   border-color: rgba(245, 158, 11, 0.35) !important;

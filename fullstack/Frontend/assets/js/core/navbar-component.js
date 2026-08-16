@@ -230,15 +230,11 @@
 
       if (iconSun && iconMoon) {
         if (isDark) {
-          iconSun.classList.remove("hidden");
-          iconSun.classList.add("block");
-          iconMoon.classList.add("hidden");
-          iconMoon.classList.remove("block");
+          iconSun.style.display = "inline-block";
+          iconMoon.style.display = "none";
         } else {
-          iconSun.classList.add("hidden");
-          iconSun.classList.remove("block");
-          iconMoon.classList.remove("hidden");
-          iconMoon.classList.add("block");
+          iconSun.style.display = "none";
+          iconMoon.style.display = "inline-block";
         }
       }
     }
