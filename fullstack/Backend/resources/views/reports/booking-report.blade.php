@@ -2,19 +2,21 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Booking Report — {{ config('app.name', 'Voyago') }}</title>
+    <title>Executive Analytics Report — {{ config('app.name', 'Itinari') }}</title>
     <style>
-        /* ── Palette ─────────────────────────────────────────────────────────
-           Navy #0F2854 | Royal Blue #1C4D8D | Sky Blue #4988C4 | Ice Blue #BDE8F5
+        /* ── Itinari Luxury Gold & Dark Onyx Palette ────────────────────────
+           Onyx #0B0F19 | Gold Accent #F59E0B | Amber #FBBF24 | Slate #1E293B | Ice #F1F5F9
         ─────────────────────────────────────────────────────────────────────── */
 
-        @page         { margin: 0; }
+        @page { margin: 0; }
 
         body {
             font-family: DejaVu Sans, sans-serif;
-            font-size: 13px;
-            color: #1a2a4a;
+            font-size: 12px;
+            color: #1e293b;
             background: #ffffff;
+            margin: 0;
+            padding: 0;
         }
 
         /* Page breaks */
@@ -26,55 +28,51 @@
             page: cover;
             width: 100%;
             height: 297mm;
-            background-color: #0F2854;
+            background-color: #0b0f19;
             position: relative;
             overflow: hidden;
             page-break-after: always;
         }
 
-        /* Top diagonal band */
         .cover-band-top {
             position: absolute;
             top: 0; left: 0; right: 0;
             height: 8px;
-            background: #BDE8F5;
+            background: linear-gradient(90deg, #d97706, #f59e0b, #fbbf24);
         }
 
-        /* Bottom diagonal band */
         .cover-band-bottom {
             position: absolute;
             bottom: 0; left: 0; right: 0;
             height: 6px;
-            background: #4988C4;
+            background: linear-gradient(90deg, #fbbf24, #f59e0b, #d97706);
         }
 
-        /* Large background circle decorations */
         .cover-circle-1 {
             position: absolute;
             top: -80px; right: -80px;
             width: 340px; height: 340px;
             border-radius: 50%;
-            background: rgba(73, 136, 196, 0.18);
+            background: rgba(245, 158, 11, 0.12);
         }
         .cover-circle-2 {
             position: absolute;
             bottom: 80px; left: -60px;
             width: 240px; height: 240px;
             border-radius: 50%;
-            background: rgba(189, 232, 245, 0.10);
+            background: rgba(251, 191, 36, 0.08);
         }
         .cover-circle-3 {
             position: absolute;
             top: 50%; right: 60px;
             width: 120px; height: 120px;
             border-radius: 50%;
-            background: rgba(28, 77, 141, 0.40);
+            background: rgba(245, 158, 11, 0.15);
         }
 
-        /* Content area positioned in vertical centre */
         .cover-content {
             position: absolute;
-            top: 259pt;
+            top: 220pt;
             left: 0; right: 0;
             padding: 0 60px;
             box-sizing: border-box;
@@ -84,106 +82,95 @@
             display: block;
         }
 
-        /* Logo wordmark */
-        .cover-logo {
-            font-size: 52px;
-            font-weight: bold;
-            color: #ffffff;
-            letter-spacing: -0.03em;
-            margin-bottom: 4px;
-        }
-        .cover-logo span {
-            color: #BDE8F5;
-        }
-
-        /* Logo image on the navy cover (transparent, no box) */
         .cover-logo-wrap {
+            margin-bottom: 24px;
             text-align: center;
-            margin-bottom: 18px;
         }
         .cover-logo-img {
-            height: 64px;
+            max-height: 84px;
+            width: auto;
         }
 
-        /* Admin report badge */
         .cover-badge {
             display: inline-block;
             font-size: 10px;
             font-weight: bold;
-            color: #0F2854;
-            background: #BDE8F5;
+            color: #0b0f19;
+            background: #fbbf24;
             letter-spacing: 0.22em;
             text-transform: uppercase;
-            padding: 7px 16px;
+            padding: 6px 16px;
             border-radius: 999px;
-            margin-bottom: 28px;
+            margin-bottom: 22px;
         }
 
-        /* Tagline under logo */
         .cover-tagline {
             font-size: 11px;
-            color: #9dc4e8;
-            letter-spacing: 0.18em;
+            color: #fbbf24;
+            letter-spacing: 0.22em;
             text-transform: uppercase;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
-        /* Horizontal rule */
         .cover-rule {
-            width: 80px;
+            width: 90px;
             height: 3px;
-            background: #4988C4;
-            margin: 0 auto 32px;
+            background: #f59e0b;
+            margin: 0 auto 28px auto;
         }
 
-        /* Report title */
         .cover-title {
-            font-size: 28px;
+            font-size: 30px;
             font-weight: bold;
             color: #ffffff;
-            margin-bottom: 8px;
-            line-height: 1.2;
+            margin-bottom: 10px;
+            line-height: 1.25;
         }
 
         .cover-subtitle {
             font-size: 14px;
-            color: #BDE8F5;
-            margin-bottom: 48px;
+            color: #94a3b8;
+            margin-bottom: 40px;
         }
 
-        /* Meta card */
         .cover-meta {
-            background: rgba(255,255,255,0.08);
-            border-left: 3px solid #4988C4;
-            border-radius: 4px;
-            padding: 16px 20px;
-            display: inline-block;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            padding-top: 24px;
+            width: 100%;
         }
-        .cover-meta-row {
-            font-size: 11px;
-            color: #9dc4e8;
-            margin-bottom: 6px;
+
+        .cover-meta-table {
+            width: 100%;
+            border-collapse: collapse;
         }
-        .cover-meta-row:last-child { margin-bottom: 0; }
+
+        .cover-meta-table td {
+            vertical-align: top;
+            text-align: center;
+            padding: 0 16px;
+        }
+
         .cover-meta-label {
             font-size: 9px;
             text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: #4988C4;
-            margin-bottom: 2px;
-        }
-        .cover-meta-value {
-            font-size: 12px;
-            color: #ffffff;
-            font-weight: bold;
+            letter-spacing: 0.15em;
+            color: #64748b;
+            margin-bottom: 6px;
         }
 
-        /* ── INNER PAGES header strip ───────────────────────────────────────── */
+        .cover-meta-value {
+            font-size: 12px;
+            font-weight: bold;
+            color: #f8fafc;
+        }
+
+        /* ── INNER PAGES HEADER & FOOTER ───────────────────────────────────── */
         .page-header {
-            background: #0F2854;
+            background: #0b0f19;
             margin: -28px -32px 0 -32px;
             padding: 14px 32px;
             overflow: hidden;
+            border-bottom: 2px solid #f59e0b;
         }
         .page-header-inner {
             float: left;
@@ -197,7 +184,7 @@
         .page-header-title {
             font-size: 13px;
             font-weight: bold;
-            color: #BDE8F5;
+            color: #fbbf24;
             text-transform: uppercase;
             letter-spacing: 0.08em;
             vertical-align: middle;
@@ -206,106 +193,131 @@
             float: right;
             text-align: right;
             font-size: 10px;
-            color: #4988C4;
+            color: #94a3b8;
             padding-top: 5px;
         }
         .page-header-clearfix { clear: both; }
         .page-accent-line {
             height: 2px;
-            background: #4988C4;
+            background: #f59e0b;
             margin: 0 -32px 20px -32px;
         }
 
         /* Section headings */
         h2 {
-            font-size: 19px;
-            margin: 0 0 18px;
+            font-size: 18px;
+            margin: 0 0 16px;
             color: #ffffff;
-            background: #1C4D8D;
-            padding: 12px 18px;
+            background: #0b0f19;
+            padding: 10px 16px;
             border-radius: 4px;
+            border-left: 4px solid #f59e0b;
         }
         h3 {
-            font-size: 15px;
-            margin: 18px 0 12px;
-            color: #1C4D8D;
-            border-bottom: 1px solid #BDE8F5;
+            font-size: 14px;
+            margin: 16px 0 10px;
+            color: #0b0f19;
+            border-bottom: 1px solid #cbd5e1;
             padding-bottom: 5px;
         }
 
-        /* KPI cards */
-        .kpi-table { width: 100%; border-collapse: collapse; margin-bottom: 26px; }
-        .kpi-table td {
-            width: 25%;
-            padding: 18px 14px;
-            text-align: center;
-            vertical-align: top;
-            border: 2px solid #BDE8F5;
-            background: #f0f7ff;
-            border-radius: 4px;
+        /* ── KPI CARDS GRID ────────────────────────────────────────────────── */
+        .kpi-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 12px;
+            margin-bottom: 20px;
         }
-        .kpi-label { font-size: 11px; color: #4988C4; text-transform: uppercase; letter-spacing: 0.06em; }
-        .kpi-value { font-size: 24px; font-weight: bold; margin-top: 6px; color: #0F2854; }
-        .kpi-positive { color: #047857; }
-        .kpi-negative { color: #b91c1c; }
+        .kpi-card {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-top: 3px solid #f59e0b;
+            border-radius: 8px;
+            padding: 14px;
+            text-align: center;
+        }
+        .kpi-label { font-size: 10px; color: #64748b; text-transform: uppercase; letter-spacing: 0.08em; }
+        .kpi-value { font-size: 22px; font-weight: bold; margin-top: 4px; color: #0b0f19; }
+        .kpi-positive { color: #16a34a; font-weight: bold; }
+        .kpi-negative { color: #dc2626; font-weight: bold; }
 
-        /* Data tables */
-        table.data { width: 100%; border-collapse: collapse; margin-bottom: 22px; font-size: 12.5px; }
-        table.data thead tr { background: #0F2854; }
+        /* ── TABLES ────────────────────────────────────────────────────────── */
+        table.data {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 12px;
+        }
+        table.data thead tr {
+            background: #0b0f19;
+        }
         table.data th {
-            color: #BDE8F5;
+            color: #ffffff;
             padding: 9px 12px;
             text-align: left;
             font-size: 11px;
+            font-weight: bold;
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            border-bottom: 2px solid #f59e0b;
         }
-        table.data td { padding: 8px 12px; border-bottom: 1px solid #dbeafe; color: #1a2a4a; }
-        table.data tr:nth-child(even) td { background: #f0f7ff; }
-        table.data tr:last-child td { border-bottom: none; }
+        table.data td {
+            padding: 9px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+        }
+        table.data tr:nth-child(even) td {
+            background: #f8fafc;
+        }
 
-        /* Charts */
-        .chart-img { width: 100%; margin: 12px 0 22px; }
+        /* ── BADGES & CHANGES ──────────────────────────────────────────────── */
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .badge-success { background: #dcfce7; color: #15803d; }
+        .badge-warning { background: #fef3c7; color: #b45309; }
+        .badge-danger { background: #fee2e2; color: #b91c1c; }
 
-        /* Two-column layout */
+        .change-up { color: #16a34a; font-weight: bold; }
+        .change-down { color: #dc2626; font-weight: bold; }
+        .change-flat { color: #64748b; }
+
+        /* Chart container */
+        .chart-img {
+            width: 100%;
+            margin: 10px 0 20px;
+            border-radius: 6px;
+        }
+
+        .side-by-side { width: 100%; border-collapse: collapse; table-layout: fixed; margin-bottom: 20px; }
+        .side-by-side td { width: 50%; vertical-align: top; }
+        .side-by-side td.side-left { padding-right: 8px; }
+        .side-by-side td.side-right { padding-left: 8px; }
+        .side-cell {
+            border: 1px solid #e2e8f0;
+            border-top: 2px solid #f59e0b;
+            border-radius: 6px;
+            background: #ffffff;
+            padding: 12px 14px;
+        }
+
         .two-col { width: 100%; border-collapse: collapse; table-layout: fixed; }
         .two-col > tr > td { width: 50%; vertical-align: top; padding-right: 14px; }
         .two-col > tr > td:last-child { padding-right: 0; padding-left: 14px; }
 
-        /* Equal-height side-by-side columns */
-        .side-by-side { width: 100%; border-collapse: collapse; table-layout: fixed; margin-bottom: 22px; }
-        .side-by-side td { width: 50%; vertical-align: top; }
-        .side-by-side td.side-left { padding-right: 7px; }
-        .side-by-side td.side-right { padding-left: 7px; }
-        .side-cell {
-            border: 1px solid #dbeafe;
-            border-radius: 4px;
-            background: #fbfdff;
-            padding: 12px 16px 14px;
-            page-break-inside: avoid;
-        }
-        .side-cell h3 { margin-top: 4px; }
-        .side-cell table.data { font-size: 12px; }
-        .side-cell table.data td { padding: 6px 8px; }
+        .no-data { color: #94a3b8; font-style: italic; font-size: 11px; padding: 6px 0; }
 
-        /* Keep table rows intact across page breaks */
-        table.data tr { page-break-inside: avoid; }
-
-        /* Metric change badges */
-        .change-up { color: #047857; font-weight: bold; }
-        .change-down { color: #b91c1c; font-weight: bold; }
-        .change-flat { color: #6b7280; }
-
-        /* No-data placeholder */
-        .no-data { color: #9ca3af; font-style: italic; font-size: 11px; padding: 8px 0; }
-
-        /* Footer */
         .footer {
             font-size: 10px;
-            color: #4988C4;
+            color: #64748b;
             text-align: center;
-            margin-top: 20px;
-            border-top: 1px solid #BDE8F5;
+            margin-top: 24px;
+            border-top: 1px solid #e2e8f0;
             padding-top: 10px;
         }
     </style>
@@ -323,42 +335,34 @@
         <div class="cover-content">
             <div class="cover-content-inner">
 
-                {{-- Admin badge --}}
-                <div class="cover-badge">Admin Report</div>
+                <div class="cover-badge">Executive Telemetry</div>
 
-                {{-- Logo --}}
                 @if($logoDataUri)
                     <div class="cover-logo-wrap">
                         <img class="cover-logo-img" src="{{ $logoDataUri }}">
                     </div>
-                @else
-                    <div class="cover-logo">
-                        Iti<span>nari</span>
-                    </div>
                 @endif
-                <div class="cover-tagline">Smart Travel Intelligence</div>
+                <div class="cover-tagline">Smart Luxury Travel Intelligence</div>
 
                 <div class="cover-rule"></div>
 
-                {{-- Report Title --}}
-                <div class="cover-title">Business Analytics<br>Report</div>
-                <div class="cover-subtitle">Comprehensive Booking &amp; Revenue Overview</div>
+                <div class="cover-title">Global Platform &amp; Booking Analytics</div>
+                <div class="cover-subtitle">Executive Performance Audit &amp; Financial Telemetry Report</div>
 
-                {{-- Meta --}}
                 <div class="cover-meta">
-                    <table style="border-collapse:collapse;">
+                    <table class="cover-meta-table">
                         <tr>
-                            <td style="padding: 0 32px 0 0; vertical-align: top;">
-                                <div class="cover-meta-label">Report Period</div>
-                                <div class="cover-meta-value">{{ $from }} — {{ $to }}</div>
+                            <td>
+                                <div class="cover-meta-label">Audit Period</div>
+                                <div class="cover-meta-value">{{ $from }} &mdash; {{ $to }}</div>
                             </td>
-                            <td style="padding: 0 32px 0 0; vertical-align: top;">
-                                <div class="cover-meta-label">Generated</div>
-                                <div class="cover-meta-value">{{ $generatedAt->format('M d, Y') }}</div>
+                            <td>
+                                <div class="cover-meta-label">Generated At</div>
+                                <div class="cover-meta-value">{{ $generatedAt->format('Y-m-d H:i') }} UTC</div>
                             </td>
-                            <td style="vertical-align: top;">
+                            <td>
                                 <div class="cover-meta-label">Classification</div>
-                                <div class="cover-meta-value">Confidential</div>
+                                <div class="cover-meta-value">Executive Confidential</div>
                             </td>
                         </tr>
                     </table>
@@ -374,10 +378,8 @@
             <div class="page-header-inner">
                 @if($logoDataUri)
                     <img class="page-logo-img" src="{{ $logoDataUri }}">
-                @else
-                    <span class="page-header-title">Itinari</span>
                 @endif
-                <span class="page-header-title">Business Analytics Report</span>
+                <span class="page-header-title">Executive Summary &amp; Metrics</span>
             </div>
             <div class="page-header-right">
                 {{ $from }} — {{ $to }}<br>
@@ -385,39 +387,46 @@
             </div>
             <div class="page-header-clearfix"></div>
         </div>
-        <div class="page-accent-line"></div>
 
-        <h2>Executive Summary</h2>
+        <h2>Executive Key Metrics</h2>
 
         <table class="kpi-table">
             <tr>
                 <td>
-                    <div class="kpi-label">Revenue</div>
-                    <div class="kpi-value">{{ number_format($kpis['revenue'], 0) }}</div>
-                    <div style="font-size:10px;color:#4988C4;margin-top:2px;">{{ $kpis['currency'] ?? 'USD' }}</div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Gross Revenue</div>
+                        <div class="kpi-value">${{ number_format($kpis['revenue'] ?? 0, 2) }}</div>
+                        <div style="font-size:10px;color:#64748b;margin-top:2px;">{{ $kpis['currency'] ?? 'USD' }}</div>
+                    </div>
                 </td>
                 <td>
-                    <div class="kpi-label">Bookings</div>
-                    <div class="kpi-value">{{ number_format($kpis['bookings']) }}</div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Total Bookings</div>
+                        <div class="kpi-value">{{ number_format($kpis['bookings'] ?? 0) }}</div>
+                    </div>
                 </td>
                 <td>
-                    <div class="kpi-label">Active Users</div>
-                    <div class="kpi-value">{{ number_format($kpis['users']) }}</div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Active Members</div>
+                        <div class="kpi-value">{{ number_format($kpis['users'] ?? 0) }}</div>
+                    </div>
                 </td>
                 <td>
-                    <div class="kpi-label">Revenue Growth</div>
-                    <div class="kpi-value {{ $kpis['growth_percent'] >= 0 ? 'kpi-positive' : 'kpi-negative' }}">
-                        {{ $kpis['growth_percent'] >= 0 ? '+' : '' }}{{ number_format($kpis['growth_percent'], 1) }}%
+                    <div class="kpi-card">
+                        <div class="kpi-label">Revenue Growth</div>
+                        <div class="kpi-value {{ ($kpis['growth_percent'] ?? 0) >= 0 ? 'kpi-positive' : 'kpi-negative' }}">
+                            {{ ($kpis['growth_percent'] ?? 0) >= 0 ? '+' : '' }}{{ number_format($kpis['growth_percent'] ?? 0, 1) }}%
+                        </div>
                     </div>
                 </td>
             </tr>
         </table>
 
-        <h3>Key Metrics Analysis</h3>
+        <h3>Summary Telemetry Breakdown</h3>
         <table class="data">
             <thead>
                 <tr>
-                    <th>Metric</th>
+                    <th>Metric Indicator</th>
                     <th>Current Period</th>
                     <th>Previous Period</th>
                     <th>Change</th>
@@ -427,7 +436,7 @@
                 @forelse($summaryTable as $row)
                     @php $isMoney = str_contains($row['metric'], 'USD'); @endphp
                     <tr>
-                        <td>{{ $row['metric'] }}</td>
+                        <td><strong>{{ $row['metric'] }}</strong></td>
                         <td>{{ number_format($row['current'], $isMoney ? 2 : 0) }}</td>
                         <td>{{ number_format($row['previous'], $isMoney ? 2 : 0) }}</td>
                         <td>
@@ -457,31 +466,28 @@
             <div class="page-header-inner">
                 @if($logoDataUri)
                     <img class="page-logo-img" src="{{ $logoDataUri }}">
-                @else
-                    <span class="page-header-title">Itinari</span>
                 @endif
-                <span class="page-header-title">Business Analytics Report</span>
+                <span class="page-header-title">Revenue by Category</span>
             </div>
             <div class="page-header-right">{{ $from }} — {{ $to }}</div>
             <div class="page-header-clearfix"></div>
         </div>
-        <div class="page-accent-line"></div>
 
-        <h2>Revenue by Booking Type</h2>
+        <h2>Category Breakdown</h2>
 
         @if($revenueByTypeChartUrl)
             <img class="chart-img" src="{{ $revenueByTypeChartUrl }}">
         @endif
         <table class="data">
-            <thead><tr><th>Type</th><th>Revenue (USD)</th></tr></thead>
+            <thead><tr><th>Category Type</th><th>Gross Revenue (USD)</th></tr></thead>
             <tbody>
                 @forelse($revenueByType as $row)
                     <tr>
-                        <td>{{ $row['type'] }}</td>
-                        <td>{{ number_format($row['revenue'], 2) }}</td>
+                        <td><strong>{{ ucfirst($row['type'] ?? 'General Package') }}</strong></td>
+                        <td>${{ number_format($row['revenue'] ?? 0, 2) }}</td>
                     </tr>
                 @empty
-                    <tr><td colspan="2" class="no-data">No data available.</td></tr>
+                    <tr><td colspan="2" class="no-data">No category revenue data available.</td></tr>
                 @endforelse
             </tbody>
         </table>
@@ -493,26 +499,23 @@
             <div class="page-header-inner">
                 @if($logoDataUri)
                     <img class="page-logo-img" src="{{ $logoDataUri }}">
-                @else
-                    <span class="page-header-title">Itinari</span>
                 @endif
-                <span class="page-header-title">Business Analytics Report</span>
+                <span class="page-header-title">Revenue Trajectory</span>
             </div>
             <div class="page-header-right">{{ $from }} — {{ $to }}</div>
             <div class="page-header-clearfix"></div>
         </div>
-        <div class="page-accent-line"></div>
 
         <h2>Revenue Analytics</h2>
 
-        <h3>Monthly Revenue</h3>
+        <h3>Monthly Revenue Growth</h3>
         @if($monthlyRevenueChartUrl)
             <img class="chart-img" src="{{ $monthlyRevenueChartUrl }}">
         @else
             <p class="no-data">No monthly revenue data for this period.</p>
         @endif
 
-        <h3>Weekly Revenue</h3>
+        <h3>Weekly Revenue Distribution</h3>
         @if($weeklyRevenueChartUrl)
             <img class="chart-img" src="{{ $weeklyRevenueChartUrl }}">
         @else
@@ -526,15 +529,12 @@
             <div class="page-header-inner">
                 @if($logoDataUri)
                     <img class="page-logo-img" src="{{ $logoDataUri }}">
-                @else
-                    <span class="page-header-title">Itinari</span>
                 @endif
-                <span class="page-header-title">Business Analytics Report</span>
+                <span class="page-header-title">Booking Analytics</span>
             </div>
             <div class="page-header-right">{{ $from }} — {{ $to }}</div>
             <div class="page-header-clearfix"></div>
         </div>
-        <div class="page-accent-line"></div>
 
         <h2>Booking Analytics</h2>
 
@@ -559,7 +559,7 @@
                                 @forelse($bookingStatus as $row)
                                     <tr><td>{{ ucfirst($row['status']) }}</td><td>{{ $row['count'] }}</td></tr>
                                 @empty
-                                    <tr><td colspan="2" class="no-data">No data available.</td></tr>
+                                    <tr><td colspan="2" class="no-data">No status data available.</td></tr>
                                 @endforelse
                             </tbody>
                         </table>
@@ -577,7 +577,7 @@
                                 @forelse($bookingTypes as $row)
                                     <tr><td>{{ $row['type'] }}</td><td>{{ $row['count'] }}</td></tr>
                                 @empty
-                                    <tr><td colspan="2" class="no-data">No data available.</td></tr>
+                                    <tr><td colspan="2" class="no-data">No type data available.</td></tr>
                                 @endforelse
                             </tbody>
                         </table>
@@ -593,26 +593,23 @@
             <div class="page-header-inner">
                 @if($logoDataUri)
                     <img class="page-logo-img" src="{{ $logoDataUri }}">
-                @else
-                    <span class="page-header-title">Itinari</span>
                 @endif
-                <span class="page-header-title">Business Analytics Report</span>
+                <span class="page-header-title">User Analytics &amp; Growth</span>
             </div>
             <div class="page-header-right">{{ $from }} — {{ $to }}</div>
             <div class="page-header-clearfix"></div>
         </div>
-        <div class="page-accent-line"></div>
 
         <h2>User Analytics</h2>
 
-        <h3>New Users</h3>
+        <h3>New User Registrations</h3>
         @if($newUsersChartUrl)
             <img class="chart-img" src="{{ $newUsersChartUrl }}">
         @else
             <p class="no-data">No new user data for this period.</p>
         @endif
 
-        <h3>Active Users Trend</h3>
+        <h3>Active User Trajectory</h3>
         @if($activeUsersChartUrl)
             <img class="chart-img" src="{{ $activeUsersChartUrl }}">
         @else
@@ -626,21 +623,18 @@
             <div class="page-header-inner">
                 @if($logoDataUri)
                     <img class="page-logo-img" src="{{ $logoDataUri }}">
-                @else
-                    <span class="page-header-title">Itinari</span>
                 @endif
-                <span class="page-header-title">Business Analytics Report</span>
+                <span class="page-header-title">Returning User Engagement</span>
             </div>
             <div class="page-header-right">{{ $from }} — {{ $to }}</div>
             <div class="page-header-clearfix"></div>
         </div>
-        <div class="page-accent-line"></div>
 
         <h2>Returning Users</h2>
 
         <h3>Returning Users by Period</h3>
         <table class="data">
-            <thead><tr><th>Period</th><th>Returning Users</th></tr></thead>
+            <thead><tr><th>Period Range</th><th>Returning User Count</th></tr></thead>
             <tbody>
                 @forelse($returningUsersTrend as $row)
                     <tr><td>{{ $row['period'] }}</td><td>{{ $row['returning_users'] }}</td></tr>
@@ -657,15 +651,12 @@
             <div class="page-header-inner">
                 @if($logoDataUri)
                     <img class="page-logo-img" src="{{ $logoDataUri }}">
-                @else
-                    <span class="page-header-title">Itinari</span>
                 @endif
-                <span class="page-header-title">Business Analytics Report</span>
+                <span class="page-header-title">Market Demand &amp; Insights</span>
             </div>
             <div class="page-header-right">{{ $from }} — {{ $to }}</div>
             <div class="page-header-clearfix"></div>
         </div>
-        <div class="page-accent-line"></div>
 
         <h2>Business Insights</h2>
 
@@ -682,7 +673,7 @@
                             @forelse($topDestinations as $row)
                                 <tr><td>{{ $row->name }}</td><td>{{ $row->bookings_count }}</td></tr>
                             @empty
-                                <tr><td colspan="2" class="no-data">No data available.</td></tr>
+                                <tr><td colspan="2" class="no-data">No destination data.</td></tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -693,9 +684,9 @@
                         <thead><tr><th>Destination</th><th>Revenue (USD)</th></tr></thead>
                         <tbody>
                             @forelse($topRevenueDestinations as $row)
-                                <tr><td>{{ $row['name'] }}</td><td>{{ number_format($row['revenue'], 2) }}</td></tr>
+                                <tr><td>{{ $row['name'] }}</td><td>${{ number_format($row['revenue'], 2) }}</td></tr>
                             @empty
-                                <tr><td colspan="2" class="no-data">No data available.</td></tr>
+                                <tr><td colspan="2" class="no-data">No destination revenue data.</td></tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -703,15 +694,15 @@
             </tr>
         </table>
 
-        <h3>Peak Booking Days</h3>
+        <h3>Peak Operating Hours / Days</h3>
         @if($peakBookingDaysChartUrl)
             <img class="chart-img" src="{{ $peakBookingDaysChartUrl }}">
         @else
-            <p class="no-data">No booking data for this period.</p>
+            <p class="no-data">No peak booking data for this period.</p>
         @endif
 
         <div class="footer">
-            {{ config('app.name', 'Voyago') }} &mdash; Confidential Report &mdash; Generated {{ $generatedAt->format('Y-m-d H:i') }}
+            Itinari Platform &mdash; Confidential Executive Audit Report &mdash; Generated {{ $generatedAt->format('Y-m-d H:i') }} UTC
         </div>
     </div>
 
