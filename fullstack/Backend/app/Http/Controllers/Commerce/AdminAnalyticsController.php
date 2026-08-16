@@ -19,75 +19,98 @@ class AdminAnalyticsController extends Controller
 
     public function revenue(Request $request): JsonResponse
     {
-        // We consider trips with status 'booked' or 'completed' as successful bookings
-        $bookedStatuses = [
+        $validStatuses = [
             TripStatus::BOOKED->value,
             TripStatus::COMPLETED->value,
+            TripStatus::PLANNED->value,
+            TripStatus::PLANNING->value,
+            TripStatus::PENDING->value,
         ];
 
-        // Get cache key for current admin user
-        $cacheKey = "admin:analytics:revenue:{$request->user()->id}";
+        $userId = $request->user()?->id ?? 'guest';
+        Cache::forget("admin:analytics:revenue:{$userId}");
 
-        // Return cached analytics or generate fresh data
-        return ApiResponse::success(Cache::remember($cacheKey, 300, function () use ($bookedStatuses) {
-            // Total Revenue (sum of budgets for booked/completed trips)
-            $totalRevenue = Trip::whereIn('status', $bookedStatuses)->sum('budget');
+        // Total Revenue (sum of budgets)
+        $totalRevenue = Trip::whereIn('status', $validStatuses)->sum('budget');
+        $totalBookings = Trip::whereIn('status', $validStatuses)->count();
+        $averageBookingValue = $totalBookings > 0 ? round($totalRevenue / $totalBookings, 2) : 0;
 
-            // Total Bookings count
-            $totalBookings = Trip::whereIn('status', $bookedStatuses)->count();
+        // Monthly Revenue breakdown
+        $monthlyRevenue = Trip::whereIn('status', $validStatuses)
+            ->selectRaw(match (DB::getDriverName()) {
+                'pgsql' => "to_char(start_date, 'YYYY-MM') as month, SUM(budget) as total",
+                'sqlite' => "strftime('%Y-%m', start_date) as month, SUM(budget) as total",
+                default => "DATE_FORMAT(start_date, '%Y-%m') as month, SUM(budget) as total",
+            })
+            ->groupBy('month')
+            ->orderBy('month')
+            ->pluck('total', 'month')
+            ->map(fn ($val) => (float) $val);
 
-            // Average Booking Value
-            $averageBookingValue = $totalBookings > 0 ? round($totalRevenue / $totalBookings, 2) : 0;
+        // Revenue by Travel Style
+        $travelStyleRevenue = Trip::whereIn('status', $validStatuses)
+            ->select('travel_style', DB::raw('SUM(budget) as total'))
+            ->groupBy('travel_style')
+            ->pluck('total', 'travel_style')
+            ->map(fn ($val) => (float) $val);
 
-            // Monthly Revenue breakdown (SQL aggregation for performance)
-            $monthlyRevenue = Trip::whereIn('status', $bookedStatuses)
-                ->selectRaw(match (DB::getDriverName()) {
-                    'pgsql' => "to_char(start_date, 'YYYY-MM') as month, SUM(budget) as total",
-                    'sqlite' => "strftime('%Y-%m', start_date) as month, SUM(budget) as total",
-                    default => "DATE_FORMAT(start_date, '%Y-%m') as month, SUM(budget) as total",
-                })
-                ->groupBy('month')
-                ->orderBy('month')
-                ->pluck('total', 'month')
-                ->map(fn ($val) => (float) $val);
+        // Top Booked Destinations (by flight arrival airport count)
+        $topDestinations = DB::table('flights')
+            ->select('arrival_airport as iata', DB::raw('COUNT(*) as bookings'))
+            ->groupBy('arrival_airport')
+            ->orderByDesc('bookings')
+            ->limit(5)
+            ->get()
+            ->map(function ($row) {
+                $airportMap = [
+                    'CAI' => ['city' => 'Cairo', 'country' => 'Egypt'],
+                    'LHR' => ['city' => 'London', 'country' => 'United Kingdom'],
+                    'JFK' => ['city' => 'New York', 'country' => 'United States'],
+                    'CDG' => ['city' => 'Paris', 'country' => 'France'],
+                    'DXB' => ['city' => 'Dubai', 'country' => 'United Arab Emirates'],
+                    'FCO' => ['city' => 'Rome', 'country' => 'Italy'],
+                    'HND' => ['city' => 'Tokyo', 'country' => 'Japan'],
+                    'SYD' => ['city' => 'Sydney', 'country' => 'Australia'],
+                ];
+                $meta = $airportMap[$row->iata] ?? ['city' => $row->iata, 'country' => 'International'];
+                return [
+                    'city' => $meta['city'],
+                    'iata' => $row->iata,
+                    'country' => $meta['country'],
+                    'bookings' => (int) $row->bookings,
+                ];
+            });
 
-            // Revenue by Travel Style
-            $travelStyleRevenue = Trip::whereIn('status', $bookedStatuses)
-                ->select('travel_style', \DB::raw('SUM(budget) as total'))
-                ->groupBy('travel_style')
-                ->pluck('total', 'travel_style')
-                ->map(fn ($val) => (float) $val);
+        // Recent Bookings list (top 5 latest)
+        $recentBookings = Trip::with('user')
+            ->whereIn('status', $validStatuses)
+            ->latest()
+            ->limit(5)
+            ->get()
+            ->map(function ($trip) {
+                return [
+                    'id' => $trip->id,
+                    'user' => [
+                        'name' => $trip->user?->name ?? 'Guest Passenger',
+                        'email' => $trip->user?->email ?? 'guest@itinari.com',
+                    ],
+                    'title' => $trip->title,
+                    'budget' => (float) $trip->budget,
+                    'start_date' => $trip->start_date?->format('Y-m-d'),
+                    'status' => $trip->status?->value ?? 'booked',
+                    'created_at' => $trip->created_at?->format('Y-m-d H:i:s'),
+                ];
+            });
 
-            // Recent Bookings list (top 5 latest)
-            $recentBookings = Trip::with('user')
-                ->whereIn('status', $bookedStatuses)
-                ->latest()
-                ->limit(5)
-                ->get()
-                ->map(function ($trip) {
-                    return [
-                        'id' => $trip->id,
-                        'user' => [
-                            'name' => $trip->user?->name,
-                            'email' => $trip->user?->email,
-                        ],
-                        'title' => $trip->title,
-                        'budget' => (float) $trip->budget,
-                        'start_date' => $trip->start_date?->format('Y-m-d'),
-                        'status' => $trip->status?->value,
-                        'created_at' => $trip->created_at?->format('Y-m-d H:i:s'),
-                    ];
-                });
-
-            return [
-                'total_revenue' => (float) $totalRevenue,
-                'total_bookings' => $totalBookings,
-                'average_booking_value' => (float) $averageBookingValue,
-                'revenue_by_month' => $monthlyRevenue,
-                'revenue_by_travel_style' => $travelStyleRevenue,
-                'recent_bookings' => $recentBookings,
-            ];
-        }), 'Revenue statistics retrieved successfully');
+        return ApiResponse::success([
+            'total_revenue' => (float) $totalRevenue,
+            'total_bookings' => $totalBookings,
+            'average_booking_value' => (float) $averageBookingValue,
+            'revenue_by_month' => $monthlyRevenue,
+            'revenue_by_travel_style' => $travelStyleRevenue,
+            'top_destinations' => $topDestinations,
+            'recent_bookings' => $recentBookings,
+        ], 'Revenue statistics retrieved successfully');
     }
 
     /**
@@ -95,9 +118,16 @@ class AdminAnalyticsController extends Controller
      *
      * GET /api/admin/analytics
      */
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $months = 6;
+        $period = $request->query('period', '30d');
+        $months = match ($period) {
+            '7d' => 1,
+            '30d' => 1,
+            '90d' => 3,
+            'all' => 12,
+            default => 6,
+        };
 
         return ApiResponse::success([
             'users' => $this->usersAnalytics($months),

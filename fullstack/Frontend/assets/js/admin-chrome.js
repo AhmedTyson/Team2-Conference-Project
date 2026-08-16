@@ -186,7 +186,7 @@
       item.tabIndex = -1;
       item.textContent = it.label;
       item.addEventListener("click", function () {
-        close();
+        closeUserMenu();
         it.action();
       });
       panel.appendChild(item);
@@ -202,7 +202,7 @@
     logout.tabIndex = -1;
     logout.textContent = "Sign out";
     logout.addEventListener("click", function () {
-      close();
+      closeUserMenu();
       if (global.Itinari && global.Itinari.session && global.Itinari.session.logout) {
         global.Itinari.session.logout();
       }
@@ -228,52 +228,51 @@
     var indexOf = function (item) { return menuItems().indexOf(item); };
     var activeIndex = 0;
 
-    function open() {
+    function openUserMenu() {
       activeIndex = 0;
       trigger.setAttribute("aria-expanded", "true");
       panel.hidden = false;
-      const setItem = setActive.bind(null);
-      setItem(0);
+      setActiveUserMenuItem(0);
     }
-    function setActive(i) {
+    function setActiveUserMenuItem(i) {
       const list = menuItems();
       list.forEach(function (el2, idx) { el2.classList.toggle("is-active", idx === i); });
       activeIndex = i;
     }
-    function close() {
+    function closeUserMenu() {
       trigger.setAttribute("aria-expanded", "false");
       panel.hidden = true;
       menuItems().forEach(function (el2) { el2.classList.remove("is-active"); });
     }
 
     trigger.addEventListener("click", function () {
-      if (panel.hidden) { open(); } else { close(); }
+      if (panel.hidden) { openUserMenu(); } else { closeUserMenu(); }
     });
 
     trigger.addEventListener("keydown", function (e) {
       if (e.key === "ArrowDown" || e.key === "ArrowUp" || e.key === "Enter" || e.key === " ") {
         if (panel.hidden) {
           e.preventDefault();
-          open();
+          openUserMenu();
         }
       }
       if (!panel.hidden && e.key === "ArrowDown") {
         e.preventDefault();
         const list = menuItems();
         activeIndex = (activeIndex + 1) % list.length;
-        setActive(activeIndex);
+        setActiveUserMenuItem(activeIndex);
         list[activeIndex].focus();
       }
       if (!panel.hidden && e.key === "ArrowUp") {
         e.preventDefault();
         const list = menuItems();
         activeIndex = (activeIndex - 1 + list.length) % list.length;
-        setActive(activeIndex);
+        setActiveUserMenuItem(activeIndex);
         list[activeIndex].focus();
       }
       if (!panel.hidden && e.key === "Tab") {
         e.preventDefault();
-        close();
+        closeUserMenu();
         trigger.focus();
       }
     });
@@ -282,41 +281,41 @@
       if (e.key === "Escape") {
         e.stopPropagation();
         e.preventDefault();
-        close();
+        closeUserMenu();
         trigger.focus();
       }
       if (e.key === "ArrowDown") {
         e.preventDefault();
         const list = menuItems();
         activeIndex = (activeIndex + 1) % list.length;
-        setActive(activeIndex);
+        setActiveUserMenuItem(activeIndex);
         list[activeIndex].focus();
       }
       if (e.key === "ArrowUp") {
         e.preventDefault();
         const list = menuItems();
         activeIndex = (activeIndex - 1 + list.length) % list.length;
-        setActive(activeIndex);
+        setActiveUserMenuItem(activeIndex);
         list[activeIndex].focus();
       }
       if (e.key === "Home") {
         e.preventDefault();
         activeIndex = 0;
-        setActive(0);
+        setActiveUserMenuItem(0);
         menuItems()[0].focus();
       }
       if (e.key === "End") {
         e.preventDefault();
         const list = menuItems();
         activeIndex = list.length - 1;
-        setActive(activeIndex);
+        setActiveUserMenuItem(activeIndex);
         list[list.length - 1].focus();
       }
     });
 
     global.addEventListener("mousedown", function (e) {
       if (panel.hidden) return;
-      if (e.target.closest && !e.target.closest(".user-menu-panel") && !e.target.closest("#user-menu-trigger")) close();
+      if (e.target.closest && !e.target.closest(".user-menu-panel") && !e.target.closest("#user-menu-trigger")) closeUserMenu();
     });
 
     const ro = new MutationObserver(render);

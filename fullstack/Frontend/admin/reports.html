@@ -4,14 +4,17 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Analytics Reports · Itinari Admin</title>
-  <link rel="stylesheet" href="../assets/css/admin.css" />
+  <link rel="stylesheet" href="../assets/css/admin.css?v=15" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <script>/* FOUC prevention — default dark */
     (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
     if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
       document.documentElement.classList.add("dark","fouc-ready");
     else document.documentElement.classList.add("fouc-ready");
     })();
-  </script></head>
+  </script>
+</head>
 <body data-page="admin" data-layout="admin">
   <a href="#main" class="skip-link">Skip to main content</a>
   <div class="shell">
@@ -29,38 +32,78 @@
           <button type="button" id="theme-toggle" class="icon-btn" aria-pressed="false" aria-label="Toggle theme"><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.9" y1="4.9" x2="6.3" y2="6.3"/><line x1="17.7" y1="17.7" x2="19.1" y2="19.1"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.9" y1="19.1" x2="6.3" y2="17.7"/><line x1="17.7" y1="6.3" x2="19.1" y2="4.9"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
         </div>
       </div>
-      <header class="content-head" style="margin-bottom: var(--space-3);">
+
+      <header class="content-head" style="margin-bottom: 1.5rem;">
         <div class="right">
-          <p class="label-eyebrow" style="margin: 0 0 0.35rem; color: var(--color-primary);">REPORTS · EXPORT</p>
-          <h1 style="margin:0 0 0.25rem 0;">Analytics Reports</h1>
-          <p class="view-sub" style="margin:0;">Generated financial and platform analytics reports</p>
+          <p class="label-eyebrow" style="margin: 0 0 0.35rem; color: #fbbf24;">REPORTS & ANALYTICS ARCHIVE</p>
+          <h1 style="margin: 0 0 0.25rem 0; font-size: 1.75rem; font-weight: 800; color: #ffffff;">Executive Platform Reports</h1>
+          <p class="view-sub" style="margin: 0; color: rgba(255, 255, 255, 0.65);">Generate, inspect, and export financial performance and operations intelligence</p>
         </div>
+        <span id="user-chip" class="chip" hidden>
+          <span id="chip-name"></span>
+          <span id="chip-role" class="chip-role"></span>
+        </span>
       </header>
 
-      <div class="kit-toolbar" style="display: flex; gap: 0.75rem; margin-bottom: var(--space-4); align-items: center; flex-wrap: wrap;">
-        <label class="table-search-group" style="flex: 1; min-width: 200px;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
-          <input id="global-search" class="table-search" type="search" placeholder="Search reports by title, type, format..." autocomplete="off" aria-label="Search reports" />
-        </label>
-        <select id="format-filter" class="ctl-select" style="min-width: 130px;" aria-label="Filter by format">
-          <option value="">All Formats</option>
-          <option value="pdf">PDF</option>
-          <option value="csv">CSV</option>
-        </select>
-        <button id="generate-btn" class="btn btn-primary" type="button" style="display:inline-flex; align-items:center; gap:0.5rem; padding:0.5rem 1rem; font-weight:600; border-radius:8px;">
-          + Generate Report
+      <!-- KPI Summary Band -->
+      <section class="kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+        <article class="ticket kpi-ticket">
+          <p class="label-eyebrow">TOTAL ARCHIVED REPORTS</p>
+          <div class="kpi-value" id="kpi-total-reports">–</div>
+          <span class="ticket-edge" aria-hidden="true"></span>
+          <div class="ticket-stub"><span class="label-eyebrow">RPT-01</span></div>
+        </article>
+        <article class="ticket kpi-ticket">
+          <p class="label-eyebrow">PDF DOCUMENTS</p>
+          <div class="kpi-value" id="kpi-pdf-count" style="color: #fbbf24;">–</div>
+          <span class="ticket-edge" aria-hidden="true"></span>
+          <div class="ticket-stub"><span class="label-eyebrow">PDF-01</span></div>
+        </article>
+        <article class="ticket kpi-ticket">
+          <p class="label-eyebrow">CSV SPREADSHEETS</p>
+          <div class="kpi-value" id="kpi-csv-count" style="color: #10b981;">–</div>
+          <span class="ticket-edge" aria-hidden="true"></span>
+          <div class="ticket-stub"><span class="label-eyebrow">CSV-01</span></div>
+        </article>
+        <article class="ticket kpi-ticket">
+          <p class="label-eyebrow">LAST GENERATED</p>
+          <div class="kpi-value" id="kpi-latest-date" style="font-size: 1.1rem; padding-top: 0.25rem;">–</div>
+          <span class="ticket-edge" aria-hidden="true"></span>
+          <div class="ticket-stub"><span class="label-eyebrow">GEN-01</span></div>
+        </article>
+      </section>
+
+      <!-- Toolbar -->
+      <div class="kit-toolbar" style="display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: center; justify-content: space-between; flex-wrap: wrap;">
+        <div style="display: flex; gap: 0.75rem; flex: 1; min-width: 280px; align-items: center;">
+          <label class="table-search-group" style="flex: 1; margin: 0;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+            <input id="global-search" class="table-search" type="search" placeholder="Search reports by title, format, status..." autocomplete="off" aria-label="Search reports" />
+          </label>
+          <select id="format-filter" class="ctl-select" style="min-width: 140px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: #fff; border-radius: 10px; padding: 0.5rem 0.75rem;" aria-label="Filter by format">
+            <option value="" style="background:#111; color:#fff;">All Formats</option>
+            <option value="pdf" style="background:#111; color:#fff;">PDF Documents</option>
+            <option value="csv" style="background:#111; color:#fff;">CSV Spreadsheets</option>
+          </select>
+        </div>
+        <button id="generate-btn" class="btn btn-primary" type="button" style="display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.6rem 1.25rem; font-weight: 700; border-radius: 10px; background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%); color: #fff; border: none; cursor: pointer; box-shadow: 0 4px 14px rgba(245,158,11,0.35);">
+          <i class="fas fa-plus-circle"></i> Generate New Report
         </button>
       </div>
 
-      <section class="ticket ticket-panel">
-        <div class="panel-head">
-          <p class="label-eyebrow" style="margin: 0 0 0.25rem;">GENERATED REPORTS</p>
-          <h2 style="margin: 0;">History</h2>
+      <!-- Reports List Section -->
+      <section class="ticket ticket-panel" aria-label="Generated Reports List">
+        <div class="panel-head" style="display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.08);">
+          <div>
+            <p class="label-eyebrow" style="margin: 0 0 0.25rem;">GENERATED ARCHIVE</p>
+            <h2 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: #ffffff;">Report History</h2>
+          </div>
+          <span class="label-eyebrow" style="color: rgba(255,255,255,0.5);">AUTOMATED ETL EXPORTS</span>
         </div>
-        <div class="panel-body">
-          <div id="reports-list" class="kit-grid" style="gap:1rem;">
-            <div class="skeleton-rect" style="height: 60px;"></div>
-            <div class="skeleton-rect" style="height: 60px;"></div>
+        <div class="panel-body" style="padding: 1.5rem;">
+          <div id="reports-list" class="kit-grid" style="display: flex; flex-direction: column; gap: 0.75rem;">
+            <div class="skeleton-rect" style="height: 70px; border-radius: 10px; background: rgba(255,255,255,0.04);"></div>
+            <div class="skeleton-rect" style="height: 70px; border-radius: 10px; background: rgba(255,255,255,0.04);"></div>
           </div>
         </div>
       </section>
@@ -71,54 +114,64 @@
     <span id="site-banner-msg"></span><span id="site-banner-drain" aria-hidden="true"></span>
   </div>
 
-  <!-- Generate Report Modal -->
-  <dialog id="generate-modal" class="modal">
-    <form method="dialog" id="generate-form" class="modal-content ticket">
-      <header class="modal-header">
-        <h2 class="modal-title">Generate Report</h2>
-        <button type="button" class="icon-btn close-btn" aria-label="Close" onclick="document.getElementById('generate-modal').close()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+  <!-- Generate Report Modal Dialog -->
+  <dialog id="generate-modal" class="modal" style="background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); border: none; padding: 0;">
+    <form method="dialog" id="generate-form" style="width: 100%; max-width: 480px; background: #0f172a; border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 1.75rem; color: #fff; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);">
+      <header style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; padding-bottom: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.08);">
+        <div>
+          <p class="label-eyebrow" style="margin: 0 0 0.2rem; color: #fbbf24;">CREATE ARCHIVE</p>
+          <h2 style="margin: 0; font-size: 1.2rem; font-weight: 800;">Generate Analytics Report</h2>
+        </div>
+        <button type="button" class="icon-btn" aria-label="Close" onclick="document.getElementById('generate-modal').close()" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
       </header>
-      <div class="modal-body">
-        <div class="field">
-          <label for="report-type" class="label">Report Type</label>
-          <select id="report-type" name="type" class="input" required>
-            <option value="financial">Financial (Revenue, Sales)</option>
-            <option value="user_engagement">User Engagement</option>
-            <option value="bookings">Bookings & Reservations</option>
+      
+      <div style="display: flex; flex-direction: column; gap: 1.1rem; margin-bottom: 1.5rem;">
+        <div>
+          <label for="report-type" style="display: block; font-size: 0.8rem; font-weight: 700; color: rgba(255,255,255,0.8); margin-bottom: 0.35rem;">Report Type</label>
+          <select id="report-type" name="type" style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: #fff; border-radius: 10px; padding: 0.65rem 0.85rem; outline: none;" required>
+            <option value="financial" style="background:#111; color:#fff;">Financial (Revenue, Sales, MRR)</option>
+            <option value="user_engagement" style="background:#111; color:#fff;">User Acquisition & Engagement</option>
+            <option value="bookings" style="background:#111; color:#fff;">Bookings & Travel Packages</option>
           </select>
         </div>
-        <div class="field">
-          <label for="report-format" class="label">Format</label>
-          <select id="report-format" name="format" class="input" required>
-            <option value="pdf">PDF Document</option>
-            <option value="csv">CSV Spreadsheet</option>
+
+        <div>
+          <label for="report-format" style="display: block; font-size: 0.8rem; font-weight: 700; color: rgba(255,255,255,0.8); margin-bottom: 0.35rem;">Document Format</label>
+          <select id="report-format" name="format" style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: #fff; border-radius: 10px; padding: 0.65rem 0.85rem; outline: none;" required>
+            <option value="pdf" style="background:#111; color:#fff;">PDF Executive Document</option>
+            <option value="csv" style="background:#111; color:#fff;">CSV Raw Data Spreadsheet</option>
           </select>
         </div>
-        <div class="field">
-          <label for="report-range" class="label">Time Range</label>
-          <select id="report-range" name="range" class="input">
-            <option value="30d">Last 30 Days</option>
-            <option value="90d">Last 90 Days</option>
-            <option value="year">This Year</option>
-            <option value="all">All Time</option>
-          </select>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+          <div>
+            <label for="report-from" style="display: block; font-size: 0.8rem; font-weight: 700; color: rgba(255,255,255,0.8); margin-bottom: 0.35rem;">From Date</label>
+            <input type="date" id="report-from" name="from" style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: #fff; border-radius: 10px; padding: 0.6rem 0.75rem; outline: none;" />
+          </div>
+          <div>
+            <label for="report-to" style="display: block; font-size: 0.8rem; font-weight: 700; color: rgba(255,255,255,0.8); margin-bottom: 0.35rem;">To Date</label>
+            <input type="date" id="report-to" name="to" style="width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); color: #fff; border-radius: 10px; padding: 0.6rem 0.75rem; outline: none;" />
+          </div>
         </div>
       </div>
-      <footer class="modal-footer">
-        <button type="button" class="btn btn-ghost" onclick="document.getElementById('generate-modal').close()">Cancel</button>
-        <button type="submit" class="btn btn-primary" id="submit-generate-btn">Generate</button>
+
+      <footer style="display: flex; justify-content: flex-end; gap: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.08);">
+        <button type="button" class="btn btn-ghost" onclick="document.getElementById('generate-modal').close()" style="background: rgba(255,255,255,0.06); color: #fff; border: 1px solid rgba(255,255,255,0.12); padding: 0.5rem 1rem; border-radius: 8px;">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="submit-generate-btn" style="background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%); color: #fff; border: none; padding: 0.5rem 1.25rem; border-radius: 8px; font-weight: 700; cursor: pointer;">Generate Report</button>
       </footer>
     </form>
   </dialog>
 
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/config.js?v=1786177601"></script>
   <script src="../assets/js/api.js"></script>
-  <script src="../assets/js/animations.js"></script>
+  <script src="../assets/js/animations.js?v=3"></script>
   <script src="../assets/js/session.js"></script>
   <script src="../assets/js/nav-config.js"></script>
-  <script src="../assets/js/admin-chrome.js"></script>
-  <script src="../assets/js/admin-reports.js"></script>
+  <script src="../assets/js/admin-chrome.js?v=12"></script>
+  <script src="../assets/js/admin-reports.js?v=10"></script>
   <script src="../assets/js/core/topbar.js"></script>
   <script src="../assets/js/core/theme.js"></script>
 </body>

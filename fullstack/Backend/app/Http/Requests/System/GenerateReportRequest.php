@@ -15,6 +15,14 @@ class GenerateReportRequest extends FormRequest
         return $this->user() && $this->user()->hasAnyRole(['admin', 'super_admin']);
     }
 
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'from' => $this->input('from') ?? $this->input('from_date') ?? now()->subDays(30)->format('Y-m-d'),
+            'to' => $this->input('to') ?? $this->input('to_date') ?? now()->format('Y-m-d'),
+        ]);
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *

@@ -35,6 +35,17 @@
         { key: "longitude", label: "Longitude", type: "number", step: "0.000001" },
         { key: "image", label: "Image URL", type: "text" },
       ],
+      fill: function (row) {
+        return {
+          name: row.name,
+          city_name: row.city_name,
+          country_id: row.country_id || (row.country && row.country.id) || "",
+          description: row.description,
+          latitude: row.latitude,
+          longitude: row.longitude,
+          image: row.image
+        };
+      },
     },
     hotels: {
       url: "/admin/hotels",
@@ -62,6 +73,18 @@
         { key: "availability", label: "Availability", type: "select", options: [{id: 1, name: "Available"}, {id: 0, name: "Unavailable"}], optionLabel: "name", required: true },
         { key: "image", label: "Image URL", type: "text" },
       ],
+      fill: function (row) {
+        return {
+          name: row.name,
+          destination_id: row.destination_id || (row.destination && row.destination.id) || "",
+          address: row.address,
+          price_per_night: row.price_per_night,
+          stars: row.stars,
+          rating: row.rating,
+          availability: row.availability,
+          image: row.image
+        };
+      },
     },
     restaurants: {
       url: "/admin/restaurants",
@@ -88,6 +111,17 @@
         { key: "address", label: "Address", type: "text" },
         { key: "image", label: "Image URL", type: "text" },
       ],
+      fill: function (row) {
+        return {
+          name: row.name,
+          destination_id: row.destination_id || (row.destination && row.destination.id) || "",
+          cuisine: row.cuisine,
+          price_range: row.price_range,
+          rating: row.rating,
+          address: row.address,
+          image: row.image
+        };
+      },
     },
     countries: {
       url: "/admin/countries",
@@ -619,7 +653,7 @@
     editBtn.title = "Edit " + mod.singular;
     editBtn.setAttribute("aria-label", "Edit " + mod.singular);
     editBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>';
-    editBtn.addEventListener("click", function () { openModal("edit", row); });
+    editBtn.addEventListener("click", function () { openEdit(row); });
 
     const delBtn = document.createElement("button");
     delBtn.type = "button";
@@ -892,7 +926,13 @@
         const label = o[field.optionLabel] || String(id);
         return '<option value="' + id + '"' + (String(value) === String(id) ? " selected" : "") + ">" + esc(label) + "</option>";
       }).join("");
-      return '<select id="f-' + field.key + '" name="' + field.key + '"' + desc + '><option value="">— none —</option>' + sel + "</select>";
+      const selectedObj = opts.find(function(o) { return String(o.id) === String(value); });
+      const initialText = selectedObj ? (selectedObj[field.optionLabel] || String(selectedObj.id)) : "";
+
+      return '<div class="searchable-select-wrap" data-select-for="f-' + field.key + '">' +
+        '<input type="text" class="ctl-search-input" id="search-f-' + field.key + '" placeholder="🔍 Search ' + esc(field.label) + '..." value="' + esc(initialText) + '" autocomplete="off" />' +
+        '<select id="f-' + field.key + '" name="' + field.key + '"' + desc + '><option value="">— Select ' + esc(field.label) + ' —</option>' + sel + "</select>" +
+        '</div>';
     }
     if (field.type === "textarea") {
       return '<textarea id="f-' + field.key + '" name="' + field.key + '" rows="3"' + desc + "></textarea>";
@@ -929,13 +969,18 @@
 
     wrap.innerHTML =
       '<div class="kit-modal kit-modal is-medium" role="dialog" aria-modal="true" aria-labelledby="crud-modal-title" aria-describedby="crud-modal-desc">' +
-      '<div class="kit-modal-head"><h3 id="crud-modal-title">' + title + "</h3>" +
+      '<div class="kit-modal-head">' +
+      '<div style="display:flex;align-items:center;gap:0.75rem;">' +
+      '<span class="kit-modal-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg></span>' +
+      '<div><h3 id="crud-modal-title">' + title + '</h3>' +
+      '<p class="kit-modal-subtitle">' + esc(mod.singular) + ' &middot; ' + (mode === "edit" ? "Edit Record" : "Create Record") + '</p></div>' +
+      '</div>' +
       '<button type="button" class="kit-modal-close" data-close aria-label="Close">&times;</button></div>' +
       '<form id="crud-form" class="kit-form" novalidate>' +
       '<div class="kit-modal-body"><p id="crud-modal-desc" class="view-sub">' + title + " " + mod.singular + " record</p>" + fieldsHtml + "</div>" +
       '<div class="kit-modal-foot">' +
       '<button type="button" class="btn-ghost" data-close>Cancel</button>' +
-      '<button type="submit" class="btn-primary is-danger" style="background:hsl(var(--primary));color:hsl(var(--primary-foreground));border:1px solid transparent;border-radius:var(--radius-md);padding:0.45rem 0.95rem;font-weight:600;cursor:pointer;">Save</button>' +
+      '<button type="submit" class="btn-primary is-danger">Save</button>' +
       "</div></form></div>";
     root.appendChild(wrap);
 
@@ -952,6 +997,159 @@
       });
     }
 
+    /* Interactive Dynamic Country Dropdown Auto-Selection */
+    const cityInput = wrap.querySelector("#f-city_name") || wrap.querySelector("#f-city");
+    const countrySelect = wrap.querySelector("#f-country_id");
+
+    if (cityInput && countrySelect) {
+      const CITY_COUNTRY_MAP = {
+        cairo: ["egypt", "eg"],
+        alexandria: ["egypt", "eg"],
+        giza: ["egypt", "eg"],
+        luxor: ["egypt", "eg"],
+        aswan: ["egypt", "eg"],
+        "sharm el sheikh": ["egypt", "eg"],
+        hurghada: ["egypt", "eg"],
+        dubai: ["united arab emirates", "uae", "ae", "emirates"],
+        "abu dhabi": ["united arab emirates", "uae", "ae", "emirates"],
+        sharjah: ["united arab emirates", "uae", "ae", "emirates"],
+        ajman: ["united arab emirates", "uae", "ae", "emirates"],
+        "ras al khaimah": ["united arab emirates", "uae", "ae", "emirates"],
+        fujairah: ["united arab emirates", "uae", "ae", "emirates"],
+        "umm al quwain": ["united arab emirates", "uae", "ae", "emirates"],
+        emirates: ["united arab emirates", "uae", "ae", "emirates"],
+        uae: ["united arab emirates", "uae", "ae", "emirates"],
+        "united arab emirates": ["united arab emirates", "uae", "ae", "emirates"],
+        london: ["united kingdom", "uk", "gb"],
+        manchester: ["united kingdom", "uk", "gb"],
+        edinburgh: ["united kingdom", "uk", "gb"],
+        paris: ["france", "fr"],
+        nice: ["france", "fr"],
+        lyon: ["france", "fr"],
+        tokyo: ["japan", "jp"],
+        kyoto: ["japan", "jp"],
+        osaka: ["japan", "jp"],
+        rome: ["italy", "it"],
+        milan: ["italy", "it"],
+        venice: ["italy", "it"],
+        "new york": ["united states", "usa", "us"],
+        "los angeles": ["united states", "usa", "us"],
+        chicago: ["united states", "usa", "us"],
+        miami: ["united states", "usa", "us"],
+        "san francisco": ["united states", "usa", "us"],
+        "las vegas": ["united states", "usa", "us"],
+        sydney: ["australia", "au"],
+        melbourne: ["australia", "au"],
+        toronto: ["canada", "ca"],
+        vancouver: ["canada", "ca"],
+        berlin: ["germany", "de"],
+        munich: ["germany", "de"],
+        frankfurt: ["germany", "de"],
+        madrid: ["spain", "es"],
+        barcelona: ["spain", "es"],
+        istanbul: ["turkey", "tr"],
+        antalya: ["turkey", "tr"],
+        bangkok: ["thailand", "th"],
+        phuket: ["thailand", "th"],
+        riyadh: ["saudi arabia", "sa"],
+        jeddah: ["saudi arabia", "sa"],
+        doha: ["qatar", "qa"]
+      };
+
+      const autoSelectCountry = function() {
+        const val = String(cityInput.value || "").trim().toLowerCase();
+        if (!val) return;
+
+        let targetCountryTerms = CITY_COUNTRY_MAP[val];
+
+        if (!targetCountryTerms) {
+          for (const cName in CITY_COUNTRY_MAP) {
+            if (val.indexOf(cName) !== -1 || cName.indexOf(val) !== -1) {
+              targetCountryTerms = CITY_COUNTRY_MAP[cName];
+              break;
+            }
+          }
+        }
+
+        const options = Array.from(countrySelect.options);
+        let matchedOption = null;
+
+        if (targetCountryTerms) {
+          matchedOption = options.find(function(opt) {
+            const text = opt.text.toLowerCase();
+            return targetCountryTerms.some(function(term) { return text.indexOf(term) !== -1; });
+          });
+        }
+
+        if (!matchedOption) {
+          matchedOption = options.find(function(opt) {
+            return opt.text.toLowerCase().indexOf(val) !== -1;
+          });
+        }
+
+        if (matchedOption && countrySelect.value !== matchedOption.value) {
+          countrySelect.value = matchedOption.value;
+          countrySelect.dispatchEvent(new Event("change"));
+
+          countrySelect.style.transition = "all 0.3s ease";
+          countrySelect.style.borderColor = "#f59e0b";
+          countrySelect.style.boxShadow = "0 0 0 4px rgba(245, 158, 11, 0.35)";
+          setTimeout(function() {
+            countrySelect.style.borderColor = "";
+            countrySelect.style.boxShadow = "";
+          }, 1200);
+
+          const countrySearchInp = wrap.querySelector("#search-f-country_id");
+          if (countrySearchInp) {
+            countrySearchInp.value = matchedOption.text;
+          }
+
+          toast("Auto-detected Country: " + matchedOption.text, "ok");
+        }
+      };
+
+      cityInput.addEventListener("input", autoSelectCountry);
+      cityInput.addEventListener("blur", autoSelectCountry);
+    }
+
+    /* Searchable Select Live Filter */
+    wrap.querySelectorAll(".searchable-select-wrap").forEach(function (wrapEl) {
+      const searchInp = wrapEl.querySelector(".ctl-search-input");
+      const selEl = wrapEl.querySelector("select");
+      if (!searchInp || !selEl) return;
+
+      const allOptions = Array.from(selEl.options);
+
+      const filterOptions = function() {
+        const query = searchInp.value.trim().toLowerCase();
+        selEl.innerHTML = "";
+
+        const matched = allOptions.filter(function (opt) {
+          if (!opt.value) return true;
+          return opt.text.toLowerCase().indexOf(query) !== -1;
+        });
+
+        matched.forEach(function (opt) {
+          selEl.appendChild(opt.cloneNode(true));
+        });
+
+        if (matched.length === 2 && matched[1].value) {
+          selEl.value = matched[1].value;
+        }
+      };
+
+      searchInp.addEventListener("input", filterOptions);
+
+      selEl.addEventListener("change", function () {
+        const opt = selEl.options[selEl.selectedIndex];
+        if (opt && opt.value) {
+          searchInp.value = opt.text;
+        } else {
+          searchInp.value = "";
+        }
+      });
+    });
+
     wrap.querySelectorAll("[data-close]").forEach(function (btn) {
       btn.addEventListener("click", closeModal);
     });
@@ -961,11 +1159,27 @@
       e.preventDefault();
       const bad = validate(wrap);
       if (bad) return;
-      const payload = {};
+      let payload = {};
       mod.fields.forEach(function (f) {
         const node = wrap.querySelector("#f-" + f.key);
-        if (node && node.type === "checkbox") payload[f.key] = node.checked;
-        else if (node) payload[f.key] = node.value;
+        if (!node) return;
+        let val = node.type === "checkbox" ? node.checked : node.value;
+        if (typeof val === "string") val = val.trim();
+
+        if (f.key.endsWith("_id") || f.key === "stars" || f.key === "availability" || f.key === "is_active") {
+          if (val === "" || val === null || val === undefined) {
+            val = null;
+          } else if (!isNaN(val)) {
+            val = Number(val);
+          }
+        } else if (f.type === "number") {
+          if (val === "" || val === null || val === undefined) {
+            val = null;
+          } else if (!isNaN(val)) {
+            val = Number(val);
+          }
+        }
+        payload[f.key] = val;
       });
       if (mod.serialize) payload = mod.serialize(payload, mod.fields, function (k) {
         const node = wrap.querySelector("#f-" + k);
@@ -1115,6 +1329,17 @@
         const map = {};
         pairs.forEach(function (p) { map[p[0]] = p[1]; });
         openModal("new", null, map);
+      });
+  }
+
+  function openEdit(row) {
+    const needed = module().fields.filter(function (f) { return f.optionsUrl; });
+    if (!needed.length) { openModal("edit", row, {}); return; }
+    Promise.all(needed.map(function (f) { return fetchOptions(f).then(function (o) { return [f.key, o]; }); }))
+      .then(function (pairs) {
+        const map = {};
+        pairs.forEach(function (p) { map[p[0]] = p[1]; });
+        openModal("edit", row, map);
       });
   }
 

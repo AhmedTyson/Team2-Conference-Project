@@ -36,6 +36,11 @@ class ReportController extends Controller
 
         $report->refresh();
 
+        if ($report->status === 'pending') {
+            app(\App\Services\System\GenerateReportService::class)->fillReport($report);
+            $report->refresh();
+        }
+
         Cache::forget('dashboard_analytics');
 
         if (Cache::getStore() instanceof TaggableStore) {
@@ -70,8 +75,18 @@ class ReportController extends Controller
         ]);
     }
 
-    public function download($id)
+    public function download(Request $request, $id)
     {
+        if ($request->has('token') && ! $request->user()) {
+            try {
+                $token = $request->query('token');
+                $user = auth('api')->setToken($token)->user();
+                if ($user) {
+                    auth()->setUser($user);
+                }
+            } catch (\Throwable $e) {}
+        }
+
         $report = Report::find($id);
 
         if (! $report) {

@@ -310,11 +310,118 @@
     return Array.isArray(items) ? items : (items && Array.isArray(items.data) ? items.data : []);
   }
 
+  async function apiDownload(path, defaultFilename, opts) {
+    opts = opts || {};
+    const normalizedPath = normalizePath(path);
+    const apiBase = getApiBase();
+
+    const headers = Object.assign(
+      {
+        "X-Requested-With": "XMLHttpRequest",
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        Pragma: "no-cache",
+        Expires: "0",
+      },
+      opts.headers || {}
+    );
+
+    const token = (It.readToken && It.readToken()) || localStorage.getItem("itinari_token");
+    if (token && !headers["Authorization"]) {
+      headers["Authorization"] = "Bearer " + token;
+    }
+
+    let res;
+    try {
+      res = await fetch(apiBase + normalizedPath, {
+        method: "GET",
+        headers: headers,
+      });
+    } catch (e) {
+      let altBase = null;
+      if (apiBase.indexOf("127.0.0.1:8000") !== -1) {
+        altBase = apiBase.replace("127.0.0.1:8000", "localhost:8000");
+      } else if (apiBase.indexOf("localhost:8000") !== -1) {
+        altBase = apiBase.replace("localhost:8000", "127.0.0.1:8000");
+      }
+      if (altBase) {
+        res = await fetch(altBase + normalizedPath, { method: "GET", headers: headers });
+      } else {
+        throw e;
+      }
+    }
+
+    // Centralized 401 Token Refresh Interceptor
+    if (res.status === 401) {
+      if (token) {
+        try {
+          const newTok = await refreshToken();
+          headers["Authorization"] = "Bearer " + newTok;
+          res = await fetch(apiBase + normalizedPath, { method: "GET", headers: headers });
+        } catch (err) {
+          if (!opts.skipAuthRedirect && It.session && typeof It.session.redirectToLogin === "function") {
+            It.session.clearSession();
+            It.session.redirectToLogin();
+          }
+        }
+      } else {
+        if (!opts.skipAuthRedirect && It.session && typeof It.session.redirectToLogin === "function") {
+          It.session.clearSession();
+          It.session.redirectToLogin();
+        }
+      }
+    }
+
+    if (!res.ok) {
+      let errBody = {};
+      try {
+        const errText = await res.text();
+        errBody = JSON.parse(errText);
+      } catch (e) {}
+
+      const errMsg = (errBody && errBody.message) || (errBody && errBody.error && errBody.error.message) || ("Request failed with status " + res.status);
+      if (!errBody.message) errBody.message = errMsg;
+
+      return { ok: false, status: res.status, body: errBody };
+    }
+
+    let filename = defaultFilename || "report.pdf";
+    const disposition = res.headers.get("Content-Disposition");
+    if (disposition && disposition.indexOf("filename=") !== -1) {
+      const matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition);
+      if (matches != null && matches[1]) {
+        filename = matches[1].replace(/['"]/g, "");
+      }
+    }
+
+    const blob = await res.blob();
+    const blobUrl = global.URL.createObjectURL(blob);
+    
+    if (global.navigator && global.navigator.msSaveOrOpenBlob) {
+      global.navigator.msSaveOrOpenBlob(blob, filename);
+      return { ok: true, status: res.status, filename: filename };
+    }
+
+    const link = document.createElement("a");
+    link.href = blobUrl;
+    link.download = filename;
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+
+    setTimeout(function() {
+      if (link.parentNode) link.parentNode.removeChild(link);
+      global.URL.revokeObjectURL(blobUrl);
+    }, 3000);
+
+    return { ok: true, status: res.status, filename: filename };
+  }
+
   It.apiPost = apiPost;
   It.apiGet = apiGet;
   It.apiPut = apiPut;
   It.apiPatch = apiPatch;
   It.apiDelete = apiDelete;
+  It.apiDownload = apiDownload;
   It.fetchAll = apiFetchAll;
   It.extractToken = extractToken;
   It.isFieldErrors = isFieldErrors;
@@ -329,6 +436,7 @@
     put: apiPut,
     patch: apiPatch,
     delete: apiDelete,
+    download: apiDownload,
     fetchAll: apiFetchAll,
     request: request
   };

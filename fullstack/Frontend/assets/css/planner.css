@@ -43,6 +43,88 @@ body.planner-body {
 }
 
 /* ============================================================
+   DESTINATION & TRAVEL TIMELINE STEP PROGRESS BAR
+   ============================================================ */
+.planner-progress-wrapper {
+  margin-bottom: 2.5rem;
+}
+
+.planner-progress-title {
+  font-family: var(--itinera-font-serif);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 1.25rem 0;
+  letter-spacing: -0.02em;
+}
+
+.planner-progress-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.85rem;
+}
+
+.progress-step-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+.progress-step-item.active,
+.progress-step-item.completed {
+  opacity: 1;
+}
+
+.progress-step-bar {
+  height: 6px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.12);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-step-item.active .progress-step-bar {
+  background: #f59e0b;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.6);
+}
+
+.progress-step-item.completed .progress-step-bar {
+  background: #f59e0b;
+}
+
+.progress-step-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #a1a1aa;
+  font-family: var(--itinera-font-sans);
+  transition: color 0.3s ease;
+}
+
+.progress-step-item.active .progress-step-label {
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.progress-step-item.completed .progress-step-label {
+  color: #f59e0b;
+}
+
+@media (max-width: 640px) {
+  .planner-progress-title {
+    font-size: 1.6rem;
+  }
+  .planner-progress-grid {
+    gap: 0.4rem;
+  }
+  .progress-step-label {
+    font-size: 0.7rem;
+  }
+}
+
+/* ============================================================
    TOP NAVIGATION HEADER
    ============================================================ */
 .itinera-topbar {

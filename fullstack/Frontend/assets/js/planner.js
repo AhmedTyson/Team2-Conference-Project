@@ -139,6 +139,20 @@
     });
   }
 
+  // Progress Step Bar Controller
+  function updateProgressStep(activeStep) {
+    const items = document.querySelectorAll(".progress-step-item");
+    items.forEach((item) => {
+      const step = parseInt(item.getAttribute("data-step"), 10);
+      item.classList.remove("active", "completed");
+      if (step < activeStep) {
+        item.classList.add("completed");
+      } else if (step === activeStep) {
+        item.classList.add("active");
+      }
+    });
+  }
+
   // Multi-step Navigation
   function setupStepFlow() {
     const btnProceed = el("btn-proceed-budget");
@@ -174,6 +188,7 @@
 
         step1.style.display = "none";
         step2.style.display = "block";
+        updateProgressStep(2);
         window.scrollTo({ top: step2.offsetTop - 80, behavior: "smooth" });
       });
     }
@@ -182,6 +197,7 @@
       btnBackStep1.addEventListener("click", () => {
         step2.style.display = "none";
         step1.style.display = "block";
+        updateProgressStep(1);
         window.scrollTo({ top: step1.offsetTop - 80, behavior: "smooth" });
       });
     }
@@ -201,6 +217,7 @@
     step2.style.display = "none";
     modal.style.display = "block";
     output.style.display = "none";
+    updateProgressStep(4);
 
     const steps = [
       "Analyzing destination landmarks & topography...",
@@ -388,6 +405,7 @@
 
   // Render Master Plan on UI
   function renderMasterPlan(plan) {
+    updateProgressStep(5);
     const titleEl = el("mp-title");
     const metaEl = el("mp-meta");
     const descEl = el("mp-desc");
@@ -456,10 +474,98 @@
 
     const btnBook = el("btn-book-paymob");
     if (btnBook) {
-      btnBook.onclick = (e) => {
+      btnBook.onclick = function (e) {
         e.preventDefault();
+
+        var token = (It.readToken && It.readToken()) || localStorage.getItem("itinari_token");
+        if (!token) {
+          if (typeof window.showToast === "function") showToast("Please sign in to proceed with Paymob payment.");
+          else alert("Please sign in to proceed with Paymob payment.");
+
+          if (typeof window.openAuthModal === "function") {
+            window.openAuthModal("login", "Sign in to complete Paymob booking.");
+          } else if (typeof window.showAuthModal === "function") {
+            window.showAuthModal("login");
+          } else {
+            window.location.href = "../login.html?redirect=app/planner.html";
+          }
+          return;
+        }
+
+        btnBook.disabled = true;
+        btnBook.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Connecting Paymob Gateway...';
+
         sessionStorage.setItem("itinari_checkout_plan", JSON.stringify(plan));
-        window.location.href = "checkout.html?plan=ai_luxury&city=" + encodeURIComponent(plannerState.city) + "&amount=" + plan.estimated_budget;
+
+        // Save trip first to ensure trip ID is stored
+        savePlanToMyTrips().then(function (tripRecord) {
+          var tripId = tripRecord ? (tripRecord.id || (tripRecord.data && tripRecord.data.id)) : plannerState.savedTripId;
+          var numTripId = Number(tripId);
+
+          if (!isNaN(numTripId) && numTripId > 0) {
+            return (It.apiPost
+              ? It.apiPost("/checkout/initiate", {
+                  type: "trip_package",
+                  trip_id: numTripId,
+                  billing: {
+                    first_name: "Traveler",
+                    last_name: "User",
+                    email: localStorage.getItem("itinari_user_email") || "traveler@example.com",
+                    phone_number: "+201000000000"
+                  }
+                }, { auth: true })
+              : Promise.reject("No API client"));
+          }
+
+          // Fallback to active pricing plan matching plans.js
+          return (It.apiGet ? It.apiGet("/plans") : Promise.resolve({ ok: true, body: { data: [{ id: 1 }] } }))
+            .then(function (plansRes) {
+              var plansList = [];
+              if (plansRes && plansRes.body) {
+                plansList = Array.isArray(plansRes.body.data) ? plansRes.body.data : (Array.isArray(plansRes.body) ? plansRes.body : []);
+              }
+              var targetPlan = plansList.find(function (p) { return Number(p.price_cents) > 0; }) || plansList[0] || { id: 1 };
+              var planId = Number(targetPlan.id || 1);
+
+              return (It.apiPost
+                ? It.apiPost("/checkout/initiate", {
+                    type: "subscription",
+                    plan_id: planId,
+                    billing: {
+                      first_name: "Traveler",
+                      last_name: "User",
+                      email: localStorage.getItem("itinari_user_email") || "traveler@example.com",
+                      phone_number: "+201000000000"
+                    }
+                  }, { auth: true })
+                : Promise.reject("No API client"));
+            });
+        }).then(function (res) {
+          if (res && res.ok && res.body && res.body.data && res.body.data.checkout_url) {
+            try {
+              sessionStorage.setItem("itinera_order_ctx", JSON.stringify({
+                order_id: res.body.data.order_id || null,
+                plan_name: plan.title,
+                amount: plan.estimated_budget,
+                ts: Date.now()
+              }));
+            } catch (e) {}
+
+            if (typeof window.showToast === "function") showToast("Redirecting directly to Paymob Payment Gateway...");
+            window.location.href = res.body.data.checkout_url;
+          } else {
+            var msg = (res && res.body && res.body.message) || "Could not initiate Paymob payment.";
+            if (typeof window.showToast === "function") showToast(msg);
+            else alert(msg);
+            btnBook.disabled = false;
+            btnBook.innerHTML = '<i class="fas fa-credit-card"></i> <span>Book Package (Paymob)</span>';
+          }
+        }).catch(function (err) {
+          console.error("Paymob initiation error:", err);
+          if (typeof window.showToast === "function") showToast("Payment gateway connection error.");
+          btnBook.disabled = false;
+          btnBook.innerHTML = '<i class="fas fa-credit-card"></i> <span>Book Package (Paymob)</span>';
+        });
       };
     }
   }
@@ -467,7 +573,7 @@
   // Save Plan to User's Account & Database
   async function savePlanToMyTrips() {
     const plan = plannerState.currentPlan;
-    if (!plan) return;
+    if (!plan) return null;
 
     const btn = el("btn-save-master-plan");
     if (btn) {
@@ -475,9 +581,11 @@
       btn.disabled = true;
     }
 
+    let createdRecord = null;
+
     // Save locally
     const savedTrips = JSON.parse(localStorage.getItem("itinari_my_trips") || "[]");
-    savedTrips.unshift({
+    const localTrip = {
       id: "trip_" + Date.now(),
       title: plan.title,
       city: plannerState.city,
@@ -487,7 +595,8 @@
       budget: plan.estimated_budget,
       plan: plan,
       created_at: new Date().toISOString()
-    });
+    };
+    savedTrips.unshift(localTrip);
     localStorage.setItem("itinari_my_trips", JSON.stringify(savedTrips));
 
     // Update Nav counter badge
@@ -518,11 +627,12 @@
           end_date: endDate
         };
 
+        let resJson;
         if (typeof It.apiPost === "function") {
-          await It.apiPost("/trips", payload);
+          resJson = await It.apiPost("/trips", payload);
         } else {
           const apiBase = (window.ITINERA_CONFIG && window.ITINERA_CONFIG.apiBase) || "/api";
-          await fetch(apiBase + "/trips", {
+          const fetchRes = await fetch(apiBase + "/trips", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -531,6 +641,13 @@
             },
             body: JSON.stringify(payload)
           });
+          resJson = await fetchRes.json();
+        }
+        if (resJson) {
+          createdRecord = resJson.data || resJson.body?.data || resJson;
+          if (createdRecord && createdRecord.id) {
+            plannerState.savedTripId = createdRecord.id;
+          }
         }
       } catch (err) {
         console.warn("Backend save notice:", err);
@@ -542,6 +659,8 @@
       btn.innerHTML = '<i class="fas fa-check"></i> Saved to My Trips';
       btn.disabled = false;
     }
+
+    return createdRecord || localTrip;
   }
 
   // Initialize Page

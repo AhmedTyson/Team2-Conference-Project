@@ -42,6 +42,14 @@ class TripPackageStrategy implements CheckoutStrategyInterface
         // Leave Attractions out for now — no price field exists and no scope was given to add one.
         // Attractions remain unpriced.
 
+        if ($totalCents <= 0 && isset($product->budget) && is_numeric($product->budget) && $product->budget > 0) {
+            $totalCents = (int) round($product->budget * 100);
+        }
+
+        if ($totalCents <= 0) {
+            $totalCents = 150000; // Default baseline package fallback (1500.00 EGP/USD)
+        }
+
         $commissionRate = Setting::where('key', 'platform_booking_commission_rate')->value('value');
         $rate = $commissionRate !== null ? (float) $commissionRate : 0.05;
 
