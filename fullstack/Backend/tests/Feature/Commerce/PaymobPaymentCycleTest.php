@@ -120,4 +120,47 @@ class PaymobPaymentCycleTest extends TestCase
             ->assertJsonPath('data.is_success', true)
             ->assertJsonPath('data.card_pan', '1111');
     }
+
+    public function test_paymob_callback_handles_payment_failure_and_updates_database(): void
+    {
+        $user = User::factory()->create(['email_verified_at' => now()]);
+        $user->assignRole('user');
+
+        $order = Order::create([
+            'user_id' => $user->id,
+            'status' => 'pending',
+            'total_cents' => 829500,
+            'currency' => 'EGP',
+        ]);
+
+        $payment = Payment::create([
+            'order_id' => $order->id,
+            'paymob_transaction_id' => 'ORDER_72_1786910300',
+            'amount_cents' => 829500,
+            'currency' => 'EGP',
+            'status' => 'pending',
+            'hmac_valid' => false,
+            'raw_payload' => '{}',
+        ]);
+
+        $failedCallbackUrl = '/api/v1/paymob/callback?id=516712599&pending=false&amount_cents=829500&success=false&error_occured=true&txn_response_code=DECLINED&merchant_order_id=ORDER_72_1786910300&source_data.type=card&source_data.pan=4321&source_data.sub_type=MasterCard';
+
+        $response = $this->get($failedCallbackUrl);
+
+        $response->assertRedirect();
+        $this->assertStringContainsString('/app/payment-success.html', $response->headers->get('Location'));
+        $this->assertStringContainsString('success=false', $response->headers->get('Location'));
+
+        $orderStatus = is_object($order->fresh()->status) ? $order->fresh()->status->value : $order->fresh()->status;
+        $paymentStatus = is_object($payment->fresh()->status) ? $payment->fresh()->status->value : $payment->fresh()->status;
+
+        $this->assertEquals('failed', $orderStatus);
+        $this->assertEquals('failed', $paymentStatus);
+
+        // Verify order lookup endpoint reflects database failure
+        $lookupResponse = $this->actingAs($user, 'api')->getJson("/api/orders/lookup/ORDER_72_1786910300");
+        $lookupResponse->assertStatus(200)
+            ->assertJsonPath('data.order_id', $order->id)
+            ->assertJsonPath('data.is_success', false);
+    }
 }
