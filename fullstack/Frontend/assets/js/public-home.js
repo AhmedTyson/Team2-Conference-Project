@@ -503,17 +503,18 @@
       gsap.registerPlugin(ScrollTrigger);
     }
 
-    // 1. Hero Content Entrance
-    gsap.from(".hero-badge", { opacity: 0, y: -20, duration: 0.8, ease: "power3.out", delay: 0.2 });
-    gsap.from(".hero-headline", { opacity: 0, y: 30, duration: 1, ease: "power3.out", delay: 0.4 });
-    gsap.from(".hero-subtext", { opacity: 0, y: 20, duration: 0.9, ease: "power3.out", delay: 0.6 });
-    gsap.from(".hero-ctas", { opacity: 0, y: 20, duration: 0.8, ease: "power3.out", delay: 0.8 });
-    gsap.from("#carousel-card", { opacity: 0, scale: 0.92, duration: 1.1, ease: "back.out(1.4)", delay: 0.5 });
+    // 1. Hero Content Entrance (Staggered Timeline)
+    var tl = gsap.timeline({ defaults: { ease: "power4.out" } });
+    tl.from(".hero-badge", { opacity: 0, y: -30, scale: 0.9, duration: 1, delay: 0.2 })
+      .from(".hero-headline", { opacity: 0, y: 40, duration: 1.2 }, "-=0.7")
+      .from(".hero-subtext", { opacity: 0, y: 30, duration: 1 }, "-=0.8")
+      .from(".hero-ctas", { opacity: 0, y: 20, duration: 0.9 }, "-=0.7")
+      .from("#carousel-card", { opacity: 0, x: 60, scale: 0.9, duration: 1.3, ease: "back.out(1.5)" }, "-=1");
 
     // 2. Parallax background on scroll
     if (typeof ScrollTrigger !== "undefined" && el("heroWrapper")) {
       gsap.to("#heroWrapper", {
-        backgroundPositionY: "40%",
+        backgroundPositionY: "45%",
         ease: "none",
         scrollTrigger: {
           trigger: "#heroWrapper",
@@ -524,19 +525,80 @@
       });
     }
 
-    // 3. Staggered ScrollTrigger animations for cards
+    // 3. KPI Animated Counters
     if (typeof ScrollTrigger !== "undefined") {
-      gsap.utils.toArray(".glass-card").forEach(function(card) {
-        gsap.from(card, {
+      var statsConfig = [
+        { id: "stat-hotels", target: 120, suffix: "+" },
+        { id: "stat-tours", target: 45, suffix: "+" },
+        { id: "stat-flights", target: 85, suffix: "+" },
+        { id: "stat-reviews", target: 1.2, suffix: "K", isDecimal: true }
+      ];
+
+      statsConfig.forEach(function (stat) {
+        var node = el(stat.id);
+        if (!node) return;
+        
+        ScrollTrigger.create({
+          trigger: node,
+          start: "top 90%",
+          onEnter: function () {
+            var counter = { val: 0 };
+            gsap.to(counter, {
+              val: stat.target,
+              duration: 2,
+              ease: "power2.out",
+              onUpdate: function () {
+                if (stat.isDecimal) {
+                  node.textContent = counter.val.toFixed(1) + stat.suffix;
+                } else {
+                  node.textContent = Math.floor(counter.val) + stat.suffix;
+                }
+              }
+            });
+          },
+          once: true
+        });
+      });
+    }
+
+    // 4. Staggered ScrollTrigger animations for all glass cards & section headers
+    if (typeof ScrollTrigger !== "undefined") {
+      gsap.utils.toArray(".glass-card, .section-title, .section-sub").forEach(function(elem) {
+        gsap.from(elem, {
           opacity: 0,
-          y: 40,
-          duration: 0.8,
-          ease: "power2.out",
+          y: 45,
+          duration: 1,
+          ease: "power3.out",
           scrollTrigger: {
-            trigger: card,
+            trigger: elem,
             start: "top 88%",
             toggleActions: "play none none none"
           }
+        });
+      });
+    }
+
+    // 5. 3D Tilt Micro-Interaction for Hero Carousel Card
+    var card = el("carousel-card");
+    if (card) {
+      card.addEventListener("mousemove", function(e) {
+        var rect = card.getBoundingClientRect();
+        var x = e.clientX - rect.left - rect.width / 2;
+        var y = e.clientY - rect.top - rect.height / 2;
+        gsap.to(card, {
+          rotateY: x * 0.04,
+          rotateX: -y * 0.04,
+          transformPerspective: 1000,
+          duration: 0.4,
+          ease: "power1.out"
+        });
+      });
+      card.addEventListener("mouseleave", function() {
+        gsap.to(card, {
+          rotateY: 0,
+          rotateX: 0,
+          duration: 0.6,
+          ease: "power2.out"
         });
       });
     }
@@ -579,6 +641,11 @@
       if (windEl) windEl.textContent = wind + " km/h";
       if (humEl) humEl.textContent = hum + "%";
       if (iconEl) iconEl.innerHTML = '<i class="' + iconClass + '"></i>';
+
+      var displayCard = el("weatherDisplayCard");
+      if (displayCard && typeof gsap !== "undefined") {
+        gsap.fromTo(displayCard, { opacity: 0.6, scale: 0.97 }, { opacity: 1, scale: 1, duration: 0.5, ease: "power2.out" });
+      }
     }).catch(function () {});
   }
 
