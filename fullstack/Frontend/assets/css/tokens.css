@@ -311,6 +311,16 @@ html.dark,
    UNIVERSAL GLASSMORPHISM NAVBAR (Public & Auth Pages)
    State-of-the-art multi-layer frosted translucency & specular rim reflection
    ===================================================================== */
+#global-navbar,
+#mobile-nav-drawer {
+  z-index: 2147483647 !important;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  box-sizing: border-box;
+}
+
 .app-nav-header,
 .auth-nav-header {
   width: 100%;
@@ -477,7 +487,7 @@ html.dark .app-nav-link,
 html.dark .auth-nav-link,
 :root[data-theme="dark"] .app-nav-link,
 :root[data-theme="dark"] .auth-nav-link {
-  color: rgba(255, 255, 255, 0.8) !important;
+  color: rgba(255, 255, 255, 0.85) !important;
 }
 
 html.dark .app-nav-link:hover,
@@ -498,6 +508,64 @@ html.dark .auth-nav-link.active,
   background: rgba(245, 158, 11, 0.18) !important;
   border-color: rgba(245, 158, 11, 0.35) !important;
   font-weight: 600;
+}
+
+/* =====================================================================
+   GLOBAL NAVBAR CONTRAST ENFORCEMENT (LIGHT vs DARK MODE)
+   ===================================================================== */
+
+/* Light Mode: All navbar text MUST be dark slate (#0f172a / #1e293b) */
+html:not(.dark) #global-navbar .app-nav-container a,
+html:not(.dark) #global-navbar .app-nav-container button,
+html:not(.dark) #global-navbar .app-nav-container span:not(.bg-amber-400):not(.bg-amber-500):not(.bg-amber-400\/20) {
+  color: #0f172a !important;
+}
+
+html:not(.dark) #global-navbar .app-nav-container .brand-name {
+  color: #0f172a !important;
+}
+
+html:not(.dark) #global-navbar .app-nav-container a.text-amber-600,
+html:not(.dark) #global-navbar .app-nav-container button.text-amber-600,
+html:not(.dark) #global-navbar .app-nav-container span.text-amber-600,
+html:not(.dark) #global-navbar .app-nav-container span.text-amber-700 {
+  color: #d97706 !important;
+}
+
+html:not(.dark) #global-navbar .app-nav-container #cmd-trigger-btn,
+html:not(.dark) #global-navbar .app-nav-container #theme-toggle {
+  background-color: rgba(0, 0, 0, 0.06) !important;
+  border-color: rgba(0, 0, 0, 0.12) !important;
+  color: #0f172a !important;
+}
+
+html:not(.dark) #global-navbar .app-nav-container #cmd-trigger-btn kbd {
+  color: #475569 !important;
+  background-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+html:not(.dark) #global-navbar .app-nav-container a.bg-amber-400,
+html:not(.dark) #global-navbar .app-nav-container a.bg-amber-500 {
+  color: #020617 !important;
+  background-color: #fbbf24 !important;
+}
+
+/* Dark Mode: Navbar text is crisp white (#ffffff / rgba(255,255,255,0.85)) */
+html.dark #global-navbar .app-nav-container a,
+html.dark #global-navbar .app-nav-container button,
+html.dark #global-navbar .app-nav-container span:not(.bg-amber-400):not(.bg-amber-500):not(.bg-amber-400\/20) {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+html.dark #global-navbar .app-nav-container .brand-name {
+  color: #ffffff !important;
+}
+
+html.dark #global-navbar .app-nav-container #cmd-trigger-btn,
+html.dark #global-navbar .app-nav-container #theme-toggle {
+  background-color: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: rgba(255, 255, 255, 0.85) !important;
 }
 
 .app-nav-link i,

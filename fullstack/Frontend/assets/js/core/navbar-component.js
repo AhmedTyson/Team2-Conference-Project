@@ -8,6 +8,13 @@
 
   const doc = global.document;
 
+  if (global.tailwind) {
+    global.tailwind.config = global.tailwind.config || {};
+    global.tailwind.config.darkMode = 'class';
+  } else {
+    global.tailwind = { config: { darkMode: 'class' } };
+  }
+
   function el(id) { return doc.getElementById(id); }
 
   function ensurePaginationScript() {
@@ -141,12 +148,18 @@
     var userMenu = el("nav-user-menu");
     var userHub = el("dropdown-user-hub");
     var bellWrap = el("nav-bell-wrapper");
+    var mobileGuestCta = el("mobile-drawer-guest-cta");
+    var mobileUserInfo = el("mobile-drawer-user-info");
+    var mobileHubAccordion = el("mobile-drawer-hub-accordion");
 
     if (user) {
       if (guestCta) guestCta.classList.add("hidden");
       if (userMenu) userMenu.classList.remove("hidden");
       if (userHub) userHub.classList.remove("hidden");
       if (bellWrap) bellWrap.classList.remove("hidden");
+      if (mobileGuestCta) mobileGuestCta.classList.add("hidden");
+      if (mobileUserInfo) mobileUserInfo.classList.remove("hidden");
+      if (mobileHubAccordion) mobileHubAccordion.classList.remove("hidden");
 
       // Set user details
       var name = user.name || user.email || "Traveler";
@@ -162,22 +175,32 @@
       if (fullNameEl) fullNameEl.textContent = name;
       if (emailEl) emailEl.textContent = user.email || "";
 
-      // Wire logout button
-      var logoutBtn = el("nav-logout-btn");
-      if (logoutBtn) {
-        logoutBtn.addEventListener("click", function (e) {
-          e.preventDefault();
-          if (global.Itinari && global.Itinari.session && global.Itinari.session.logout) {
-            global.Itinari.session.logout();
-          } else {
-            try {
-              global.localStorage.removeItem("itinari_token");
-              global.localStorage.removeItem("itinari_user");
-            } catch (err) {}
-            global.location.href = prefix + "auth/login.html";
-          }
-        });
+      // Set mobile drawer user details
+      var mAvatar = el("mobile-drawer-user-avatar");
+      var mName = el("mobile-drawer-user-name");
+      var mEmail = el("mobile-drawer-user-email");
+      if (mAvatar) mAvatar.textContent = initials;
+      if (mName) mName.textContent = name;
+      if (mEmail) mEmail.textContent = user.email || "";
+
+      function handleLogout(e) {
+        if (e) e.preventDefault();
+        if (global.Itinari && global.Itinari.session && global.Itinari.session.logout) {
+          global.Itinari.session.logout();
+        } else {
+          try {
+            global.localStorage.removeItem("itinari_token");
+            global.localStorage.removeItem("itinari_user");
+          } catch (err) {}
+          global.location.href = prefix + "auth/login.html";
+        }
       }
+
+      // Wire logout buttons
+      var logoutBtn = el("nav-logout-btn");
+      if (logoutBtn) logoutBtn.addEventListener("click", handleLogout);
+      var mLogoutBtn = el("mobile-drawer-logout-btn");
+      if (mLogoutBtn) mLogoutBtn.addEventListener("click", handleLogout);
 
       // Fetch Notification Badge Count
       var It = global.Itinari;
@@ -208,6 +231,8 @@
       if (userMenu) userMenu.classList.add("hidden");
       if (userHub) userHub.classList.add("hidden");
       if (bellWrap) bellWrap.classList.add("hidden");
+      if (mobileGuestCta) mobileGuestCta.classList.remove("hidden");
+      if (mobileUserInfo) mobileUserInfo.classList.add("hidden");
     }
 
     // 4. Command Palette Trigger Setup
@@ -220,7 +245,37 @@
       });
     }
 
-    // 5. Theme Toggle Setup
+    // 5. Wire Click Dropdown Toggles for Touch & Mobile Devices
+    var dropContainers = navEl.querySelectorAll(".group\\/drop, .group\\/user");
+    dropContainers.forEach(function (container) {
+      var toggleBtn = container.querySelector("button") || container.querySelector("a[data-nav-id]");
+      var menu = container.querySelector("div.absolute");
+      if (!toggleBtn || !menu) return;
+
+      toggleBtn.addEventListener("click", function (e) {
+        var isOpen = menu.classList.contains("!opacity-100");
+        
+        doc.querySelectorAll("#global-navbar div.absolute").forEach(function (m) {
+          m.classList.remove("!opacity-100", "!visible", "!pointer-events-auto");
+        });
+
+        if (!isOpen) {
+          e.preventDefault();
+          e.stopPropagation();
+          menu.classList.add("!opacity-100", "!visible", "!pointer-events-auto");
+        }
+      });
+    });
+
+    doc.addEventListener("click", function (e) {
+      if (!e.target.closest(".group\\/drop") && !e.target.closest(".group\\/user")) {
+        doc.querySelectorAll("#global-navbar div.absolute").forEach(function (m) {
+          m.classList.remove("!opacity-100", "!visible", "!pointer-events-auto");
+        });
+      }
+    });
+
+    // 6. Theme Toggle Setup
     var themeBtn = el("theme-toggle");
     function syncThemeIcon() {
       if (!themeBtn) return;
@@ -253,23 +308,32 @@
       });
     }
 
-    // 6. Responsive Mobile Drawer Setup
+    // 7. Responsive Mobile Drawer Setup
     var burgerBtn = el("mobile-hamburger-btn");
     var closeBtn = el("mobile-close-btn");
     var mobileDrawer = el("mobile-nav-drawer");
     var mobileContent = el("mobile-nav-content");
 
+    // Move drawer directly under body to escape pointer-events-none on fixed header
+    if (mobileDrawer && mobileDrawer.parentNode !== doc.body) {
+      doc.body.appendChild(mobileDrawer);
+    }
+
     function openMobileDrawer() {
       if (mobileDrawer && mobileContent) {
         mobileDrawer.classList.remove("opacity-0", "pointer-events-none");
+        mobileDrawer.classList.add("opacity-100", "pointer-events-auto");
         mobileContent.classList.remove("translate-x-full");
+        doc.body.style.overflow = "hidden";
       }
     }
 
     function closeMobileDrawer() {
       if (mobileDrawer && mobileContent) {
         mobileDrawer.classList.add("opacity-0", "pointer-events-none");
+        mobileDrawer.classList.remove("opacity-100", "pointer-events-auto");
         mobileContent.classList.add("translate-x-full");
+        doc.body.style.overflow = "";
       }
     }
 
@@ -292,6 +356,34 @@
         if (e.target === mobileDrawer) {
           closeMobileDrawer();
         }
+      });
+
+      mobileDrawer.querySelectorAll("a").forEach(function (lnk) {
+        lnk.addEventListener("click", function () {
+          closeMobileDrawer();
+        });
+      });
+
+      // Wire Mobile Drawer Accordions (Discover, Company, My Hub)
+      mobileDrawer.querySelectorAll(".mobile-accordion-toggle").forEach(function (toggleBtn) {
+        toggleBtn.addEventListener("click", function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          var accordion = toggleBtn.closest(".mobile-accordion");
+          var menu = accordion ? accordion.querySelector(".mobile-accordion-menu") : null;
+          var chevron = toggleBtn.querySelector(".accordion-chevron");
+
+          if (menu) {
+            var isHidden = menu.classList.contains("hidden");
+            if (isHidden) {
+              menu.classList.remove("hidden");
+              if (chevron) chevron.classList.add("rotate-180");
+            } else {
+              menu.classList.add("hidden");
+              if (chevron) chevron.classList.remove("rotate-180");
+            }
+          }
+        });
       });
     }
   }
