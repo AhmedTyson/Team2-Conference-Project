@@ -1077,7 +1077,7 @@ html.dark .theme-toggle .icon-moon,
   background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  z-index: 99999;
+  z-index: 9999999 !important;
   display: flex;
   align-items: flex-start;
   justify-content: center;

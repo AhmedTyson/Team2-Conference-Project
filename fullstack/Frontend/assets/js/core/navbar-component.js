@@ -45,6 +45,26 @@
     return (token && user) ? user : null;
   }
 
+  function ensureCmdPaletteLoaded() {
+    if (!global.ItinariCmd && !doc.querySelector('script[src*="command-palette.js"]')) {
+      var prefix = getBasePrefix();
+      var s = doc.createElement("script");
+      s.src = prefix + "assets/js/core/command-palette.js";
+      doc.head.appendChild(s);
+    }
+  }
+
+  function openCommandPalette() {
+    if (global.ItinariCmd && typeof global.ItinariCmd.open === "function") {
+      global.ItinariCmd.open();
+    } else {
+      ensureCmdPaletteLoaded();
+      setTimeout(function () {
+        if (global.ItinariCmd && global.ItinariCmd.open) global.ItinariCmd.open();
+      }, 150);
+    }
+  }
+
   function adjustRelativeHref(href, prefix) {
     if (!href) return href;
     if (href.startsWith("http://") || href.startsWith("https://") || href.startsWith("#") || href.startsWith("javascript:")) {
@@ -176,11 +196,12 @@
     }
 
     // 4. Command Palette Trigger Setup
+    ensureCmdPaletteLoaded();
     var cmdBtn = el("cmd-trigger-btn");
     if (cmdBtn) {
       cmdBtn.addEventListener("click", function (e) {
         e.preventDefault();
-        if (global.ItinariCmd) global.ItinariCmd.open();
+        openCommandPalette();
       });
     }
 
