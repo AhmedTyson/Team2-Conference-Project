@@ -123,7 +123,7 @@ class ReportTest extends TestCase
 
         $report = Report::factory()->create(['file_path' => $reportPath, 'status' => 'completed']);
 
-        $response = $this->actingAs($this->admin(), 'api')->getJson("/api/admin/reports/{$report->id}/download");
+        $response = $this->actingAs($this->admin(), 'api')->get("/api/admin/reports/{$report->id}/download");
 
         $response->assertStatus(200)
             ->assertHeader('content-type', 'application/pdf');
