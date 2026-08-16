@@ -84,6 +84,13 @@
         <div class="panel-body">
           <form id="create-trip-form">
             <div class="form-grid">
+              <div class="form-group full" id="assignment-select-group" style="display:none;">
+                <label for="assignment-select">Target Customer Assignment</label>
+                <select id="assignment-select" class="w-full p-3 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-zinc-900 text-slate-900 dark:text-white">
+                  <option value="">Loading customer assignments...</option>
+                </select>
+              </div>
+
               <div class="form-group full">
                 <label for="trip-title">Trip Title</label>
                 <input type="text" id="trip-title" name="title" required placeholder="e.g. 7 Days in Paris" />

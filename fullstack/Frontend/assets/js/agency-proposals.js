@@ -27,16 +27,18 @@
     const tbody = document.createElement("tbody");
     trips.forEach(function (t) {
       const tr = document.createElement("tr");
-      const priceStr = t.price ? "$" + Number(t.price).toLocaleString() : "$1,250";
+      const priceVal = t.budget || t.price || 0;
+      const priceStr = "$" + Number(priceVal).toLocaleString(undefined, { minimumFractionDigits: 2 });
       const clientStr = t.user ? (t.user.name || t.user.email) : "Assigned Client";
       const createdStr = t.created_at ? new Date(t.created_at).toLocaleDateString() : "Recently";
+      const daysStr = (t.no_of_days || t.duration_days || 7) + " Days";
 
       tr.innerHTML =
         "<td>#" + t.id + "</td>" +
         "<td><strong>" + (t.title || "Untitled Proposal") + "</strong></td>" +
         "<td>" + clientStr + "</td>" +
         "<td><span class=\"badge badge-ok\">" + priceStr + "</span></td>" +
-        "<td>" + (t.duration_days ? t.duration_days + " Days" : "7 Days") + "</td>" +
+        "<td>" + daysStr + "</td>" +
         "<td>" + createdStr + "</td>" +
         "<td><a href=\"../app/trips.html?id=" + t.id + "\" class=\"btn btn-outline btn-sm\" target=\"_blank\">View Trip</a></td>";
 

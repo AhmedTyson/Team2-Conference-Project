@@ -111,7 +111,16 @@
         createTrip.href = "create-trip.html?assignment_id=" + r.id;
         createTrip.className = "btn btn-primary btn-sm";
         createTrip.textContent = "Create Trip";
+
+        const completeBtn = document.createElement("button");
+        completeBtn.type = "button";
+        completeBtn.className = "btn btn-outline btn-sm";
+        completeBtn.style.marginInlineStart = "0.5rem";
+        completeBtn.textContent = "Mark Completed";
+        completeBtn.addEventListener("click", function () { respond(r, "complete"); });
+
         actionTd.appendChild(createTrip);
+        actionTd.appendChild(completeBtn);
       } else {
         actionTd.textContent = "\u2014";
       }
