@@ -102,6 +102,11 @@ class PaymobWebhookController extends Controller
             ], $success ? 'Payment successful' : 'Payment failed');
         }
 
+        $frontendUrl = env('FRONTEND_URL', 'http://localhost:8080');
+        if (empty($frontendUrl)) {
+            $frontendUrl = 'http://localhost:8080';
+        }
+
         $redirectParams = http_build_query([
             'order_id' => $merchantOrderId ?? '',
             'id' => $id ?? '',
@@ -114,6 +119,6 @@ class PaymobWebhookController extends Controller
             'txn_response_code' => $request->query('txn_response_code', $success ? 'APPROVED' : 'FAILED'),
         ]);
 
-        return redirect('/app/payment-success.html?' . $redirectParams);
+        return redirect(rtrim($frontendUrl, '/') . '/app/payment-success.html?' . $redirectParams);
     }
 }
