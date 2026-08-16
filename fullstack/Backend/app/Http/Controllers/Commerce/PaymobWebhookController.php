@@ -2,18 +2,27 @@
 
 namespace App\Http\Controllers\Commerce;
 
+use App\Enums\OrderStatus;
+use App\Enums\PaymentStatus;
+use App\Events\PaymentFailed;
+use App\Events\PaymentSucceeded;
 use App\Http\Controllers\Controller;
+use App\Interfaces\Commerce\OrderRepositoryInterface;
 use App\Interfaces\Commerce\PaymentGatewayInterface;
+use App\Interfaces\Commerce\PaymentRepositoryInterface;
 use App\Services\Commerce\WebhookService;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PaymobWebhookController extends Controller
 {
     public function __construct(
         protected WebhookService $webhookService,
-        protected PaymentGatewayInterface $paymentGateway
+        protected PaymentGatewayInterface $paymentGateway,
+        protected PaymentRepositoryInterface $paymentRepository,
+        protected OrderRepositoryInterface $orderRepository
     ) {}
 
     public function handle(Request $request)
@@ -43,6 +52,45 @@ class PaymobWebhookController extends Controller
         $pan = $request->query('source_data_pan') ?: $request->query('source_data.pan', '****');
         $cardType = $request->query('source_data_sub_type') ?: $request->query('source_data.sub_type', 'Card');
         $createdAt = $request->query('created_at', now()->toIso8601String());
+
+        // Process DB update & order fulfillment on callback if merchant_order_id exists
+        if ($merchantOrderId) {
+            $payment = $this->paymentRepository->findByTransactionId($merchantOrderId);
+
+            if ($payment) {
+                if ($success && $payment->status !== PaymentStatus::PAID) {
+                    DB::transaction(function () use ($payment, $request, $cardType, $pan) {
+                        $this->paymentRepository->updatePaymentStatus(
+                            $payment,
+                            PaymentStatus::PAID->value,
+                            $request->all(),
+                            $cardType,
+                            $pan
+                        );
+
+                        if ($payment->order && $payment->order->status !== OrderStatus::PAID) {
+                            $this->orderRepository->updateStatus($payment->order, OrderStatus::PAID->value);
+                            event(new PaymentSucceeded($payment));
+                        }
+                    });
+                } elseif (! $success && $payment->status === PaymentStatus::PENDING) {
+                    DB::transaction(function () use ($payment, $request, $cardType, $pan) {
+                        $this->paymentRepository->updatePaymentStatus(
+                            $payment,
+                            PaymentStatus::FAILED->value,
+                            $request->all(),
+                            $cardType,
+                            $pan
+                        );
+
+                        if ($payment->order && $payment->order->status === OrderStatus::PENDING) {
+                            $this->orderRepository->updateStatus($payment->order, OrderStatus::FAILED->value);
+                            event(new PaymentFailed($payment));
+                        }
+                    });
+                }
+            }
+        }
 
         if ($request->wantsJson() && $request->header('Accept') === 'application/json') {
             return ApiResponse::success([
