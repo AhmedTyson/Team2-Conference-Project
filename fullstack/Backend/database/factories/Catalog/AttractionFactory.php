@@ -25,8 +25,8 @@ class AttractionFactory extends Factory
             'name' => fake()->words(3, true),
             'description' => fake()->paragraph(),
             'image' => 'img/'.fake()->randomElement(['destination.jpg', 'Paris.jpg', 'Safari.jpg']),
-            'latitude' => fake()->latitude(),
-            'longitude' => fake()->longitude(),
+            'latitude' => fake()->latitude(29.8, 30.2),
+            'longitude' => fake()->longitude(31.0, 31.4),
         ];
     }
 }

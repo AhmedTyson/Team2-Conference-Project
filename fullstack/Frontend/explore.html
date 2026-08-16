@@ -18,80 +18,173 @@
 
   <!-- Custom Luxury Stylesheet -->
   <link rel="stylesheet" href="assets/css/public.css" />
-  <script>/* FOUC prevention — default dark */
-    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
-    if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
-      document.documentElement.classList.add("dark","fouc-ready");
-    else document.documentElement.classList.add("fouc-ready");
+  <script>
+    /* FOUC prevention — default dark */
+    (function(){
+      var k = "itinari_theme", s;
+      try { s = localStorage.getItem(k); } catch(e) {}
+      if (!s || s === "dark" || (s === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme:dark)").matches))
+        document.documentElement.classList.add("dark", "fouc-ready");
+      else document.documentElement.classList.add("fouc-ready");
     })();
-  </script></head>
-<body class="bg-[#0a0a0a] text-white bg-sculpture-relief" data-layout="public">
+  </script>
+</head>
+<body class="bg-[#0a0a0a] text-white min-h-screen selection:bg-amber-400 selection:text-black" data-layout="public">
 
-  <div class="app-wrapper">
+  <div class="app-wrapper flex flex-col min-h-screen relative">
 
     <!-- Top Navigation Header -->
-  <header class="app-nav-header"></header>
+    <header class="app-nav-header sticky top-0 z-50 backdrop-blur-md bg-black/60 border-b border-white/10"></header>
 
-    <!-- Main Catalog Section -->
-    <main class="max-w-7xl mx-auto px-6 py-8">
+    <!-- Floating 5-Second Undo Toast Container -->
+    <div id="undo-toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 max-w-md w-full px-4 pointer-events-none">
+      <!-- Dynamically inserted undo toast cards -->
+    </div>
+
+    <!-- Main Catalog Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
       
-      <!-- Header -->
-      <div class="mb-10">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-xs font-semibold uppercase tracking-wider text-amber-400 mb-3">
-          <span>Global Inventory</span>
-        </div>
-        <h1 class="text-3xl sm:text-5xl font-black tracking-tight text-white">Explore the Catalog</h1>
-        <p class="text-white/60 text-base max-w-2xl mt-2">
-          Discover destinations, 5-star hotels, gourmet restaurants, and iconic cultural attractions around the globe.
-        </p>
-      </div>
-
-      <!-- Category Filter Tabs -->
-      <div class="flex items-center gap-2 border-b border-white/10 pb-4 mb-6 overflow-x-auto" id="catalog-tabs" role="tablist">
-        <button class="chip on" data-tab="destinations"><i class="fas fa-location-dot mr-1"></i> Destinations</button>
-        <button class="chip" data-tab="hotels"><i class="fas fa-hotel mr-1"></i> Hotels</button>
-        <button class="chip" data-tab="restaurants"><i class="fas fa-utensils mr-1"></i> Restaurants</button>
-        <button class="chip" data-tab="attractions"><i class="fas fa-landmark mr-1"></i> Attractions</button>
-      </div>
-
-      <!-- Controls: Search & Region Pills -->
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+      <!-- Hero Header Section -->
+      <div class="relative rounded-3xl bg-gradient-to-b from-white/10 to-white/5 p-8 sm:p-12 border border-white/10 shadow-2xl mb-10 overflow-hidden backdrop-blur-xl">
+        <!-- Background Ambient Glow -->
+        <div class="absolute -top-24 -right-24 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
         
-        <!-- Search Input -->
-        <div class="relative w-full md:max-w-xs">
-          <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40 text-xs"></i>
-          <input
-            type="search"
-            id="catalog-search"
-            placeholder="Search by name, city, country..."
-            class="w-full bg-white/5 border border-white/10 rounded-full pl-9 pr-4 py-2 text-sm text-white placeholder-white/40 outline-none focus:border-white/40 transition"
-          />
+        <div class="relative z-10 max-w-3xl">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-400 text-xs font-bold uppercase tracking-widest mb-4 shadow-sm">
+            <i class="fas fa-compass text-amber-400"></i>
+            <span>Global Experience Explorer</span>
+          </div>
+          
+          <h1 class="text-4xl sm:text-6xl font-black tracking-tight text-white leading-tight mb-4">
+            Explore Bespoke <span class="bg-gradient-to-r from-amber-200 via-amber-400 to-amber-500 bg-clip-text text-transparent">Luxury Travel</span>
+          </h1>
+          
+          <p class="text-white/70 text-base sm:text-lg font-normal leading-relaxed">
+            Discover hand-curated destinations, 5-star hotels, Michelin-starred restaurants, iconic attractions, and global flights.
+          </p>
         </div>
 
-        <!-- Region Filter Pills -->
-        <div class="flex items-center gap-1.5 overflow-x-auto pb-1" id="region-pills" role="radiogroup">
-          <!-- Dynamic region pills loaded via explore.js -->
-        </div>
+        <!-- Search & Control Bar -->
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 pt-6 border-t border-white/10">
+          <!-- Search Input -->
+          <div class="md:col-span-2 relative">
+            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-white/40 text-sm"></i>
+            <input
+              type="search"
+              id="catalog-search"
+              placeholder="Search by name, city, country, or keyword..."
+              class="w-full bg-black/40 border border-white/15 hover:border-amber-400/50 rounded-2xl pl-11 pr-4 py-3 text-sm text-white placeholder-white/40 outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition shadow-inner"
+            />
+          </div>
 
+          <!-- Sort Select -->
+          <div class="md:col-span-1 relative">
+            <i class="fas fa-arrow-down-short-wide absolute left-4 top-1/2 -translate-y-1/2 text-white/40 text-sm"></i>
+            <select
+              id="catalog-sort"
+              class="w-full bg-black/40 border border-white/15 hover:border-amber-400/50 rounded-2xl pl-11 pr-8 py-3 text-sm text-white outline-none focus:border-amber-400 transition appearance-none cursor-pointer"
+            >
+              <option value="featured">Featured / Highest Rating</option>
+              <option value="name_asc">Name (A - Z)</option>
+              <option value="name_desc">Name (Z - A)</option>
+              <option value="reviews">Most Reviewed</option>
+            </select>
+            <i class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-white/40 text-xs pointer-events-none"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Category Filter Tabs with signature colors -->
+      <div class="flex items-center gap-3 overflow-x-auto pb-3 mb-6 scrollbar-none border-b border-white/10" id="catalog-tabs" role="tablist">
+        <button class="px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold text-xs shadow-lg shadow-amber-500/20 transition-all flex items-center gap-2 flex-shrink-0 cursor-pointer text-nowrap" data-tab="destinations">
+          <i class="fas fa-location-dot text-black"></i> Destinations
+        </button>
+        <button class="px-5 py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 font-bold text-xs transition-all flex items-center gap-2 flex-shrink-0 cursor-pointer text-nowrap" data-tab="hotels">
+          <i class="fas fa-hotel text-rose-400"></i> Hotels
+        </button>
+        <button class="px-5 py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 font-bold text-xs transition-all flex items-center gap-2 flex-shrink-0 cursor-pointer text-nowrap" data-tab="restaurants">
+          <i class="fas fa-utensils text-emerald-400"></i> Restaurants
+        </button>
+        <button class="px-5 py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 font-bold text-xs transition-all flex items-center gap-2 flex-shrink-0 cursor-pointer text-nowrap" data-tab="attractions">
+          <i class="fas fa-landmark text-sky-400"></i> Attractions
+        </button>
+        <button class="px-5 py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 font-bold text-xs transition-all flex items-center gap-2 flex-shrink-0 cursor-pointer text-nowrap" data-tab="flights">
+          <i class="fas fa-plane text-indigo-400"></i> Flights
+        </button>
+      </div>
+
+      <!-- Region Filter Pills -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-8 text-xs scrollbar-none" id="region-pills" role="radiogroup">
+        <!-- Dynamic region pills loaded via explore.js -->
+      </div>
+
+      <!-- Catalog Inventory Count Bar -->
+      <div class="flex items-center justify-between text-xs text-white/50 mb-6 px-1">
+        <span id="catalog-count-label" class="font-semibold text-white/80">Showing experience items...</span>
+        <span class="flex items-center gap-1.5"><i class="fas fa-sparkles text-amber-400"></i> Verified Catalog</span>
       </div>
 
       <!-- Catalog Grid -->
       <div id="catalog-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        <div class="col-span-full py-16 text-center text-white/50">
-          <i class="fas fa-circle-notch fa-spin mr-2"></i> Loading catalog inventory...
+        <div class="col-span-full py-20 text-center text-white/50 bg-white/5 rounded-3xl border border-white/10">
+          <i class="fas fa-circle-notch fa-spin text-2xl text-amber-400 mb-3 block"></i>
+          <p class="text-sm font-semibold text-white">Loading bespoke experiences...</p>
         </div>
       </div>
 
+      <!-- Pagination Container -->
+      <div id="catalog-pagination" class="mt-12 flex justify-center"></div>
+
     </main>
 
+    <!-- Modal 1: Select User Trip Modal -->
+    <div id="select-trip-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden animate-fade-in">
+      <div class="relative w-full max-w-xl rounded-3xl bg-[#12141c] border border-white/15 shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+        <!-- Modal Header -->
+        <div class="p-6 border-b border-white/10 flex items-center justify-between flex-shrink-0">
+          <div>
+            <span class="text-[10px] font-bold text-amber-400 uppercase tracking-widest block mb-0.5">
+              <i class="fas fa-suitcase-rolling"></i> Attach to Active Trip
+            </span>
+            <h2 class="text-xl font-extrabold text-white">Select Destination Trip</h2>
+          </div>
+          <button type="button" id="close-select-trip-modal-btn" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 text-white/60 hover:text-white flex items-center justify-center transition">
+            <i class="fas fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Trips List Scroll Area -->
+        <div class="p-6 overflow-y-auto flex-grow space-y-3" id="select-trip-list">
+          <!-- Dynamically populated user trips -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal 2: Confirmation Prompt Window -->
+    <div id="confirm-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden">
+      <div class="w-full max-w-md rounded-3xl bg-[#12141c] border border-amber-400/30 p-6 shadow-2xl text-center space-y-5 animate-scale-up">
+        <div class="w-14 h-14 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-400 flex items-center justify-center mx-auto text-2xl shadow-lg">
+          <i class="fas fa-question text-amber-400"></i>
+        </div>
+        <div>
+          <h3 id="confirm-modal-title" class="text-lg font-bold text-white mb-1">Confirm Attachment</h3>
+          <p id="confirm-modal-text" class="text-xs text-white/70 leading-relaxed"></p>
+        </div>
+        <div class="flex justify-center gap-3 pt-2">
+          <button type="button" id="confirm-modal-cancel" class="px-6 py-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition">Cancel</button>
+          <button type="button" id="confirm-modal-ok" class="px-7 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-extrabold text-xs shadow-lg shadow-amber-500/20 transition">Confirm Attachment</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Footer -->
-    <footer class="app-footer mt-20">
-      <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between text-xs text-white/40 gap-4">
-        <span>&copy; <span id="footerYear"></span> Itinera · Team 2 Conference Project. All rights reserved.</span>
-        <div class="flex gap-6">
-          <a href="about.html">About</a>
-          <a href="contact.html">Contact</a>
-          <a href="help.html">Help Center</a>
+    <footer class="app-footer border-t border-white/10 bg-black/40 py-8 mt-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-white/40 gap-4">
+        <span>&copy; <span id="footerYear"></span> Itinera · Luxury Travel Experience Engine. All rights reserved.</span>
+        <div class="flex gap-6 font-medium">
+          <a href="about.html" class="hover:text-amber-400 transition">About</a>
+          <a href="contact.html" class="hover:text-amber-400 transition">Contact</a>
+          <a href="help.html" class="hover:text-amber-400 transition">Help Center</a>
         </div>
       </div>
     </footer>
@@ -105,8 +198,8 @@
   <script src="assets/js/nav-config.js"></script>
   <script src="assets/js/utils/unsplash-helper.js"></script>
   <script src="assets/js/explore.js"></script>
-  <script src="./assets/js/core/navbar-component.js"></script>
-  <script src="./assets/js/core/topbar.js"></script>
-  <script src="./assets/js/core/theme.js"></script>
+  <script src="assets/js/core/navbar-component.js"></script>
+  <script src="assets/js/core/topbar.js"></script>
+  <script src="assets/js/core/theme.js"></script>
 </body>
 </html>

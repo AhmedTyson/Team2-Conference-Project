@@ -1,55 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Flight Details — Itinera</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <script>(function(){try{if(localStorage.getItem('itinari_theme')==='dark')document.documentElement.classList.add('dark');}catch(e){}})();</script>
-  <link rel="stylesheet" href="assets/css/tokens.css">
-  <link rel="stylesheet" href="assets/css/app.css">
-  <script>/* FOUC prevention — default dark */
-    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
-    if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
-      document.documentElement.classList.add("dark","fouc-ready");
-    else document.documentElement.classList.add("fouc-ready");
-    })();
-  </script>  <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flight Details · Itinera</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome 6 Free -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Custom Luxury Stylesheet -->
+  <link rel="stylesheet" href="assets/css/public.css" />
+  <script>
+    /* FOUC prevention — default dark */
+    (function(){
+      var k = "itinari_theme", s;
+      try { s = localStorage.getItem(k); } catch(e) {}
+      if (!s || s === "dark" || (s === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme:dark)").matches))
+        document.documentElement.classList.add("dark", "fouc-ready");
+      else document.documentElement.classList.add("fouc-ready");
+    })();
+  </script>
 </head>
-<body data-page="flights" class="is-booting" data-layout="public">
-  <div class="app">
-      <!-- Top Navigation Header -->
-  <header class="app-nav-header"></header>
+<body class="bg-[#0a0a0a] text-white min-h-screen selection:bg-amber-400 selection:text-black" data-layout="public">
 
-    <main class="app__main">
-      <div class="page" style="max-width: 800px; margin: 0 auto; padding-top: var(--space-8);">
-        <a href="/flights.html" class="btn btn--ghost" style="margin-bottom: var(--space-6); display: inline-flex;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;margin-right:8px;"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
-          Back to Flights
-        </a>
+  <div class="app-wrapper flex flex-col min-h-screen">
 
-        <div id="flight-details" class="card" style="padding: var(--space-8);">
-          <div class="skeleton skeleton--text"></div>
-          <div class="skeleton skeleton--text"></div>
-          <div class="skeleton skeleton--text"></div>
+    <!-- Top Navigation Header -->
+    <header class="app-nav-header sticky top-0 z-50 backdrop-blur-md bg-black/60 border-b border-white/10"></header>
+
+    <!-- Main Flight Details Container -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10" id="flight-page-container">
+      
+      <!-- Skeleton Loading State -->
+      <div id="flight-skeleton" class="space-y-8 animate-pulse">
+        <div class="h-6 w-36 bg-white/10 rounded-full"></div>
+        <div class="h-64 bg-white/5 border border-white/10 rounded-3xl"></div>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div class="lg:col-span-2 h-96 bg-white/5 rounded-3xl"></div>
+          <div class="h-96 bg-white/5 rounded-3xl"></div>
         </div>
       </div>
+
+      <!-- Main Flight Details Root Target -->
+      <div id="flight-details-root" class="hidden space-y-8"></div>
+
     </main>
 
-    <footer class="app__footer"></footer>
+    <!-- Footer -->
+    <footer class="app-footer border-t border-white/10 bg-black/40 py-8 mt-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-white/40 gap-4">
+        <span>&copy; <span id="footerYear"></span> Itinera · Luxury Travel Engine. All rights reserved.</span>
+        <div class="flex gap-6 font-medium">
+          <a href="about.html" class="hover:text-amber-400 transition">About</a>
+          <a href="contact.html" class="hover:text-amber-400 transition">Contact</a>
+          <a href="help.html" class="hover:text-amber-400 transition">Help Center</a>
+        </div>
+      </div>
+    </footer>
+
   </div>
 
+  <!-- Scripts -->
   <script src="assets/js/config.js"></script>
   <script src="assets/js/api.js"></script>
   <script src="assets/js/session.js"></script>
   <script src="assets/js/nav-config.js"></script>
-  <script src="assets/js/app-shell.js"></script>
+  <script src="assets/js/utils/unsplash-helper.js"></script>
   <script src="assets/js/flight-details.js"></script>
   <script src="./assets/js/core/navbar-component.js"></script>
+  <script src="./assets/js/core/topbar.js"></script>
   <script src="./assets/js/core/theme.js"></script>
-  <script src="assets/js/core/topbar.js"></script>
 </body>
 </html>

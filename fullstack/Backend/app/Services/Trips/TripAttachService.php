@@ -20,7 +20,7 @@ class TripAttachService
             return ApiResponse::fail('Trip not found', 'not_found', 404);
         }
 
-        $allowedTypes = ['hotel', 'flight', 'restaurant', 'attraction'];
+        $allowedTypes = ['hotel', 'flight', 'restaurant', 'attraction', 'destination'];
         if (! in_array($type, $allowedTypes)) {
             return ApiResponse::fail('Invalid attachment type. Allowed types: '.implode(', ', $allowedTypes), 'invalid_type', 400);
         }
@@ -43,7 +43,14 @@ class TripAttachService
             return ApiResponse::fail(ucfirst($type).' is already attached to this trip', 'already_attached', 409);
         }
 
-        $trip->$relation()->attach($itemId);
+        if ($type === 'destination') {
+            $trip->destinations()->attach($itemId, [
+                'day_number' => 1,
+                'visit_order' => 1,
+            ]);
+        } else {
+            $trip->$relation()->attach($itemId);
+        }
 
         return ApiResponse::success(null, ucfirst($type).' attached to trip successfully');
     }

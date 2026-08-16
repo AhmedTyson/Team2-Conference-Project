@@ -224,7 +224,6 @@
           }
           return { ok: false, status: 401, body: body };
         }
-      } else {
         if (!opts.skipAuthRedirect && It.session && typeof It.session.clearSession === "function") {
           It.session.clearSession();
           It.session.redirectToLogin();
@@ -232,7 +231,25 @@
       }
     }
 
-    return { ok: res.ok, status: res.status, body: body };
+    const responseObj = { ok: res.ok, status: res.status, body: body };
+
+    // Global HTTP Interceptor for state-modifying requests (POST, PUT, PATCH, DELETE)
+    var isMutating = method === "POST" || method === "PUT" || method === "PATCH" || method === "DELETE";
+    if (isMutating && opts.notify !== false && !opts.skipNotification) {
+      if (res.ok) {
+        var successMsg = (body && body.message) || "Operation completed successfully.";
+        if (typeof It.showGlobalToast === "function") {
+          It.showGlobalToast(successMsg, true);
+        }
+      } else {
+        var errorMsg = (body && body.message) || (body && body.error && body.error.message) || "Action failed. Please try again.";
+        if (typeof It.showGlobalToast === "function") {
+          It.showGlobalToast(errorMsg, false);
+        }
+      }
+    }
+
+    return responseObj;
   }
 
   /** POST JSON to an API route. See request(). */
@@ -417,18 +434,58 @@
   It.app.unwrapData = It.app.unwrapData || unwrapData;
   It.app.boot = It.app.boot || appBoot;
 
+  /** Global Luxury Toast Notification Engine */
+  It.showGlobalToast = function (msg, isSuccess) {
+    var container = document.getElementById("global-interceptor-toast-container");
+    if (!container) {
+      container = document.createElement("div");
+      container.id = "global-interceptor-toast-container";
+      container.className = "fixed top-6 right-6 z-50 flex flex-col gap-3 max-w-sm w-full px-4 pointer-events-none";
+      document.body.appendChild(container);
+    }
+
+    var toast = document.createElement("div");
+    toast.className = "pointer-events-auto p-4 rounded-2xl border text-xs shadow-2xl flex items-center justify-between gap-3 animate-slide-down backdrop-blur-xl transition-all duration-300 " +
+      (isSuccess
+        ? "bg-[#0d1f18] border-emerald-500/40 text-emerald-200"
+        : "bg-[#280e14] border-rose-500/40 text-rose-200");
+
+    toast.innerHTML =
+      '<div class="flex items-center gap-3">' +
+        '<div class="w-8 h-8 rounded-full flex items-center justify-center text-sm flex-shrink-0 ' +
+          (isSuccess ? "bg-emerald-500/20 text-emerald-400" : "bg-rose-500/20 text-rose-400") + '">' +
+          '<i class="fas ' + (isSuccess ? "fa-circle-check" : "fa-triangle-exclamation") + '"></i>' +
+        '</div>' +
+        '<div>' +
+          '<span class="font-extrabold block text-white text-xs mb-0.5">' + (isSuccess ? "Success" : "Request Error") + '</span>' +
+          '<span class="font-medium text-white/80 block leading-snug">' + esc(msg) + '</span>' +
+        '</div>' +
+      '</div>' +
+      '<button type="button" class="text-white/40 hover:text-white p-1 text-xs cursor-pointer" onclick="this.parentNode.remove()">' +
+        '<i class="fas fa-xmark"></i>' +
+      '</button>';
+
+    container.appendChild(toast);
+
+    setTimeout(function () {
+      if (toast.parentNode) {
+        toast.style.opacity = "0";
+        toast.style.transform = "translateY(-10px)";
+        setTimeout(function () {
+          if (toast.parentNode) toast.parentNode.removeChild(toast);
+        }, 300);
+      }
+    }, 3800);
+  };
+
   It.feedback = It.feedback || {
     banner: function (msg, cls) {
-      var box = document.getElementById("site-banner");
-      var text = document.getElementById("site-banner-msg");
-      if (!box || !text) return;
-      text.textContent = msg || "";
-      box.className = cls || "";
-      box.classList.add("is-visible");
-      setTimeout(function () { box.classList.remove("is-visible"); }, 4000);
+      var isOk = cls === "is-ok" || cls === "success";
+      It.showGlobalToast(msg, isOk);
     },
     toast: function (msg, type) {
-      if (It.app && It.app.showToast) It.app.showToast(msg, type);
+      var isOk = type === "success" || type === "is-ok";
+      It.showGlobalToast(msg, isOk);
     }
   };
 

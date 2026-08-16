@@ -1,112 +1,284 @@
 <!DOCTYPE html>
-<html lang="en" data-theme-luxury>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Plan a New Trip · Travel Planner</title>
+  <title>Plan a New Trip · Itinera</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..800;1,9..144,400..800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="../assets/css/tokens.css" />
-  <link rel="stylesheet" href="../assets/css/app.css" />
-  <link rel="stylesheet" href="../assets/css/luxury-theme.css" />
-  <script>/* FOUC prevention — default dark */
-    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
-    if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
-      document.documentElement.classList.add("dark","fouc-ready");
-    else document.documentElement.classList.add("fouc-ready");
-    })();
-  </script>  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome 6 Free -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Custom Luxury Stylesheet -->
+  <link rel="stylesheet" href="../assets/css/public.css" />
+  <script>
+    /* FOUC prevention — default dark */
+    (function(){
+      var k = "itinari_theme", s;
+      try { s = localStorage.getItem(k); } catch(e) {}
+      if (!s || s === "dark" || (s === "system" && window.matchMedia && window.matchMedia("(prefers-color-scheme:dark)").matches))
+        document.documentElement.classList.add("dark", "fouc-ready");
+      else document.documentElement.classList.add("fouc-ready");
+    })();
+  </script>
 </head>
-<body data-page="trips" class="is-booting" data-layout="app">
-  <div class="app">
+<body class="bg-[#0b0c10] text-white min-h-screen selection:bg-amber-400 selection:text-black font-sans" data-layout="app">
+
+  <div class="app-wrapper flex flex-col min-h-screen">
+
     <!-- Top Navigation Header -->
-    <header class="app-nav-header"></header>
-      <div id="app-user" class="app__user">
-        <button id="theme-toggle" type="button" class="btn btn--ghost" aria-label="Toggle theme">◐</button>
+    <header class="app-nav-header sticky top-0 z-50 backdrop-blur-md bg-black/60 border-b border-white/10"></header>
+
+    <!-- Main Container -->
+    <main class="flex-grow max-w-4xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      
+      <!-- Top Navigation Link -->
+      <div class="mb-6">
+        <a href="trips.html" class="inline-flex items-center gap-2 text-sm text-white/50 hover:text-white transition">
+          <i class="fas fa-arrow-left text-xs"></i> Back to My Trips
+        </a>
       </div>
-    </header>
 
-    <main class="app__main">
-      <div class="page">
-        <header class="page-header">
-          <p class="page-header__eyebrow">Itineraries</p>
-          <h1 class="page-header__title">Plan a new trip</h1>
-          <p class="page-header__lead">Sketch the skeleton — you can attach hotels, restaurants and sights afterwards.</p>
-        </header>
+      <!-- Main Form Container Card matching 4-step wizard -->
+      <div class="rounded-3xl bg-[#12141c] p-6 sm:p-10 border border-white/10 shadow-2xl space-y-8">
+        
+        <!-- Headline -->
+        <div>
+          <h1 id="step-headline" class="text-3xl sm:text-4xl font-serif font-bold text-white tracking-tight mb-6">
+            Destination & Travel Timeline
+          </h1>
 
-        <form class="form" id="trip-form" novalidate>
-          <div class="form__card">
-            <div class="field">
-              <label class="field__label" for="trip-title">Trip title</label>
-              <input id="trip-title" class="input" type="text" maxlength="255" placeholder="e.g. Nile Explorer" autocomplete="off" />
-              <p class="field__error" id="title-error" hidden></p>
+          <!-- 4 Horizontal Progress Bars -->
+          <div class="grid grid-cols-4 gap-3 sm:gap-4" id="wizard-progress-bar">
+            <!-- Step 1 Bar -->
+            <div class="space-y-2 step-bar-item active" data-step="1">
+              <div class="h-1.5 rounded-full bg-amber-400 shadow-md shadow-amber-400/20 transition-all duration-300 step-bar"></div>
+              <span class="text-xs font-semibold text-white/90 block truncate step-label">1. Location</span>
             </div>
 
-            <div class="field">
-              <span class="field__label">Travel style</span>
-              <div class="chip-row" id="style-chips"></div>
-              <p class="field__error" id="style-error" hidden></p>
+            <!-- Step 2 Bar -->
+            <div class="space-y-2 step-bar-item" data-step="2">
+              <div class="h-1.5 rounded-full bg-white/15 transition-all duration-300 step-bar"></div>
+              <span class="text-xs font-medium text-white/40 block truncate step-label">2. Style</span>
             </div>
 
-            <div class="field">
-              <span class="field__label">Interests <span class="field__hint" id="interests-count">0 selected</span></span>
-              <div class="chip-row chip-row--wrap" id="interest-chips"></div>
-              <p class="field__error" id="interests-error" hidden></p>
+            <!-- Step 3 Bar -->
+            <div class="space-y-2 step-bar-item" data-step="3">
+              <div class="h-1.5 rounded-full bg-white/15 transition-all duration-300 step-bar"></div>
+              <span class="text-xs font-medium text-white/40 block truncate step-label">3. Interests</span>
             </div>
 
-            <div class="form__grid">
-              <div class="field">
-                <label class="field__label" for="trip-travelers">Travelers</label>
-                <input id="trip-travelers" class="input" type="number" min="1" value="2" />
-              </div>
-              <div class="field">
-                <label class="field__label" for="trip-budget">Budget <span class="field__hint">in your currency</span></label>
-                <input id="trip-budget" class="input" type="number" min="0" step="0.01" placeholder="0.00" />
-                <p class="field__error" id="budget-error" hidden></p>
-              </div>
-              <div class="field">
-                <label class="field__label" for="trip-days">Days</label>
-                <input id="trip-days" class="input" type="number" min="1" value="3" />
-              </div>
-            </div>
-
-            <div class="form__grid">
-              <div class="field">
-                <label class="field__label" for="trip-start">Start date</label>
-                <input id="trip-start" class="input" type="date" />
-                <p class="field__error" id="start-error" hidden></p>
-              </div>
-              <div class="field">
-                <label class="field__label" for="trip-end">End date <span class="field__hint">auto-fills from the day count</span></label>
-                <input id="trip-end" class="input" type="date" />
-                <p class="field__error" id="end-error" hidden></p>
-              </div>
-            </div>
-
-            <div class="btn-row">
-              <a href="/trips.html" class="btn btn--ghost">Cancel</a>
-              <button type="submit" class="btn btn--primary">Create trip</button>
+            <!-- Step 4 Bar -->
+            <div class="space-y-2 step-bar-item" data-step="4">
+              <div class="h-1.5 rounded-full bg-white/15 transition-all duration-300 step-bar"></div>
+              <span class="text-xs font-medium text-white/40 block truncate step-label">4. Specs & Confirm</span>
             </div>
           </div>
+        </div>
+
+        <!-- Form Element Container -->
+        <form id="trip-form" class="pt-2" novalidate>
+
+          <!-- ================= STEP 1: LOCATION & DATES ================= -->
+          <div id="step-1-content" class="wizard-step-content space-y-6">
+            <div class="space-y-2">
+              <label for="trip-title" class="text-xs font-bold text-white uppercase tracking-wider block flex items-center justify-between">
+                <span>Trip Title / Location Name <span class="text-rose-400">*</span></span>
+                <span class="text-[11px] text-white/40 font-normal">e.g. Italian Riviera & Amalfi Coast</span>
+              </label>
+              <input
+                type="text"
+                id="trip-title"
+                maxlength="255"
+                placeholder="e.g. Italian Riviera & Amalfi Coast Explorer"
+                class="w-full bg-black/40 border border-white/15 hover:border-amber-400/50 focus:border-amber-400 text-white text-sm rounded-2xl p-4 outline-none transition shadow-inner"
+              />
+              <p id="title-error" class="text-rose-400 text-xs font-medium hidden"></p>
+            </div>
+
+            <!-- Start Date & End Date Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-2">
+              <div class="space-y-2">
+                <label for="trip-start" class="text-xs font-bold text-white uppercase tracking-wider block">Start Date <span class="text-rose-400">*</span></label>
+                <input
+                  type="date"
+                  id="trip-start"
+                  class="w-full bg-black/40 border border-white/15 focus:border-amber-400 text-white text-sm rounded-2xl p-3.5 outline-none transition"
+                />
+                <p id="start-error" class="text-rose-400 text-xs font-medium hidden"></p>
+              </div>
+
+              <div class="space-y-2">
+                <label for="trip-end" class="text-xs font-bold text-white uppercase tracking-wider block flex items-center justify-between">
+                  <span>End Date</span>
+                  <span class="text-[10px] text-white/40 font-normal">Auto-calculated</span>
+                </label>
+                <input
+                  type="date"
+                  id="trip-end"
+                  class="w-full bg-black/40 border border-white/15 focus:border-amber-400 text-white text-sm rounded-2xl p-3.5 outline-none transition"
+                />
+                <p id="end-error" class="text-rose-400 text-xs font-medium hidden"></p>
+              </div>
+            </div>
+
+            <div class="flex items-center justify-end pt-6 border-t border-white/10">
+              <button type="button" id="btn-next-1" class="px-8 py-3 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold text-xs shadow-lg shadow-amber-500/20 transition flex items-center gap-2">
+                <span>Next: Style</span> <i class="fas fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- ================= STEP 2: STYLE ================= -->
+          <div id="step-2-content" class="wizard-step-content space-y-6 hidden">
+            <div class="space-y-3">
+              <label class="text-xs font-bold text-white uppercase tracking-wider block">
+                Select Travel Style <span class="text-rose-400">*</span>
+              </label>
+              <div id="style-chips" class="flex flex-wrap gap-3">
+                <!-- Rendered dynamically -->
+              </div>
+              <p id="style-error" class="text-rose-400 text-xs font-medium hidden"></p>
+            </div>
+
+            <div class="flex items-center justify-between pt-6 border-t border-white/10">
+              <button type="button" id="btn-back-2" class="px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold text-xs transition flex items-center gap-2">
+                <i class="fas fa-arrow-left"></i> <span>Back</span>
+              </button>
+              <button type="button" id="btn-next-2" class="px-8 py-3 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold text-xs shadow-lg shadow-amber-500/20 transition flex items-center gap-2">
+                <span>Next: Interests</span> <i class="fas fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- ================= STEP 3: INTERESTS ================= -->
+          <div id="step-3-content" class="wizard-step-content space-y-6 hidden">
+            <div class="space-y-3">
+              <div class="flex items-center justify-between">
+                <label class="text-xs font-bold text-white uppercase tracking-wider block">
+                  Select Interests & Activities <span class="text-rose-400">*</span>
+                </label>
+                <span id="interests-count" class="text-xs font-semibold text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full border border-amber-400/20">0 selected</span>
+              </div>
+              <div id="interest-chips" class="flex flex-wrap gap-2.5">
+                <!-- Rendered dynamically -->
+              </div>
+              <p id="interests-error" class="text-rose-400 text-xs font-medium hidden"></p>
+            </div>
+
+            <div class="flex items-center justify-between pt-6 border-t border-white/10">
+              <button type="button" id="btn-back-3" class="px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold text-xs transition flex items-center gap-2">
+                <i class="fas fa-arrow-left"></i> <span>Back</span>
+              </button>
+              <button type="button" id="btn-next-3" class="px-8 py-3 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold text-xs shadow-lg shadow-amber-500/20 transition flex items-center gap-2">
+                <span>Next: Specs & Confirm</span> <i class="fas fa-arrow-right"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- ================= STEP 4: SPECS & SUBMIT ================= -->
+          <div id="step-4-content" class="wizard-step-content space-y-6 hidden">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+              <div class="space-y-2">
+                <label for="trip-travelers" class="text-xs font-bold text-white uppercase tracking-wider block">Travelers</label>
+                <div class="relative">
+                  <i class="fas fa-users absolute left-4 top-1/2 -translate-y-1/2 text-white/40 text-xs"></i>
+                  <input
+                    type="number"
+                    id="trip-travelers"
+                    min="1"
+                    value="2"
+                    class="w-full bg-black/40 border border-white/15 focus:border-amber-400 text-white text-sm rounded-2xl pl-10 pr-4 py-3.5 outline-none transition"
+                  />
+                </div>
+              </div>
+
+              <div class="space-y-2">
+                <label for="trip-budget" class="text-xs font-bold text-white uppercase tracking-wider block">Budget ($)</label>
+                <div class="relative">
+                  <i class="fas fa-dollar-sign absolute left-4 top-1/2 -translate-y-1/2 text-white/40 text-xs"></i>
+                  <input
+                    type="number"
+                    id="trip-budget"
+                    min="0"
+                    step="100"
+                    placeholder="3500"
+                    class="w-full bg-black/40 border border-white/15 focus:border-amber-400 text-white text-sm rounded-2xl pl-10 pr-4 py-3.5 outline-none transition"
+                  />
+                </div>
+                <p id="budget-error" class="text-rose-400 text-xs font-medium hidden"></p>
+              </div>
+
+              <div class="space-y-2">
+                <label for="trip-days" class="text-xs font-bold text-white uppercase tracking-wider block">Days</label>
+                <div class="relative">
+                  <i class="fas fa-clock absolute left-4 top-1/2 -translate-y-1/2 text-white/40 text-xs"></i>
+                  <input
+                    type="number"
+                    id="trip-days"
+                    min="1"
+                    value="5"
+                    class="w-full bg-black/40 border border-white/15 focus:border-amber-400 text-white text-sm rounded-2xl pl-10 pr-4 py-3.5 outline-none transition"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- Final Summary Box -->
+            <div class="p-5 rounded-2xl bg-amber-400/5 border border-amber-400/20 space-y-3">
+              <h4 class="font-bold text-amber-400 uppercase tracking-wider flex items-center gap-2 text-xs">
+                <i class="fas fa-clipboard-check"></i> Trip Summary Preview
+              </h4>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs" id="wizard-summary-preview">
+                <!-- Dynamically populated summary -->
+              </div>
+            </div>
+
+            <div class="flex items-center justify-between pt-6 border-t border-white/10">
+              <button type="button" id="btn-back-4" class="px-6 py-3 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold text-xs transition flex items-center gap-2">
+                <i class="fas fa-arrow-left"></i> <span>Back</span>
+              </button>
+              <button type="submit" class="px-9 py-3.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-extrabold text-xs shadow-lg shadow-amber-500/20 transition flex items-center gap-2">
+                <i class="fas fa-paper-plane"></i> <span>Create Trip & Open AI Itinerary</span>
+              </button>
+            </div>
+          </div>
+
         </form>
+
       </div>
+
     </main>
 
-    <footer class="app__footer">
-      <span>Travel Planner</span>
-      <span>•</span>
-      <span>Plan. Explore. Remember.</span>
+    <!-- Footer -->
+    <footer class="app-footer border-t border-white/10 bg-black/40 py-8 mt-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-white/40 gap-4">
+        <span>&copy; <span id="footerYear"></span> Itinera · Personal Travel Creator. All rights reserved.</span>
+        <div class="flex gap-6 font-medium">
+          <a href="../about.html" class="hover:text-amber-400 transition">About</a>
+          <a href="../contact.html" class="hover:text-amber-400 transition">Contact</a>
+          <a href="../help.html" class="hover:text-amber-400 transition">Help Center</a>
+        </div>
+      </div>
     </footer>
+
   </div>
 
-  <script src="../assets/js/core/config.js"></script>
-  <script src="../assets/js/core/api.js"></script>
-  <script src="../assets/js/core/session.js"></script>
-  <script src="../assets/js/core/nav-config.js"></script>
-  <script src="../assets/js/core/app-shell.js"></script>
+  <!-- Scripts -->
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/session.js"></script>
+  <script src="../assets/js/nav-config.js"></script>
   <script src="../assets/js/trip-form.js"></script>
-    <script src="../assets/js/core/navbar-component.js"></script>
+  <script src="../assets/js/core/navbar-component.js"></script>
+  <script src="../assets/js/core/topbar.js"></script>
+  <script src="../assets/js/core/theme.js"></script>
 </body>
 </html>
