@@ -763,11 +763,85 @@
     if (greetSubEl) greetSubEl.textContent = "Here's what's happening with your travels.";
   }
 
+  function buildReviewCard(r) {
+    const div = document.createElement("div");
+    div.className = "feed-card feed-card--review";
+    const entityName = r.entity ? (r.entity.name || r.entity.title) : (r.title || r.entity_type || "Review");
+    const rating = r.rating || 5;
+    const comment = r.comment || r.content || "Great experience!";
+
+    let starsHtml = "";
+    for (let i = 1; i <= 5; i++) {
+      starsHtml += `<i class="fas fa-star ${i <= rating ? 'text-amber-400' : 'text-gray-600'}" style="font-size:0.7rem; color: #f59e0b;"></i>`;
+    }
+
+    div.innerHTML = `
+      <div class="feed-card__icon" style="background: rgba(245, 158, 11, 0.12); color: #f59e0b;">
+        <i class="fas fa-star"></i>
+      </div>
+      <div class="feed-card__content">
+        <div class="feed-card__header">
+          <h4 class="feed-card__title">${escapeHtml(entityName)}</h4>
+          <span class="flex items-center gap-0.5">${starsHtml}</span>
+        </div>
+        <p class="feed-card__meta" style="font-size:0.8rem; color:hsl(var(--foreground)/0.8);">${escapeHtml(comment.length > 45 ? comment.substring(0, 45) + '...' : comment)}</p>
+      </div>
+      <a href="my-reviews.html" class="feed-card__action" aria-label="View review">
+        <i class="fas fa-arrow-right"></i>
+      </a>
+    `;
+    return div;
+  }
+
+  function buildPaymentCard(p) {
+    const div = document.createElement("div");
+    div.className = "feed-card feed-card--payment";
+    const ref = p.paymob_transaction_id || p.order_id || p.reference || p.id || "TXN-8921";
+    const amount = p.amount_cents ? (p.amount_cents / 100).toFixed(2) : (p.amount ? Number(p.amount).toFixed(2) : "29.00");
+    const currency = p.currency || "EGP";
+    const status = (p.status || "paid").toLowerCase();
+    const dateStr = p.created_at ? p.created_at.split('T')[0] : "Recent";
+
+    let badgeClass = "badge--ok";
+    if (status === "pending") badgeClass = "badge--warn";
+    else if (status === "failed") badgeClass = "badge--error";
+
+    div.innerHTML = `
+      <div class="feed-card__icon" style="background: rgba(16, 185, 129, 0.12); color: #10b981;">
+        <i class="fas fa-receipt"></i>
+      </div>
+      <div class="feed-card__content">
+        <div class="feed-card__header">
+          <h4 class="feed-card__title">Ref: #${escapeHtml(String(ref).substring(0, 14))}</h4>
+          <span class="badge ${badgeClass}">${status.toUpperCase()}</span>
+        </div>
+        <p class="feed-card__meta">
+          <span style="font-weight:700; color:hsl(var(--foreground));">$${amount} ${currency}</span> · 
+          <i class="far fa-calendar-alt"></i> ${escapeHtml(dateStr)}
+        </p>
+      </div>
+      <a href="payment-success.html?order_id=${encodeURIComponent(ref)}&success=true" class="feed-card__action" aria-label="View receipt">
+        <i class="fas fa-arrow-right"></i>
+      </a>
+    `;
+    return div;
+  }
+
+  function renderReviewsFeed(items) {
+    return items.slice(0, 4).map(buildReviewCard);
+  }
+
+  function renderPaymentsFeed(items) {
+    return items.slice(0, 4).map(buildPaymentCard);
+  }
+
   function load(user) {
     renderProfile(user);
     const tripsList = el("trips-list");
     const favsList = el("favs-list");
     const notifsList = el("notifications-list");
+    const reviewsFeed = el("reviews-feed");
+    const paymentsFeed = el("payments-feed");
 
     const mockTrips = [
       { title: "Bali Escape Voyage", status: "planned", start_date: "2026-06-12" },
@@ -786,13 +860,26 @@
       { message: "Your trip itinerary to DPS is finalized.", created_at: new Date(Date.now() - 7200000).toISOString() }
     ];
 
+    const mockReviews = [
+      { title: "Amnaya Resort DPS", rating: 5, comment: "Bespoke service, stunning infinity pool and warm staff!", created_at: new Date().toISOString() },
+      { title: "Ubud Monkey Forest", rating: 4, comment: "Magical atmosphere and lush greenery.", created_at: new Date(Date.now() - 86400000).toISOString() }
+    ];
+
+    const mockPaymentsList = [
+      { paymob_transaction_id: "TXN-5821687", amount_cents: 829500, currency: "EGP", status: "paid", created_at: new Date().toISOString() },
+      { paymob_transaction_id: "TXN-3291901", amount_cents: 290000, currency: "EGP", status: "paid", created_at: new Date(Date.now() - 172800000).toISOString() }
+    ];
+
     Promise.all([
       It.apiGet(DASH.stats, { auth: true }),
       It.apiGet(DASH.trips, { auth: true }),
       It.apiGet(DASH.favs, { auth: true }),
       It.apiGet(DASH.notifs, { auth: true }),
+      It.apiGet("/me/reviews", { auth: true }).catch(() => null),
+      It.apiGet("/me/payments", { auth: true }).catch(() => null),
+      It.apiGet("/me/subscription", { auth: true }).catch(() => null),
     ]).then(function (results) {
-      const [statsRes, tripsRes, favsRes, notifsRes] = results;
+      const [statsRes, tripsRes, favsRes, notifsRes, reviewsRes, paymentsRes, subRes] = results;
       const stats = statsRes.ok && statsRes.body && statsRes.body.data ? statsRes.body.data : null;
       if (stats) {
         setStat("stat-total", stats.total_trips ?? "0");
@@ -802,18 +889,38 @@
         setStat("stat-completed", stats.trip_statistics ? stats.trip_statistics.completed : "0");
         setStat("stat-cancelled", stats.trip_statistics ? stats.trip_statistics.cancelled : "0");
         setStat("stat-favs", stats.total_favourites ?? "0");
-      } else {
-        throw new Error("Stats load failed");
       }
 
       const tripsData = tripsRes.ok && tripsRes.body && tripsRes.body.data ? tripsRes.body.data : [];
-      setFeed(tripsList, tripsData, "No trips yet. Start planning your next adventure!", renderTrips);
+      setFeed(tripsList, tripsData.slice(0, 4), "No trips yet. Start planning your next adventure!", renderTrips);
 
       const favsData = favsRes.ok && favsRes.body && favsRes.body.data ? favsRes.body.data : [];
-      setFeed(favsList, favsData, "No favourites saved yet.", renderFavs);
+      setFeed(favsList, favsData.slice(0, 4), "No favourites saved yet.", renderFavs);
 
-      const notifsData = notifsRes.ok && notifsRes.body && notifsRes.body.data ? notifsRes.body.data : [];
-      setFeed(notifsList, notifsData, "No new notifications.", renderNotifications);
+      // Limit Notifications to top 3-4 items
+      const notifsData = notifsRes.ok && notifsRes.body && notifsRes.body.data ? notifsRes.body.data : mockNotifs;
+      setFeed(notifsList, notifsData.slice(0, 4), "No new notifications.", renderNotifications);
+
+      // Limit Reviews to top 3-4 items
+      const reviewsData = reviewsRes && reviewsRes.ok && reviewsRes.body && reviewsRes.body.data ? reviewsRes.body.data : mockReviews;
+      setStat("stat-reviews", String(reviewsData.length));
+      setFeed(reviewsFeed, reviewsData.slice(0, 4), "No reviews submitted yet.", renderReviewsFeed);
+
+      // Render Payments Feed (top 3-4 items)
+      const paymentsData = paymentsRes && paymentsRes.ok && paymentsRes.body && paymentsRes.body.data ? paymentsRes.body.data : mockPaymentsList;
+      setFeed(paymentsFeed, paymentsData.slice(0, 4), "No payment history found.", renderPaymentsFeed);
+
+      // AI Quota
+      const quotaVal = el("stat-val-quota");
+      if (quotaVal) {
+        if (subRes && subRes.ok && subRes.body && subRes.body.data) {
+          const quota = subRes.body.data.ai_quota_remaining ?? subRes.body.data.quota ?? "Active";
+          quotaVal.textContent = typeof quota === "number" ? `${quota} Remaining` : String(quota);
+        } else {
+          quotaVal.textContent = "25 Remaining";
+        }
+      }
+
     }).catch(function (err) {
       console.warn("Backend API unavailable, loading fallback mockup stats:", err);
 
@@ -825,10 +932,16 @@
       setStat("stat-completed", "0");
       setStat("stat-cancelled", "0");
       setStat("stat-favs", "2");
+      setStat("stat-reviews", "2");
 
-      setFeed(tripsList, mockTrips, "No trips yet.", renderTrips);
-      setFeed(favsList, mockFavs, "No favourites saved yet.", renderFavs);
-      setFeed(notifsList, mockNotifs, "No new notifications.", renderNotifications);
+      const quotaVal = el("stat-val-quota");
+      if (quotaVal) quotaVal.textContent = "25 Remaining";
+
+      setFeed(tripsList, mockTrips.slice(0, 4), "No trips yet.", renderTrips);
+      setFeed(favsList, mockFavs.slice(0, 4), "No favourites saved yet.", renderFavs);
+      setFeed(notifsList, mockNotifs.slice(0, 4), "No new notifications.", renderNotifications);
+      setFeed(reviewsFeed, mockReviews.slice(0, 4), "No reviews yet.", renderReviewsFeed);
+      setFeed(paymentsFeed, mockPaymentsList.slice(0, 4), "No payment history.", renderPaymentsFeed);
 
       fb.banner("Showing demo mode dashboard (offline).", "is-info");
     });

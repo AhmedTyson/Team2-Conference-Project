@@ -96,6 +96,7 @@
         dropdown: [
           { to: "/app/dashboard.html", label: "Dashboard", icon: "dashboard" },
           { to: "/app/trips.html", label: "My Trips", icon: "trips" },
+          { to: "/explore.html", label: "Fork Trips & Community", icon: "explore" },
           { to: "/app/bookings.html", label: "My Bookings", icon: "bookings" },
           { to: "/app/flight-booking.html", label: "Flight Search", icon: "bookings" },
           { to: "/app/favourites.html", label: "Saved Places", icon: "favourites" },

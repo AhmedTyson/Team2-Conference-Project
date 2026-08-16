@@ -504,6 +504,16 @@
             </div>
           </a>
 
+          <div class="stat-card-glass" id="stat-ai-quota">
+            <div class="stat-card-glass__icon" style="background:rgba(168,85,247,0.15);color:#a855f7;">
+              <i class="fas fa-sparkles"></i>
+            </div>
+            <div class="stat-card-glass__content">
+              <span class="stat-card-glass__label">AI Generation Quota</span>
+              <span class="stat-card-glass__value" id="stat-val-quota" style="font-size:1.3rem;">Active</span>
+            </div>
+          </div>
+
         </section>
 
         <!-- AI Concierge Spotlight Banner -->
@@ -528,7 +538,7 @@
           </div>
         </section>
 
-        <!-- Two Column Showcase Grid (Trips & Favorites) -->
+        <!-- Multi-Column Showcase Grid -->
         <div class="dash-showcase-grid">
           
           <!-- Column 1: Recent Trips -->
@@ -555,7 +565,7 @@
             </div>
           </section>
 
-          <!-- Column 3: My Recent Reviews -->
+          <!-- Column 3: My Recent Reviews (Top 3-4 items) -->
           <section class="dash-panel">
             <div class="dash-panel__header">
               <h2 class="dash-panel__title"><i class="fas fa-star text-amber-400"></i> My Recent Reviews</h2>
@@ -567,9 +577,21 @@
             </div>
           </section>
 
+          <!-- Column 4: Last Payments -->
+          <section class="dash-panel">
+            <div class="dash-panel__header">
+              <h2 class="dash-panel__title"><i class="fas fa-receipt text-emerald-400"></i> Last Payments</h2>
+              <a href="payment-success.html" class="dash-panel__link"><span>Receipts</span> <i class="fas fa-arrow-right text-xs"></i></a>
+            </div>
+            <div id="payments-feed" class="feed" aria-live="polite">
+              <div class="skeleton skeleton--card"></div>
+              <div class="skeleton skeleton--card"></div>
+            </div>
+          </section>
+
         </div>
 
-        <!-- Section 3: Notifications & Concierge Alerts -->
+        <!-- Section: Notifications & Concierge Alerts (Top 3-4 items) -->
         <section class="dash-panel">
           <div class="dash-panel__header">
             <h2 class="dash-panel__title"><i class="fas fa-bell text-sky-400"></i> Recent Notifications & Activity</h2>
