@@ -7,56 +7,46 @@ body[data-page="admin"], body[data-page="agency"] {
   padding: 0;
   display: block;
   place-items: unset;
-  background-color: #f8fafc;
-  color: #09090b;
+  background-color: hsl(var(--muted) / 0.25); /* Subtle page background tint for premium contrast */
 
-  /* Pure Neutral Light Mode Design System (Zero Navy Tint) */
-  --background: 0 0% 100%;             /* #ffffff pure white */
-  --foreground: 0 0% 9%;               /* #171717 dark charcoal text */
-  --card: 0 0% 100%;                   /* #ffffff pure white cards */
-  --card-foreground: 0 0% 9%;
-
-  --primary: 0 0% 9%;                  /* #171717 deep charcoal primary */
-  --primary-foreground: 0 0% 98%;      /* #fafafa crisp text */
-
-  --secondary: 0 0% 96%;               /* #f5f5f5 light neutral gray */
-  --secondary-foreground: 0 0% 9%;
-
-  --accent: 0 0% 94%;                  /* #f0f0f0 neutral hover tint */
-  --accent-foreground: 0 0% 9%;
-
-  --border: 0 0% 88%;                  /* #e0e0e0 clean border */
-  --input: 0 0% 88%;
-
-  --muted: 0 0% 96%;
-  --muted-foreground: 0 0% 45%;        /* #737373 neutral muted text */
-  --ring: 0 0% 9%;
+  /* Basecoat UI / shadcn tokens for admin pages (Light Mode) */
+  --primary: 24 10% 12%;               /* Deep warm charcoal (#1f1d1b) */
+  --primary-foreground: 60 5% 98%;     /* Warm stone text */
+  
+  --secondary: 240 5% 96%;             /* Light neutral surface (#f4f4f5) */
+  --secondary-foreground: 24 10% 12%;  /* Charcoal text on secondary */
+  
+  --accent: 240 5% 92%;                /* Neutral hover tint */
+  --accent-foreground: 24 10% 12%;
+  
+  --border: 240 6% 90%;                /* Soft zinc-200 border */
+  --input: 240 6% 90%;
+  
+  --muted-foreground: 240 4% 46%;      /* Muted zinc text */
+  --ring: 24 10% 12%;
 }
 
-/* Dark Mode Overrides (Pure Deep Obsidian Charcoal & Gold — Zero Navy Tint!) */
+/* Dark Mode Overrides (Comfortable Deep Obsidian & Gold Luxury Glass) */
 html.dark body[data-page="admin"], html.dark body[data-page="agency"] {
-  background-color: #09090b;
-  color: #f4f4f5;
-
   --background: 0 0% 4%;               /* #0a0a0a deep obsidian canvas */
-  --foreground: 0 0% 96%;              /* #f5f5f5 crisp white text */
-  --card: 0 0% 9%;                     /* #171717 elevated dark charcoal card surface */
+  --foreground: 0 0% 96%;              /* #f4f4f5 crisp white text */
+  --card: 240 5% 7%;                   /* #12121c elevated card surface */
   --card-foreground: 0 0% 96%;
-
-  --primary: 43 96% 56%;               /* #fbbf24 luxury amber/gold accent */
+  
+  --primary: 43 96% 56%;               /* #fbbf24 amber/gold luxury accent */
   --primary-foreground: 0 0% 0%;       /* Black text on gold buttons */
-
-  --secondary: 0 0% 14%;               /* #242424 neutral dark secondary */
+  
+  --secondary: 240 4% 12%;             /* #181b26 dark secondary */
   --secondary-foreground: 0 0% 96%;
-
-  --accent: 0 0% 18%;                  /* #2e2e2e neutral dark accent */
-  --accent-foreground: 0 0% 96%;
-
-  --border: 0 0% 18%;                  /* #2e2e2e clean dark border */
-  --input: 0 0% 18%;
-
-  --muted: 0 0% 14%;
-  --muted-foreground: 0 0% 65%;        /* #a3a3a3 clear neutral muted text */
+  
+  --accent: 43 96% 56%;
+  --accent-foreground: 0 0% 0%;
+  
+  --border: 240 4% 18%;                /* #27272a clean border */
+  --input: 240 4% 18%;
+  
+  --muted: 240 4% 12%;
+  --muted-foreground: 240 5% 65%;      /* #a1a1aa clear muted text */
   --ring: 43 96% 56%;
 }
 
@@ -2201,25 +2191,17 @@ html.dark .drawer {
 
 /* 1. Body & Canvas */
 body[data-page="admin"], body[data-page="agency"] {
-  background: #f8fafc !important;
-  color: #09090b !important;
+  background: #0a0a0a !important;
+  color: #f4f4f5 !important;
   font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
 }
 
-html.dark body[data-page="admin"], html.dark body[data-page="agency"] {
-  background: #0a0a0a !important;
-  color: #f4f4f5 !important;
-}
-
-/* 2. Sidebar Neutral Surface */
+/* 2. Sidebar Glassmorphism */
 .sidebar {
-  background: #ffffff !important;
-  border-right: 1px solid #e4e4e7 !important;
-}
-
-html.dark .sidebar {
-  background: rgba(18, 18, 18, 0.95) !important;
-  border-right: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background: rgba(18, 20, 28, 0.85) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-right: 1px solid rgba(251, 191, 36, 0.2) !important;
 }
 
 .sidebar-brand {
@@ -2235,30 +2217,22 @@ html.dark .sidebar {
 }
 
 .sidebar-brand .brand {
-  color: #09090b !important;
+  color: #ffffff !important;
   font-size: 1.15rem !important;
   font-weight: 900 !important;
   letter-spacing: -0.02em !important;
 }
 
-html.dark .sidebar-brand .brand {
-  color: #ffffff !important;
-}
-
 .nav-section {
-  color: #d97706 !important;
+  color: #fbbf24 !important;
   font-weight: 800 !important;
   font-size: 0.65rem !important;
   letter-spacing: 0.14em !important;
   padding: 1.25rem 0.75rem 0.35rem !important;
 }
 
-html.dark .nav-section {
-  color: #fbbf24 !important;
-}
-
 .nav-item {
-  color: #52525b !important;
+  color: rgba(255, 255, 255, 0.7) !important;
   font-weight: 600 !important;
   border-radius: 9999px !important;
   padding: 0.55rem 0.85rem !important;
@@ -2266,31 +2240,16 @@ html.dark .nav-section {
   transition: all 0.2s ease !important;
 }
 
-html.dark .nav-item {
-  color: rgba(255, 255, 255, 0.7) !important;
-}
-
 .nav-item:hover {
-  background: #f4f4f5 !important;
-  color: #09090b !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
   transform: translateX(2px) !important;
 }
 
-html.dark .nav-item:hover {
-  background: rgba(255, 255, 255, 0.08) !important;
-  color: #ffffff !important;
-}
-
 .nav-item.is-active {
-  background: #18181b !important;
-  color: #ffffff !important;
-  font-weight: 800 !important;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15) !important;
-}
-
-html.dark .nav-item.is-active {
   background: linear-gradient(135deg, #f59e0b, #d97706) !important;
   color: #000000 !important;
+  font-weight: 800 !important;
   box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35) !important;
 }
 
