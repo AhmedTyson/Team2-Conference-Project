@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
   <!-- Custom Luxury Stylesheet -->
-  <link rel="stylesheet" href="../assets/css/public.css" />
+  <link rel="stylesheet" href="assets/css/public.css" />
   <script>/* FOUC prevention — default dark */
     (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
     if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
@@ -26,7 +26,7 @@
     })();
   </script>
 </head>
-<body class="bg-[hsl(var(--background))] text-[hsl(var(--foreground))] bg-sculpture-relief" data-layout="public">
+<body class="bg-[#0a0a0a] text-white bg-sculpture-relief" data-layout="public">
 
   <!-- ============================================================
        TOAST NOTIFICATIONS
@@ -64,7 +64,7 @@
           <input type="password" id="loginPassword" placeholder="••••••••" required autocomplete="current-password" />
         </div>
         <div class="flex justify-between items-center text-xs mt-3 text-white/50">
-          <a href="../auth/forgot.html" class="hover:text-white transition">Forgot password?</a>
+          <a href="forgot.html" class="hover:text-white transition">Forgot password?</a>
         </div>
         <button type="submit" class="btn-primary w-full justify-center mt-6">
           <span>Sign In to Itinera</span>
@@ -103,42 +103,43 @@
     <!-- ============================================================
          HERO SECTION
          ============================================================ -->
-    <header class="hero-wrapper" id="heroWrapper" style="background-image: url('https://images.pexels.com/photos/1486222/pexels-photo-1486222.jpeg?auto=compress&cs=tinysrgb&w=1920');">
+    <header class="hero-wrapper" id="heroWrapper" style="background-image: url('https://images.unsplash.com/photo-1514282401047-d79a71a590e8?q=80&w=2560&auto=format&fit=crop');">
       
       <!-- Giant Background Text Overlay -->
       <div class="giant-text" aria-hidden="true">
-        <h1 id="hero-title">NEW YORK</h1>
+        <h1 id="hero-title">MALDIVES</h1>
       </div>
 
       <!-- Top Navigation Header -->
-  <div class="content-layer">
-          <!-- Top Navigation Header -->
-  <header class="app-nav-header"></header>
+      <div class="content-layer">
+        <header class="app-nav-header"></header>
+      </div>
+    </header>
 
         <!-- Hero Main Content Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end pb-8">
           
           <!-- Hero Left Column -->
           <div class="lg:col-span-7 space-y-6">
-            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-medium tracking-wide uppercase text-white/90">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span>Luxury Bespoke Journeys</span>
+            <div class="hero-badge inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-xs font-medium tracking-wide uppercase text-white/90">
+              <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+              <span>Bespoke 5-Star Luxury Concierge</span>
             </div>
 
-            <h2 class="text-4xl sm:text-6xl font-black tracking-tight leading-[1.08] text-white">
+            <h2 class="hero-headline text-4xl sm:text-6xl font-black tracking-tight leading-[1.08] text-white">
               Explore the world with extraordinary precision.
             </h2>
 
-            <p class="text-base sm:text-lg text-white/70 max-w-xl font-light leading-relaxed">
+            <p class="hero-subtext text-base sm:text-lg text-white/70 max-w-xl font-light leading-relaxed">
               Curated luxury itineraries, verified 5-star accommodations, and seamless concierge reservations tailored to your signature travel style.
             </p>
 
-            <div class="flex flex-wrap items-center gap-3 pt-2">
+            <div class="hero-ctas flex flex-wrap items-center gap-3 pt-2">
               <a href="explore.html" class="btn-primary">
                 <span>Start Exploring</span>
                 <i class="fas fa-compass text-xs"></i>
               </a>
-              <a href="../app/planner.html" class="btn-outline">
+              <a href="/app/planner.html" class="btn-outline">
                 <i class="fas fa-wand-magic-sparkles text-xs"></i>
                 <span>Plan a Trip</span>
               </a>
@@ -301,7 +302,7 @@
         </div>
 
         <div class="text-center mt-10">
-          <a href="../app/planner.html" class="btn-primary">
+          <a href="/app/planner.html" class="btn-primary">
             <i class="fas fa-wand-magic-sparkles text-xs"></i>
             <span>Launch Interactive AI Planner</span>
           </a>
@@ -386,17 +387,17 @@
             <li><a href="about.html">About Us</a></li>
             <li><a href="contact.html">Contact Us</a></li>
             <li><a href="help.html">Help Center</a></li>
-            <li><a href="../agency/index.html">Agency Portal</a></li>
+            <li><a href="agency/index.html">Agency Portal</a></li>
           </ul>
         </div>
 
         <div>
           <h4 class="text-xs uppercase tracking-wider text-white font-semibold mb-3">Account</h4>
           <ul class="space-y-2 text-sm text-white/60">
-            <li><a href="../auth/login.html">Sign In</a></li>
-            <li><a href="../auth/register.html">Sign Up</a></li>
-            <li><a href="../app/dashboard.html">Traveler Hub</a></li>
-            <li><a href="../admin/index.html">Admin Suite</a></li>
+            <li><a href="login.html">Sign In</a></li>
+            <li><a href="register.html">Sign Up</a></li>
+            <li><a href="app/dashboard.html">Traveler Hub</a></li>
+            <li><a href="admin/index.html">Admin Suite</a></li>
           </ul>
         </div>
 
@@ -414,13 +415,19 @@
 
   </div>
 
+  <!-- GSAP Animation Engine -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
   <!-- Scripts -->
-  <script src="../assets/js/core/config.js"></script>
-  <script src="../assets/js/core/api.js"></script>
-  <script src="../assets/js/core/session.js"></script>
-    <script src="../assets/js/modules/public/public-home.js"></script>
-  <script src="../assets/js/core/navbar-component.js"></script>
-  <script src="../assets/js/core/topbar.js"></script>
-  <script src="../assets/js/core/theme.js"></script>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/session.js"></script>
+  <script src="assets/js/nav-config.js"></script>
+  <script src="assets/js/utils/unsplash-helper.js"></script>
+  <script src="assets/js/public-home.js"></script>
+  <script src="./assets/js/core/navbar-component.js"></script>
+  <script src="./assets/js/core/topbar.js"></script>
+  <script src="./assets/js/core/theme.js"></script>
 </body>
 </html>

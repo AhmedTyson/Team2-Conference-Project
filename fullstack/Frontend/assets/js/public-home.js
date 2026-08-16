@@ -12,53 +12,63 @@
   var HERO_SLIDES = [
     {
       id: 1,
-      name: "NEW YORK",
-      location: "United States",
-      bgImage: "https://images.pexels.com/photos/1486222/pexels-photo-1486222.jpeg?auto=compress&cs=tinysrgb&w=1920",
-      cardImage: "https://images.pexels.com/photos/1486222/pexels-photo-1486222.jpeg?auto=compress&cs=tinysrgb&w=600",
-      description: "The city that never sleeps — iconic skyline, endless energy, and world-class culture.",
-      lat: 40.7128,
-      lon: -74.0060
+      name: "MALDIVES",
+      location: "Indian Ocean",
+      bgImage: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?q=80&w=2560&auto=format&fit=crop",
+      cardImage: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?q=80&w=800&auto=format&fit=crop",
+      description: "Crystal turquoise lagoons, private overwater sanctuaries, and pristine coral reefs.",
+      lat: 3.2028,
+      lon: 73.2207
     },
     {
       id: 2,
+      name: "SWISS ALPS",
+      location: "Switzerland",
+      bgImage: "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?q=80&w=2560&auto=format&fit=crop",
+      cardImage: "https://images.unsplash.com/photo-1530122037265-a5f1f91d3b99?q=80&w=800&auto=format&fit=crop",
+      description: "Majestic snow-capped alpine peaks, luxury ski chalets, and crisp mountain serenity.",
+      lat: 46.0207,
+      lon: 7.7491
+    },
+    {
+      id: 3,
       name: "SANTORINI",
       location: "Greece",
-      bgImage: "https://images.pexels.com/photos/1586077/pexels-photo-1586077.jpeg?auto=compress&cs=tinysrgb&w=1920",
-      cardImage: "https://images.pexels.com/photos/1586077/pexels-photo-1586077.jpeg?auto=compress&cs=tinysrgb&w=600",
-      description: "White-washed cliffside villas, deep azure Aegean waters, and legendary golden sunsets.",
+      bgImage: "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?q=80&w=2560&auto=format&fit=crop",
+      cardImage: "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?q=80&w=800&auto=format&fit=crop",
+      description: "White-washed cliffside suites, deep azure Aegean waters, and legendary golden sunsets.",
       lat: 36.3932,
       lon: 25.4615
     },
     {
-      id: 3,
+      id: 4,
       name: "PARIS",
       location: "France",
-      bgImage: "https://images.pexels.com/photos/699466/pexels-photo-699466.jpeg?auto=compress&cs=tinysrgb&w=1920",
-      cardImage: "https://images.pexels.com/photos/699466/pexels-photo-699466.jpeg?auto=compress&cs=tinysrgb&w=600",
-      description: "Romantic boulevards, world-renowned gastronomy, and timeless historic architecture.",
+      bgImage: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=2560&auto=format&fit=crop",
+      cardImage: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=800&auto=format&fit=crop",
+      description: "Romantic boulevards, Michelin haute cuisine, and iconic Eiffel Tower vistas.",
       lat: 48.8566,
       lon: 2.3522
-    },
-    {
-      id: 4,
-      name: "BARCELONA",
-      location: "Spain",
-      bgImage: "https://images.pexels.com/photos/2872373/pexels-photo-2872373.jpeg?auto=compress&cs=tinysrgb&w=1920",
-      cardImage: "https://images.pexels.com/photos/2872373/pexels-photo-2872373.jpeg?auto=compress&cs=tinysrgb&w=600",
-      description: "Gaudí masterpieces, vibrant Mediterranean shores, and exquisite tapas dining.",
-      lat: 41.3879,
-      lon: 2.1699
     },
     {
       id: 5,
       name: "TOKYO",
       location: "Japan",
-      bgImage: "https://images.pexels.com/photos/2506923/pexels-photo-2506923.jpeg?auto=compress&cs=tinysrgb&w=1920",
-      cardImage: "https://images.pexels.com/photos/2506923/pexels-photo-2506923.jpeg?auto=compress&cs=tinysrgb&w=600",
-      description: "Ultramodern neon skylines blended with ancient shrines, serenity, and culinary mastery.",
+      bgImage: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?q=80&w=2560&auto=format&fit=crop",
+      cardImage: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?q=80&w=800&auto=format&fit=crop",
+      description: "Futuristic neon skylines, historic shrines, and world-renowned culinary perfection.",
       lat: 35.6762,
       lon: 139.6503
+    },
+    {
+      id: 6,
+      name: "CAIRO & GIZA",
+      location: "Egypt",
+      bgImage: "https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?q=80&w=2560&auto=format&fit=crop",
+      cardImage: "https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?q=80&w=800&auto=format&fit=crop",
+      description: "Ancient Pyramids of Giza, Nile River sunset cruises, and timeless Mediterranean heritage.",
+      lat: 29.9792,
+      lon: 31.1342
     }
   ];
 
@@ -486,6 +496,52 @@
     });
   }
 
+  function initGSAPAnimations() {
+    if (typeof gsap === "undefined") return;
+
+    if (typeof ScrollTrigger !== "undefined") {
+      gsap.registerPlugin(ScrollTrigger);
+    }
+
+    // 1. Hero Content Entrance
+    gsap.from(".hero-badge", { opacity: 0, y: -20, duration: 0.8, ease: "power3.out", delay: 0.2 });
+    gsap.from(".hero-headline", { opacity: 0, y: 30, duration: 1, ease: "power3.out", delay: 0.4 });
+    gsap.from(".hero-subtext", { opacity: 0, y: 20, duration: 0.9, ease: "power3.out", delay: 0.6 });
+    gsap.from(".hero-ctas", { opacity: 0, y: 20, duration: 0.8, ease: "power3.out", delay: 0.8 });
+    gsap.from("#carousel-card", { opacity: 0, scale: 0.92, duration: 1.1, ease: "back.out(1.4)", delay: 0.5 });
+
+    // 2. Parallax background on scroll
+    if (typeof ScrollTrigger !== "undefined" && el("heroWrapper")) {
+      gsap.to("#heroWrapper", {
+        backgroundPositionY: "40%",
+        ease: "none",
+        scrollTrigger: {
+          trigger: "#heroWrapper",
+          start: "top top",
+          end: "bottom top",
+          scrub: true
+        }
+      });
+    }
+
+    // 3. Staggered ScrollTrigger animations for cards
+    if (typeof ScrollTrigger !== "undefined") {
+      gsap.utils.toArray(".glass-card").forEach(function(card) {
+        gsap.from(card, {
+          opacity: 0,
+          y: 40,
+          duration: 0.8,
+          ease: "power2.out",
+          scrollTrigger: {
+            trigger: card,
+            start: "top 88%",
+            toggleActions: "play none none none"
+          }
+        });
+      });
+    }
+  }
+
   // ── Bootstrapping ──
   document.addEventListener("DOMContentLoaded", function () {
     initHeroCarousel();
@@ -493,6 +549,7 @@
     loadRegionsAndDestinations();
     initAuthModal();
     syncAuthState();
+    initGSAPAnimations();
 
     var year = el("footerYear");
     if (year) year.textContent = new Date().getFullYear();
