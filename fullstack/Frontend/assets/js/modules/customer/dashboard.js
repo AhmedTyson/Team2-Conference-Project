@@ -935,11 +935,25 @@
       setStat("stat-booked", "0");
       setStat("stat-completed", "0");
       setStat("stat-cancelled", "0");
-      setStat("stat-favs", "2");
-      setStat("stat-reviews", "2");
+      // AI Quota & Plan Status Bar (Demo mode)
+      const subObj = (user && user.subscription) ? user.subscription : {};
+      const planName = subObj.plan_name || "Pro Plan";
+      const totalQuota = subObj.ai_quota_total || 500;
+      const usedQuota = typeof (user && user.ai_generations_count) === "number" ? user.ai_generations_count : 0;
+      const remainingQuota = Math.max(0, totalQuota - usedQuota);
+      const usagePct = Math.min(100, Math.round((usedQuota / totalQuota) * 100));
 
+      const planBadge = el("ai-plan-badge");
       const quotaVal = el("stat-val-quota");
-      if (quotaVal) quotaVal.textContent = "25 Remaining";
+      const usedText = el("ai-quota-used-text");
+      const availText = el("ai-quota-avail-text");
+      const barEl = el("ai-quota-bar");
+
+      if (planBadge) planBadge.textContent = planName;
+      if (quotaVal) quotaVal.textContent = remainingQuota + " Available";
+      if (usedText) usedText.innerHTML = '<i class="fas fa-chart-pie text-purple-500 mr-1"></i> ' + usedQuota + " / " + totalQuota + " used";
+      if (availText) availText.textContent = remainingQuota + " available";
+      if (barEl) barEl.style.width = usagePct + "%";
 
       setFeed(tripsList, mockTrips.slice(0, 4), "No trips yet.", renderTrips);
       setFeed(favsList, mockFavs.slice(0, 4), "No favourites saved yet.", renderFavs);
