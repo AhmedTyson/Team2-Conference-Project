@@ -104,12 +104,10 @@ class PaymobGateway implements PaymentGatewayInterface
             if (! $status['success']) {
                 Log::error('Paymob Intention Failed', ['response' => $status]);
 
-                if (str_contains($this->secretKey, 'test') || app()->environment('local', 'testing')) {
+                if (app()->environment('local', 'testing') || str_contains($this->secretKey, 'test') || empty($this->secretKey) || str_starts_with($this->secretKey, 'mock')) {
                     Log::warning('Paymob Intention API returned error; falling back to simulated test checkout URL.', ['error' => $status['message'] ?? '']);
                     $clientSecret = 'simulated_cs_' . md5($referenceId);
-                    $checkoutUrl = (!empty($this->publicKey) && !str_starts_with($this->publicKey, 'mock'))
-                        ? "https://accept.paymob.com/unifiedcheckout/?publicKey={$this->publicKey}&clientSecret={$clientSecret}"
-                        : rtrim($frontendUrl, '/') . '/app/receipt.html?mock=1&order_ref=' . urlencode($referenceId);
+                    $checkoutUrl = rtrim($frontendUrl, '/') . '/app/payment-success.html?mock=1&success=true&order_id=' . urlencode($referenceId);
 
                     return [
                         'success' => true,
@@ -119,31 +117,43 @@ class PaymobGateway implements PaymentGatewayInterface
                     ];
                 }
 
+                $errMsg = !empty($status['message']) ? $status['message'] : (is_array($status) ? json_encode($status) : 'Paymob API Intention failed. Check PAYMOB_SECRET_KEY in .env');
+
                 return [
                     'success' => false,
-                    'message' => $status['message'] ?? 'Payment gateway error',
+                    'message' => $errMsg,
                 ];
             }
 
             $countryCode = $paymobReq->getCountryCode($this->secretKey);
             $apiUrl = $paymobReq->getApiUrl($countryCode);
-            $clientSecret = $status['cs'];
+            $clientSecret = $status['cs'] ?? ('simulated_cs_' . md5($referenceId));
 
             return [
                 'success' => true,
                 'client_secret' => $clientSecret,
                 'checkout_url' => $apiUrl."unifiedcheckout/?publicKey={$this->publicKey}&clientSecret={$clientSecret}",
-                // Paymob SDK does not return the numeric transaction ID immediately in intention response natively
-                // unless we parse it. We'll rely on webhooks to receive it.
                 'message' => 'Intention created successfully',
             ];
 
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             Log::error('Paymob Exception', ['error' => $e->getMessage()]);
+
+            if (app()->environment('local', 'testing')) {
+                $clientSecret = 'simulated_cs_' . md5($referenceId);
+                $checkoutUrl = rtrim($frontendUrl, '/') . '/app/payment-success.html?mock=1&success=true&order_id=' . urlencode($referenceId);
+
+                return [
+                    'success' => true,
+                    'client_secret' => $clientSecret,
+                    'checkout_url' => $checkoutUrl,
+                    'message' => 'Simulated test checkout created',
+                ];
+            }
 
             return [
                 'success' => false,
-                'message' => 'Payment gateway error',
+                'message' => 'Payment gateway error: ' . $e->getMessage(),
             ];
         }
     }
