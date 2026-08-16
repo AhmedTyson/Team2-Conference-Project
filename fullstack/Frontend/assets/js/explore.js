@@ -385,6 +385,80 @@
     });
   };
 
+  var CURRENT_PAGE = 1;
+  var PER_PAGE = 20;
+  var SELECTED_REGION = "";
+
+  function renderPagination(totalPages) {
+    var pagContainer = el("catalog-pagination");
+    if (!pagContainer) {
+      if (grid && grid.parentNode) {
+        pagContainer = document.createElement("div");
+        pagContainer.id = "catalog-pagination";
+        pagContainer.className = "mt-12 flex items-center justify-center gap-2 flex-wrap";
+        grid.parentNode.insertBefore(pagContainer, grid.nextSibling);
+      } else {
+        return;
+      }
+    }
+
+    if (totalPages <= 1) {
+      pagContainer.innerHTML = "";
+      return;
+    }
+
+    var html = '<div class="flex items-center justify-center gap-2 flex-wrap text-xs font-semibold py-4">' +
+      '<button type="button" id="pag-prev" class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-white/80 hover:text-white hover:bg-white/10 transition disabled:opacity-30 disabled:pointer-events-none cursor-pointer flex items-center gap-1.5" ' + (CURRENT_PAGE <= 1 ? 'disabled' : '') + '><i class="fas fa-chevron-left text-[10px]"></i> Prev</button>';
+
+    for (var p = 1; p <= totalPages; p++) {
+      var isCurrent = p === CURRENT_PAGE;
+      html += '<button type="button" class="pag-num-btn w-9 h-9 rounded-full font-bold transition cursor-pointer flex items-center justify-center ' +
+        (isCurrent ? 'bg-amber-400 text-black shadow-lg shadow-amber-400/20' : 'bg-white/5 border border-white/10 text-white/70 hover:text-white hover:bg-white/10') +
+        '" data-page="' + p + '">' + p + '</button>';
+    }
+
+    html += '<button type="button" id="pag-next" class="px-4 py-2 rounded-full bg-white/5 border border-white/10 text-white/80 hover:text-white hover:bg-white/10 transition disabled:opacity-30 disabled:pointer-events-none cursor-pointer flex items-center gap-1.5" ' + (CURRENT_PAGE >= totalPages ? 'disabled' : '') + '>Next <i class="fas fa-chevron-right text-[10px]"></i></button>' +
+      '</div>';
+
+    pagContainer.innerHTML = html;
+
+    var prevBtn = el("pag-prev");
+    if (prevBtn) {
+      prevBtn.addEventListener("click", function () {
+        if (CURRENT_PAGE > 1) {
+          CURRENT_PAGE--;
+          loadCatalog();
+          scrollToGridTop();
+        }
+      });
+    }
+
+    var nextBtn = el("pag-next");
+    if (nextBtn) {
+      nextBtn.addEventListener("click", function () {
+        if (CURRENT_PAGE < totalPages) {
+          CURRENT_PAGE++;
+          loadCatalog();
+          scrollToGridTop();
+        }
+      });
+    }
+
+    pagContainer.querySelectorAll(".pag-num-btn").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        CURRENT_PAGE = Number(btn.getAttribute("data-page"));
+        loadCatalog();
+        scrollToGridTop();
+      });
+    });
+  }
+
+  function scrollToGridTop() {
+    if (grid) {
+      grid.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }
+
   function loadCatalog() {
     if (!grid) return;
     grid.innerHTML = '<div class="col-span-full py-16 text-center text-white/50 space-y-3"><i class="fas fa-circle-notch fa-spin text-2xl text-amber-400"></i><p class="text-sm font-semibold">Loading luxury experiences...</p></div>';
@@ -405,7 +479,7 @@
         });
       }
 
-      if (SELECTED_REGION) {
+      if (SELECTED_REGION && SELECTED_REGION.trim() !== "" && SELECTED_REGION !== "All Regions") {
         var reg = SELECTED_REGION.toLowerCase();
         items = items.filter(function (i) {
           var itemRegion = ((i.country && i.country.region && i.country.region.name) || i.region_name || i.region || "").toLowerCase();
@@ -414,24 +488,38 @@
         });
       }
 
+      var totalItems = items.length;
+      var totalPages = Math.ceil(totalItems / PER_PAGE) || 1;
+      if (CURRENT_PAGE > totalPages) CURRENT_PAGE = totalPages;
+      if (CURRENT_PAGE < 1) CURRENT_PAGE = 1;
+
+      var startIndex = (CURRENT_PAGE - 1) * PER_PAGE;
+      var pageItems = items.slice(startIndex, startIndex + PER_PAGE);
+
       if (countLabel) {
-        countLabel.textContent = "Showing " + items.length + " " + TAB + " experience(s)";
+        if (totalItems > 0) {
+          countLabel.textContent = "Showing " + (startIndex + 1) + "–" + Math.min(startIndex + PER_PAGE, totalItems) + " of " + totalItems + " " + TAB + " experience(s)";
+        } else {
+          countLabel.textContent = "0 experiences found";
+        }
       }
 
-      if (!items.length) {
+      if (!pageItems.length) {
         grid.innerHTML = '<div class="col-span-full py-16 text-center text-white/50 bg-white/5 rounded-3xl border border-white/10"><p class="text-base font-bold text-white mb-1">No Experiences Found</p><p class="text-xs">Try clearing search keywords or switching category filters.</p></div>';
+        renderPagination(0);
         return;
       }
 
-      grid.innerHTML = items.map(function (item) {
+      grid.innerHTML = pageItems.map(function (item) {
         return cardFor(TAB, item);
       }).join("");
+
+      renderPagination(totalPages);
     }).catch(function () {
       grid.innerHTML = '<div class="col-span-full py-16 text-center text-white/50 bg-white/5 rounded-3xl border border-white/10"><p class="text-base font-bold text-white mb-2">Could Not Load Catalog</p><button type="button" class="px-5 py-2 rounded-full bg-amber-400 text-black text-xs font-bold" onclick="location.reload()">Retry Connection</button></div>';
+      renderPagination(0);
     });
   }
-
-  var SELECTED_REGION = "";
 
   function loadRegionPills() {
     var pillsContainer = el("region-pills");
@@ -440,7 +528,7 @@
     var regions = ["All Regions", "Europe", "Asia", "Middle East", "Americas", "Africa"];
     pillsContainer.innerHTML = regions.map(function (r, i) {
       var isAll = i === 0;
-      var active = (isAll && !SELECTED_REGION) || (SELECTED_REGION === r);
+      var active = (isAll && (!SELECTED_REGION || SELECTED_REGION === "All Regions")) || (SELECTED_REGION === r);
       return '<button type="button" class="px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all flex-shrink-0 cursor-pointer ' +
         (active ? 'bg-amber-400 text-black shadow-md' : 'bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 hover:text-white') +
         '" data-region="' + (isAll ? '' : esc(r)) + '">' + esc(r) + '</button>';
@@ -449,6 +537,7 @@
     pillsContainer.querySelectorAll("[data-region]").forEach(function (btn) {
       btn.addEventListener("click", function () {
         SELECTED_REGION = btn.getAttribute("data-region");
+        CURRENT_PAGE = 1;
         loadRegionPills();
         loadCatalog();
       });
@@ -466,6 +555,7 @@
         var btn = e.target.closest("[data-tab]");
         if (!btn) return;
         TAB = btn.getAttribute("data-tab");
+        CURRENT_PAGE = 1;
         tabs.querySelectorAll("[data-tab]").forEach(function (b) {
           var active = b === btn;
           b.className = active
@@ -481,6 +571,7 @@
         clearTimeout(searchTimer);
         searchTimer = setTimeout(function () {
           SEARCH = searchInput.value.trim();
+          CURRENT_PAGE = 1;
           loadCatalog();
         }, 300);
       });
