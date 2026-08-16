@@ -323,6 +323,7 @@ Route::middleware(['auth:api', 'verified'])->prefix('admin')->name('admin.')->gr
     Route::patch('/reviews/{id}/approve', [AdminReviewController::class, 'approve'])->middleware('permission:manage reviews');
     Route::patch('/reviews/{id}/reject', [AdminReviewController::class, 'reject'])->middleware('permission:manage reviews');
     Route::delete('/reviews/{id}', [AdminReviewController::class, 'destroy'])->middleware('permission:manage reviews');
+    Route::patch('/reviews/{id}/restore', [AdminReviewController::class, 'restore'])->middleware('permission:manage reviews');
     // Flags
     Route::get('/flags', [AdminFlagController::class, 'index'])->middleware('role:admin|super_admin,api');
     Route::post('/flags/{id}/approve', [AdminFlagController::class, 'approve'])->middleware('role:admin|super_admin,api');
@@ -362,6 +363,11 @@ Route::middleware(['auth:api', 'verified'])->prefix('checkout')->name('checkout.
 Route::prefix('paymob')->name('paymob-v1.')->group(function () {
     Route::post('/webhook', [PaymobWebhookController::class, 'handle'])->name('webhook');
     Route::get('/callback', [PaymobWebhookController::class, 'callback'])->name('callback');
+});
+
+Route::prefix('v1/paymob')->group(function () {
+    Route::post('/webhook', [PaymobWebhookController::class, 'handle']);
+    Route::get('/callback', [PaymobWebhookController::class, 'callback']);
 });
 
 // ---- Admin: revenue analytics

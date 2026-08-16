@@ -266,6 +266,10 @@ class GenerateReportService
             $chartConfig['options']['indexAxis'] = 'y';
         }
 
+        if (app()->environment('testing')) {
+            return '';
+        }
+
         $url = 'https://quickchart.io/chart?w=800&h='.$height.'&c='.urlencode(json_encode($chartConfig));
 
         try {

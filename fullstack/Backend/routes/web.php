@@ -23,6 +23,12 @@ Route::get('/', function () {
     ]);
 });
 
+// Paymob GET Callback Web Fallbacks
+Route::get('/paymob/callback', [\App\Http\Controllers\Commerce\PaymobWebhookController::class, 'callback']);
+Route::get('/v1/paymob/callback', [\App\Http\Controllers\Commerce\PaymobWebhookController::class, 'callback']);
+Route::get('/api/v1/paymob/callback', [\App\Http\Controllers\Commerce\PaymobWebhookController::class, 'callback']);
+Route::get('/api/paymob/callback', [\App\Http\Controllers\Commerce\PaymobWebhookController::class, 'callback']);
+
 // Fallback JSON 404 response for any unmatched web route
 Route::fallback(function () {
     return response()->json([

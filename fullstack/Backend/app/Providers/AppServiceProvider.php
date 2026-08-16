@@ -90,7 +90,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Gate::policy(\App\Models\Commerce\AgencyAssignment::class, \App\Policies\Commerce\AgencyAssignmentPolicy::class);
         Gate::policy(\App\Models\System\Flag::class, \App\Policies\System\FlagPolicy::class);
-        Gate::policy(\App\Models\Trips\Trip::class, \App\Policies\Trips\TripPolicy::class);
+        Gate::policy(\App\Models\Trips\Trip::class, \App\Policies\TripPolicy::class);
 
         // Implicitly grant Super Admin all permissions
         Gate::before(function ($user, $ability) {
