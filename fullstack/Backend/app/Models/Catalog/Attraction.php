@@ -2,6 +2,10 @@
 
 namespace App\Models\Catalog;
 
+use App\Models\Trips\Favourite;
+use App\Models\Trips\ItineraryItem;
+use App\Models\Trips\Review;
+use App\Models\Trips\Trip;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

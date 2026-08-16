@@ -1,8 +1,8 @@
 /**
  * entity.js — Dynamic multi-resource entity detail page router (entity.html).
  * Supports destinations, hotels, restaurants, attractions, and flights.
- * Features luxury hero image, metadata badges, interactive itinerary attachment,
- * and 100% dynamic Reviews Section with skeleton loader, empty states, and PENDING admin approval cycle.
+ * Features luxury hero image, metadata badges, state-of-the-art Quick Actions sidebar,
+ * initial favourite pre-checking, and 100% dynamic Reviews Section with PENDING admin approval cycle.
  */
 (function (global) {
   "use strict";
@@ -63,7 +63,8 @@
     hotel: "hotels", hotels: "hotels",
     restaurant: "restaurants", restaurants: "restaurants",
     attraction: "attractions", attractions: "attractions",
-    flight: "flights", flights: "flights"
+    flight: "flights", flights: "flights",
+    destination: "destinations", destinations: "destinations"
   };
 
   var params = new URLSearchParams(global.location.search);
@@ -150,11 +151,20 @@
     };
 
     var dbReviews = (apiPayload && Array.isArray(apiPayload.reviews)) ? apiPayload.reviews : [];
+    var userReview = (apiPayload && apiPayload.user_review) ? apiPayload.user_review : null;
 
     var ratingDisplay = summary.rating ? Number(summary.rating).toFixed(1) : "0.0";
     var totalDisplay = summary.total_reviews ? summary.total_reviews.toLocaleString() + " verified ratings" : "No verified ratings yet";
     var dist = summary.distribution || {};
     var sub = summary.sub_scores || {};
+
+    var headerBtnText = userReview ? '<i class="fas fa-pen-to-square mr-1"></i> Edit Your Review' : '<i class="fas fa-pen-to-square mr-1"></i> Write a Review';
+    var formTitle = userReview
+      ? 'Edit Your Review for <span class="text-amber-400">' + esc(name) + '</span>'
+      : 'We love to hear from you! How\'s your experience with <span class="text-amber-400">' + esc(name) + '</span>?';
+    var submitBtnText = userReview ? '<i class="fas fa-floppy-disk mr-1"></i> Update Review' : 'Submit Review';
+    var initialCommentText = userReview && userReview.comment ? esc(userReview.comment) : '';
+    var initialRating = userReview && userReview.rating ? userReview.rating : 5;
 
     var reviewsFeedHtml = "";
     if (dbReviews.length === 0) {
@@ -173,15 +183,25 @@
 
         var statusBadgeHtml = "";
         if (rev.is_pending || rev.status === "pending") {
-          statusBadgeHtml = '<span class="px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-400 text-xs font-bold flex items-center gap-1.5 shadow-sm">' +
-            '<i class="fas fa-clock text-amber-400"></i> Pending Admin Approval' +
-          '</span>';
+          statusBadgeHtml = '<div class="flex items-center gap-2 flex-wrap">' +
+            '<span class="px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/30 text-amber-400 text-xs font-bold flex items-center gap-1.5 shadow-sm">' +
+              '<i class="fas fa-clock text-amber-400"></i> Pending Admin Approval' +
+            '</span>' +
+            '<div class="flex items-center gap-1.5 bg-white/5 border border-white/10 px-3 py-1 rounded-full text-xs font-bold">' +
+              '<span class="text-white font-extrabold">' + Number(rev.rating).toFixed(1) + '</span>' +
+              starsHtml(rev.rating, "text-amber-400") +
+            '</div>' +
+          '</div>';
         } else {
           statusBadgeHtml = '<div class="flex items-center gap-1.5 bg-white/5 border border-white/10 px-3 py-1 rounded-full text-xs font-bold">' +
             '<span class="text-white font-extrabold">' + Number(rev.rating).toFixed(1) + '</span>' +
             starsHtml(rev.rating, "text-amber-400") +
           '</div>';
         }
+
+        var commentHtml = (rev.comment && rev.comment.trim())
+          ? '<p class="text-xs sm:text-sm text-white/80 leading-relaxed pt-1">' + esc(rev.comment) + '</p>'
+          : '';
 
         return '<div class="border-t border-white/10 pt-6 first:border-0 first:pt-0 space-y-2.5">' +
           '<div class="flex items-center justify-between flex-wrap gap-2">' +
@@ -194,7 +214,7 @@
             '</div>' +
             statusBadgeHtml +
           '</div>' +
-          '<p class="text-xs sm:text-sm text-white/80 leading-relaxed pt-1">' + esc(rev.comment) + '</p>' +
+          commentHtml +
         '</div>';
       }).join("");
     }
@@ -207,27 +227,27 @@
           '<h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight">Verified Reviews</h2>' +
         '</div>' +
         '<button type="button" id="toggle-review-form-btn" class="px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold text-xs transition shadow-lg shadow-amber-500/20 flex items-center gap-1.5">' +
-          '<i class="fas fa-pen-to-square"></i> Write a Review' +
+          headerBtnText +
         '</button>' +
       '</div>' +
 
-      '<!-- Interactive Review Submission Accordion with Dynamic Star Hover Rating -->' +
+      '<!-- Interactive Review Submission Accordion with Pre-populated Review Data -->' +
       '<div id="write-review-accordion" class="hidden p-6 sm:p-8 rounded-2xl bg-white/5 border border-amber-400/30 space-y-5 shadow-xl">' +
         '<div>' +
-          '<h3 class="text-base sm:text-lg font-bold text-white mb-1">' +
-            'We love to hear from you! How\'s your experience with <span class="text-amber-400">' + esc(name) + '</span>?' +
-          '</h3>' +
-          '<p class="text-xs text-white/50">Hover over the stars below to rate your experience. Submitted reviews undergo admin review before public posting.</p>' +
+          '<h3 class="text-base sm:text-lg font-bold text-white mb-1">' + formTitle + '</h3>' +
+          '<p class="text-xs text-white/50">Hover over stars to adjust rating. Editing your review will resubmit it for admin approval.</p>' +
         '</div>' +
 
         '<!-- Interactive 5 Gold Stars Widget with Hover Fill -->' +
         '<div class="space-y-2 py-1">' +
-          '<div class="flex items-center gap-3.5" id="interactive-star-rating" data-selected="5">' +
-            '<i class="fas fa-star text-4xl sm:text-5xl text-amber-400 cursor-pointer transition-all duration-200 hover:scale-110 drop-shadow-[0_0_12px_rgba(251,191,36,0.6)] star-icon" data-rating="1"></i>' +
-            '<i class="fas fa-star text-4xl sm:text-5xl text-amber-400 cursor-pointer transition-all duration-200 hover:scale-110 drop-shadow-[0_0_12px_rgba(251,191,36,0.6)] star-icon" data-rating="2"></i>' +
-            '<i class="fas fa-star text-4xl sm:text-5xl text-amber-400 cursor-pointer transition-all duration-200 hover:scale-110 drop-shadow-[0_0_12px_rgba(251,191,36,0.6)] star-icon" data-rating="3"></i>' +
-            '<i class="fas fa-star text-4xl sm:text-5xl text-amber-400 cursor-pointer transition-all duration-200 hover:scale-110 drop-shadow-[0_0_12px_rgba(251,191,36,0.6)] star-icon" data-rating="4"></i>' +
-            '<i class="fas fa-star text-4xl sm:text-5xl text-amber-400 cursor-pointer transition-all duration-200 hover:scale-110 drop-shadow-[0_0_12px_rgba(251,191,36,0.6)] star-icon" data-rating="5"></i>' +
+          '<div class="flex items-center gap-3.5" id="interactive-star-rating" data-selected="' + initialRating + '">' +
+            [1, 2, 3, 4, 5].map(function (n) {
+              var isFilled = n <= initialRating;
+              var starClass = isFilled
+                ? 'fas fa-star text-4xl sm:text-5xl text-amber-400 cursor-pointer transition-all duration-200 hover:scale-110 drop-shadow-[0_0_12px_rgba(251,191,36,0.6)] star-icon'
+                : 'fas fa-star text-4xl sm:text-5xl text-white/20 cursor-pointer transition-all duration-200 hover:scale-110 drop-shadow-none star-icon';
+              return '<i class="' + starClass + '" data-rating="' + n + '"></i>';
+            }).join("") +
           '</div>' +
 
           '<!-- Dynamic Sentiment Subtitle Text -->' +
@@ -236,12 +256,12 @@
           '</p>' +
         '</div>' +
 
-        '<!-- Review Comment Input -->' +
-        '<textarea id="review-comment" rows="3" class="w-full bg-black/40 border border-white/15 text-white text-sm rounded-xl p-3.5 focus:border-amber-400 focus:outline-none transition" placeholder="Share more details about your stay, food, or adventure..."></textarea>' +
+        '<!-- Review Comment Input (Optional, Pre-filled on edit) -->' +
+        '<textarea id="review-comment" rows="3" class="w-full bg-black/40 border border-white/15 text-white text-sm rounded-xl p-3.5 focus:border-amber-400 focus:outline-none transition" placeholder="Share more details about your stay, food, or adventure (optional)...">' + initialCommentText + '</textarea>' +
 
         '<div class="flex justify-end gap-3">' +
           '<button type="button" id="cancel-review-form-btn" class="px-5 py-2 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition">Cancel</button>' +
-          '<button type="button" id="review-btn" class="px-6 py-2 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold text-xs transition shadow-lg shadow-amber-500/20">Submit Review</button>' +
+          '<button type="button" id="review-btn" class="px-6 py-2 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold text-xs transition shadow-lg shadow-amber-500/20">' + submitBtnText + '</button>' +
         '</div>' +
       '</div>' +
 
@@ -314,17 +334,17 @@
       var raw = res.data !== undefined ? res.data : (res.body ? (res.body.data || res.body) : res);
       if (reviewsCont) {
         reviewsCont.innerHTML = renderReviewsSection(entity, raw);
-        wireReviewEvents(entity);
+        wireReviewEvents(entity, raw);
       }
     }).catch(function () {
       if (reviewsCont) {
         reviewsCont.innerHTML = renderReviewsSection(entity, null);
-        wireReviewEvents(entity);
+        wireReviewEvents(entity, null);
       }
     });
   }
 
-  function wireReviewEvents(entity) {
+  function wireReviewEvents(entity, apiPayload) {
     var toggleBtn = el("toggle-review-form-btn");
     var cancelBtn = el("cancel-review-form-btn");
     var accordion = el("write-review-accordion");
@@ -356,9 +376,11 @@
       5: "fa-face-grin-stars text-amber-400"
     };
 
+    var userReview = (apiPayload && apiPayload.user_review) ? apiPayload.user_review : null;
+    var selectedRating = (userReview && userReview.rating) ? Number(userReview.rating) : 5;
+
     var starWidget = el("interactive-star-rating");
     var sentimentLabel = el("rating-sentiment-label");
-    var selectedRating = 5;
 
     if (starWidget) {
       var stars = starWidget.querySelectorAll(".star-icon");
@@ -379,6 +401,8 @@
           sentimentLabel.innerHTML = '<i class="fas ' + icon + '"></i> ' + text;
         }
       }
+
+      updateStarsDisplay(selectedRating);
 
       stars.forEach(function (star) {
         star.addEventListener("mouseenter", function () {
@@ -405,25 +429,32 @@
           showToast("Please sign in to submit a review.", "error");
           return;
         }
-        var comment = (el("review-comment") && el("review-comment").value.trim()) || "";
+        if (selectedRating < 1 || selectedRating > 5) {
+          showToast("Please select a star rating between 1 and 5.", "warn");
+          return;
+        }
+
+        var comment = (el("review-comment") && el("review-comment").value.trim()) || null;
+
         reviewBtn.disabled = true;
-        reviewBtn.textContent = "Submitting…";
+        reviewBtn.textContent = "Saving…";
         It.apiPost("/reviews/" + type + "/" + id, { rating: selectedRating, comment: comment }, { auth: true }).then(function (res) {
           if (res.ok) {
-            showToast("Review submitted successfully! It is now pending admin approval.", "success");
-            if (el("review-comment")) el("review-comment").value = "";
+            var msg = userReview ? "Review updated! It is now pending admin approval." : "Review submitted! It is now pending admin approval.";
+            showToast(msg, "success");
             if (accordion) accordion.classList.add("hidden");
             // Re-fetch dynamic reviews from API to update overall rating & feed in real time
             fetchAndRenderReviews(entity);
           } else {
-            showToast((res.body && res.body.message) || "Could not submit review.", "error");
+            var msg = (res.body && (res.body.message || (res.body.errors && Object.values(res.body.errors)[0]))) || "Could not submit review.";
+            showToast(msg, "error");
             reviewBtn.disabled = false;
-            reviewBtn.textContent = "Submit Review";
+            reviewBtn.textContent = userReview ? "Update Review" : "Submit Review";
           }
         }).catch(function () {
           showToast("Network error submitting review.", "error");
           reviewBtn.disabled = false;
-          reviewBtn.textContent = "Submit Review";
+          reviewBtn.textContent = userReview ? "Update Review" : "Submit Review";
         });
       });
     }
@@ -435,20 +466,32 @@
 
     var attachBlock = "";
     if (ATTACH_TYPE[type]) {
-      attachBlock = '<div class="glass-card p-6 mb-6 rounded-2xl bg-white/5 border border-white/10">' +
-        '<h4 class="text-sm font-bold text-white mb-2 flex items-center gap-2"><i class="fas fa-suitcase-rolling text-amber-400"></i> Add to your Trip Itinerary</h4>' +
-        '<p class="text-xs text-white/50 mb-4">Attach this experience directly to one of your active trip plans.</p>' +
-        '<div class="flex gap-2">' +
-        '<select id="trip-select" class="bg-black/40 border border-white/15 text-white text-sm rounded-lg px-3 py-2 flex-1 focus:outline-none">' +
-        '<option value="">Select an active trip...</option></select>' +
-        '<button type="button" id="attach-btn" class="px-4 py-2 rounded-full bg-amber-400 text-black font-bold text-sm" disabled>Attach</button>' +
-        '</div></div>';
+      attachBlock = '<div class="border-t border-white/10 pt-4 space-y-3">' +
+        '<label class="text-xs font-bold text-white uppercase tracking-wider block flex items-center gap-1.5">' +
+          '<i class="fas fa-suitcase-rolling text-amber-400 text-xs"></i> Add to Trip Itinerary' +
+        '</label>' +
+        '<p class="text-[11px] text-white/50 leading-relaxed px-1">' +
+          'Attach this experience directly to one of your active travel itineraries.' +
+        '</p>' +
+        '<div class="space-y-2">' +
+          '<select id="trip-select" class="w-full bg-black/50 border border-white/15 hover:border-amber-400/50 text-white text-xs rounded-xl px-3.5 py-2.5 outline-none transition">' +
+            '<option value="">Select an active trip...</option>' +
+          '</select>' +
+          '<button type="button" id="attach-btn" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold text-xs transition shadow-lg shadow-amber-500/20 flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed" disabled>' +
+            '<i class="fas fa-plus-circle"></i> Attach to Trip' +
+          '</button>' +
+        '</div>' +
+        '<a href="app/trip-form.html" class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-amber-400 hover:text-amber-300 transition pt-1 px-1">' +
+          '<span>Create a new trip plan</span> <i class="fas fa-plus text-[9px]"></i>' +
+        '</a>' +
+      '</div>';
     }
 
     page.innerHTML =
       '<div class="mb-6"><a href="explore.html" class="inline-flex items-center gap-2 text-sm text-white/50 hover:text-white transition"><i class="fas fa-arrow-left text-xs"></i> Back to Explore</a></div>' +
       imageHtml(entityImage(e), name, name, type, (e.country && e.country.name) || e.country) +
       '<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">' +
+        '<!-- Main Entity Details Column -->' +
         '<div class="lg:col-span-2 space-y-6">' +
           '<div>' +
             '<span class="text-xs uppercase tracking-widest font-semibold text-amber-400/80 mb-1 block">' + (TYPE_LABEL[type] || "Experience") + '</span>' +
@@ -466,19 +509,85 @@
           '<div id="entity-extra-section"></div>' +
         '</div>' +
 
+        '<!-- Redesigned Luxury Quick Actions Sidebar -->' +
         '<div class="space-y-6">' +
-          '<div class="p-6 rounded-2xl bg-white/5 border border-white/10">' +
-            '<div class="flex items-center justify-between mb-4">' +
-              '<span class="text-xs uppercase font-semibold tracking-wider text-white/40">Quick Actions</span>' +
-              '<button type="button" id="fav-btn" class="text-xs flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 text-white transition">' +
-                '<i class="far fa-heart"></i> Save to Favourites' +
-              '</button>' +
+          '<div class="p-6 rounded-3xl bg-white/5 border border-white/10 shadow-2xl backdrop-blur-md space-y-5">' +
+            '<!-- Sidebar Header -->' +
+            '<div class="flex items-center justify-between border-b border-white/10 pb-3">' +
+              '<span class="px-3 py-1 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-400 text-[10px] font-bold uppercase tracking-wider">' +
+                '<i class="fas fa-bolt mr-1"></i> Quick Actions' +
+              '</span>' +
+              '<span class="text-xs text-white/40 font-medium">Traveler Tools</span>' +
             '</div>' +
-            '<p class="text-xs text-white/50">Save this place to your private collection for easy access during your planning.</p>' +
+
+            '<!-- Save to Favourites Block -->' +
+            '<div class="space-y-2.5">' +
+              '<label class="text-xs font-bold text-white uppercase tracking-wider block flex items-center gap-1.5">' +
+                '<i class="fas fa-heart text-rose-400 text-xs"></i> Saved Collection' +
+              '</label>' +
+              '<button type="button" id="fav-btn" class="w-full py-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/15 text-white font-bold text-xs transition-all duration-300 flex items-center justify-center gap-2.5 shadow-md group">' +
+                '<i class="far fa-heart text-amber-400 text-sm group-hover:scale-110 transition"></i>' +
+                '<span id="fav-btn-label">Save to Favourites</span>' +
+              '</button>' +
+              '<p class="text-[11px] text-white/50 leading-relaxed px-1">' +
+                'Save this ' + (TYPE_LABEL[type] || 'experience') + ' to your private collection for instant access anytime.' +
+              '</p>' +
+              '<a href="app/favourites.html" class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-amber-400 hover:text-amber-300 transition pt-1 px-1">' +
+                '<span>View all saved favourites</span> <i class="fas fa-arrow-right text-[9px]"></i>' +
+              '</a>' +
+            '</div>' +
+
+            attachBlock +
           '</div>' +
-          attachBlock +
         '</div>' +
       '</div>';
+
+    // Check initial favourite state from user session
+    var favBtn = el("fav-btn");
+    if (favBtn && It.session && It.session.hasToken()) {
+      It.apiGet("/dashboard/favourites", { auth: true }).then(function (res) {
+        var raw = res.data !== undefined ? res.data : (res.body ? (res.body.data || res.body) : res);
+        var favs = Array.isArray(raw) ? raw : (raw && Array.isArray(raw.data) ? raw.data : []);
+        var isFav = favs.some(function (f) {
+          var fType = (f.favorable_type || "").toLowerCase();
+          return (fType === type || fType === type.replace(/s$/, '')) && Number(f.favorable_id) === id;
+        });
+
+        if (isFav) {
+          favBtn.className = "w-full py-3 rounded-2xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-400 font-bold text-xs transition-all duration-300 flex items-center justify-center gap-2.5 shadow-lg shadow-rose-500/10 group";
+          favBtn.innerHTML = '<i class="fas fa-heart text-rose-500 text-sm group-hover:scale-110 transition"></i><span id="fav-btn-label">Saved in Favourites</span>';
+        }
+      }).catch(function () {});
+    }
+
+    // Wire favourite button toggle
+    if (favBtn) {
+      favBtn.addEventListener("click", function () {
+        if (!It.session || !It.session.hasToken()) {
+          showToast("Please sign in to save favourites.", "error");
+          return;
+        }
+        favBtn.disabled = true;
+        It.apiPost("/favourites/" + type + "/" + id, {}, { auth: true }).then(function (res) {
+          var status = res.body && (res.body.status || (res.body.data && res.body.data.status));
+          if (status === "added" || status === "removed" || res.ok) {
+            var isAdded = status !== "removed";
+            if (isAdded) {
+              favBtn.className = "w-full py-3 rounded-2xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 text-rose-400 font-bold text-xs transition-all duration-300 flex items-center justify-center gap-2.5 shadow-lg shadow-rose-500/10 group";
+              favBtn.innerHTML = '<i class="fas fa-heart text-rose-500 text-sm group-hover:scale-110 transition"></i><span id="fav-btn-label">Saved in Favourites</span>';
+            } else {
+              favBtn.className = "w-full py-3 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/15 text-white font-bold text-xs transition-all duration-300 flex items-center justify-center gap-2.5 shadow-md group";
+              favBtn.innerHTML = '<i class="far fa-heart text-amber-400 text-sm group-hover:scale-110 transition"></i><span id="fav-btn-label">Save to Favourites</span>';
+            }
+            showToast(isAdded ? "Saved to favourites." : "Removed from favourites.", "success");
+          }
+          favBtn.disabled = false;
+        }).catch(function () {
+          showToast("Could not update favourites.", "error");
+          favBtn.disabled = false;
+        });
+      });
+    }
 
     // Fetch dynamic reviews and summary metrics from API
     fetchAndRenderReviews(e);
@@ -512,7 +621,7 @@
           var sel = el("trip-select");
           if (!sel || !sel.value) return;
           attachBtn.disabled = true;
-          attachBtn.textContent = "Attaching…";
+          attachBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Attaching…';
           It.apiPost("/trips/" + sel.value + "/attach/" + ATTACH_TYPE[type], { id: id }, { auth: true }).then(function (res) {
             if (res.ok) {
               showToast("Attached to your trip!", "success");
@@ -521,37 +630,14 @@
               showToast((res.body && res.body.message) || "Could not attach to trip.", "error");
             }
             attachBtn.disabled = false;
-            attachBtn.textContent = "Attach";
+            attachBtn.innerHTML = '<i class="fas fa-plus-circle"></i> Attach to Trip';
           }).catch(function () {
             showToast("Could not reach the server.", "error");
             attachBtn.disabled = false;
-            attachBtn.textContent = "Attach";
+            attachBtn.innerHTML = '<i class="fas fa-plus-circle"></i> Attach to Trip';
           });
         });
       }
-    }
-
-    // Wire favourite button
-    var favBtn = el("fav-btn");
-    if (favBtn) {
-      favBtn.addEventListener("click", function () {
-        if (!It.session || !It.session.hasToken()) {
-          showToast("Please sign in to save favourites.", "error");
-          return;
-        }
-        favBtn.disabled = true;
-        It.apiPost("/favourites/" + type + "/" + id, {}, { auth: true }).then(function (res) {
-          var status = res.body && (res.body.status || (res.body.data && res.body.data.status));
-          if (status === "added" || status === "removed" || res.ok) {
-            var isAdded = status !== "removed";
-            favBtn.innerHTML = isAdded ? '<i class="fas fa-heart text-red-500"></i> Saved' : '<i class="far fa-heart"></i> Save to Favourites';
-            showToast(isAdded ? "Saved to favourites." : "Removed from favourites.", "success");
-          }
-          favBtn.disabled = false;
-        }).catch(function () {
-          favBtn.disabled = false;
-        });
-      });
     }
 
     // Fetch related accommodations for destinations

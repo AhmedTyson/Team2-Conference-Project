@@ -27,4 +27,18 @@ class StoreReviewRequest extends FormRequest
             'comment' => ['nullable', 'string', 'max:1000'],
         ];
     }
+
+    /**
+     * Custom error messages for validation failure.
+     */
+    public function messages(): array
+    {
+        return [
+            'rating.required' => 'Please select a star rating from 1 to 5.',
+            'rating.integer' => 'Rating must be a valid whole number.',
+            'rating.min' => 'Rating must be at least 1 star.',
+            'rating.max' => 'Rating cannot exceed 5 stars.',
+            'comment.max' => 'Your review comment cannot exceed 1000 characters.',
+        ];
+    }
 }

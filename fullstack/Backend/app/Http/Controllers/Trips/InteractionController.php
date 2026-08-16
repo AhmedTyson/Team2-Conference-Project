@@ -47,10 +47,6 @@ class InteractionController extends Controller
      */
     public function toggleFavourite(Request $request, string $type, int $id): JsonResponse
     {
-        if ($type === 'flight') {
-            abort(400, 'Flights cannot be favourited.');
-        }
-
         $class = $this->resolveModelClass($type);
         $entity = $class::findOrFail($id);
 
@@ -77,8 +73,21 @@ class InteractionController extends Controller
         $class = $this->resolveModelClass($type);
         $entity = $class::findOrFail($id);
 
+        $userId = $request->user()->id;
+        $existingReview = $entity->reviews()->where('user_id', $userId)->first();
+
+        if ($existingReview) {
+            $existingReview->update([
+                'rating' => $request->validated('rating'),
+                'comment' => $request->validated('comment'),
+                'status' => ReviewStatus::PENDING->value,
+            ]);
+
+            return ApiResponse::success(new ReviewResource($existingReview), 'Review updated successfully and is pending admin approval', 200);
+        }
+
         $review = $entity->reviews()->create([
-            'user_id' => $request->user()->id,
+            'user_id' => $userId,
             'rating' => $request->validated('rating'),
             'comment' => $request->validated('comment'),
             'status' => ReviewStatus::PENDING->value,
@@ -133,14 +142,14 @@ class InteractionController extends Controller
             ->latest()
             ->get();
 
+        // Check if current user has an existing review (either pending or approved)
+        $userReviewModel = $currentUser
+            ? $entity->reviews()->where('user_id', $currentUser->id)->first()
+            : null;
+
         // Pending reviews owned by the current authenticated user
-        $myPendingReviews = $currentUser
-            ? $entity->reviews()
-                ->with('user')
-                ->where('user_id', $currentUser->id)
-                ->where('status', ReviewStatus::PENDING->value)
-                ->latest()
-                ->get()
+        $myPendingReviews = ($currentUser && $userReviewModel && ($userReviewModel->status instanceof ReviewStatus ? $userReviewModel->status->value : (string) $userReviewModel->status) === ReviewStatus::PENDING->value)
+            ? collect([$userReviewModel->load('user')])
             : collect();
 
         $totalApproved = $approvedReviews->count();
@@ -181,14 +190,28 @@ class InteractionController extends Controller
             ],
         ];
 
-        // Combined feed: Current user's pending reviews first, then approved public reviews
-        $allFeedReviews = $myPendingReviews->concat($approvedReviews);
+        // Combined feed: Filter approved reviews so user doesn't see duplicate if approved, plus pending if pending
+        $feedReviews = $myPendingReviews->concat(
+            $approvedReviews->filter(function ($rev) use ($currentUser) {
+                return !$currentUser || $rev->user_id !== $currentUser->id;
+            })
+        );
 
-        $formattedReviews = $allFeedReviews->map(function ($rev) {
+        // If user's review is approved, include it at top of feed for them
+        if ($currentUser && $userReviewModel && ($userReviewModel->status instanceof ReviewStatus ? $userReviewModel->status->value : (string) $userReviewModel->status) === ReviewStatus::APPROVED->value) {
+            $feedReviews = collect([$userReviewModel->load('user')])->concat(
+                $approvedReviews->filter(function ($rev) use ($currentUser) {
+                    return $rev->user_id !== $currentUser->id;
+                })
+            );
+        }
+
+        $formattedReviews = $feedReviews->map(function ($rev) {
             $u = $rev->user;
             $statusVal = $rev->status instanceof ReviewStatus ? $rev->status->value : (string) $rev->status;
             return [
                 'id' => $rev->id,
+                'user_id' => $rev->user_id,
                 'user_name' => $u ? $u->name : 'Verified Traveler',
                 'user_avatar' => ($u && $u->profile_image)
                     ? (str_starts_with($u->profile_image, 'http') ? $u->profile_image : url($u->profile_image))
@@ -202,9 +225,18 @@ class InteractionController extends Controller
             ];
         });
 
+        $userReviewData = $userReviewModel ? [
+            'id' => $userReviewModel->id,
+            'rating' => (int) $userReviewModel->rating,
+            'comment' => $userReviewModel->comment,
+            'status' => $userReviewModel->status instanceof ReviewStatus ? $userReviewModel->status->value : (string) $userReviewModel->status,
+            'is_pending' => ($userReviewModel->status instanceof ReviewStatus ? $userReviewModel->status->value : (string) $userReviewModel->status) === ReviewStatus::PENDING->value,
+        ] : null;
+
         return ApiResponse::success([
             'summary' => $summary,
             'reviews' => $formattedReviews,
+            'user_review' => $userReviewData,
         ], 'Reviews retrieved successfully');
     }
 }
