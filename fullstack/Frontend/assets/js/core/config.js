@@ -127,4 +127,53 @@
     USER_KEY: CONFIG.userKey,
     PAGINATION_PER_PAGE: 20
   };
+
+  /* Automatically synchronize browser tab favicon & logo image assets across all pages */
+  (function syncFaviconAndLogos() {
+    if (typeof document === "undefined") return;
+    function applyLogos() {
+      var isSubDir = typeof location !== "undefined" && (
+        location.pathname.includes("/admin/") ||
+        location.pathname.includes("/app/") ||
+        location.pathname.includes("/auth/") ||
+        location.pathname.includes("/agency/") ||
+        location.pathname.includes("/public/") ||
+        location.pathname.includes("/errors/")
+      );
+      var relLogo = (isSubDir ? "../" : "./") + "assets/img/logo.png";
+
+      // 1. Browser tab favicon
+      var favicons = document.querySelectorAll("link[rel*='icon']");
+      if (!favicons || favicons.length === 0) {
+        var link = document.createElement("link");
+        link.rel = "shortcut icon";
+        link.type = "image/png";
+        link.href = relLogo;
+        var head = document.getElementsByTagName("head")[0];
+        if (head) head.appendChild(link);
+      } else {
+        favicons.forEach(function (f) { f.href = relLogo; });
+      }
+
+      // 2. Navbar / Sidebar brand mark images
+      document.querySelectorAll(".brand-mark").forEach(function (mark) {
+        if (mark.tagName === "IMG") {
+          mark.src = relLogo;
+        } else {
+          var img = document.createElement("img");
+          img.src = relLogo;
+          img.alt = "Itinari Logo";
+          img.className = "brand-mark-img";
+          img.style.cssText = "height: 28px; width: auto; vertical-align: middle; display: inline-block; object-fit: contain;";
+          if (mark.parentNode) mark.parentNode.replaceChild(img, mark);
+        }
+      });
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", applyLogos);
+    } else {
+      applyLogos();
+    }
+  })();
 })(window);

@@ -226,6 +226,11 @@
     <div class="wrapper">
         <div class="container">
             <div class="header">
+                @if(file_exists(public_path('images/logo.png')))
+                    <div style="text-align: center; margin-bottom: 12px;">
+                        <img src="{{ $message->embed(public_path('images/logo.png')) }}" alt="Itinari Logo" style="height: 52px; width: auto; display: inline-block;" />
+                    </div>
+                @endif
                 <p class="brand">{{ config('app.name', 'Itinari') }}</p>
                 <div class="brand-rule"></div>
                 <p class="brand-tagline">Curated Journeys</p>
