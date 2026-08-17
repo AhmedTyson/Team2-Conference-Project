@@ -679,3 +679,80 @@ html.dark .field input {
   background: rgba(24, 24, 27, 0.75) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
+
+/* ---------- Google & Social Login ---------- */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  margin: 1.25rem 0;
+  color: #64748b;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+html.dark .auth-divider {
+  color: #94a3b8;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #cbd5e1;
+}
+html.dark .auth-divider::before,
+html.dark .auth-divider::after {
+  border-bottom-color: #27272a;
+}
+.auth-divider span {
+  padding: 0 0.75rem;
+}
+
+.google-auth-wrapper {
+  margin-bottom: 1.25rem;
+}
+
+.btn-google {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: #1e293b !important;
+  background: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 9999px !important;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+.btn-google:hover {
+  background: #f8fafc !important;
+  border-color: #94a3b8 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+html.dark .btn-google {
+  color: #f8fafc !important;
+  background: #18181b !important;
+  border: 1px solid #27272a !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+html.dark .btn-google:hover {
+  background: #27272a !important;
+  border-color: #3f3f46 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+
+.btn-google svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}

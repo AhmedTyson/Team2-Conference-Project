@@ -398,6 +398,16 @@ form.addEventListener("submit", async function (e) {
     if (PAGES[page]) initForm(page, PAGES[page]);
     if (page === "verify") initVerify();
 
+    // Google OAuth button listener
+    const googleBtn = document.getElementById("btn-google-login") || document.getElementById("btn-google-signup");
+    if (googleBtn) {
+      googleBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        const apiBase = It.resolveApiBase ? It.resolveApiBase() : "/api";
+        global.location.href = apiBase + "/auth/google/redirect";
+      });
+    }
+
     // blocked-account redirect: show reason banner on login page
     if (page === "login" && new URLSearchParams(global.location.search).get("blocked") === "1") {
       fb.banner("Your account has been blocked. Please contact support.", "is-error");
