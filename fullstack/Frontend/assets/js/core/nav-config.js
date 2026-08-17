@@ -41,6 +41,11 @@
     portal: svg('<rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>'),
     weather: svg('<path d="M12 2v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="M20 12h2"/><path d="m19.07 4.93-1.41 1.41"/><path d="M15.9 20.3a5.5 5.5 0 0 0-10.78-2.3C3 18.5 3 20 4.5 20H15.9z"/>'),
     about: svg('<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>'),
+    /* ── Admin-only icons that were missing and caused "undefined" in sidebar ── */
+    activity: svg('<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'),
+    flights: svg('<path d="M17.8 19.2 16 11l3.5-3.5C21 6 21 4 19 4c-2 0-4 2-4 2l-3.5 3.5L4 7.2c-.5-.2-.9.1-.8.5l.7 3.3C4.1 11.7 4.4 12 4.8 12l3.7.1 1.8 1.8.1 3.7c0 .4.3.8.8.9l3.3.7c.4.1.7-.3.5-.8z"/>'),
+    categories: svg('<path d="M3 5a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M14 5a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-3a2 2 0 0 1-2-2z"/><path d="M3 14a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><path d="M14 14a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-3a2 2 0 0 1-2-2z"/>'),
+    flags: svg('<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/>'),
   };
 
   /* ------------------------------------------------------------------ */
@@ -219,16 +224,17 @@
 
   function renderItem(item, base) {
     var href = item.href;
-    if (base && href.charAt(0) !== "/" && href.charAt(0) !== "#") href = base + href;
+    if (base && href.charAt(0) !== '/' && href.charAt(0) !== '#') href = base + href;
     var badgeAttr = item.badgeKey ? ' data-nav-badge="' + item.badgeKey + '"' : '';
     var badgeHtml = item.badgeKey ? '<span class="nav-badge" data-badge="' + item.badgeKey + '" hidden>0</span>' : '';
-    if (item.icon) {
+    var iconSvg = (item.icon && ICONS[item.icon]) ? ICONS[item.icon] : '';
+    if (iconSvg) {
       return '<a href="' + href + '" class="nav-item"' + badgeAttr + ' title="' + item.label + '">' +
-        '<span class="nav-icon">' + ICONS[item.icon] + "</span>" +
-        '<span class="nav-label">' + item.label + "</span>" +
-        badgeHtml + "</a>";
+        '<span class="nav-icon">' + iconSvg + '</span>' +
+        '<span class="nav-label">' + item.label + '</span>' +
+        badgeHtml + '</a>';
     }
-    return '<a href="' + href + '" class="nav-item"' + badgeAttr + '>' + item.label + badgeHtml + "</a>";
+    return '<a href="' + href + '" class="nav-item"' + badgeAttr + '>' + item.label + badgeHtml + '</a>';
   }
 
   function renderSidebarHtml(role, base) {
