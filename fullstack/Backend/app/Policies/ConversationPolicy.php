@@ -29,18 +29,18 @@ class ConversationPolicy
             return Flag::query()
                 ->where(function ($q) use ($conversation) {
                     $q->where('reporter_id', $conversation->user_id)
-                      ->orWhere('reporter_id', $conversation->agency_id);
+                        ->orWhere('reporter_id', $conversation->agency_id);
                 })
                 ->orWhere(function ($q) use ($conversation) {
                     if ($conversation->trip_id) {
                         $q->where('flaggable_type', 'trip')
-                          ->where('flaggable_id', $conversation->trip_id);
+                            ->where('flaggable_id', $conversation->trip_id);
                     }
                 })
                 ->orWhere(function ($q) use ($conversation) {
                     $q->whereHas('agencyAssignment', function ($aq) use ($conversation) {
                         $aq->where('customer_id', $conversation->user_id)
-                           ->where('agency_id', $conversation->agency_id);
+                            ->where('agency_id', $conversation->agency_id);
                     });
                 })
                 ->exists();

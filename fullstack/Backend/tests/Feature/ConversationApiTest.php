@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Account\User;
 use App\Models\Chat\Conversation;
+use App\Models\System\Flag;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
@@ -176,7 +177,7 @@ class ConversationApiTest extends TestCase
             ->assertStatus(403);
 
         // Once a Flag report is created on the user/agency, Admin CAN view it
-        \App\Models\System\Flag::create([
+        Flag::create([
             'reporter_id' => $this->user->id,
             'flaggable_type' => 'user',
             'flaggable_id' => $this->agency->id,
@@ -188,5 +189,38 @@ class ConversationApiTest extends TestCase
         $this->actingAs($admin, 'api')
             ->getJson("/api/conversations/{$conversation->id}")
             ->assertOk();
+    }
+
+    public function test_admin_index_query_excludes_unreported_conversations(): void
+    {
+        $admin = User::factory()->create(['email_verified_at' => now()]);
+        $admin->assignRole('admin');
+
+        $conversation = Conversation::create([
+            'type' => 'agency_inquiry',
+            'title' => 'Unreported Private Chat',
+            'user_id' => $this->user->id,
+            'agency_id' => $this->agency->id,
+            'last_message_at' => now(),
+        ]);
+
+        // Unreported chat MUST NOT appear in admin's /api/conversations list
+        $response = $this->actingAs($admin, 'api')->getJson('/api/conversations');
+        $response->assertOk()
+            ->assertJsonCount(0, 'data');
+
+        // After flag report is submitted, it appears in admin's moderation list
+        Flag::create([
+            'reporter_id' => $this->user->id,
+            'flaggable_type' => 'user',
+            'flaggable_id' => $this->agency->id,
+            'reason' => 'inappropriate_content',
+            'details' => 'Reported chat',
+            'status' => 'pending',
+        ]);
+
+        $responseAfterFlag = $this->actingAs($admin, 'api')->getJson('/api/conversations');
+        $responseAfterFlag->assertOk()
+            ->assertJsonCount(1, 'data');
     }
 }

@@ -28,12 +28,17 @@
 
     const host = el("user-details-content");
     host.innerHTML = `
-      <div class="kit-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+      <div class="kit-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.25rem;">
         <div><strong>ID:</strong> ${data.id}</div>
         <div><strong>Name:</strong> ${data.name || "–"}</div>
         <div><strong>Email:</strong> ${data.email || "–"}</div>
         <div><strong>Status:</strong> ${data.is_active ? "Active" : "Blocked"}</div>
         <div><strong>Registered:</strong> ${data.created_at ? new Date(data.created_at).toLocaleDateString() : "–"}</div>
+      </div>
+      <div>
+        <a href="../app/chat.html?customer_id=${data.id}&customer=${encodeURIComponent(data.name || '')}" class="btn btn-outline btn-sm" style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.5rem 1rem; border-radius: 9999px;">
+          <i class="fas fa-comments text-amber-500"></i> Message User
+        </a>
       </div>
     `;
   }

@@ -17,6 +17,7 @@ use App\Support\ApiResponse;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use LucianoTonet\GroqLaravel\Facades\Groq;
@@ -36,6 +37,18 @@ class ConversationController extends Controller
             ->with(['user', 'agency', 'trip.destinationCountry', 'latestMessage']);
 
         if ($user->hasRole(['admin', 'super_admin'])) {
+            // Privacy Guard: Admins can ONLY list conversations that have been reported via a Flag report
+            $query->where(function ($q) {
+                $q->whereExists(function ($sub) {
+                    $sub->select(DB::raw(1))
+                        ->from('flags')
+                        ->whereRaw('flags.reporter_id = conversations.user_id OR flags.reporter_id = conversations.agency_id');
+                })->orWhereExists(function ($sub) {
+                    $sub->select(DB::raw(1))
+                        ->from('flags')
+                        ->whereRaw('(flags.flaggable_type = ? AND flags.flaggable_id = conversations.user_id) OR (flags.flaggable_type = ? AND flags.flaggable_id = conversations.agency_id)', ['user', 'user']);
+                });
+            });
             if ($request->filled('type')) {
                 $query->where('type', $request->type);
             }

@@ -68,15 +68,15 @@ Route::get('/auth/google/redirect', function () {
         'status' => 'success',
         'message' => 'Google OAuth redirect route ready',
         'data' => [
-            'redirect_url' => 'https://accounts.google.com/o/oauth2/v2/auth'
-        ]
+            'redirect_url' => 'https://accounts.google.com/o/oauth2/v2/auth',
+        ],
     ]);
 })->name('auth.google.redirect');
 
 Route::get('/auth/google/callback', function () {
     return response()->json([
         'status' => 'success',
-        'message' => 'Google OAuth callback route ready'
+        'message' => 'Google OAuth callback route ready',
     ]);
 })->name('auth.google.callback');
 
