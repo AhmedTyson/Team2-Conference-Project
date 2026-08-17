@@ -204,8 +204,15 @@
             <span class="text-[10px] font-black uppercase text-amber-600 dark:text-amber-400 tracking-wider">Subscription Plan</span>
             <span class="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-extrabold text-[9px] uppercase border border-emerald-500/30">Active</span>
           </div>
-          <strong class="text-sm font-black text-gray-900 dark:text-white block">Jetsetter AI Suite</strong>
-          <span class="text-[11px] text-gray-500 dark:text-white/60 block"><i class="fas fa-clock mr-1 text-amber-500"></i> Expires Sep 16, 2026 (30 Days Left)</span>
+          <strong class="text-sm font-black text-gray-900 dark:text-white block" id="telemetryPlanName">Jetsetter AI Suite</strong>
+          <span class="text-[11px] text-gray-500 dark:text-white/60 block" id="telemetryStartDate"><i class="far fa-calendar-check mr-1 text-amber-500"></i> Started: Aug 16, 2026</span>
+        </div>
+
+        <!-- Expiration & Renewal Telemetry -->
+        <div class="p-4 rounded-2xl bg-white/80 dark:bg-white/5 border border-gray-200/80 dark:border-white/10 space-y-1">
+          <span class="text-[10px] font-black uppercase text-amber-600 dark:text-amber-400 tracking-wider">Subscription Expiration</span>
+          <strong class="text-sm font-black text-amber-600 dark:text-amber-400 block" id="telemetryExpiryDate">Renews: Sep 16, 2026</strong>
+          <span class="text-[11px] text-gray-500 dark:text-white/60 block"><i class="fas fa-clock mr-1 text-amber-500"></i> 30 Days Remaining</span>
         </div>
 
         <!-- Live User Time Telemetry -->
@@ -215,17 +222,10 @@
           <span class="text-[11px] text-gray-500 dark:text-white/60 block"><i class="fas fa-globe mr-1 text-amber-500"></i> Timezone: Cairo (UTC+02:00)</span>
         </div>
 
-        <!-- Session Duration & Member Status -->
-        <div class="p-4 rounded-2xl bg-white/80 dark:bg-white/5 border border-gray-200/80 dark:border-white/10 space-y-1">
-          <span class="text-[10px] font-black uppercase text-amber-600 dark:text-amber-400 tracking-wider">Active Session</span>
-          <strong class="text-sm font-black text-gray-900 dark:text-white block">2h 15m Active</strong>
-          <span class="text-[11px] text-gray-500 dark:text-white/60 block"><i class="fas fa-user-shield mr-1 text-amber-500"></i> Member since Jan 2026</span>
-        </div>
-
         <!-- User Scope & Generation Quota -->
         <div class="p-4 rounded-2xl bg-white/80 dark:bg-white/5 border border-gray-200/80 dark:border-white/10 space-y-1">
           <span class="text-[10px] font-black uppercase text-amber-600 dark:text-amber-400 tracking-wider">AI Generation Quota</span>
-          <strong class="text-sm font-black text-gray-900 dark:text-white block">42 / 50 Credits Remaining</strong>
+          <strong class="text-sm font-black text-gray-900 dark:text-white block" id="telemetryQuotaText">42 / 100 Credits Remaining</strong>
           <span class="text-[11px] text-amber-500 font-bold block"><i class="fas fa-bolt mr-1"></i> User-Scoped Telemetry</span>
         </div>
       </div>

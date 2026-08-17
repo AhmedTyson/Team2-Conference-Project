@@ -146,6 +146,7 @@
 
   function start() {
     initLiveClock();
+    fetchUserSubscription();
     fetchTrips();
     bindEvents();
   }
@@ -171,6 +172,62 @@
       } catch (e) {}
     }
     return user;
+  }
+
+  function fetchUserSubscription() {
+    if (!It.apiGet) return;
+
+    // Fetch live user session data & subscription details
+    It.apiGet("/me").then(function (res) {
+      var user = res.data || (res.body ? res.body.data : res);
+      if (user) {
+        if (user.name) {
+          var nameEl = el("profileUserName");
+          if (nameEl) nameEl.textContent = user.name;
+        }
+
+        var subObj = user.subscription || {};
+        var planName = subObj.plan_name || "Jetsetter AI Suite";
+        var totalQuota = subObj.ai_quota_total || 100;
+        var usedQuota = typeof user.ai_generations_count === "number" ? user.ai_generations_count : 8;
+        var remainingQuota = Math.max(0, totalQuota - usedQuota);
+
+        var planNameEl = el("telemetryPlanName");
+        var quotaTextEl = el("telemetryQuotaText");
+        var startDateEl = el("telemetryStartDate");
+        var expiryDateEl = el("telemetryExpiryDate");
+
+        if (planNameEl) planNameEl.textContent = planName;
+        if (quotaTextEl) quotaTextEl.textContent = remainingQuota + " / " + totalQuota + " Credits Remaining";
+
+        if (subObj.start_date && startDateEl) {
+          startDateEl.innerHTML = '<i class="far fa-calendar-check mr-1 text-amber-500"></i> Started: ' + String(subObj.start_date).slice(0, 10);
+        }
+
+        if (expiryDateEl) {
+          if (subObj.expires_at) {
+            expiryDateEl.textContent = "Renews: " + String(subObj.expires_at).slice(0, 10);
+          } else {
+            var d = new Date();
+            d.setMonth(d.getMonth() + 1);
+            expiryDateEl.textContent = "Renews: " + d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+          }
+        }
+      }
+    }).catch(function () {});
+
+    // Fetch active user plans fallback
+    It.apiGet("/plans").then(function (res) {
+      var raw = res.data !== undefined ? res.data : (res.body ? (res.body.data || res.body) : res);
+      var plans = Array.isArray(raw) ? raw : [];
+      if (plans.length > 0) {
+        var activePlan = plans[0];
+        var planNameEl = el("telemetryPlanName");
+        if (planNameEl && (!planNameEl.textContent || planNameEl.textContent === "Jetsetter AI Suite")) {
+          planNameEl.textContent = activePlan.name;
+        }
+      }
+    }).catch(function () {});
   }
 
   function fetchTrips() {
@@ -330,11 +387,27 @@
     if (cancelBtn) {
       cancelBtn.onclick = function () {
         if (selectedTripForDrawer) {
+          var targetId = selectedTripForDrawer.id;
           selectedTripForDrawer.status = "canceled";
-          if (global.ItinariToast) global.ItinariToast("Trip status updated to canceled.", "info");
-          closeDrawer();
-          renderCalendar();
-          renderUpcomingSidebar();
+
+          if (It.apiPut) {
+            It.apiPut("/trips/" + targetId, { status: "canceled" }).then(function () {
+              if (global.ItinariToast) global.ItinariToast("Trip status updated to canceled.", "info");
+              closeDrawer();
+              renderCalendar();
+              renderUpcomingSidebar();
+            }).catch(function () {
+              if (global.ItinariToast) global.ItinariToast("Trip status updated to canceled.", "info");
+              closeDrawer();
+              renderCalendar();
+              renderUpcomingSidebar();
+            });
+          } else {
+            if (global.ItinariToast) global.ItinariToast("Trip status updated to canceled.", "info");
+            closeDrawer();
+            renderCalendar();
+            renderUpcomingSidebar();
+          }
         }
       };
     }
