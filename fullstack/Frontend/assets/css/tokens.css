@@ -363,8 +363,8 @@ html.dark .app-nav-container,
 html.dark .auth-nav-container,
 :root[data-theme="dark"] .app-nav-container,
 :root[data-theme="dark"] .auth-nav-container,
-[data-theme-luxury] .app-nav-container,
-[data-theme-luxury] .auth-nav-container {
+html.dark[data-theme-luxury] .app-nav-container,
+html.dark[data-theme-luxury] .auth-nav-container {
   background: linear-gradient(135deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.01) 100%), rgba(18, 18, 20, 0.92) !important;
   -webkit-backdrop-filter: blur(24px) saturate(190%);
   backdrop-filter: blur(24px) saturate(190%);

@@ -263,10 +263,10 @@
     // Update Mode button visual styles
     if (modeType === 'ai_concierge') {
       if (elements.switchAiModeBtn) elements.switchAiModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 bg-amber-500 text-black shadow';
-      if (elements.switchAgencyModeBtn) elements.switchAgencyModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold text-white/70 hover:text-white transition flex items-center gap-1.5';
+      if (elements.switchAgencyModeBtn) elements.switchAgencyModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold text-neutral-600 dark:text-white/70 hover:text-neutral-900 dark:hover:text-neutral-900 dark:text-white transition flex items-center gap-1.5';
     } else {
       if (elements.switchAgencyModeBtn) elements.switchAgencyModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 bg-emerald-500 text-black shadow';
-      if (elements.switchAiModeBtn) elements.switchAiModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold text-white/70 hover:text-white transition flex items-center gap-1.5';
+      if (elements.switchAiModeBtn) elements.switchAiModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold text-neutral-600 dark:text-white/70 hover:text-neutral-900 dark:hover:text-neutral-900 dark:text-white transition flex items-center gap-1.5';
     }
 
     // Update Quick Prompts Bar
@@ -381,14 +381,14 @@
     stage.innerHTML =
       '<div class="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl mb-4">' +
       '<i class="fas fa-comments"></i></div>' +
-      '<h3 class="text-xl font-bold text-white mb-2">No active chat with this customer yet</h3>' +
-      '<p class="text-sm text-white/60 max-w-md mb-6 leading-relaxed">' +
+      '<h3 class="text-xl font-bold text-neutral-900 dark:text-white mb-2">No active chat with this customer yet</h3>' +
+      '<p class="text-sm text-neutral-500 dark:text-white/60 max-w-md mb-6 leading-relaxed">' +
       'You can open a new support thread now. The customer will see it in their AI Concierge / travel support chat and can reply from there.</p>' +
       (isAgencyUser()
         ? '<button type="button" data-start-chat class="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold transition flex items-center gap-1.5">' +
           '<i class="fas fa-plus"></i> Start a chat with this customer</button>'
         : '') +
-      (ref.length ? '<p class="text-xs text-white/40 max-w-md mt-4">' + ref.join(' · ') + '</p>' : '');
+      (ref.length ? '<p class="text-xs text-neutral-500 dark:text-white/40 max-w-md mt-4">' + ref.join(' · ') + '</p>' : '');
     var startBtn = stage.querySelector('[data-start-chat]');
     if (startBtn) startBtn.addEventListener('click', startAgencyChat);
   }
@@ -402,7 +402,7 @@
     }
 
     if (filtered.length === 0) {
-      elements.convList.innerHTML = '<div class="text-center py-8 text-white/40 text-xs">No conversations found. Start a new chat!</div>';
+      elements.convList.innerHTML = '<div class="text-center py-8 text-neutral-500 dark:text-white/40 text-xs">No conversations found. Start a new chat!</div>';
       return;
     }
 
@@ -420,12 +420,12 @@
       html += '  <div class="chat-avatar ' + avatarClass + '">' + icon + '</div>';
       html += '  <div class="flex-1 min-w-0">';
       html += '    <div class="flex items-center justify-between gap-1">';
-      html += '      <span class="font-semibold text-sm truncate text-white">' + escapeHtml(displayTitle) + '</span>';
+      html += '      <span class="font-semibold text-sm truncate text-neutral-900 dark:text-white">' + escapeHtml(displayTitle) + '</span>';
       if (conv.unread_count > 0) {
         html += '      <span class="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500 text-black">' + conv.unread_count + '</span>';
       }
       html += '    </div>';
-      html += '    <p class="text-xs text-white/50 truncate mt-0.5">' + escapeHtml(excerpt) + '</p>';
+      html += '    <p class="text-xs text-neutral-500 dark:text-white/50 truncate mt-0.5">' + escapeHtml(excerpt) + '</p>';
       html += '  </div>';
       html += '</div>';
     });
@@ -472,11 +472,11 @@
       // Update Mode button active styles
       if (conv.type === 'ai_concierge') {
         if (elements.switchAiModeBtn) elements.switchAiModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 bg-amber-500 text-black shadow';
-        if (elements.switchAgencyModeBtn) elements.switchAgencyModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold text-white/70 hover:text-white transition flex items-center gap-1.5';
+        if (elements.switchAgencyModeBtn) elements.switchAgencyModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold text-neutral-600 dark:text-white/70 hover:text-neutral-900 dark:hover:text-neutral-900 dark:text-white transition flex items-center gap-1.5';
         renderQuickPrompts('ai_concierge');
       } else {
         if (elements.switchAgencyModeBtn) elements.switchAgencyModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 bg-emerald-500 text-black shadow';
-        if (elements.switchAiModeBtn) elements.switchAiModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold text-white/70 hover:text-white transition flex items-center gap-1.5';
+        if (elements.switchAiModeBtn) elements.switchAiModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold text-neutral-600 dark:text-white/70 hover:text-neutral-900 dark:hover:text-neutral-900 dark:text-white transition flex items-center gap-1.5';
         renderQuickPrompts('agency_inquiry');
       }
     }
@@ -502,8 +502,8 @@
 
     if (messages.length === 0) {
       elements.messagesStream.innerHTML = isAgencyUser()
-        ? '<div class="text-center py-12 text-white/40 text-sm"><i class="fas fa-paper-plane text-emerald-400 mb-2 text-xl block"></i>No messages yet — say hello to your customer to open the conversation.</div>'
-        : '<div class="text-center py-12 text-white/40 text-sm"><i class="fas fa-sparkles text-amber-400 mb-2 text-xl block"></i>Start the conversation with your AI Concierge or خدمة العملاء المصرية!</div>';
+        ? '<div class="text-center py-12 text-neutral-500 dark:text-white/40 text-sm"><i class="fas fa-paper-plane text-emerald-400 mb-2 text-xl block"></i>No messages yet — say hello to your customer to open the conversation.</div>'
+        : '<div class="text-center py-12 text-neutral-500 dark:text-white/40 text-sm"><i class="fas fa-sparkles text-amber-400 mb-2 text-xl block"></i>Start the conversation with your AI Concierge or خدمة العملاء المصرية!</div>';
       return;
     }
 
@@ -569,7 +569,7 @@
       if (actingAsAgency) {
         typingEl = document.createElement('div');
         typingEl.className = 'message-row user typing-indicator';
-        typingEl.innerHTML = '<div class="message-bubble text-white/60 text-xs flex items-center gap-2 justify-end"><i class="fas fa-spinner fa-spin"></i> Customer is typing...</div>';
+        typingEl.innerHTML = '<div class="message-bubble text-neutral-500 dark:text-white/60 text-xs flex items-center gap-2 justify-end"><i class="fas fa-spinner fa-spin"></i> Customer is typing...</div>';
       } else {
         typingEl = document.createElement('div');
         typingEl.className = 'message-row agency typing-indicator';
