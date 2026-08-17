@@ -424,11 +424,10 @@
 
     state.activeReport = report;
 
-    var root = el('modal-root') || document.body;
-
     var status = (report.status || 'pending').toLowerCase();
     var badgeCls = status === 'approved' ? 'badge-ok' : (status === 'declined' ? 'badge-danger' : 'badge-warn');
     var statusBadge = '<span class="badge ' + badgeCls + '">' + esc(status.toUpperCase()) + '</span>';
+    var isAgency = isAgencyReporter(report);
 
     var backdrop = document.createElement('div');
     backdrop.className = 'kit-modal-backdrop';
@@ -437,60 +436,95 @@
 
     var modal = document.createElement('div');
     modal.className = 'kit-modal is-medium';
-    modal.style.cssText = 'width:min(600px, 95vw); max-height:90vh; overflow-y:auto; background:hsl(var(--card, #171717)); padding:1.5rem; border-radius:16px; border:1px solid hsl(var(--border, rgba(255,255,255,0.15))); box-shadow:0 25px 50px -12px rgba(0,0,0,0.7); color:#fff;';
+    modal.style.cssText = 'width:min(620px, 95vw); max-height:90vh; overflow-y:auto; background:hsl(var(--card, #171717)); padding:1.5rem; border-radius:16px; border:1px solid ' + (isAgency ? 'rgba(16, 185, 129, 0.35)' : 'rgba(245, 158, 11, 0.35)') + '; box-shadow:0 25px 50px -12px rgba(0,0,0,0.7); color:#fff;';
 
-    var reporterInfo = report.reporter ? (
-      '<div><strong>' + esc(report.reporter.name || 'N/A') + '</strong></div>' +
-      '<div style="font-size:0.85rem; color:hsl(var(--muted-foreground));">Email: ' + esc(report.reporter.email || 'N/A') + '</div>'
-    ) : 'User #' + esc(report.reporter_id || 'N/A');
+    // Role Badges & Direction Header
+    var modalHeaderTitle = isAgency
+      ? '<h3 style="margin:0; font-size:1.15rem; color:#A7F3D0; font-weight:700;"><i class="fas fa-briefcase mr-2"></i> Agency Partner Dispute Report #' + esc(report.id) + '</h3>'
+      : '<h3 style="margin:0; font-size:1.15rem; color:#FEF3C7; font-weight:700;"><i class="fas fa-user-shield mr-2"></i> Customer Traveler Incident Report #' + esc(report.id) + '</h3>';
+
+    var reporterRoleBadge = isAgency
+      ? '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"><i class="fas fa-briefcase mr-1"></i> Agency Partner</span>'
+      : '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-500/20 text-amber-300 border border-amber-500/40"><i class="fas fa-user mr-1"></i> Customer Traveler</span>';
+
+    var targetRoleBadge = isAgency
+      ? '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-500/20 text-amber-300 border border-amber-500/40"><i class="fas fa-user mr-1"></i> Customer Traveler</span>'
+      : '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"><i class="fas fa-briefcase mr-1"></i> Agency Partner</span>';
+
+    var reporterName = report.reporter ? esc(report.reporter.name || report.reporter.email) : 'User #' + esc(report.reporter_id || 'N/A');
+    var reporterEmail = report.reporter && report.reporter.email ? esc(report.reporter.email) : 'N/A';
+
+    var targetName = 'Assignment #' + esc(report.agency_assignment_id || 'N/A');
+    if (report.agency_assignment) {
+      if (isAgency && report.agency_assignment.customer) {
+        targetName = esc(report.agency_assignment.customer.name || report.agency_assignment.customer.email);
+      } else if (!isAgency && report.agency_assignment.agency) {
+        targetName = esc(report.agency_assignment.agency.name || report.agency_assignment.agency.company_name || 'Agency');
+      }
+    }
+
+    var mentorChatBtn = report.agency_assignment_id
+      ? '<a href="../app/chat.html?assignment_id=' + esc(report.agency_assignment_id) + '&mentor=1" target="_blank" class="btn btn-sm btn-outline" style="color:#E9D5FF; border-color:rgba(168,85,247,0.4); background:rgba(168,85,247,0.15); display:inline-flex; align-items:center; gap:0.4rem;" title="Inspect live chat thread in Read-Only Mentoring Mode"><i class="fas fa-shield-halved"></i> Open Mentor Chat Thread</a>'
+      : '';
 
     var modalContent =
-      '<div class="kit-modal-head" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">' +
+      '<div class="kit-modal-head" style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:1.25rem; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:0.75rem;">' +
         '<div>' +
-          '<h3 id="modal-report-title" style="margin:0;">Consumer Report #' + esc(report.id) + '</h3>' +
-          '<div style="margin-top:0.25rem;">' + statusBadge + '</div>' +
+          modalHeaderTitle +
+          '<div style="margin-top:0.4rem; display:flex; gap:0.5rem; align-items:center;">' + statusBadge + (isAgency ? '<span style="font-size:0.75rem; color:#A7F3D0;">Dispute filed by Agency</span>' : '<span style="font-size:0.75rem; color:#FEF3C7;">Complaint filed by Traveler</span>') + '</div>' +
         '</div>' +
-        '<button type="button" class="kit-modal-close" id="modal-close-x" aria-label="Close">&times;</button>' +
+        '<button type="button" class="kit-modal-close" id="modal-close-x" aria-label="Close" style="background:none; border:none; color:#999; font-size:1.5rem; cursor:pointer;">&times;</button>' +
       '</div>' +
-      '<div class="kit-modal-body" style="display:flex; flex-direction:column; gap:1rem;">' +
-        '<div class="report-meta-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; padding:0.75rem; background:hsl(var(--muted)/0.2); border-radius:var(--radius-md);">' +
+
+      '<div class="kit-modal-body" style="display:flex; flex-direction:column; gap:1.2rem;">' +
+        '<div class="report-meta-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1rem; padding:1rem; background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); border-radius:12px;">' +
           '<div>' +
-            '<span style="font-size:0.75rem; text-transform:uppercase; color:hsl(var(--muted-foreground)); font-weight:600;">Consumer / Reporter</span>' +
-            '<div style="margin-top:0.2rem;">' + reporterInfo + '</div>' +
-          '</div>' +
-          '<div>' +
-            '<span style="font-size:0.75rem; text-transform:uppercase; color:hsl(var(--muted-foreground)); font-weight:600;">Reported Target</span>' +
-            '<div style="margin-top:0.2rem;">' +
-              '<div><strong>' + esc(formatEntityName(report.flaggable_type)) + '</strong></div>' +
-              (report.agency_assignment_id ? '<div style="font-size:0.85rem; color:hsl(var(--muted-foreground));">Agency Assignment #' + esc(report.agency_assignment_id) + '</div>' : '') +
+            '<span style="font-size:0.72rem; text-transform:uppercase; color:hsl(var(--muted-foreground, #a3a3a3)); font-weight:700;">Initiator / Reporter</span>' +
+            '<div style="margin-top:0.35rem; display:flex; flex-direction:column; gap:0.2rem;">' +
+              '<div>' + reporterRoleBadge + '</div>' +
+              '<div style="font-weight:700; color:#fff; margin-top:0.15rem;">' + reporterName + '</div>' +
+              '<div style="font-size:0.78rem; color:#a3a3a3;">' + reporterEmail + '</div>' +
             '</div>' +
           '</div>' +
+
           '<div>' +
-            '<span style="font-size:0.75rem; text-transform:uppercase; color:hsl(var(--muted-foreground)); font-weight:600;">Date Submitted</span>' +
-            '<div style="margin-top:0.2rem; font-size:0.9rem;">' + formatDate(report.created_at) + '</div>' +
+            '<span style="font-size:0.72rem; text-transform:uppercase; color:hsl(var(--muted-foreground, #a3a3a3)); font-weight:700;">Reported Target</span>' +
+            '<div style="margin-top:0.35rem; display:flex; flex-direction:column; gap:0.2rem;">' +
+              '<div>' + targetRoleBadge + '</div>' +
+              '<div style="font-weight:700; color:#fff; margin-top:0.15rem;">' + targetName + '</div>' +
+              (report.agency_assignment_id ? '<div style="font-size:0.78rem; color:#a3a3a3;">Assignment #' + esc(report.agency_assignment_id) + '</div>' : '') +
+            '</div>' +
+          '</div>' +
+
+          '<div>' +
+            '<span style="font-size:0.72rem; text-transform:uppercase; color:hsl(var(--muted-foreground, #a3a3a3)); font-weight:700;">Date Submitted</span>' +
+            '<div style="margin-top:0.35rem; font-size:0.88rem; color:#e5e5e5; font-family:monospace;">' + formatDate(report.created_at) + '</div>' +
           '</div>' +
         '</div>' +
 
         '<div>' +
-          '<span style="font-size:0.75rem; text-transform:uppercase; color:hsl(var(--muted-foreground)); font-weight:600;">Report Reason</span>' +
-          '<div style="margin-top:0.35rem; font-weight:600; font-size:1rem; color:hsl(var(--foreground));">' + esc(report.reason || 'No summary reason provided') + '</div>' +
+          '<span style="font-size:0.72rem; text-transform:uppercase; color:hsl(var(--muted-foreground, #a3a3a3)); font-weight:700;">Incident Category / Reason</span>' +
+          '<div style="margin-top:0.35rem; font-weight:700; font-size:1.05rem; color:#fff; background:rgba(255,255,255,0.05); padding:0.6rem 0.85rem; border-radius:8px; border:1px solid rgba(255,255,255,0.1);">' + esc(report.reason || 'No summary reason provided') + '</div>' +
         '</div>' +
 
         '<div>' +
-          '<span style="font-size:0.75rem; text-transform:uppercase; color:hsl(var(--muted-foreground)); font-weight:600;">Detailed Complaint Content</span>' +
-          '<div style="margin-top:0.35rem; padding:0.85rem; background:hsl(var(--background)); border:1px solid hsl(var(--border)); border-radius:var(--radius-md); font-size:0.9rem; white-space:pre-wrap; line-height:1.5;">' +
-            esc(report.details || 'No additional details provided by the consumer.') +
+          '<span style="font-size:0.72rem; text-transform:uppercase; color:hsl(var(--muted-foreground, #a3a3a3)); font-weight:700;">Detailed Complaint &amp; Context</span>' +
+          '<div style="margin-top:0.35rem; padding:1rem; background:rgba(0,0,0,0.3); border:1px solid rgba(255,255,255,0.1); border-radius:8px; font-size:0.9rem; white-space:pre-wrap; line-height:1.6; color:#d4d4d4;">' +
+            esc(report.details || 'No additional detailed text provided.') +
           '</div>' +
         '</div>' +
+
+        (mentorChatBtn ? '<div style="margin-top:0.25rem;">' + mentorChatBtn + '</div>' : '') +
       '</div>' +
-      '<div class="kit-modal-foot" style="display:flex; justify-content:space-between; align-items:center; margin-top:1.5rem;">' +
+
+      '<div class="kit-modal-foot" style="display:flex; justify-content:space-between; align-items:center; margin-top:1.5rem; border-top:1px solid rgba(255,255,255,0.1); padding-top:1rem;">' +
         '<div>' +
           (status === 'pending' ?
-            '<button type="button" class="btn-sm btn-primary modal-action-approve" data-id="' + report.id + '">Approve Report</button> ' +
-            '<button type="button" class="btn-sm btn-ghost modal-action-decline" data-id="' + report.id + '" style="color:hsl(var(--destructive));">Decline Report</button>'
+            '<button type="button" class="btn-sm btn-primary modal-action-approve" data-id="' + report.id + '" style="margin-right:0.5rem;">Approve Report</button>' +
+            '<button type="button" class="btn-sm btn-ghost modal-action-decline" data-id="' + report.id + '" style="color:hsl(var(--destructive, #ef4444));">Decline Report</button>'
             : '') +
         '</div>' +
-        '<button type="button" class="btn btn-ghost" id="modal-close-btn">Close</button>' +
+        '<button type="button" class="btn btn-ghost" id="modal-close-btn" style="color:#aaa;">Close</button>' +
       '</div>';
 
     modal.innerHTML = modalContent;
