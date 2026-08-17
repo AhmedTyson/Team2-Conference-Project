@@ -23,7 +23,7 @@
     const num = Number(amount || 0);
     const curr = currency || 'USD';
     const symbol = curr === 'USD' ? '$' : (curr === 'EGP' ? 'EGP ' : '$');
-    return symbol + num.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return symbol + num.toLocaleString(undefined, { maximumFractionDigits: 0 });
   }
 
   function renderEarnings(data) {
