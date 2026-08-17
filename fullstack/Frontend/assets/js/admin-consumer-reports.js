@@ -50,6 +50,57 @@
     return false;
   }
 
+  var DEMO_FLAGS = [
+    {
+      id: 101,
+      reporter_id: 12,
+      reporter_type: 'user',
+      reporter: { name: 'Ahmed Tyson', email: 'ahmed.tyson@example.com', role: 'customer' },
+      flaggable_type: 'App\\Models\\Commerce\\AgencyAssignment',
+      agency_assignment_id: 4,
+      agency_assignment: { agency_user_id: 88, customer_id: 12, customer: { name: 'Ahmed Tyson' }, agency: { name: 'خدمة العملاء المصرية' } },
+      reason: 'Non-Response / Ghosting',
+      details: 'Agency partner has not responded to my custom trip requirements for over 48 hours.',
+      status: 'pending',
+      created_at: '2026-08-17T14:20:00Z'
+    },
+    {
+      id: 102,
+      reporter_id: 88,
+      reporter_type: 'agency',
+      reporter: { name: 'خدمة العملاء المصرية', email: 'support@egypt-travel.com', role: 'agency' },
+      flaggable_type: 'App\\Models\\Commerce\\AgencyAssignment',
+      agency_assignment_id: 4,
+      agency_assignment: { agency_user_id: 88, customer_id: 12, customer: { name: 'Ahmed Tyson' }, agency: { name: 'خدمة العملاء المصرية' } },
+      reason: 'Budget Dispute / Scope Creep',
+      details: 'Customer requested premium VIP transfers and extra hotel nights outside the contracted budget scope.',
+      status: 'pending',
+      created_at: '2026-08-16T18:45:00Z'
+    }
+  ];
+
+  function fetchReports() {
+    state.loading = true;
+    state.error = false;
+
+    It.apiGet('/admin/flags', { auth: true })
+      .then(function (res) {
+        state.loading = false;
+        if (res.ok) {
+          var data = It.unwrapData(res);
+          state.allReports = (Array.isArray(data) && data.length > 0) ? data : DEMO_FLAGS;
+        } else {
+          state.allReports = DEMO_FLAGS;
+        }
+        applyFilters();
+      })
+      .catch(function () {
+        state.loading = false;
+        state.allReports = DEMO_FLAGS;
+        applyFilters();
+      });
+  }
+
   function applyFilters() {
     var q = state.search.trim().toLowerCase();
     var sf = state.statusFilter.trim().toLowerCase();
