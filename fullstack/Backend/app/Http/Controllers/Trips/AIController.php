@@ -34,6 +34,10 @@ class AIController extends Controller
 
     public function generate(AiTripRequest $request): JsonResponse
     {
+        if ($request->user()) {
+            $this->aiUsage->consumeQuota($request->user());
+        }
+
         $result = $this->groq->generateAi($request);
 
         $decoded = json_decode($result, true);
