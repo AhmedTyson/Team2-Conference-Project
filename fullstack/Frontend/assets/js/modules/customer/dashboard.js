@@ -881,6 +881,7 @@
       It.apiGet("/me/subscription", { auth: true }).catch(() => null),
     ]).then(function (results) {
       const [statsRes, tripsRes, favsRes, notifsRes, reviewsRes, paymentsRes, subRes] = results;
+      const stats = (statsRes && statsRes.ok && statsRes.body && statsRes.body.data) ? statsRes.body.data : null;
       const tripsData = tripsRes.ok && tripsRes.body && tripsRes.body.data ? tripsRes.body.data : mockTrips;
       const favsData = favsRes.ok && favsRes.body && favsRes.body.data ? favsRes.body.data : mockFavs;
       const notifsData = notifsRes.ok && notifsRes.body && notifsRes.body.data ? notifsRes.body.data : mockNotifs;
@@ -906,14 +907,18 @@
       setFeed(paymentsFeed, paymentsData.slice(0, 4), "No payment history found.", renderPaymentsFeed);
 
       // AI Quota & Plan Status Bar
-      const subObj = (statsRes && statsRes.ok && statsRes.body && statsRes.body.data && statsRes.body.data.subscription) 
-        ? statsRes.body.data.subscription 
+      const subObj = (stats && stats.subscription) 
+        ? stats.subscription 
         : ((subRes && subRes.ok && subRes.body && subRes.body.data) ? subRes.body.data : (user && user.subscription ? user.subscription : {}));
 
       const planName = subObj.plan_name || (subObj.plan ? subObj.plan.name : "Free Explorer");
       const totalQuota = subObj.ai_quota_total || (subObj.plan ? subObj.plan.ai_quota_monthly : 500);
-      const usedQuota = typeof (user && user.ai_generations_count) === "number" ? user.ai_generations_count : (subObj.ai_quota_used || 0);
-      const remainingQuota = Math.max(0, totalQuota - usedQuota);
+      const usedQuota = typeof subObj.ai_quota_used === "number" 
+        ? subObj.ai_quota_used 
+        : (typeof (user && user.ai_generations_count) === "number" ? user.ai_generations_count : 0);
+      const remainingQuota = typeof subObj.ai_quota_remaining === "number" 
+        ? subObj.ai_quota_remaining 
+        : Math.max(0, totalQuota - usedQuota);
       const usagePct = Math.min(100, Math.round((usedQuota / totalQuota) * 100));
 
       let expiryText = "Monthly Refresh (1st of month)";
