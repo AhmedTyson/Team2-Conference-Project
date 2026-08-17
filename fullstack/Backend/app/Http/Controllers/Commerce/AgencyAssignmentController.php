@@ -173,7 +173,7 @@ class AgencyAssignmentController extends Controller
         $validated = $request->validate([
             'name' => 'sometimes|string|max:255',
             'phone' => 'sometimes|string|max:50',
-            'bio' => 'sometimes|string|max:1000',
+            'bio' => 'nullable|string|max:1000',
         ]);
 
         $user->update($validated);
