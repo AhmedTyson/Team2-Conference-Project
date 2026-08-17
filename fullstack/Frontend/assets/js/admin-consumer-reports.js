@@ -30,14 +30,22 @@
   function isAgencyReporter(item) {
     if (!item) return false;
     if (item.reporter_type === 'agency' || item.reporter_type === 'agent') return true;
-    if (item.reporter && Array.isArray(item.reporter.roles)) {
-      return item.reporter.roles.some(function(r) {
-        var name = (typeof r === 'object' ? (r.name || r.role || r.slug) : r) || '';
-        return String(name).toLowerCase().indexOf('agency') !== -1;
-      });
+    if (item.reporter) {
+      if (Array.isArray(item.reporter.roles)) {
+        var hasAgency = item.reporter.roles.some(function(r) {
+          var name = (typeof r === 'object' ? (r.name || r.role || r.slug) : r) || '';
+          return String(name).toLowerCase().indexOf('agency') !== -1;
+        });
+        if (hasAgency) return true;
+      }
+      if (typeof item.reporter.role === 'string') {
+        if (item.reporter.role.toLowerCase().indexOf('agency') !== -1) return true;
+      }
     }
-    if (item.reporter && typeof item.reporter.role === 'string') {
-      return item.reporter.role.toLowerCase().indexOf('agency') !== -1;
+    if (item.agency_assignment && item.agency_assignment.agency_user_id && item.reporter_id) {
+      if (String(item.agency_assignment.agency_user_id) === String(item.reporter_id)) {
+        return true;
+      }
     }
     return false;
   }
