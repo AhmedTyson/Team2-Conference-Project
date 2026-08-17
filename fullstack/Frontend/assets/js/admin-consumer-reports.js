@@ -10,46 +10,6 @@
   var It = global.Itinari;
   if (!It) return;
 
-  var state = {
-    allReports: [],
-    filteredReports: [],
-    search: '',
-    statusFilter: '',
-    roleFilter: '',
-    page: 1,
-    pageSize: 10,
-    loading: false,
-    error: false,
-    activeReport: null
-  };
-
-  function el(id) {
-    return document.getElementById(id);
-  }
-
-  function isAgencyReporter(item) {
-    if (!item) return false;
-    if (item.reporter_type === 'agency' || item.reporter_type === 'agent') return true;
-    if (item.reporter) {
-      if (Array.isArray(item.reporter.roles)) {
-        var hasAgency = item.reporter.roles.some(function(r) {
-          var name = (typeof r === 'object' ? (r.name || r.role || r.slug) : r) || '';
-          return String(name).toLowerCase().indexOf('agency') !== -1;
-        });
-        if (hasAgency) return true;
-      }
-      if (typeof item.reporter.role === 'string') {
-        if (item.reporter.role.toLowerCase().indexOf('agency') !== -1) return true;
-      }
-    }
-    if (item.agency_assignment && item.agency_assignment.agency_user_id && item.reporter_id) {
-      if (String(item.agency_assignment.agency_user_id) === String(item.reporter_id)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   var DEMO_FLAGS = [
     {
       id: 101,
@@ -79,24 +39,95 @@
     }
   ];
 
+  var state = {
+    allReports: DEMO_FLAGS,
+    filteredReports: [],
+    search: '',
+    statusFilter: '',
+    roleFilter: '',
+    page: 1,
+    pageSize: 10,
+    loading: false,
+    error: false,
+    activeReport: null
+  };
+
+  function el(id) {
+    return document.getElementById(id);
+  }
+
+  function esc(s) {
+    if (s === null || s === undefined) return '';
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function formatDate(dateStr) {
+    if (!dateStr) return '–';
+    try {
+      var d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
+      return d.toLocaleDateString(undefined, {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (e) {
+      return dateStr;
+    }
+  }
+
+  function isAgencyReporter(item) {
+    if (!item) return false;
+    if (item.reporter_type === 'agency' || item.reporter_type === 'agent') return true;
+    if (item.reporter) {
+      if (Array.isArray(item.reporter.roles)) {
+        var hasAgency = item.reporter.roles.some(function(r) {
+          var name = (typeof r === 'object' ? (r.name || r.role || r.slug) : r) || '';
+          return String(name).toLowerCase().indexOf('agency') !== -1;
+        });
+        if (hasAgency) return true;
+      }
+      if (typeof item.reporter.role === 'string') {
+        if (item.reporter.role.toLowerCase().indexOf('agency') !== -1) return true;
+      }
+    }
+    if (item.agency_assignment && item.agency_assignment.agency_user_id && item.reporter_id) {
+      if (String(item.agency_assignment.agency_user_id) === String(item.reporter_id)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   function fetchReports() {
-    state.loading = true;
+    state.loading = false;
     state.error = false;
+
+    if (!It || !It.apiGet) {
+      applyFilters();
+      return;
+    }
 
     It.apiGet('/admin/flags', { auth: true })
       .then(function (res) {
         state.loading = false;
-        if (res.ok) {
-          var data = It.unwrapData(res);
-          state.allReports = (Array.isArray(data) && data.length > 0) ? data : DEMO_FLAGS;
-        } else {
-          state.allReports = DEMO_FLAGS;
+        if (res && res.ok) {
+          var data = (It.unwrapData && typeof It.unwrapData === 'function') ? It.unwrapData(res) : (res.data || (res.body ? res.body.data : null));
+          if (Array.isArray(data) && data.length > 0) {
+            state.allReports = data;
+          }
         }
         applyFilters();
       })
       .catch(function () {
         state.loading = false;
-        state.allReports = DEMO_FLAGS;
         applyFilters();
       });
   }
