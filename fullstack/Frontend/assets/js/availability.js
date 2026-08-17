@@ -145,35 +145,66 @@
   }
 
   function start() {
+    initLiveClock();
     fetchTrips();
     bindEvents();
   }
 
+  function initLiveClock() {
+    function updateClock() {
+      var clockEl = el("telemetryLiveClock");
+      if (clockEl) {
+        var now = new Date();
+        clockEl.textContent = now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true });
+      }
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+  }
+
+  function getCurrentUser() {
+    var user = (It && It.session && It.session.user) || null;
+    if (!user) {
+      try {
+        var raw = global.localStorage.getItem("itinari_user");
+        if (raw) user = JSON.parse(raw);
+      } catch (e) {}
+    }
+    return user;
+  }
+
   function fetchTrips() {
     var badge = el("calendarTripCountBadge");
+    var user = getCurrentUser();
 
     if (It.apiGet) {
       It.apiGet("/trips").then(function (res) {
         var raw = res.data !== undefined ? res.data : (res.body ? (res.body.data || res.body) : res);
         var apiTrips = Array.isArray(raw) ? raw : [];
 
-        if (apiTrips.length > 0) {
-          allTrips = mergeTripsWithSeeders(apiTrips);
+        var userScopedTrips = apiTrips;
+        if (user && user.id) {
+          var userOnly = apiTrips.filter(function (t) { return t.user_id === user.id; });
+          if (userOnly.length > 0) userScopedTrips = userOnly;
+        }
+
+        if (userScopedTrips.length > 0) {
+          allTrips = mergeTripsWithSeeders(userScopedTrips);
         } else {
           allTrips = SEEDED_COMMUNITY_TRIPS;
         }
-        if (badge) badge.textContent = allTrips.length + " Trips Active";
+        if (badge) badge.textContent = allTrips.length + " User Trips Scoped";
         renderCalendar();
         renderUpcomingSidebar();
       }).catch(function () {
         allTrips = SEEDED_COMMUNITY_TRIPS;
-        if (badge) badge.textContent = allTrips.length + " Trips Active";
+        if (badge) badge.textContent = allTrips.length + " User Trips Scoped";
         renderCalendar();
         renderUpcomingSidebar();
       });
     } else {
       allTrips = SEEDED_COMMUNITY_TRIPS;
-      if (badge) badge.textContent = allTrips.length + " Trips Active";
+      if (badge) badge.textContent = allTrips.length + " User Trips Scoped";
       renderCalendar();
       renderUpcomingSidebar();
     }

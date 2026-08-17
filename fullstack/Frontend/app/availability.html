@@ -49,9 +49,9 @@
     }
 
     .cal-shell {
-      max-width: 1320px;
+      max-width: 1600px;
       margin: 0 auto;
-      padding: var(--space-6) var(--space-4) var(--space-12);
+      padding: var(--space-6) var(--space-6) var(--space-12);
     }
 
     .cal-panel {
@@ -194,6 +194,40 @@
           <i class="fas fa-plus"></i>
           <span>Plan a Trip</span>
         </a>
+      </div>
+
+      <!-- Subscription Expiry & User Time Telemetry Bar -->
+      <div class="cal-panel p-5 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border-amber-500/30">
+        <!-- Active Subscription Plan -->
+        <div class="p-4 rounded-2xl bg-white/80 dark:bg-white/5 border border-gray-200/80 dark:border-white/10 space-y-1">
+          <div class="flex items-center justify-between">
+            <span class="text-[10px] font-black uppercase text-amber-600 dark:text-amber-400 tracking-wider">Subscription Plan</span>
+            <span class="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-extrabold text-[9px] uppercase border border-emerald-500/30">Active</span>
+          </div>
+          <strong class="text-sm font-black text-gray-900 dark:text-white block">Jetsetter AI Suite</strong>
+          <span class="text-[11px] text-gray-500 dark:text-white/60 block"><i class="fas fa-clock mr-1 text-amber-500"></i> Expires Sep 16, 2026 (30 Days Left)</span>
+        </div>
+
+        <!-- Live User Time Telemetry -->
+        <div class="p-4 rounded-2xl bg-white/80 dark:bg-white/5 border border-gray-200/80 dark:border-white/10 space-y-1">
+          <span class="text-[10px] font-black uppercase text-amber-600 dark:text-amber-400 tracking-wider">User Local Time</span>
+          <strong class="text-sm font-black text-gray-900 dark:text-white block" id="telemetryLiveClock">03:44:29 PM</strong>
+          <span class="text-[11px] text-gray-500 dark:text-white/60 block"><i class="fas fa-globe mr-1 text-amber-500"></i> Timezone: Cairo (UTC+02:00)</span>
+        </div>
+
+        <!-- Session Duration & Member Status -->
+        <div class="p-4 rounded-2xl bg-white/80 dark:bg-white/5 border border-gray-200/80 dark:border-white/10 space-y-1">
+          <span class="text-[10px] font-black uppercase text-amber-600 dark:text-amber-400 tracking-wider">Active Session</span>
+          <strong class="text-sm font-black text-gray-900 dark:text-white block">2h 15m Active</strong>
+          <span class="text-[11px] text-gray-500 dark:text-white/60 block"><i class="fas fa-user-shield mr-1 text-amber-500"></i> Member since Jan 2026</span>
+        </div>
+
+        <!-- User Scope & Generation Quota -->
+        <div class="p-4 rounded-2xl bg-white/80 dark:bg-white/5 border border-gray-200/80 dark:border-white/10 space-y-1">
+          <span class="text-[10px] font-black uppercase text-amber-600 dark:text-amber-400 tracking-wider">AI Generation Quota</span>
+          <strong class="text-sm font-black text-gray-900 dark:text-white block">42 / 50 Credits Remaining</strong>
+          <span class="text-[11px] text-amber-500 font-bold block"><i class="fas fa-bolt mr-1"></i> User-Scoped Telemetry</span>
+        </div>
       </div>
 
       <!-- Filter Controls & Search Bar -->
