@@ -33,7 +33,7 @@
     apiBase: resolveApiBase(),
     dashboardUrl: "/app/dashboard.html",
     adminUrl: "/admin/index.html",
-    agencyUrl: "/agency/index.html",
+    agencyUrl: "/agency/assignments.html",
     tokenKey: "itinari_token",
     userKey: "itinari_user",
     tokenStorage: "localStorage",

@@ -3,57 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Create Trip Proposal · Itinari Agency</title>
-  <link rel="stylesheet" href="../assets/css/admin.css" />
-  <style>
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-    }
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-    .form-group.full {
-      grid-column: 1 / -1;
-    }
-    .form-group label {
-      font-weight: 600;
-      font-size: 0.85rem;
-      color: var(--color-text-muted);
-    }
-    .form-group input, .form-group textarea {
-      padding: 0.75rem;
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm);
-      background: var(--color-surface);
-      color: var(--color-text);
-      font-family: inherit;
-    }
-    .form-group input:focus, .form-group textarea:focus {
-      outline: 2px solid var(--color-primary);
-      border-color: transparent;
-    }
-    .form-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 1rem;
-      margin-top: 2rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid var(--color-border);
-    }
-  </style>
+  <title>Plan Customer Trip · Itinari Agency</title>
+  <link rel="stylesheet" href="../assets/css/admin.css?v=15" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <script>/* FOUC prevention — default dark */
     (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
     if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
       document.documentElement.classList.add("dark","fouc-ready");
     else document.documentElement.classList.add("fouc-ready");
     })();
-  </script>  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-</head>
+  </script></head>
 <body data-page="agency" data-module="assignments" data-layout="agency">
   <a href="#main" class="skip-link">Skip to main content</a>
   <div class="shell">
@@ -71,78 +30,43 @@
           <button type="button" id="theme-toggle" class="icon-btn" aria-pressed="false" aria-label="Toggle theme"><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="4.9" y1="4.9" x2="6.3" y2="6.3"/><line x1="17.7" y1="17.7" x2="19.1" y2="19.1"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.9" y1="19.1" x2="6.3" y2="17.7"/><line x1="17.7" y1="6.3" x2="19.1" y2="4.9"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
         </div>
       </div>
-      <header class="content-head" style="display:flex; justify-content:space-between; align-items:flex-end;">
+      <header class="content-head" style="display:flex; justify-content:space-between; align-items:flex-end; gap:1rem; flex-wrap:wrap;">
         <div class="right">
-          <p class="label-eyebrow" style="margin: 0 0 0.35rem;">ASSIGNMENT FULFILLMENT</p>
-          <h1>Create Trip Proposal</h1>
+          <p class="label-eyebrow" style="margin: 0 0 0.35rem;">ASSIGNMENT FULFILLMENT · TRIP PLANNER</p>
+          <h1>Plan Customer Trip</h1>
           <p class="view-sub" id="assignment-info">Loading assignment details...</p>
         </div>
-        <a href="assignments.html" class="btn btn-ghost">Cancel</a>
+        <a href="assignments.html" class="btn btn-ghost">Back to Assignments</a>
       </header>
 
-      <section class="ticket ticket-panel">
+      <section class="ticket ticket-panel" aria-label="Plan customer trip">
         <div class="panel-body">
-          <form id="create-trip-form">
-            <div class="form-grid">
-              <div class="form-group full" id="assignment-select-group" style="display:none;">
-                <label for="assignment-select">Target Customer Assignment</label>
-                <select id="assignment-select" class="w-full p-3 rounded-lg border border-gray-300 dark:border-white/10 bg-white dark:bg-zinc-900 text-slate-900 dark:text-white">
-                  <option value="">Loading customer assignments...</option>
-                </select>
-              </div>
-
-              <div class="form-group full">
-                <label for="trip-title">Trip Title</label>
-                <input type="text" id="trip-title" name="title" required placeholder="e.g. 7 Days in Paris" />
-              </div>
-              
-              <div class="form-group full">
-                <label for="trip-description">Description</label>
-                <textarea id="trip-description" name="description" rows="4" required placeholder="Describe the trip..."></textarea>
-              </div>
-
-              <div class="form-group">
-                <label for="trip-price">Total Price (USD)</label>
-                <input type="number" id="trip-price" name="price" step="0.01" min="0" required placeholder="0.00" />
-              </div>
-
-              <div class="form-group">
-                <label for="trip-capacity">Capacity (Guests)</label>
-                <input type="number" id="trip-capacity" name="capacity" min="1" required placeholder="1" />
-              </div>
-
-              <div class="form-group">
-                <label for="trip-start">Start Date</label>
-                <input type="date" id="trip-start" name="start_date" required />
-              </div>
-
-              <div class="form-group">
-                <label for="trip-end">End Date</label>
-                <input type="date" id="trip-end" name="end_date" required />
-              </div>
+          <div id="assignment-context">
+            <div class="kit-empty">
+              <span class="kit-empty-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"/><path d="M6 12H4a2 2 0 0 0-2 2v6"/><path d="M18 9h2a2 2 0 0 1 2 2v9"/><path d="M10 6h4"/><path d="M10 10h4"/><path d="M10 14h4"/><path d="M10 18h4"/></svg>
+              </span>
+              <p class="kit-empty-title">Looking up assigned customer...</p>
             </div>
-
-            <div class="form-actions">
-              <a href="assignments.html" class="btn btn-ghost">Cancel</a>
-              <button type="submit" id="submit-btn" class="btn btn-primary">Create Trip</button>
-            </div>
-          </form>
+          </div>
         </div>
       </section>
     </main>
   </div>
+
+  <div id="modal-root"></div>
 
   <div id="site-banner" role="status">
     <span id="site-banner-msg"></span><span id="site-banner-drain" aria-hidden="true"></span>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
-  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/config.js?v=1786177601"></script>
   <script src="../assets/js/api.js"></script>
-  <script src="../assets/js/animations.js"></script>
+  <script src="../assets/js/animations.js?v=3"></script>
   <script src="../assets/js/session.js"></script>
   <script src="../assets/js/nav-config.js"></script>
-  <script src="../assets/js/admin-chrome.js"></script>
+  <script src="../assets/js/admin-chrome.js?v=12"></script>
   <script src="../assets/js/agency-create-trip.js"></script>
   <script src="../assets/js/core/topbar.js"></script>
   <script src="../assets/js/core/theme.js"></script>

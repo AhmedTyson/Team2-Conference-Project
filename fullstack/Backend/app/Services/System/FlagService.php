@@ -16,10 +16,17 @@ class FlagService
 
     public function fileComplaint(User $reporter, AgencyAssignment $assignment, string $reason, ?string $details = null): Flag
     {
+        // Agencies file complaints against the assignment's customer;
+        // customers file complaints against the assignment's agency.
+        $isAgencyReporter = (int) $reporter->id === (int) $assignment->agency_user_id;
+        $subject = $assignment->load(['customer', 'agency']);
+
         $flag = $this->repository->create([
             'reporter_id'          => $reporter->id,
             'flaggable_type'       => 'user',
-            'flaggable_id'         => $assignment->agency_user_id,
+            'flaggable_id'         => $isAgencyReporter
+                ? $assignment->customer_id
+                : $assignment->agency_user_id,
             'agency_assignment_id' => $assignment->id,
             'reason'               => $reason,
             'details'              => $details,
@@ -28,11 +35,19 @@ class FlagService
 
         $admins = User::role('admin')->get();
         foreach ($admins as $admin) {
-            $admin->notify(new \App\Notifications\SystemNotification(
-                'Agency Complaint Filed',
-                "Customer {$reporter->name} filed a complaint regarding assignment #{$assignment->id}.",
-                '/admin/flags'
-            ));
+            if ($isAgencyReporter) {
+                $admin->notify(new \App\Notifications\SystemNotification(
+                    'User Complaint Filed',
+                    "Agency {$reporter->name} reported customer {$subject->customer?->name} regarding assignment #{$assignment->id}.",
+                    '/admin/flags'
+                ));
+            } else {
+                $admin->notify(new \App\Notifications\SystemNotification(
+                    'Agency Complaint Filed',
+                    "Customer {$reporter->name} filed a complaint regarding assignment #{$assignment->id}.",
+                    '/admin/flags'
+                ));
+            }
         }
 
         return $flag;

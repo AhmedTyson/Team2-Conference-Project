@@ -76,8 +76,7 @@
 
     if (role === "agency" || role === "admin" || role === "super_admin") {
       items.push(
-        { group: "Agency Desk", title: "Agency Dashboard", sub: "Concierge desk", url: p + "agency/index.html", icon: ICONS.nav },
-        { group: "Agency Desk", title: "Create Proposal", sub: "Bespoke itinerary builder", url: p + "agency/create-trip.html", icon: ICONS.bolt }
+        { group: "Agency Desk", title: "My Assignments", sub: "Assigned customers & trip plans", url: p + "agency/assignments.html", icon: ICONS.nav }
       );
     }
 

@@ -72,11 +72,24 @@ class ConversationController extends Controller
         $user = $request->user();
         $validated = $request->validated();
 
+        $userId = $user->id;
+        $agencyId = $validated['agency_id'] ?? null;
+        $senderType = 'user';
+
+        // Agencies may open a thread on behalf of an assigned customer:
+        // the conversation is owned by the customer (user_id) and linked to
+        // the agency (agency_id) so both sides see it in their chat lists.
+        if ($user->hasRole('agency') && !empty($validated['customer_id'])) {
+            $userId = (int) $validated['customer_id'];
+            $agencyId = $user->id;
+            $senderType = 'agency';
+        }
+
         $conversation = Conversation::create([
             'type' => $validated['type'],
             'title' => $validated['title'] ?? null,
-            'user_id' => $user->id,
-            'agency_id' => $validated['agency_id'] ?? null,
+            'user_id' => $userId,
+            'agency_id' => $agencyId,
             'trip_id' => $validated['trip_id'] ?? null,
             'last_message_at' => now(),
         ]);
@@ -85,7 +98,7 @@ class ConversationController extends Controller
         if ($initialMessage) {
             $userMsg = $conversation->messages()->create([
                 'sender_id' => $user->id,
-                'sender_type' => 'user',
+                'sender_type' => $senderType,
                 'body' => $initialMessage,
             ]);
 

@@ -133,9 +133,7 @@
         label: "Agency Tools",
         icon: "agency",
         dropdown: [
-          { to: "/agency/index.html", label: "Agency Dashboard", icon: "dashboard" },
           { to: "/agency/assignments.html", label: "My Assignments", icon: "assignments" },
-          { to: "/agency/create-trip.html", label: "Create Package", icon: "trips" },
         ]
       },
       { to: "/contact.html", label: "Contact", icon: "contact" },

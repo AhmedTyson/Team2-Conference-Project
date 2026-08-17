@@ -135,13 +135,7 @@
         label: "Agency Portal",
         icon: "agency",
         dropdown: [
-          { to: "/agency/index.html", label: "Dashboard", icon: "dashboard" },
           { to: "/agency/assignments.html", label: "My Assignments", icon: "assignments" },
-          { to: "/agency/create-trip.html", label: "Create Trip Proposal", icon: "trips" },
-          { to: "/agency/proposals.html", label: "Trip Proposals", icon: "trips" },
-          { to: "/agency/inquiries.html", label: "Customer Inquiries", icon: "reviews" },
-          { to: "/agency/earnings.html", label: "Earnings & Payouts", icon: "analytics" },
-          { to: "/agency/settings.html", label: "Agency Profile", icon: "settings" },
         ]
       },
       { to: "/contact.html", label: "Contact", icon: "contact" },
@@ -200,9 +194,6 @@
       items: [
         { href: "index.html", label: "Dashboard", icon: "dashboard" },
         { href: "assignments.html", label: "My Assignments", icon: "assignments" },
-        { href: "create-trip.html", label: "Create Trip Proposal", icon: "trips" },
-        { href: "proposals.html", label: "Trip Proposals", icon: "trips" },
-        { href: "inquiries.html", label: "Customer Inquiries", icon: "reviews" },
       ],
     },
     {
