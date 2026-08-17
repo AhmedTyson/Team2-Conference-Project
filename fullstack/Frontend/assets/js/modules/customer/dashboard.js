@@ -982,7 +982,11 @@
       if (usedText) usedText.innerHTML = '<i class="fas fa-chart-pie text-purple-500 mr-1"></i> ' + usedQuota + " / " + totalQuota + " used";
       if (availText) availText.textContent = remainingQuota + " available";
       if (barEl) barEl.style.width = usagePct + "%";
-      if (expiryEl) expiryEl.textContent = "Lifetime Access";
+      if (expiryEl) {
+        const d = new Date();
+        d.setMonth(d.getMonth() + 1);
+        expiryEl.textContent = "Renews: " + d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+      }
 
       setFeed(tripsList, mockTrips.slice(0, 4), "No trips yet.", renderTrips);
       setFeed(favsList, mockFavs.slice(0, 4), "No favourites saved yet.", renderFavs);

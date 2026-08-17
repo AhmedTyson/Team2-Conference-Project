@@ -53,7 +53,17 @@ class DashboardController extends Controller
 
         $usedQuota = (int) ($user->ai_generations_count ?? 0);
         $remainingQuota = max(0, $totalQuota - $usedQuota);
-        $expiresAt = $activeSub ? ($activeSub->ends_at ? $activeSub->ends_at->toIso8601String() : ($activeSub->renews_at ? $activeSub->renews_at->toIso8601String() : null)) : null;
+
+        $renewsAt = $activeSub ? ($activeSub->renews_at ? $activeSub->renews_at->toIso8601String() : null) : null;
+        $expiresAt = $activeSub ? ($activeSub->ends_at ? $activeSub->ends_at->toIso8601String() : $renewsAt) : null;
+
+        if (! $expiresAt) {
+            $baseDate = $user->created_at ?: now();
+            $expiresAt = $baseDate->copy()->addMonth()->toIso8601String();
+            $renewsAt = $expiresAt;
+        }
+
+        $formattedExp = 'Renews: ' . \Carbon\Carbon::parse($expiresAt)->format('M d, Y');
 
         return ApiResponse::success([
             'total_trips' => $totalTrips,
@@ -66,9 +76,10 @@ class DashboardController extends Controller
                 'ai_quota_total' => $totalQuota,
                 'ai_quota_used' => $usedQuota,
                 'ai_quota_remaining' => $remainingQuota,
-                'renews_at' => $activeSub ? ($activeSub->renews_at ? $activeSub->renews_at->toIso8601String() : null) : null,
+                'renews_at' => $renewsAt,
                 'expires_at' => $expiresAt,
                 'ends_at' => $expiresAt,
+                'formatted_expiration' => $formattedExp,
             ],
         ], 'Dashboard statistics retrieved successfully.');
     }
@@ -98,14 +109,13 @@ class DashboardController extends Controller
         $renewsAt = $activeSub ? ($activeSub->renews_at ? $activeSub->renews_at->toIso8601String() : null) : null;
         $endsAt = $activeSub ? ($activeSub->ends_at ? $activeSub->ends_at->toIso8601String() : $renewsAt) : null;
 
-        $formattedExp = 'Lifetime Access';
-        if ($endsAt) {
-            try {
-                $formattedExp = 'Renews: ' . \Carbon\Carbon::parse($endsAt)->format('M d, Y');
-            } catch (\Throwable $e) {
-                $formattedExp = (string) $endsAt;
-            }
+        if (! $endsAt) {
+            $baseDate = $user->created_at ?: now();
+            $endsAt = $baseDate->copy()->addMonth()->toIso8601String();
+            $renewsAt = $endsAt;
         }
+
+        $formattedExp = 'Renews: ' . \Carbon\Carbon::parse($endsAt)->format('M d, Y');
 
         return ApiResponse::success([
             'plan_id' => $plan ? $plan->id : null,
