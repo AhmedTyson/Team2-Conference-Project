@@ -471,14 +471,14 @@ Route::middleware(['auth:api'])->group(function () {
         ->middleware('role:admin|super_admin')
         ->name('agency-requests.index');
     Route::post('/admin/agency-requests/{assignment}/approve', [AdminAgencyController::class, 'approve'])->middleware('role:admin|super_admin');
-    Route::post('/agency/assignments/{assignment}/approve', [AgencyAssignmentController::class, 'approve'])->middleware('role:agency');
-    Route::post('/agency/assignments/{assignment}/decline', [AgencyAssignmentController::class, 'decline'])->middleware('role:agency');
-    Route::post('/agency/assignments/{assignment}/trips', [AgencyAssignmentController::class, 'createTrip'])->middleware('role:agency');
-    Route::get('/agency/assignments', [AgencyAssignmentController::class, 'index'])->middleware('role:agency');
-    Route::get('/agency/trips', [AgencyAssignmentController::class, 'trips'])->middleware('role:agency');
-    Route::get('/agency/earnings', [AgencyAssignmentController::class, 'earnings'])->middleware('role:agency');
-    Route::get('/agency/profile', [AgencyAssignmentController::class, 'getProfile'])->middleware('role:agency');
-    Route::put('/agency/profile', [AgencyAssignmentController::class, 'updateProfile'])->middleware('role:agency');
+    Route::post('/agency/assignments/{assignment}/approve', [AgencyAssignmentController::class, 'approve'])->middleware('role:agency|admin|super_admin');
+    Route::post('/agency/assignments/{assignment}/decline', [AgencyAssignmentController::class, 'decline'])->middleware('role:agency|admin|super_admin');
+    Route::post('/agency/assignments/{assignment}/trips', [AgencyAssignmentController::class, 'createTrip'])->middleware('role:agency|admin|super_admin');
+    Route::get('/agency/assignments', [AgencyAssignmentController::class, 'index'])->middleware('role:agency|admin|super_admin');
+    Route::get('/agency/trips', [AgencyAssignmentController::class, 'trips'])->middleware('role:agency|admin|super_admin');
+    Route::get('/agency/earnings', [AgencyAssignmentController::class, 'earnings'])->middleware('role:agency|admin|super_admin');
+    Route::get('/agency/profile', [AgencyAssignmentController::class, 'getProfile'])->middleware('role:agency|admin|super_admin');
+    Route::put('/agency/profile', [AgencyAssignmentController::class, 'updateProfile'])->middleware('role:agency|admin|super_admin');
     Route::get('/agency-assignments', [AgencyAssignmentController::class, 'myAssignments']);
     Route::post('/agency-assignments/{assignment}/cancel', [AgencyAssignmentController::class, 'cancel']);
 

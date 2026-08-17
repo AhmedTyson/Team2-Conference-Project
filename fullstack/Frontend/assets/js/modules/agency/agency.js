@@ -100,6 +100,12 @@
       if (a.status === "admin_approved") {
         actionsTd.appendChild(actionButton("Approve", "btn btn-primary btn-sm", function () { respond(a.id, "approve"); }));
         actionsTd.appendChild(actionButton("Decline", "btn btn-ghost btn-sm", function () { respond(a.id, "decline"); }));
+      } else if (a.status === "agency_approved") {
+        const buildLink = document.createElement("a");
+        buildLink.href = "create-trip.html?assignment_id=" + a.id;
+        buildLink.className = "btn btn-outline btn-sm";
+        buildLink.innerHTML = '<i class="fas fa-plus mr-1"></i> Build Trip';
+        actionsTd.appendChild(buildLink);
       } else {
         actionsTd.textContent = "\u2014";
       }
@@ -128,7 +134,8 @@
 
   function load() {
     It.apiGet("/agency/assignments", { auth: true }).then(function (res) {
-      const rows = (res && res.data) || [];
+      const raw = (res && res.data !== undefined) ? res.data : (res && res.body ? res.body.data : []);
+      const rows = Array.isArray(raw) ? raw : (raw && Array.isArray(raw.data) ? raw.data : []);
       setKpi("kpi-total", rows.length);
       setKpi("kpi-awaiting", rows.filter(function (a) { return a.status === "admin_approved"; }).length);
       setKpi("kpi-active", rows.filter(function (a) { return a.status === "agency_approved"; }).length);

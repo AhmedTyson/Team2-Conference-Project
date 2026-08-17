@@ -18,9 +18,14 @@ class AgencyAssignmentController extends Controller
 
     public function index(Request $request): JsonResponse
     {
-        $assignments = AgencyAssignment::where('agency_user_id', $request->user()->id)
-            ->with(['customer', 'trips'])
-            ->get();
+        $user = $request->user();
+        $query = AgencyAssignment::query()->with(['customer', 'trips']);
+
+        if (!$user->hasRole('admin') && !$user->hasRole('super_admin')) {
+            $query->where('agency_user_id', $user->id);
+        }
+
+        $assignments = $query->latest()->get();
 
         return ApiResponse::success($assignments, 'Agency assignments retrieved successfully');
     }
