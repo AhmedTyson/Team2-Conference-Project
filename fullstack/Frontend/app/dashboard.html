@@ -429,7 +429,10 @@
               <a href="planner.html" class="btn btn--primary" style="border-radius:9999px;padding:0.5rem 1.25rem;">
                 <i class="fas fa-plus mr-1"></i> Plan New Trip
               </a>
-              <a href="chat.html" class="btn btn--secondary" style="border-radius:9999px;padding:0.5rem 1.25rem;background:hsl(var(--accent)/0.15);color:hsl(var(--accent));border-color:hsl(var(--accent)/0.3);">
+              <a href="availability.html" class="btn btn--secondary" style="border-radius:9999px;padding:0.5rem 1.25rem;background:hsl(var(--accent)/0.15);color:hsl(var(--accent));border-color:hsl(var(--accent)/0.3);">
+                <i class="far fa-calendar-alt mr-1"></i> Schedule Agenda
+              </a>
+              <a href="chat.html" class="btn btn--ghost" style="border-radius:9999px;padding:0.5rem 1.15rem;">
                 <i class="fas fa-sparkles mr-1"></i> AI Concierge
               </a>
               <a href="../explore.html" class="btn btn--ghost" style="border-radius:9999px;padding:0.5rem 1.15rem;">
@@ -595,6 +598,35 @@
             <div id="favs-list" class="feed" aria-live="polite">
               <div class="skeleton skeleton--card"></div>
               <div class="skeleton skeleton--card"></div>
+            </div>
+          </section>
+
+          <!-- Column 3: Daily Schedule & Agenda (Taskly Reference Card) -->
+          <section class="dash-panel">
+            <div class="dash-panel__header">
+              <h2 class="dash-panel__title"><i class="far fa-calendar-alt text-amber-500"></i> Daily Schedule & Availability</h2>
+              <a href="availability.html" class="dash-panel__link"><span>Full Agenda</span> <i class="fas fa-arrow-right text-xs"></i></a>
+            </div>
+            <div class="space-y-3 pt-1">
+              <a href="availability.html" class="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/25 hover:border-amber-500/60 transition flex items-center justify-between gap-3 text-xs block text-decoration-none group">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-2xl bg-amber-500 text-black font-black flex items-center justify-center text-sm shadow-md group-hover:scale-105 transition"><i class="fas fa-calendar-day"></i></div>
+                  <div>
+                    <strong class="font-extrabold text-gray-900 dark:text-white block text-sm group-hover:text-amber-500 transition">Today's Timeline Agenda</strong>
+                    <span class="text-gray-500 dark:text-white/60 text-[11px]">Thursday 11 · 6 Activities Scheduled</span>
+                  </div>
+                </div>
+                <span class="px-3.5 py-1.5 rounded-full bg-amber-500 text-black font-black text-xs shadow-md shrink-0">Open Agenda →</span>
+              </a>
+
+              <div class="p-3.5 rounded-2xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 space-y-2 text-xs">
+                <span class="text-[10px] font-bold text-amber-500 uppercase tracking-wider block">Weekly Pinned Reminder</span>
+                <div class="flex items-center justify-between">
+                  <strong class="font-bold text-gray-900 dark:text-white">Call doctor for tests</strong>
+                  <span class="text-[10px] text-gray-400 font-medium">15 Mar 2026</span>
+                </div>
+                <p class="text-[11px] text-gray-500 dark:text-white/60 m-0">Ask for blood tests and GYM health certificate.</p>
+              </div>
             </div>
           </section>
 
