@@ -471,6 +471,21 @@
             <span class="font-bold text-gray-900 dark:text-white block" id="drawerTransitInfo">Flight SK-402 · Direct Transfer</span>
           </div>
         </div>
+
+        <!-- Animated Day-by-Day Itinerary Timeline -->
+        <div class="pt-4 border-t border-gray-100 dark:border-white/10 space-y-3">
+          <div class="flex items-center justify-between">
+            <h4 class="text-xs font-black uppercase text-amber-600 dark:text-amber-400 tracking-wider flex items-center gap-1.5">
+              <i class="fas fa-route"></i> Day-by-Day Timeline Schedule
+            </h4>
+            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 border border-amber-500/20">Day 1 → End</span>
+          </div>
+
+          <!-- Vertical Timeline Connector Container -->
+          <div class="relative pl-6 space-y-4 border-l-2 border-dashed border-amber-500/40 ml-2 pt-1" id="drawerTimelineContainer">
+            <!-- Dynamically rendered timeline nodes -->
+          </div>
+        </div>
       </div>
 
       <!-- Action Buttons -->

@@ -579,42 +579,211 @@
     return "fa-plane-departure";
   }
 
+  function generateTripTimelineStops(trip) {
+    var stops = [];
+    var daysCount = Math.max(1, Number(trip.no_of_days) || 5);
+    var destName = (trip.destinations && trip.destinations[0] && (trip.destinations[0].city_name || trip.destinations[0].name)) || "Destination";
+
+    // Day 1: Flight & Check-in
+    stops.push({
+      day: 1,
+      time: "09:00 AM",
+      type: "flight",
+      icon: "fa-plane-departure",
+      badge: "Transportation",
+      title: (trip.flights && trip.flights[0] && trip.flights[0].airline) ? trip.flights[0].airline : "Flight & Airport Transfer",
+      location: "Departure Hub → " + destName,
+      cost: "$420"
+    });
+
+    stops.push({
+      day: 1,
+      time: "02:00 PM",
+      type: "hotel",
+      icon: "fa-hotel",
+      badge: "Accommodation",
+      title: (trip.hotels && trip.hotels[0] && trip.hotels[0].name) ? trip.hotels[0].name : "Luxury Hotel Check-in",
+      location: destName + " City Center",
+      cost: "$" + ((trip.hotels && trip.hotels[0] && trip.hotels[0].price_per_night) || 240)
+    });
+
+    // Day 2: Cultural Exploration & Gastronomy
+    if (daysCount >= 2) {
+      stops.push({
+        day: 2,
+        time: "10:30 AM",
+        type: "attraction",
+        icon: "fa-camera-retro",
+        badge: "Sightseeing",
+        title: "Guided Cultural Landmark Tour",
+        location: destName + " Historic District",
+        cost: "$65"
+      });
+      stops.push({
+        day: 2,
+        time: "07:30 PM",
+        type: "restaurant",
+        icon: "fa-utensils",
+        badge: "Culinary Dining",
+        title: "Signature Gastronomy Tasting Experience",
+        location: "Top Culinary Venue",
+        cost: "$95"
+      });
+    }
+
+    // Day 3: Scenic Panorama Trail
+    if (daysCount >= 3) {
+      stops.push({
+        day: 3,
+        time: "11:00 AM",
+        type: "adventure",
+        icon: "fa-compass",
+        badge: "Excursion",
+        title: "Scenic Coastal & Nature Reserve Trail",
+        location: destName + " Panorama Spot",
+        cost: "$85"
+      });
+    }
+
+    return stops;
+  }
+
+  var currentPage = 1;
+  var itemsPerPage = 4;
+  var expandedTimelines = {};
+
+  function toggleTripTimeline(tripId) {
+    expandedTimelines[tripId] = !expandedTimelines[tripId];
+    var body = el("timeline-body-" + tripId);
+    var icon = el("timeline-icon-" + tripId);
+    var label = el("timeline-label-" + tripId);
+
+    if (body) {
+      if (expandedTimelines[tripId]) {
+        body.classList.remove("hidden");
+        if (icon) icon.className = "fas fa-chevron-up text-[10px]";
+        if (label) label.textContent = "Collapse Timeline";
+      } else {
+        body.classList.add("hidden");
+        if (icon) icon.className = "fas fa-chevron-down text-[10px]";
+        if (label) label.textContent = "Expand Timeline";
+      }
+    }
+  }
+
+  function setAgendaPage(page) {
+    currentPage = page;
+    renderCalendar();
+  }
+
+  global.toggleTripTimeline = toggleTripTimeline;
+  global.setAgendaPage = setAgendaPage;
+
   function renderAgendaList(trips) {
     var container = el("agendaListView");
     if (!container) return;
 
-    container.innerHTML = trips.map(function (t) {
+    var totalPages = Math.ceil(trips.length / itemsPerPage) || 1;
+    if (currentPage > totalPages) currentPage = totalPages;
+    if (currentPage < 1) currentPage = 1;
+
+    var startIdx = (currentPage - 1) * itemsPerPage;
+    var paginatedTrips = trips.slice(startIdx, startIdx + itemsPerPage);
+
+    var cardsHtml = paginatedTrips.map(function (t) {
       var cover = resolveTripImage(t);
       var dest = (t.destinations && t.destinations[0]) || {};
       var destName = dest.city_name || dest.city || dest.name || "Global Destination";
       var countryName = dest.country_name || dest.country || "International";
       var statusBadgeCls = "status-badge-" + (t.status || "upcoming").toLowerCase();
+      var timelineStops = generateTripTimelineStops(t);
+      var isExpanded = !!expandedTimelines[t.id];
 
-      return '<div class="p-5 rounded-2xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-amber-500/50 transition flex flex-col sm:flex-row items-center justify-between gap-4 cursor-pointer" onclick="window.openTripDrawer(' + t.id + ')">' +
-        '<div class="flex items-center gap-4 w-full sm:w-auto">' +
-          '<div class="w-16 h-16 rounded-2xl overflow-hidden bg-gray-200 shrink-0 shadow-md">' +
-            '<img src="' + esc(cover) + '" alt="' + esc(t.title) + '" class="w-full h-full object-cover" />' +
+      var stopsHtml = timelineStops.map(function (st) {
+        return '<div class="relative pl-6 pb-4 group/node">' +
+          '<div class="absolute -left-[13px] top-1 w-6 h-6 rounded-full bg-amber-500 text-black font-black flex items-center justify-center text-[10px] shadow-md ring-4 ring-white dark:ring-[#121215] group-hover/node:scale-110 transition-transform">' +
+            st.day +
           '</div>' +
-          '<div>' +
-            '<div class="flex items-center gap-2 mb-1">' +
-              '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ' + statusBadgeCls + '">' + esc(t.status || "Upcoming") + '</span>' +
-              '<span class="text-[11px] font-bold text-gray-400">' + (t.no_of_days || 5) + ' Days</span>' +
+          '<div class="p-3.5 rounded-2xl bg-white/90 dark:bg-white/[0.04] border border-gray-200 dark:border-white/10 hover:border-amber-500/50 transition-all duration-300 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2">' +
+            '<div class="space-y-1">' +
+              '<div class="flex items-center gap-2">' +
+                '<span class="px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 font-extrabold text-[9px] uppercase border border-amber-500/25">' +
+                  '<i class="fas ' + st.icon + ' mr-1"></i>' + st.time +
+                '</span>' +
+                '<span class="px-2 py-0.5 rounded-full bg-sky-500/15 text-sky-600 dark:text-sky-400 font-extrabold text-[9px] uppercase border border-sky-500/25">' +
+                  st.badge +
+                '</span>' +
+              '</div>' +
+              '<h5 class="font-black text-xs text-gray-900 dark:text-white group-hover/node:text-amber-500 transition">' + esc(st.title) + '</h5>' +
+              '<span class="text-[11px] text-gray-500 dark:text-white/60 block"><i class="fas fa-location-dot text-amber-400 mr-1"></i>' + esc(st.location) + '</span>' +
             '</div>' +
-            '<h4 class="font-black text-sm text-gray-900 dark:text-white">' + esc(t.title) + '</h4>' +
-            '<span class="text-xs text-gray-500 dark:text-white/60"><i class="fas fa-location-dot text-amber-500 mr-1"></i>' + esc(destName) + ', ' + esc(countryName) + '</span>' +
+            '<span class="text-xs font-black text-amber-500 shrink-0 self-start sm:self-center">' + st.cost + '</span>' +
+          '</div>' +
+        '</div>';
+      }).join("");
+
+      return '<div class="p-6 rounded-3xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-amber-500/40 transition-all duration-300 space-y-5 shadow-lg">' +
+        '<!-- Header Bar -->' +
+        '<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 dark:border-white/10 pb-4">' +
+          '<div class="flex items-center gap-4">' +
+            '<div class="w-16 h-16 rounded-2xl overflow-hidden bg-gray-200 shrink-0 shadow-md">' +
+              '<img src="' + esc(cover) + '" alt="' + esc(t.title) + '" class="w-full h-full object-cover" />' +
+            '</div>' +
+            '<div>' +
+              '<div class="flex items-center gap-2 mb-1">' +
+                '<span class="px-3 py-0.5 rounded-full text-[10px] font-black uppercase ' + statusBadgeCls + '">' + esc(t.status || "Upcoming") + '</span>' +
+                '<span class="text-xs font-extrabold text-amber-500"><i class="far fa-clock mr-1"></i>' + (t.no_of_days || 5) + ' Days Journey</span>' +
+              '</div>' +
+              '<h3 class="font-black text-base text-gray-900 dark:text-white">' + esc(t.title) + '</h3>' +
+              '<span class="text-xs text-gray-500 dark:text-white/60"><i class="fas fa-location-dot text-amber-500 mr-1"></i>' + esc(destName) + ', ' + esc(countryName) + '</span>' +
+            '</div>' +
+          '</div>' +
+          '<div class="flex items-center gap-2 justify-between sm:justify-end">' +
+            '<!-- Real Route Direct Link Button -->' +
+            '<a href="trip.html?id=' + t.id + '" class="w-10 h-10 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 hover:bg-amber-500 hover:text-black transition flex items-center justify-center border border-amber-500/30 shadow-sm" title="View Real User Trip Route (app/trip.html?id=' + t.id + ')">' +
+              '<i class="fas fa-arrow-up-right-from-square text-xs"></i>' +
+            '</a>' +
+
+            '<!-- Toggle Timeline Icon Button -->' +
+            '<button type="button" onclick="window.toggleTripTimeline(' + t.id + ')" class="h-10 px-3.5 rounded-full bg-gray-200 dark:bg-white/10 hover:bg-amber-500 hover:text-black font-black text-xs transition flex items-center gap-2 text-gray-900 dark:text-white border border-gray-300 dark:border-white/10" title="Toggle Animated Itinerary Timeline">' +
+              '<i class="fas fa-route text-amber-500 group-hover:text-black" id="timeline-icon-' + t.id + '"></i>' +
+              '<span class="text-[11px]" id="timeline-label-' + t.id + '">' + timelineStops.length + ' Stops</span>' +
+            '</button>' +
+
+            '<!-- Inspect Drawer Icon Button -->' +
+            '<button type="button" onclick="window.openTripDrawer(' + t.id + ')" class="w-10 h-10 rounded-full bg-amber-500 text-black hover:bg-amber-400 font-black transition flex items-center justify-center shadow-md cursor-pointer" title="Inspect Side Drawer Details">' +
+              '<i class="fas fa-eye text-xs"></i>' +
+            '</button>' +
           '</div>' +
         '</div>' +
-        '<div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 pt-3 sm:pt-0 border-gray-200 dark:border-white/10">' +
-          '<div class="text-right text-xs">' +
-            '<span class="font-extrabold text-gray-900 dark:text-white block">' + (t.start_date || "Aug 18").slice(0, 10) + ' → ' + (t.end_date || "Aug 24").slice(0, 10) + '</span>' +
-            '<span class="text-amber-500 font-bold text-[11px]">$' + Number(t.estimated_cost || t.budget || 1200).toLocaleString() + '</span>' +
+
+        '<!-- Collapsible Day-by-Day Animated Timeline -->' +
+        '<div class="space-y-3 pt-2 ' + (isExpanded ? '' : 'hidden') + '" id="timeline-body-' + t.id + '">' +
+          '<span class="text-xs font-black uppercase text-amber-600 dark:text-amber-400 tracking-wider block"><i class="fas fa-route mr-1"></i> Timeline Itinerary Schedule</span>' +
+          '<div class="relative pl-6 space-y-2 border-l-2 border-dashed border-amber-500/40 ml-3 pt-2">' +
+            stopsHtml +
           '</div>' +
-          '<button type="button" class="px-4 py-2 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 hover:bg-amber-500 hover:text-black font-extrabold text-xs transition border border-amber-500/30 flex items-center gap-1.5">' +
-            '<span>Details</span> <i class="fas fa-arrow-right text-[10px]"></i>' +
-          '</button>' +
         '</div>' +
       '</div>';
     }).join("");
+
+    // Render Pagination Bar
+    var pagePills = "";
+    for (var p = 1; p <= totalPages; p++) {
+      var isCur = (p === currentPage);
+      pagePills += '<button type="button" onclick="window.setAgendaPage(' + p + ')" class="w-8 h-8 rounded-full text-xs font-black transition ' + (isCur ? 'bg-amber-500 text-black shadow-md' : 'bg-gray-100 dark:bg-white/10 text-gray-700 dark:text-white/80 hover:bg-amber-500/20') + '">' + p + '</button>';
+    }
+
+    var paginationHtml = '<div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-gray-200 dark:border-white/10">' +
+      '<span class="text-xs font-bold text-gray-500 dark:text-white/60">Showing Page ' + currentPage + ' of ' + totalPages + ' (' + trips.length + ' Total Trips)</span>' +
+      '<div class="flex items-center gap-2">' +
+        '<button type="button" onclick="window.setAgendaPage(' + (currentPage - 1) + ')" class="px-3.5 py-1.5 rounded-full bg-gray-100 dark:bg-white/10 hover:bg-amber-500 hover:text-black font-extrabold text-xs transition cursor-pointer disabled:opacity-40" ' + (currentPage <= 1 ? 'disabled' : '') + '>← Prev</button>' +
+        '<div class="flex items-center gap-1">' + pagePills + '</div>' +
+        '<button type="button" onclick="window.setAgendaPage(' + (currentPage + 1) + ')" class="px-3.5 py-1.5 rounded-full bg-gray-100 dark:bg-white/10 hover:bg-amber-500 hover:text-black font-extrabold text-xs transition cursor-pointer disabled:opacity-40" ' + (currentPage >= totalPages ? 'disabled' : '') + '>Next →</button>' +
+      '</div>' +
+    '</div>';
+
+    container.innerHTML = cardsHtml + paginationHtml;
   }
 
   function renderUpcomingSidebar() {
@@ -693,6 +862,29 @@
 
     if (openBtn) openBtn.href = "trip.html?id=" + trip.id;
     if (editBtn) editBtn.href = "trip-form.html?id=" + trip.id;
+
+    // Render Side Drawer Animated Timeline Nodes
+    var timelineContainer = el("drawerTimelineContainer");
+    if (timelineContainer) {
+      var stops = generateTripTimelineStops(trip);
+      timelineContainer.innerHTML = stops.map(function (st) {
+        return '<div class="relative pl-6 pb-3 group/drawerNode">' +
+          '<div class="absolute -left-[13px] top-1 w-6 h-6 rounded-full bg-amber-500 text-black font-black flex items-center justify-center text-[10px] shadow-md ring-4 ring-white dark:ring-[#121215] group-hover/drawerNode:scale-110 transition-transform">' +
+            st.day +
+          '</div>' +
+          '<div class="p-3 rounded-2xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-amber-500/50 transition-all duration-300 space-y-1">' +
+            '<div class="flex items-center justify-between">' +
+              '<span class="px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 font-extrabold text-[9px] uppercase border border-amber-500/25">' +
+                '<i class="fas ' + st.icon + ' mr-1"></i>' + st.time +
+              '</span>' +
+              '<span class="text-amber-500 font-black text-[11px]">' + st.cost + '</span>' +
+            '</div>' +
+            '<strong class="font-extrabold text-xs text-gray-900 dark:text-white block group-hover/drawerNode:text-amber-500 transition">' + esc(st.title) + '</strong>' +
+            '<span class="text-[10px] text-gray-500 dark:text-white/60 block"><i class="fas fa-location-dot text-amber-400 mr-1"></i>' + esc(st.location) + '</span>' +
+          '</div>' +
+        '</div>';
+      }).join("");
+    }
 
     drawer.classList.remove("hidden");
   }
