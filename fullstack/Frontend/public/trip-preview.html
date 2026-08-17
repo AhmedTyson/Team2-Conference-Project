@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Community Trip Preview · Itinari</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome 6 Free -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Leaflet Maps CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <!-- Shared Custom Styling -->
+  <link rel="stylesheet" href="../assets/css/public.css" />
+  
+  <style>
+    :root {
+      --comm-bg: #f3f1ea;
+      --comm-panel: #ffffff;
+      --comm-border: #eae6da;
+      --comm-text: #17181a;
+      --comm-shadow: 0 10px 30px rgba(23, 24, 26, 0.06);
+    }
+
+    html.dark {
+      --comm-bg: #0a0a0a;
+      --comm-panel: #121212;
+      --comm-border: rgba(255, 255, 255, 0.1);
+      --comm-text: #ffffff;
+      --comm-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+    }
+
+    body {
+      background-color: var(--comm-bg);
+      color: var(--comm-text);
+      font-family: 'Inter', sans-serif;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .preview-card {
+      background: var(--comm-panel);
+      border: 1px solid var(--comm-border);
+      border-radius: 1.5rem;
+      box-shadow: var(--comm-shadow);
+    }
+
+    #trip-preview-map {
+      height: 340px;
+      width: 100%;
+      border-radius: 1.25rem;
+      z-index: 10;
+    }
+  </style>
+
+  <script>
+    (function(){
+      var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+      if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
+        document.documentElement.classList.add("dark","fouc-ready");
+      else document.documentElement.classList.add("fouc-ready");
+    })();
+  </script>
+</head>
+<body class="min-h-screen flex flex-col font-['Inter']" data-layout="public">
+  <div class="app-wrapper flex-1 flex flex-col">
+    
+    <!-- Global Dynamic Top Navbar -->
+    <header class="app-nav-header"></header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 py-8 w-full flex-1 space-y-8">
+      
+      <!-- Top Breadcrumbs & Back Navigation -->
+      <div class="flex items-center justify-between gap-4 flex-wrap">
+        <a href="community.html" class="inline-flex items-center gap-2 text-xs font-bold text-gray-500 dark:text-white/60 hover:text-amber-500 transition">
+          <i class="fas fa-arrow-left text-[10px]"></i> Back to Community Feed
+        </a>
+        <div class="flex items-center gap-2 text-xs font-semibold text-gray-400">
+          <span>Community</span>
+          <i class="fas fa-chevron-right text-[9px]"></i>
+          <span class="text-amber-500 font-bold" id="breadcrumb-title">Itinerary Preview</span>
+        </div>
+      </div>
+
+      <!-- Main Preview Shell -->
+      <div id="preview-shell" class="space-y-8">
+        <!-- Skeleton Loading State -->
+        <div class="p-8 rounded-3xl bg-white dark:bg-white/5 border border-gray-200 dark:border-white/10 animate-pulse space-y-6">
+          <div class="h-64 bg-gray-200 dark:bg-white/10 rounded-2xl"></div>
+          <div class="h-8 bg-gray-200 dark:bg-white/10 rounded w-1/3"></div>
+          <div class="h-4 bg-gray-200 dark:bg-white/10 rounded w-2/3"></div>
+        </div>
+      </div>
+
+    </main>
+
+    <!-- Sticky Bottom CTA Bar -->
+    <div id="sticky-fork-bar" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 max-w-xl w-[92%] p-4 rounded-full bg-black/80 dark:bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl flex items-center justify-between gap-4 text-white">
+      <div class="pl-2">
+        <span class="text-[10px] font-bold text-amber-400 uppercase tracking-widest block">Ready to Customize?</span>
+        <strong class="text-xs font-extrabold text-white truncate block max-w-[200px] sm:max-w-xs" id="sticky-trip-title">Fork this itinerary into your planner</strong>
+      </div>
+      <button type="button" id="sticky-fork-btn" class="px-6 py-2.5 rounded-full bg-amber-500 hover:bg-amber-400 text-black font-black text-xs shadow-lg transition flex items-center gap-2 shrink-0 cursor-pointer">
+        <i class="fas fa-code-branch"></i>
+        <span>Fork Itinerary</span>
+      </button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-300/40 dark:border-white/10 py-6 mt-12 text-center text-xs text-gray-500 dark:text-white/40">
+      <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <span>&copy; <span id="footerYear">2026</span> Itinari · Traveler Community Network</span>
+        <div class="flex gap-6">
+          <a href="community.html" class="hover:text-amber-400">Community Feed</a>
+          <a href="../explore.html" class="hover:text-amber-400">Explore Catalog</a>
+          <a href="../countries.html" class="hover:text-amber-400">Countries & Cities</a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/nav-config.js"></script>
+  <script src="../assets/js/core/navbar-component.js"></script>
+  <script src="../assets/js/trip-preview.js"></script>
+</body>
+</html>

@@ -431,9 +431,12 @@
       '<!-- Price & Duration -->' +
       '<div class="flex items-center justify-between text-xs pt-1 border-t border-gray-200/60 dark:border-white/10">' +
         '<span class="font-extrabold text-gray-900 dark:text-white">$' + Number(trip.estimated_cost).toLocaleString() + ' <small class="text-gray-400 font-normal">/ ' + esc(trip.duration) + '</small></span>' +
-        '<button type="button" class="card-fork-btn px-3 py-1.5 rounded-full bg-amber-500/15 hover:bg-amber-500 text-amber-700 dark:text-amber-300 hover:text-black font-extrabold text-[11px] transition flex items-center gap-1 border border-amber-500/30" data-id="' + trip.id + '">' +
-          '<i class="fas fa-code-branch text-[10px]"></i> Fork' +
-        '</button>' +
+        '<div class="flex items-center gap-1.5">' +
+          '<a href="trip-preview.html?id=' + trip.id + '" class="p-1.5 rounded-full bg-gray-100 dark:bg-white/10 hover:bg-amber-500 hover:text-black text-gray-600 dark:text-white/80 transition text-xs border border-gray-300 dark:border-white/10" title="Inspect Full Item Breakdown"><i class="fas fa-eye"></i></a>' +
+          '<button type="button" class="card-fork-btn px-3 py-1.5 rounded-full bg-amber-500/15 hover:bg-amber-500 text-amber-700 dark:text-amber-300 hover:text-black font-extrabold text-[11px] transition flex items-center gap-1 border border-amber-500/30" data-id="' + trip.id + '">' +
+            '<i class="fas fa-code-branch text-[10px]"></i> Fork' +
+          '</button>' +
+        '</div>' +
       '</div>' +
     '</div>';
   }
@@ -512,10 +515,14 @@
 
       '<!-- Actions -->' +
       '<div class="pt-2 flex flex-col gap-2.5">' +
-        '<button type="button" id="spotlight-fork-btn" class="w-full py-3 rounded-full bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs shadow-lg transition flex items-center justify-center gap-2">' +
+        '<button type="button" id="spotlight-fork-btn" class="w-full py-3 rounded-full bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs shadow-lg transition flex items-center justify-center gap-2 cursor-pointer">' +
           '<i class="fas fa-code-branch"></i>' +
           '<span>Fork & Customize Itinerary</span>' +
         '</button>' +
+        '<a href="trip-preview.html?id=' + trip.id + '" class="w-full py-3 rounded-full bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-900 dark:text-white font-bold text-xs transition border border-gray-300 dark:border-white/10 flex items-center justify-center gap-2">' +
+          '<i class="fas fa-eye text-amber-500"></i>' +
+          '<span>Inspect Full Item Breakdown</span>' +
+        '</a>' +
       '</div>';
 
     // Wire Spotlight Fork Button
