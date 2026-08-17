@@ -13,6 +13,7 @@ use App\Http\Controllers\Catalog\AdminHotelController;
 use App\Http\Controllers\Catalog\AdminRestaurantController;
 use App\Http\Controllers\Catalog\AttractionController;
 use App\Http\Controllers\Catalog\CategoryController;
+use App\Http\Controllers\Catalog\CountryController;
 use App\Http\Controllers\Catalog\DestinationController;
 use App\Http\Controllers\Catalog\FlightController;
 use App\Http\Controllers\Catalog\HotelController;
@@ -104,6 +105,11 @@ Route::group([], function () {
     Route::get('/categories', [CategoryController::class, 'index'])->name('categories.index');
     Route::get('/categories/{category}', [CategoryController::class, 'show'])->name('categories.show');
 
+    // Countries & Cities
+    Route::get('/countries', [CountryController::class, 'index']);
+    Route::get('/countries/{id}', [CountryController::class, 'show']);
+    Route::get('/cities', [CountryController::class, 'cities']);
+
     // Destinations
     Route::get('/destinations', [DestinationController::class, 'index']);
     Route::get('/destinations/{id}', [DestinationController::class, 'show']);
@@ -146,6 +152,9 @@ Route::middleware(['auth:api'])->group(function () {
 
 // ---- V1 Compatibility Aliases
 Route::prefix('v1')->group(function () {
+    Route::get('/countries', [CountryController::class, 'index']);
+    Route::get('/countries/{id}', [CountryController::class, 'show']);
+    Route::get('/cities', [CountryController::class, 'cities']);
     Route::get('/destinations', [DestinationController::class, 'index']);
     Route::get('/destinations/{id}', [DestinationController::class, 'show']);
     Route::get('/destinations/{destination}/hotels', [HotelController::class, 'byDestination']);
@@ -257,6 +266,7 @@ Route::middleware(['auth:api', 'verified'])->prefix('trips')->group(function () 
     Route::get('/create', [TripController::class, 'creationData']);
     Route::post('/', [TripController::class, 'store']);
     Route::post('/{trip}/attach/{type}', [TripController::class, 'attach']);
+    Route::put('/{trip}/items/{id}', [TripController::class, 'updateItem']);
     Route::delete('/{trip}/detach/{id}', [TripController::class, 'detach']);
 
     // Fork a trip for authenticated user

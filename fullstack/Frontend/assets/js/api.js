@@ -440,12 +440,12 @@
     if (!container) {
       container = document.createElement("div");
       container.id = "global-interceptor-toast-container";
-      container.className = "fixed top-6 right-6 z-50 flex flex-col gap-3 max-w-sm w-full px-4 pointer-events-none";
+      container.className = "fixed bottom-6 right-6 z-50 flex flex-col gap-3 max-w-sm w-full px-4 pointer-events-none";
       document.body.appendChild(container);
     }
 
     var toast = document.createElement("div");
-    toast.className = "pointer-events-auto p-4 rounded-2xl border text-xs shadow-2xl flex items-center justify-between gap-3 animate-slide-down backdrop-blur-xl transition-all duration-300 " +
+    toast.className = "pointer-events-auto p-4 rounded-2xl border text-xs shadow-2xl flex items-center justify-between gap-3 animate-slide-up backdrop-blur-xl transition-all duration-300 " +
       (isSuccess
         ? "bg-[#0d1f18] border-emerald-500/40 text-emerald-200"
         : "bg-[#280e14] border-rose-500/40 text-rose-200");

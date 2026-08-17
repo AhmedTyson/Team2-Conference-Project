@@ -56,15 +56,17 @@
     hotel: "Hotel", hotels: "Hotel",
     restaurant: "Restaurant", restaurants: "Restaurant",
     attraction: "Attraction", attractions: "Attraction",
-    flight: "Flight", flights: "Flight"
+    flight: "Flight", flights: "Flight",
+    airport: "Airport / Flight", airports: "Airport / Flight"
   };
 
   var ATTACH_TYPE = {
-    hotel: "hotels", hotels: "hotels",
-    restaurant: "restaurants", restaurants: "restaurants",
-    attraction: "attractions", attractions: "attractions",
-    flight: "flights", flights: "flights",
-    destination: "destinations", destinations: "destinations"
+    hotel: "hotel", hotels: "hotel",
+    restaurant: "restaurant", restaurants: "restaurant",
+    attraction: "attraction", attractions: "attraction",
+    flight: "flight", flights: "flight",
+    destination: "destination", destinations: "destination",
+    airport: "flight", airports: "flight"
   };
 
   var params = new URLSearchParams(global.location.search);
@@ -477,6 +479,9 @@
           '<select id="trip-select" class="w-full bg-black/50 border border-white/15 hover:border-amber-400/50 text-white text-xs rounded-xl px-3.5 py-2.5 outline-none transition">' +
             '<option value="">Select an active trip...</option>' +
           '</select>' +
+          '<select id="day-select" class="w-full bg-black/50 border border-white/15 hover:border-amber-400/50 text-white text-xs rounded-xl px-3.5 py-2.5 outline-none transition hidden">' +
+            '<option value="1">Day 1</option>' +
+          '</select>' +
           '<button type="button" id="attach-btn" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-bold text-xs transition shadow-lg shadow-amber-500/20 flex items-center justify-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed" disabled>' +
             '<i class="fas fa-plus-circle"></i> Attach to Trip' +
           '</button>' +
@@ -598,16 +603,38 @@
         var trips = (It.unwrapData && It.unwrapData(res)) || (res.body && res.body.data) || res.body;
         if (Array.isArray(trips) && trips.length) {
           var sel = el("trip-select");
+          var daySel = el("day-select");
           if (!sel) return;
+
+          var tripMap = {};
           trips.forEach(function (t) {
+            tripMap[t.id] = t;
             var opt = document.createElement("option");
             opt.value = t.id;
-            opt.textContent = t.title || "Untitled Trip";
+            opt.textContent = (t.title || "Untitled Trip") + " (" + (t.no_of_days || 1) + " Days)";
             sel.appendChild(opt);
           });
+
           sel.addEventListener("change", function () {
             var btn = el("attach-btn");
-            if (btn) btn.disabled = !sel.value;
+            var selectedTripId = sel.value;
+            if (btn) btn.disabled = !selectedTripId;
+
+            if (daySel) {
+              daySel.innerHTML = "";
+              if (selectedTripId && tripMap[selectedTripId]) {
+                var numDays = Number(tripMap[selectedTripId].no_of_days) || 1;
+                for (var d = 1; d <= numDays; d++) {
+                  var dOpt = document.createElement("option");
+                  dOpt.value = String(d);
+                  dOpt.textContent = "Day " + d;
+                  daySel.appendChild(dOpt);
+                }
+                daySel.classList.remove("hidden");
+              } else {
+                daySel.classList.add("hidden");
+              }
+            }
           });
         }
       }).catch(function () {});
@@ -619,13 +646,16 @@
       if (attachBtn) {
         attachBtn.addEventListener("click", function () {
           var sel = el("trip-select");
+          var daySel = el("day-select");
           if (!sel || !sel.value) return;
+          var selectedDay = daySel ? (Number(daySel.value) || 1) : 1;
           attachBtn.disabled = true;
           attachBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Attaching…';
-          It.apiPost("/trips/" + sel.value + "/attach/" + ATTACH_TYPE[type], { id: id }, { auth: true }).then(function (res) {
+          It.apiPost("/trips/" + sel.value + "/attach/" + ATTACH_TYPE[type], { item_id: id, id: id, day_number: selectedDay }, { auth: true, skipNotification: true }).then(function (res) {
             if (res.ok) {
-              showToast("Attached to your trip!", "success");
+              showToast("Attached to your trip on Day " + selectedDay + "!", "success");
               sel.value = "";
+              if (daySel) daySel.classList.add("hidden");
             } else {
               showToast((res.body && res.body.message) || "Could not attach to trip.", "error");
             }

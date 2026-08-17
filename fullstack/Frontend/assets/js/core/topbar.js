@@ -1,5 +1,7 @@
 /**
- * core/topbar.js — Unified global topbar & theme controls engine.
+ * core/topbar.js — [DEPRECATED LEGACY SYSTEM]
+ * Canonical navigation engine is now components/navbar.html + assets/js/core/navbar-component.js.
+ * This file is retained for legacy backward compatibility and automatically disables itself when navbar-component.js is present.
  * @date    2026-08-14
  * @purpose Universal topbar controls across ALL pages (Public, Customer App, Admin, Agency, Auth):
  *          - Before Login: Command Palette + Theme Toggle + Sign In / Register CTA

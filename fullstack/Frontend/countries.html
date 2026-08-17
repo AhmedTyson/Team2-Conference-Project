@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Countries & Global Cities Directory · Itinera</title>
+  <meta name="description" content="Explore countries, cultural capitals, and global cities curated by Itinera." />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome 6 Free -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Leaflet Map CSS & JS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Custom Luxury Stylesheet -->
+  <link rel="stylesheet" href="assets/css/public.css" />
+  <script>/* FOUC prevention — default dark */
+    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+    if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
+      document.documentElement.classList.add("dark","fouc-ready");
+    else document.documentElement.classList.add("fouc-ready");
+    })();
+  </script>
+</head>
+<body class="bg-[#0a0a0a] text-white bg-sculpture-relief" data-layout="public">
+
+  <div class="app-wrapper min-h-screen flex flex-col justify-between">
+
+    <!-- Top Navigation Header -->
+    <header class="app-nav-header"></header>
+
+    <!-- Main Section -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full flex-grow">
+      
+      <!-- Hero Banner -->
+      <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-amber-500/10 via-white/5 to-black/40 border border-amber-500/30 p-8 sm:p-12 mb-10 shadow-2xl">
+        <div class="absolute -top-24 -right-24 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        
+        <div class="relative z-10 max-w-3xl space-y-4">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-400/10 border border-amber-400/20 text-amber-400 text-xs font-bold uppercase tracking-widest shadow-sm">
+            <i class="fas fa-globe-africa text-amber-400"></i>
+            <span>Global Nations & Cities Index</span>
+          </div>
+          
+          <h1 class="text-3xl sm:text-5xl font-black tracking-tight text-white leading-tight">
+            Explore Nations & <span class="bg-gradient-to-r from-amber-200 via-amber-400 to-amber-500 bg-clip-text text-transparent">Global Cities</span>
+          </h1>
+          <p class="text-white/70 text-sm sm:text-base leading-relaxed">
+            Browse world destinations, cultural capitals, live coordinates, and curated luxury experiences across every continent.
+          </p>
+
+          <!-- Search & Controls Bar -->
+          <div class="pt-4 flex flex-col sm:flex-row items-center gap-4">
+            <div class="relative w-full sm:max-w-md">
+              <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-amber-400 text-sm"></i>
+              <input
+                type="search"
+                id="global-country-search"
+                placeholder="Search country name, ISO code, or city (e.g. Egypt, Paris)..."
+                class="w-full bg-black/60 border border-white/20 rounded-full pl-11 pr-5 py-3 text-xs sm:text-sm text-white placeholder-white/40 outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition"
+              />
+            </div>
+
+            <!-- View Switcher Tabs (Countries vs Cities) -->
+            <div class="flex items-center bg-white/5 p-1 rounded-full border border-white/10 shrink-0">
+              <button type="button" id="tab-view-countries" class="px-4 py-2 rounded-full text-xs font-bold transition bg-amber-400 text-black shadow-md">
+                <i class="fas fa-flag mr-1.5"></i> Countries
+              </button>
+              <button type="button" id="tab-view-cities" class="px-4 py-2 rounded-full text-xs font-semibold transition text-white/70 hover:text-white">
+                <i class="fas fa-city mr-1.5"></i> Global Cities
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Region Filter Pills -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-8 scrollbar-none" id="region-pills">
+        <button type="button" class="region-chip active px-4 py-2 rounded-full bg-amber-400 text-black font-extrabold text-xs transition shrink-0 cursor-pointer" data-region="all">
+          All Regions
+        </button>
+        <button type="button" class="region-chip px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-white/70 hover:text-white border border-white/10 font-bold text-xs transition shrink-0 cursor-pointer" data-region="africa">
+          Middle East & Africa
+        </button>
+        <button type="button" class="region-chip px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-white/70 hover:text-white border border-white/10 font-bold text-xs transition shrink-0 cursor-pointer" data-region="europe">
+          Europe
+        </button>
+        <button type="button" class="region-chip px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-white/70 hover:text-white border border-white/10 font-bold text-xs transition shrink-0 cursor-pointer" data-region="asia">
+          Asia & Pacific
+        </button>
+        <button type="button" class="region-chip px-4 py-2 rounded-full bg-white/5 hover:bg-white/10 text-white/70 hover:text-white border border-white/10 font-bold text-xs transition shrink-0 cursor-pointer" data-region="americas">
+          Americas
+        </button>
+      </div>
+
+      <!-- Loading Spinner -->
+      <div id="countries-loading" class="py-20 text-center space-y-4">
+        <div class="w-12 h-12 rounded-full border-2 border-amber-400 border-t-transparent animate-spin mx-auto"></div>
+        <p class="text-xs text-white/60 font-semibold tracking-wider uppercase">Loading Global Directory…</p>
+      </div>
+
+      <!-- Countries Grid Container -->
+      <div id="countries-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 hidden">
+        <!-- Injected dynamically via JS -->
+      </div>
+
+      <!-- Cities Grid Container -->
+      <div id="cities-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 hidden">
+        <!-- Injected dynamically via JS -->
+      </div>
+
+      <!-- Dynamic Pagination Bar -->
+      <div id="pagination-container" class="mt-12 flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-white/10 hidden">
+        <span class="text-xs text-white/50 font-medium" id="pagination-info">Showing 1 to 6 of 12</span>
+        <div class="flex items-center gap-2" id="pagination-buttons">
+          <!-- Injected dynamically via JS -->
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div id="empty-state" class="py-16 text-center space-y-4 hidden max-w-md mx-auto bg-white/5 rounded-3xl border border-white/10 p-8">
+        <div class="w-16 h-16 rounded-full bg-amber-400/10 text-amber-400 flex items-center justify-center mx-auto text-2xl">
+          <i class="fas fa-globe"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white">No Match Found</h3>
+        <p class="text-xs text-white/60">Try adjusting your search keywords or region filters.</p>
+        <button type="button" id="reset-filters-btn" class="px-5 py-2.5 rounded-full bg-amber-400 text-black font-extrabold text-xs hover:bg-amber-300 transition">
+          Reset Search
+        </button>
+      </div>
+
+    </main>
+
+    <!-- City Details & Map Modal -->
+    <div id="city-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden animate-fade-in">
+      <div class="w-full max-w-2xl rounded-3xl bg-[#12141c] border border-amber-400/30 p-6 sm:p-8 shadow-2xl space-y-6">
+        <div class="flex items-center justify-between border-b border-white/10 pb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-amber-400/10 text-amber-400 border border-amber-400/20 flex items-center justify-center text-lg">
+              <i class="fas fa-city"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-black text-white" id="modal-city-name">City Name</h3>
+              <p class="text-xs text-amber-300/80" id="modal-country-name">Country</p>
+            </div>
+          </div>
+          <button type="button" id="close-city-modal" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 text-white/60 hover:text-white flex items-center justify-center transition">
+            <i class="fas fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- City Map Preview Container -->
+        <div class="h-48 rounded-2xl overflow-hidden border border-white/15 relative">
+          <div id="city-map-container" class="w-full h-full"></div>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-xs">
+          <div class="p-3 bg-white/5 rounded-xl border border-white/5 space-y-0.5">
+            <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider block">Latitude</span>
+            <span class="text-white font-bold block" id="modal-city-lat">—</span>
+          </div>
+          <div class="p-3 bg-white/5 rounded-xl border border-white/5 space-y-0.5">
+            <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider block">Longitude</span>
+            <span class="text-white font-bold block" id="modal-city-lng">—</span>
+          </div>
+          <div class="p-3 bg-white/5 rounded-xl border border-white/5 space-y-0.5 col-span-2 sm:col-span-1">
+            <span class="text-[10px] font-bold text-amber-400 uppercase tracking-wider block">Curated Hub</span>
+            <span class="text-emerald-400 font-bold block">Verified Destination</span>
+          </div>
+        </div>
+
+        <div class="pt-2 flex justify-end gap-3">
+          <a id="modal-explore-link" href="explore.html" class="px-6 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-extrabold text-xs shadow-lg transition">
+            Explore Experiences in City →
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="app-footer border-t border-white/10 bg-black/40 py-8 mt-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between text-xs text-white/40 gap-4">
+        <span>&copy; <span id="footerYear"></span> Itinera · Luxury Travel Experience Engine. All rights reserved.</span>
+        <div class="flex gap-6 font-medium">
+          <a href="about.html" class="hover:text-amber-400 transition">About</a>
+          <a href="contact.html" class="hover:text-amber-400 transition">Contact</a>
+          <a href="help.html" class="hover:text-amber-400 transition">Help Center</a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/session.js"></script>
+  <script src="assets/js/nav-config.js"></script>
+  <script src="assets/js/countries.js"></script>
+  <script src="assets/js/core/navbar-component.js"></script>
+  <script src="assets/js/core/topbar.js"></script>
+  <script src="assets/js/core/theme.js"></script>
+</body>
+</html>

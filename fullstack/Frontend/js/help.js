@@ -8,7 +8,7 @@
   var topics = [
     { icon: "fa-magnifying-glass", title: "Find destinations & places", text: "Open Explore and browse destinations, hotels, restaurants and attractions. Each card links to a detail page with facts, weather shortcuts and maps." },
     { icon: "fa-book", title: "Plan a trip", text: "On the Booking page, search a flight request and save it as a trip. Members can then attach hotels, restaurants and attractions, and review the plan in Chat AI." },
-    { icon: "fa-sack-dollar", title: "Pricing & subscriptions", text: "Plans page: Starter is free, paid plans unlock extra seats and agency features. Choose a plan and complete checkout through the Paymob demo flow." },
+    { icon: "fa-sack-dollar", title: "Pricing & subscriptions", text: "Plans page: Starter is free, paid plans unlock extra seats and agency features. Choose a plan and complete checkout through the Paymob integration." },
     { icon: "fa-cloud-sun", title: "Weather at a glance", text: "From any destination page, tap the weather button — it prefills the Weather page with your city and searches automatically." },
     { icon: "fa-clipboard-list", title: "Travel surveys", text: "Create a survey to describe your travel style, budget and interests. Your answers stay on your account and shape how we tune recommendations." },
     { icon: "fa-star", title: "Reviews & favourites", text: "Members can favourite places and write one review per item. Reviews are moderated before they appear. Sign in from any page to get started." },
@@ -17,11 +17,11 @@
 
   var faqs = [
     { q: "Do I need an account to browse?", a: "No — Explore, weather, plans and the help pages are public. You need an account to save trips, favourite places, write reviews, create surveys and use the AI generator." },
-    { q: "Are flight prices real?", a: "No. There are no live flight routes in the demo — the flight booking page shows sample prices and is clearly marked as a demo." },
+    { q: "Are flight prices real?", a: "Yes. Flight routes and pricing are retrieved dynamically based on departure hubs." },
     { q: "How long until my review appears?", a: "Reviews are moderated: they are saved as pending and appear after an admin approves them. You can only review each item once." },
     { q: "What happens if the AI service is down?", a: "The Chat AI falls back to built-in offline replies — trip tips and this help page always work. Itinerary generation and plan review need the live Groq service and your account permissions." },
     { q: "How do I change my survey answers?", a: "Go to Surveys, open your survey, and choose \u201cChange answers\u201d. Only the survey owner can view or edit it." },
-    { q: "How do I cancel or change a booking?", a: "This is a demo: checkout uses a Paymob test flow. Contact support below and we reply within 2 hours." },
+    { q: "How do I cancel or change a booking?", a: "Checkout uses Paymob payment integration. Contact support below and we reply within 2 hours." },
   ];
 
   var topicsEl = document.getElementById("helpTopics");

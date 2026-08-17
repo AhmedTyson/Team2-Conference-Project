@@ -722,7 +722,12 @@ html.dark .stat-card {
   overflow: hidden;
   background: hsl(var(--brand-ink));
   border-radius: var(--radius);
-  padding-block: var(--space-3);
+  padding-block: 0.25rem !important;
+  height: 28px !important;
+  min-height: 28px !important;
+  max-height: 28px !important;
+  display: flex !important;
+  align-items: center !important;
   mask-image: linear-gradient(90deg, transparent, black 12%, black 88%, transparent);
 }
 

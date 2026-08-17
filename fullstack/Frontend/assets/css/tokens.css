@@ -130,6 +130,16 @@
   --overlay-tab:            hsl(var(--card) / 0.85);
   --overlay-header:         hsl(var(--background) / 0.85);
   --overlay-menu:           hsl(var(--card) / 0.95);
+
+  /* Component Semantic Color Tokens (Light Mode) */
+  --ticker-bg:              hsl(var(--secondary) / 0.8);
+  --ticker-border:          hsl(var(--border) / 0.9);
+  --ticker-text:            hsl(var(--foreground) / 0.8);
+
+  --footer-bg:              hsl(var(--secondary) / 0.7);
+  --footer-border:          hsl(var(--border) / 0.9);
+  --footer-text:            hsl(var(--foreground));
+  --footer-subtext:         hsl(var(--muted-foreground));
   --header-h:               72px;
   --topbar-h:               72px;
   --tabbar-h:               60px;
@@ -243,6 +253,16 @@ html.dark,
   --neutral-fg: hsl(240 5% 74%);
   --neutral-bg: hsl(240 4% 14%);
   --track-fill: hsl(240 4% 20%);
+
+  /* Component Semantic Color Tokens (Dark Mode) */
+  --ticker-bg:              #08080a;
+  --ticker-border:          rgba(255, 255, 255, 0.1);
+  --ticker-text:            rgba(255, 255, 255, 0.7);
+
+  --footer-bg:              #070709;
+  --footer-border:          rgba(255, 255, 255, 0.1);
+  --footer-text:            #ffffff;
+  --footer-subtext:         rgba(255, 255, 255, 0.6);
 
   --scrim:      rgba(0, 0, 0, 0.75);
   --glass:      rgba(255, 255, 255, 0.05);

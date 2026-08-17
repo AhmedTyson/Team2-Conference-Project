@@ -68,10 +68,10 @@
           </button>
         </div>
 
-        <!-- Filter & Search Bar -->
-        <div class="p-4 bg-white/5 border-b border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 flex-shrink-0">
+        <!-- Filter, Category Tabs & Day Selection Bar -->
+        <div class="p-4 bg-white/5 border-b border-white/10 flex flex-col md:flex-row items-center justify-between gap-3 flex-shrink-0">
           <!-- Category Tabs -->
-          <div class="flex items-center gap-2 overflow-x-auto w-full sm:w-auto" id="modal-category-tabs">
+          <div class="flex items-center gap-2 overflow-x-auto w-full md:w-auto" id="modal-category-tabs">
             <button type="button" class="px-3.5 py-1.5 rounded-full bg-amber-400 text-black font-bold text-xs shadow-md transition cursor-pointer" data-cat="hotels">
               <i class="fas fa-hotel text-amber-900 mr-1"></i> Hotels
             </button>
@@ -86,8 +86,22 @@
             </button>
           </div>
 
-          <!-- Search Input -->
-          <div class="relative w-full sm:w-64">
+          <!-- Day Selection Dropdown & Search Input -->
+          <div class="flex items-center gap-3 w-full md:w-auto">
+            <div class="flex items-center gap-2 shrink-0">
+              <label for="modal-day-select" class="text-xs font-bold text-amber-400 shrink-0">
+                <i class="fas fa-calendar-day mr-1"></i> Day:
+              </label>
+              <select id="modal-day-select" class="bg-black/60 border border-white/20 text-white text-xs rounded-xl px-3 py-1.5 outline-none font-bold">
+                <option value="1">Day 1</option>
+                <option value="2">Day 2</option>
+                <option value="3">Day 3</option>
+                <option value="4">Day 4</option>
+                <option value="5">Day 5</option>
+                <option value="6">Day 6</option>
+                <option value="7">Day 7</option>
+              </select>
+            </div>
             <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40 text-xs"></i>
             <input type="text" id="modal-search-input" placeholder="Search catalog..." class="w-full bg-black/40 border border-white/15 text-white text-xs rounded-full pl-9 pr-4 py-2 outline-none focus:border-amber-400 transition" />
           </div>
@@ -114,6 +128,134 @@
           <button type="button" id="confirm-modal-cancel" class="px-6 py-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-semibold transition">Cancel</button>
           <button type="button" id="confirm-modal-ok" class="px-7 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-extrabold text-xs shadow-lg shadow-amber-500/20 transition">Confirm Action</button>
         </div>
+      </div>
+    </div>
+
+    <!-- Modal 3: Edit Trip Details Modal -->
+    <div id="edit-trip-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden animate-fade-in">
+      <div class="w-full max-w-xl rounded-3xl bg-[#12141c] border border-amber-400/30 p-6 sm:p-8 shadow-2xl space-y-6">
+        <div class="flex items-center justify-between border-b border-white/10 pb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-amber-400/10 text-amber-400 border border-amber-400/20 flex items-center justify-center text-lg">
+              <i class="fas fa-pen-to-square"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-extrabold text-white">Edit Trip Details</h3>
+              <p class="text-xs text-white/50">Modify itinerary title, style, duration, and budget</p>
+            </div>
+          </div>
+          <button type="button" id="close-edit-trip-modal" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 text-white/60 hover:text-white flex items-center justify-center transition">
+            <i class="fas fa-xmark"></i>
+          </button>
+        </div>
+
+        <form id="edit-trip-form" class="space-y-4 text-xs">
+          <div>
+            <label class="block text-white/70 font-semibold mb-1">Trip Title</label>
+            <input type="text" id="edit-trip-title" required class="w-full bg-black/50 border border-white/15 rounded-xl px-4 py-2.5 text-white outline-none focus:border-amber-400 transition" />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-white/70 font-semibold mb-1">Travel Style</label>
+              <select id="edit-trip-style" class="w-full bg-black/50 border border-white/15 rounded-xl px-3.5 py-2.5 text-white outline-none focus:border-amber-400 transition">
+                <option value="cultural">Cultural</option>
+                <option value="luxury">Luxury</option>
+                <option value="adventure">Adventure</option>
+                <option value="family">Family</option>
+                <option value="wellness">Wellness</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-white/70 font-semibold mb-1">Number of Travelers</label>
+              <input type="number" id="edit-trip-travelers" min="1" required class="w-full bg-black/50 border border-white/15 rounded-xl px-4 py-2.5 text-white outline-none focus:border-amber-400 transition" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-white/70 font-semibold mb-1">Estimated Budget ($)</label>
+              <input type="number" id="edit-trip-budget" min="0" step="50" required class="w-full bg-black/50 border border-white/15 rounded-xl px-4 py-2.5 text-white outline-none focus:border-amber-400 transition" />
+            </div>
+            <div>
+              <label class="block text-white/70 font-semibold mb-1">Number of Days</label>
+              <input type="number" id="edit-trip-days" min="1" max="30" required class="w-full bg-black/50 border border-white/15 rounded-xl px-4 py-2.5 text-white outline-none focus:border-amber-400 transition" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-white/70 font-semibold mb-1">Start Date</label>
+              <input type="date" id="edit-trip-start" class="w-full bg-black/50 border border-white/15 rounded-xl px-4 py-2.5 text-white outline-none focus:border-amber-400 transition" />
+            </div>
+            <div>
+              <label class="block text-white/70 font-semibold mb-1">End Date</label>
+              <input type="date" id="edit-trip-end" class="w-full bg-black/50 border border-white/15 rounded-xl px-4 py-2.5 text-white outline-none focus:border-amber-400 transition" />
+            </div>
+          </div>
+
+          <div class="pt-3 flex justify-end gap-3">
+            <button type="button" id="cancel-edit-trip" class="px-5 py-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold transition">Cancel</button>
+            <button type="submit" id="save-edit-trip-btn" class="px-6 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-extrabold shadow-lg shadow-amber-500/20 transition">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal 4: Edit Itinerary Item Modal -->
+    <div id="edit-item-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden animate-fade-in">
+      <div class="w-full max-w-lg rounded-3xl bg-[#12141c] border border-amber-400/30 p-6 sm:p-8 shadow-2xl space-y-6">
+        <div class="flex items-center justify-between border-b border-white/10 pb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-amber-400/10 text-amber-400 border border-amber-400/20 flex items-center justify-center text-lg">
+              <i class="fas fa-sliders"></i>
+            </div>
+            <div>
+              <h3 class="text-lg font-extrabold text-white">Edit Itinerary Item</h3>
+              <p class="text-xs text-white/50">Change day assignment, title, time slot, or notes</p>
+            </div>
+          </div>
+          <button type="button" id="close-edit-item-modal" class="w-8 h-8 rounded-full bg-white/5 hover:bg-white/15 text-white/60 hover:text-white flex items-center justify-center transition">
+            <i class="fas fa-xmark"></i>
+          </button>
+        </div>
+
+        <form id="edit-item-form" class="space-y-4 text-xs">
+          <input type="hidden" id="edit-item-id" />
+
+          <div>
+            <label class="block text-white/70 font-semibold mb-1">Schedule for Day</label>
+            <select id="edit-item-day" class="w-full bg-black/50 border border-white/15 rounded-xl px-4 py-2.5 text-white outline-none focus:border-amber-400 transition font-bold">
+              <!-- Options populated dynamically -->
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-white/70 font-semibold mb-1">Item Title / Custom Name</label>
+            <input type="text" id="edit-item-title" required class="w-full bg-black/50 border border-white/15 rounded-xl px-4 py-2.5 text-white outline-none focus:border-amber-400 transition" />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-white/70 font-semibold mb-1">Time Slot (e.g. 10:00 AM)</label>
+              <input type="text" id="edit-item-time" placeholder="10:00 AM" class="w-full bg-black/50 border border-white/15 rounded-xl px-4 py-2.5 text-white outline-none focus:border-amber-400 transition" />
+            </div>
+            <div>
+              <label class="block text-white/70 font-semibold mb-1">Est. Cost ($)</label>
+              <input type="number" id="edit-item-cost" min="0" step="5" class="w-full bg-black/50 border border-white/15 rounded-xl px-4 py-2.5 text-white outline-none focus:border-amber-400 transition" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-white/70 font-semibold mb-1">Notes / Instructions</label>
+            <textarea id="edit-item-notes" rows="2" placeholder="Add custom notes..." class="w-full bg-black/50 border border-white/15 rounded-xl p-3 text-white outline-none focus:border-amber-400 transition"></textarea>
+          </div>
+
+          <div class="pt-3 flex justify-end gap-3">
+            <button type="button" id="cancel-edit-item" class="px-5 py-2.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-semibold transition">Cancel</button>
+            <button type="submit" id="save-edit-item-btn" class="px-6 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-extrabold shadow-lg shadow-amber-500/20 transition">Save Item</button>
+          </div>
+        </form>
       </div>
     </div>
 

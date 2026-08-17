@@ -19,7 +19,7 @@ body {
 
 /* ── Global Utility / Layout ── */
 #global-navbar {
-  position: absolute !important;
+  position: fixed !important;
   top: 0 !important;
   left: 0 !important;
   right: 0 !important;
@@ -40,14 +40,28 @@ body {
   color: hsl(var(--foreground));
 }
 
-/* Guarantee clean top spacing for floating glass navbar across all pages */
+/* Guarantee clean top spacing for floating glass navbar across ALL pages (excl. Hero) */
+.app-wrapper > main,
+.app-wrapper > section:not(.hero-wrapper),
+.app-wrapper > div:not(.hero-wrapper):not(#global-navbar):not(.app-nav-header):first-of-type,
 .page-content-wrapper,
 .app__main,
 .planner-container,
 .chat-container,
 .dashboard-shell,
-main#payments-page-root {
-  padding-top: 5.5rem !important;
+#favourites-page,
+#trips-page,
+#reviews-page,
+#notifications-page,
+#payments-page-root,
+main {
+  padding-top: 6rem !important;
+}
+
+/* Exclude full-bleed hero wrapper from forced main padding */
+.hero-wrapper main,
+.hero-wrapper .content-layer {
+  padding-top: 7rem !important;
 }
 
 /* ── Hero wrapper ── */
@@ -59,7 +73,7 @@ main#payments-page-root {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 2.5rem 2.5rem 4rem;
+  padding: 0 1.5rem 1rem;
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
@@ -71,7 +85,7 @@ main#payments-page-root {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(10, 10, 10, 0.75) 0%, transparent 50%, rgba(10, 10, 10, 0.85) 100%);
+  background: linear-gradient(to bottom, rgba(5, 5, 7, 0.50) 0%, rgba(5, 5, 7, 0.20) 45%, rgba(5, 5, 7, 0.45) 100%);
   z-index: 1;
   pointer-events: none;
 }
@@ -524,36 +538,60 @@ html.dark .carousel-card:hover {
   }
 }
 
-/* ── Ticker ── */
+/* ── Sleek Ticker Section (Wired to CSS Color Variables) ── */
+.ticker-section {
+  width: 100%;
+  height: fit-content;
+  padding-top: 0.375rem;
+  padding-bottom: 0.375rem;
+  display: flex;
+  align-items: center;
+  background-color: var(--ticker-bg);
+  border-top: 1px solid var(--ticker-border);
+  border-bottom: 1px solid var(--ticker-border);
+  backdrop-filter: blur(16px);
+  transition: background-color var(--dur-base) ease, border-color var(--dur-base) ease;
+}
+
 .ticker {
   overflow: hidden;
   white-space: nowrap;
-  background: hsl(var(--secondary));
-  border-top: 1px solid hsl(var(--border));
-  border-bottom: 1px solid hsl(var(--border));
-  padding: 0.75rem 0;
+  background: transparent;
+  padding: 0 !important;
+  height: fit-content !important;
+  min-height: 0 !important;
+  max-height: fit-content !important;
+  display: flex !important;
+  align-items: center !important;
   user-select: none;
 }
 
-html.dark .ticker {
-  background: rgba(255, 255, 255, 0.02);
-  border-color: rgba(255, 255, 255, 0.05);
-}
-
 .ticker__track {
-  display: inline-block;
+  display: inline-flex !important;
+  align-items: center !important;
+  height: fit-content !important;
   animation: marquee 35s linear infinite;
 }
 
 .ticker__content {
-  font-size: 0.85rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: hsl(var(--muted-foreground));
+  font-size: 0.7rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.15em !important;
+  text-transform: uppercase !important;
+  line-height: 1 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  color: var(--ticker-text) !important;
 }
 
-html.dark .ticker__content {
-  color: rgba(255, 255, 255, 0.4);
+.ticker__word {
+  font-size: 0.7rem !important;
+  line-height: 1 !important;
+}
+
+.ticker__star {
+  margin: 0 0.4rem;
+  opacity: 0.6;
 }
 
 @keyframes marquee {
@@ -1115,20 +1153,35 @@ html:not(.dark) body.text-white {
   color: hsl(var(--foreground)) !important;
 }
 
+/* Text adaptations in light mode (Preserve white text & gold labels inside photo hero sections) */
+.hero-wrapper .hero-headline,
+.hero-wrapper .content-layer,
+.hero-wrapper .content-layer p,
+.hero-wrapper .content-layer span:not([class*="text-amber"]):not([class*="text-emerald"]):not([class*="text-blue"]) {
+  color: #ffffff !important;
+}
+
+.hero-wrapper .text-amber-300,
+.hero-wrapper .text-amber-400 {
+  color: #fcd34d !important;
+}
+
+.hero-wrapper .hero-headline {
+  text-shadow: 0 4px 16px rgba(0, 0, 0, 0.85);
+}
+
 html:not(.dark) .giant-text h1 {
   color: rgba(0, 0, 0, 0.04) !important;
   text-shadow: none !important;
 }
 
-/* Text adaptations in light mode */
-html:not(.dark) .text-white:not(.btn-primary):not(.btn-primary *):not(.badge-dark):not(.hero-wrapper[style*="url"] .hero-title-isolated) {
-  color: hsl(var(--foreground)) !important;
+/* Text adaptations in light mode (Exempt photo hero wrappers and dark glass containers) */
+html:not(.dark) .hero-wrapper * {
+  /* Preserve white typography over photo background */
 }
 
-html:not(.dark) .text-white\/90,
-html:not(.dark) .text-white\/80,
-html:not(.dark) .text-white\/70 {
-  color: hsl(var(--foreground) / 0.85) !important;
+html:not(.dark) :not(.hero-wrapper):not([class*="bg-black"]):not([class*="bg-slate-9"]):not(.app-footer) > .text-white:not(.btn-primary):not(.btn-primary *):not(.badge-dark) {
+  color: hsl(var(--foreground));
 }
 
 html:not(.dark) .text-white\/60,

@@ -55,6 +55,7 @@
         icon: "explore",
         dropdown: [
           { to: "/explore.html", label: "Explore Catalog", icon: "explore" },
+          { to: "/countries.html", label: "Countries & Cities", icon: "countries" },
           { to: "/destinations.html", label: "Destinations", icon: "destinations" },
           { to: "/hotels.html", label: "Hotels", icon: "hotels" },
           { to: "/attractions.html", label: "Attractions", icon: "attractions" },
@@ -82,6 +83,7 @@
         icon: "explore",
         dropdown: [
           { to: "/explore.html", label: "Explore Catalog", icon: "explore" },
+          { to: "/countries.html", label: "Countries & Cities", icon: "countries" },
           { to: "/destinations.html", label: "Destinations", icon: "destinations" },
           { to: "/hotels.html", label: "Hotels", icon: "hotels" },
           { to: "/attractions.html", label: "Attractions", icon: "attractions" },
