@@ -10,19 +10,28 @@
   const It = global.It = global.Itinari;
 
   function resolveApiBase() {
+    // Highest priority: explicit override injected before this script
     if (global.ITINARI_API_BASE) return global.ITINARI_API_BASE;
     try {
-      if (typeof location !== "undefined" && location.origin && !location.origin.includes("null") && !location.origin.startsWith("file:")) {
+      if (typeof location !== "undefined" && location.origin &&
+          !location.origin.includes("null") && !location.origin.startsWith("file:")) {
+
         var hostname = location.hostname || "";
-        var port = location.port || "";
-        // Only use same origin if served on port 8000 (Laravel API port)
+        var port     = location.port     || "";
+
+        // Dev: served directly by Laravel on :8000 → same origin /api
         if (port === "8000") {
           return location.origin.replace(/\/$/, "") + "/api";
         }
-        // Match client hostname (localhost vs 127.0.0.1) on API target port 8000
+
+        // Dev: Frontend served on :8080 or :5173, API on :8000 same host
         if (hostname === "localhost" || hostname === "127.0.0.1") {
           return location.protocol + "//" + hostname + ":8000/api";
         }
+
+        // Production / Railway / any real domain:
+        // Frontend is copied into Laravel's public/ by start.sh,
+        // so both live at the same origin → use relative /api
         return location.origin.replace(/\/$/, "") + "/api";
       }
     } catch (e) {}

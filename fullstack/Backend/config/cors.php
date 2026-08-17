@@ -7,27 +7,39 @@ return [
     | Cross-Origin Resource Sharing (CORS) Configuration
     |--------------------------------------------------------------------------
     |
-    | Here you may configure your settings for cross-origin resource sharing
-    | or "CORS". This determines what cross-origin operations may execute
-    | in web browsers. You are free to adjust these settings as needed.
+    | Configure CORS for the API. In production, restrict to your domain(s)
+    | via the CORS_ALLOWED_ORIGINS environment variable (comma-separated).
     |
-    | To learn more: https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS
+    | Example (Railway env var):
+    |   CORS_ALLOWED_ORIGINS=https://yourapp.up.railway.app,https://yourapp.com
     |
     */
 
-    'paths' => ['*'],
+    'paths' => ['api/*', 'sanctum/csrf-cookie', 'up'],
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    'allowed_origins' => (function () {
+        $envOrigins = env('CORS_ALLOWED_ORIGINS', '');
+        if ($envOrigins && $envOrigins !== '*') {
+            // Parse comma-separated list from env
+            return array_filter(array_map('trim', explode(',', $envOrigins)));
+        }
+        // Allow all in local/testing; production must set CORS_ALLOWED_ORIGINS
+        if (app()->environment('local', 'testing')) {
+            return ['*'];
+        }
+        // Production fallback: same-origin only (served under one domain via start.sh)
+        return [env('APP_URL', 'https://yourapp.up.railway.app')];
+    })(),
 
     'allowed_origins_patterns' => [],
 
     'allowed_headers' => ['*'],
 
-    'exposed_headers' => ['*'],
+    'exposed_headers' => [],
 
-    'max_age' => 0,
+    'max_age' => 3600,
 
     'supports_credentials' => false,
 
