@@ -211,7 +211,177 @@
     );
 
     const card = document.getElementById("buildCard");
-    const errEl = document.getElementById("buildErr");
+    var activeFilter = 'all';
+    var searchQuery = '';
+
+    function renderConversations(filter) {
+      if (filter !== undefined) activeFilter = filter;
+      if (!elements.convList) return;
+
+      var filtered = conversations;
+
+      // Apply Filter Pills
+      if (activeFilter && activeFilter !== 'all') {
+        filtered = conversations.filter(function (c) {
+          if (activeFilter === 'agency_inquiry') {
+            return c.type === 'agency_inquiry' || (c.title && (c.title.includes('خدمة العملاء') || c.title.includes('Agency')));
+          }
+          return c.type === activeFilter;
+        });
+      }
+
+      // Apply Text Search Query
+      if (searchQuery) {
+        filtered = filtered.filter(function (c) {
+          var title = (c.title || '').toLowerCase();
+          var userName = (c.user && c.user.name ? c.user.name : '').toLowerCase();
+          var msg = (c.latest_message && c.latest_message.body ? c.latest_message.body : '').toLowerCase();
+          return title.indexOf(searchQuery) !== -1 || userName.indexOf(searchQuery) !== -1 || msg.indexOf(searchQuery) !== -1;
+        });
+      }
+
+      if (filtered.length === 0) {
+        elements.convList.innerHTML = '<div class="text-center py-8 text-neutral-500 dark:text-white/40 text-xs">No conversations found.</div>';
+        return;
+      }
+
+      var html = '';
+      filtered.forEach(function (conv) {
+        var isActive = conv.id === currentConversationId;
+        var isEgyptianSupport = conv.type === 'agency_inquiry' || (conv.title && conv.title.includes('خدمة العملاء'));
+        var avatarClass = conv.type === 'ai_concierge' ? 'ai' : (isEgyptianSupport ? 'agency' : '');
+        var icon = conv.type === 'ai_concierge' ? '<i class="fas fa-robot"></i>' : (isEgyptianSupport ? '<span class="text-xs">🇪🇬</span>' : '<i class="fas fa-headset"></i>');
+        var displayTitle = isAgencyUser() && conv.user && conv.user.name ? conv.user.name : (conv.title || 'Itinera Support');
+        var excerpt = conv.latest_message ? conv.latest_message.body : 'No messages yet';
+        if (excerpt.length > 45) excerpt = excerpt.substring(0, 42) + '...';
+
+        html += '<div class="conversation-item ' + (isActive ? 'active' : '') + '" data-id="' + conv.id + '">';
+        html += '  <div class="chat-avatar ' + avatarClass + '">' + icon + '</div>';
+        html += '  <div class="flex-1 min-w-0">';
+        html += '    <div class="flex items-center justify-between gap-1">';
+        html += '      <span class="font-semibold text-sm truncate text-neutral-900 dark:text-white">' + escapeHtml(displayTitle) + '</span>';
+        if (conv.unread_count > 0) {
+          html += '      <span class="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500 text-black">' + conv.unread_count + '</span>';
+        }
+        html += '    </div>';
+        html += '    <p class="text-xs text-neutral-500 dark:text-white/50 truncate mt-0.5">' + escapeHtml(excerpt) + '</p>';
+        html += '  </div>';
+        html += '</div>';
+      });
+
+      elements.convList.innerHTML = html;
+
+      // Attach click handlers
+      elements.convList.querySelectorAll('.conversation-item').forEach(function (item) {
+        item.addEventListener('click', function () {
+          var id = parseInt(this.getAttribute('data-id'), 10);
+          selectConversation(id);
+        });
+      });
+    }
+
+    async function selectConversation(id) {
+      currentConversationId = id;
+      renderConversations();
+      subscribeToConversationChannel(id);
+
+      var conv = conversations.find(function (c) { return c.id === id; });
+      if (conv) {
+        if (elements.emptyState) elements.emptyState.classList.add('hidden');
+        if (elements.chatActiveStage) elements.chatActiveStage.classList.remove('hidden');
+        
+        var isEgyptian = conv.type === 'agency_inquiry' || (conv.title && conv.title.includes('خدمة العملاء'));
+        
+        if (elements.activeTitle) {
+          elements.activeTitle.textContent = isAgencyUser() && conv.user && conv.user.name
+            ? conv.user.name
+            : (conv.title || (isEgyptian ? 'خدمة العملاء المصرية' : 'Itinera AI Concierge'));
+        }
+
+        if (elements.activeSubtitle) {
+          var sub = conv.type === 'ai_concierge'
+            ? 'AI Travel Assistant · Always Active ⚡'
+            : (isAgencyUser()
+              ? 'Chatting with ' + ((conv.user && conv.user.name) || 'customer')
+              : (isEgyptian ? '🇪🇬 خدمة العملاء المصرية · ممثل خدمة العملاء متصل الآن' : 'Dedicated Support Agent'));
+          if (conv.trip) sub += ' · Trip: ' + conv.trip.title;
+          elements.activeSubtitle.textContent = sub;
+        }
+
+        // Update Mode button active styles
+        if (conv.type === 'ai_concierge') {
+          if (elements.switchAiModeBtn) elements.switchAiModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 bg-amber-500 text-black shadow';
+          if (elements.switchAgencyModeBtn) elements.switchAgencyModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold text-neutral-600 dark:text-white/70 hover:text-neutral-900 dark:hover:text-neutral-900 dark:text-white transition flex items-center gap-1.5';
+          renderQuickPrompts('ai_concierge');
+        } else {
+          if (elements.switchAgencyModeBtn) elements.switchAgencyModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 bg-emerald-500 text-black shadow';
+          if (elements.switchAiModeBtn) elements.switchAiModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold text-neutral-600 dark:text-white/70 hover:text-neutral-900 dark:hover:text-neutral-900 dark:text-white transition flex items-center gap-1.5';
+          renderQuickPrompts('agency_inquiry');
+        }
+      }
+
+      await loadMessages(id);
+      markAsRead(id);
+    }
+
+    async function loadMessages(id) {
+      if (!elements.messagesStream) return;
+      try {
+        var res = await global.It.apiGet('/conversations/' + id + '/messages', { auth: true });
+        var data = res.body && res.body.data ? res.body.data : (res.data || []);
+        messages = Array.isArray(data) ? data : [];
+        renderMessages();
+      } catch (err) {
+        console.error('Failed to load messages:', err);
+      }
+    }
+
+    function renderMessages() {
+      if (!elements.messagesStream) return;
+
+      if (messages.length === 0) {
+        elements.messagesStream.innerHTML = isAgencyUser()
+          ? '<div class="text-center py-12 text-neutral-500 dark:text-white/40 text-sm"><i class="fas fa-paper-plane text-emerald-400 mb-2 text-xl block"></i>No messages yet — say hello to your customer to open the conversation.</div>'
+          : '<div class="text-center py-12 text-neutral-500 dark:text-white/40 text-sm"><i class="fas fa-sparkles text-amber-400 mb-2 text-xl block"></i>Start the conversation with your AI Concierge or خدمة العملاء المصرية!</div>';
+        return;
+      }
+
+      var html = '';
+      messages.forEach(function (msg) {
+        var isUser = msg.sender_type === 'user' || msg.sender_type === 'customer';
+        var isAgency = msg.sender_type === 'agency' || msg.sender_type === 'admin' || msg.sender_type === 'agent';
+        var isAi = msg.sender_type === 'ai' || msg.sender_type === 'bot';
+
+        var rowClass = isAi ? 'ai' : (isAgency ? 'agency' : 'customer');
+        var avatarClass = isAi ? 'ai' : (isAgency ? 'agency' : '');
+        var icon = isAi ? '<i class="fas fa-robot"></i>' : (isAgency ? '<span class="text-xs">🇪🇬</span>' : '<i class="fas fa-user"></i>');
+        var time = msg.created_at ? new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+
+        var roleBadge = isAi
+          ? '<span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-purple-500/20 text-purple-300 border border-purple-500/30"><i class="fas fa-robot mr-1"></i>AI Concierge</span>'
+          : (isAgency
+            ? '<span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"><i class="fas fa-briefcase mr-1"></i>Agency Partner</span>'
+            : '<span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-amber-500/20 text-amber-300 border border-amber-500/30"><i class="fas fa-user mr-1"></i>Customer Traveler</span>');
+
+        var senderLabel = isAgencyUser() && isAgency
+          ? agencyName()
+          : (msg.sender_name || (isAi ? 'Itinera AI' : (isAgency ? 'خدمة العملاء المصرية' : 'Customer Traveler')));
+
+        html += '<div class="message-row ' + rowClass + '">';
+        if (rowClass !== 'customer') {
+          html += '  <div class="chat-avatar ' + avatarClass + '">' + icon + '</div>';
+        }
+        html += '  <div class="message-bubble">';
+        html += '    <div class="flex items-center gap-2 mb-1.5">' + roleBadge + '</div>';
+        html += '    <div class="message-text font-medium leading-relaxed">' + formatMessageBody(msg.body) + '</div>';
+        html += '    <div class="message-meta opacity-75 mt-1.5"><span class="font-bold">' + escapeHtml(senderLabel) + '</span><span>•</span><span>' + time + '</span></div>';
+        html += '  </div>';
+        html += '</div>';
+      });
+
+      elements.messagesStream.innerHTML = html;
+      elements.messagesStream.scrollTop = elements.messagesStream.scrollHeight;
+    }
     const goBtn = document.getElementById("buildGo");
     const selected = new Set();
     card.querySelectorAll("[data-interest]").forEach(function (btn) {

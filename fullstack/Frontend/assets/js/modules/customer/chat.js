@@ -393,16 +393,37 @@
     if (startBtn) startBtn.addEventListener('click', startAgencyChat);
   }
 
+  var activeFilter = 'all';
+  var searchQuery = '';
+
   function renderConversations(filter) {
+    if (filter !== undefined) activeFilter = filter;
     if (!elements.convList) return;
 
     var filtered = conversations;
-    if (filter && filter !== 'all') {
-      filtered = conversations.filter(function (c) { return c.type === filter; });
+
+    // Apply Filter Pills
+    if (activeFilter && activeFilter !== 'all') {
+      filtered = conversations.filter(function (c) {
+        if (activeFilter === 'agency_inquiry') {
+          return c.type === 'agency_inquiry' || (c.title && (c.title.includes('خدمة العملاء') || c.title.includes('Agency')));
+        }
+        return c.type === activeFilter;
+      });
+    }
+
+    // Apply Text Search Query
+    if (searchQuery) {
+      filtered = filtered.filter(function (c) {
+        var title = (c.title || '').toLowerCase();
+        var userName = (c.user && c.user.name ? c.user.name : '').toLowerCase();
+        var msg = (c.latest_message && c.latest_message.body ? c.latest_message.body : '').toLowerCase();
+        return title.indexOf(searchQuery) !== -1 || userName.indexOf(searchQuery) !== -1 || msg.indexOf(searchQuery) !== -1;
+      });
     }
 
     if (filtered.length === 0) {
-      elements.convList.innerHTML = '<div class="text-center py-8 text-neutral-500 dark:text-white/40 text-xs">No conversations found. Start a new chat!</div>';
+      elements.convList.innerHTML = '<div class="text-center py-8 text-neutral-500 dark:text-white/40 text-xs">No conversations found.</div>';
       return;
     }
 
@@ -509,23 +530,33 @@
 
     var html = '';
     messages.forEach(function (msg) {
-      var isUser = msg.sender_type === 'user';
-      var isAgency = msg.sender_type === 'agency' || msg.sender_type === 'admin';
-      var myMessage = isUser || (isAgencyUser() && isAgency);
-      var avatarClass = msg.sender_type === 'ai' ? 'ai' : (isAgency ? 'agency' : '');
-      var icon = msg.sender_type === 'ai' ? '<i class="fas fa-robot"></i>' : (isAgency ? '<span class="text-xs">🇪🇬</span>' : '<i class="fas fa-user"></i>');
+      var isUser = msg.sender_type === 'user' || msg.sender_type === 'customer';
+      var isAgency = msg.sender_type === 'agency' || msg.sender_type === 'admin' || msg.sender_type === 'agent';
+      var isAi = msg.sender_type === 'ai' || msg.sender_type === 'bot';
+
+      var rowClass = isAi ? 'ai' : (isAgency ? 'agency' : 'customer');
+      var avatarClass = isAi ? 'ai' : (isAgency ? 'agency' : '');
+      var icon = isAi ? '<i class="fas fa-robot"></i>' : (isAgency ? '<span class="text-xs">🇪🇬</span>' : '<i class="fas fa-user"></i>');
       var time = msg.created_at ? new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
+
+      var roleBadge = isAi
+        ? '<span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-purple-500/20 text-purple-300 border border-purple-500/30"><i class="fas fa-robot mr-1"></i>AI Concierge</span>'
+        : (isAgency
+          ? '<span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"><i class="fas fa-briefcase mr-1"></i>Agency Partner</span>'
+          : '<span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-amber-500/20 text-amber-300 border border-amber-500/30"><i class="fas fa-user mr-1"></i>Customer Traveler</span>');
+
       var senderLabel = isAgencyUser() && isAgency
         ? agencyName()
-        : (msg.sender_name || (msg.sender_type === 'ai' ? 'Itinera AI' : (isAgency ? 'خدمة العملاء المصرية' : 'You')));
+        : (msg.sender_name || (isAi ? 'Itinera AI' : (isAgency ? 'خدمة العملاء المصرية' : 'Customer Traveler')));
 
-      html += '<div class="message-row ' + (myMessage ? 'user' : (msg.sender_type === 'ai' ? 'ai' : 'agency')) + '">';
-      if (!myMessage) {
+      html += '<div class="message-row ' + rowClass + '">';
+      if (rowClass !== 'customer') {
         html += '  <div class="chat-avatar ' + avatarClass + '">' + icon + '</div>';
       }
       html += '  <div class="message-bubble">';
-      html += '    <div class="message-text">' + formatMessageBody(msg.body) + '</div>';
-      html += '    <div class="message-meta"><span>' + escapeHtml(senderLabel) + '</span><span>•</span><span>' + time + '</span></div>';
+      html += '    <div class="flex items-center gap-2 mb-1.5">' + roleBadge + '</div>';
+      html += '    <div class="message-text font-medium leading-relaxed">' + formatMessageBody(msg.body) + '</div>';
+      html += '    <div class="message-meta opacity-75 mt-1.5"><span class="font-bold">' + escapeHtml(senderLabel) + '</span><span>•</span><span>' + time + '</span></div>';
       html += '  </div>';
       html += '</div>';
     });
