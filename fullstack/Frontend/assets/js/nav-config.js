@@ -157,9 +157,9 @@
     {
       section: "Overview",
       items: [
-        { href: "dashboard.html", label: "Dashboard", icon: "dashboard" },
+        { href: "index.html", label: "Dashboard", icon: "dashboard" },
         { href: "analytics.html", label: "Analytics", icon: "analytics" },
-        { href: "activity.html", label: "Audit Logs", icon: "activity" },
+        { href: "reports.html", label: "Financial Reports", icon: "dashboard" },
       ],
     },
     {
@@ -171,6 +171,7 @@
         { href: "restaurants.html", label: "Dining & Restaurants", icon: "restaurants" },
         { href: "flights.html", label: "Flights Catalog", icon: "flights" },
         { href: "categories.html", label: "Categories", icon: "categories" },
+        { href: "countries.html", label: "Countries & Cities", icon: "countries" },
       ],
     },
     {
@@ -201,6 +202,8 @@
       items: [
         { href: "index.html", label: "Dashboard", icon: "dashboard" },
         { href: "assignments.html", label: "My Assignments", icon: "assignments" },
+        { href: "inquiries.html", label: "Customer Inquiries", icon: "contacts" },
+        { href: "proposals.html", label: "Trip Proposals", icon: "trips" },
       ],
     },
     {
