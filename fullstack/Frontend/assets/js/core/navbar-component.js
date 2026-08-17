@@ -111,9 +111,9 @@
     var hasHero = !!doc.querySelector(".hero-wrapper");
     var isAuth = !!doc.querySelector(".auth-main-wrapper") || (doc.body && doc.body.getAttribute("data-layout") === "auth");
     if (!hasHero && !isAuth) {
-      var appWrap = doc.querySelector(".dashboard-shell") || doc.querySelector(".agency-shell") || doc.querySelector(".admin-shell") || doc.querySelector(".app-wrapper") || doc.querySelector("main");
+      var appWrap = doc.querySelector(".page-scroll") || doc.querySelector(".dashboard-shell") || doc.querySelector(".agency-shell") || doc.querySelector(".admin-shell") || doc.querySelector(".app-wrapper") || doc.querySelector("main");
       if (appWrap) {
-        appWrap.style.paddingTop = "5.5rem";
+        appWrap.style.paddingTop = "6.5rem";
       }
     }
 
