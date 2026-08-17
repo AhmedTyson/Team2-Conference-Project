@@ -599,8 +599,8 @@
 
   function renderError(title, desc) {
     var shell = el("preview-shell");
-    var stickyBar = el("sticky-fork-bar");
-    if (stickyBar) stickyBar.classList.add("hidden");
+    var stickyBar = el("sticky-fork-bar") || el("community-fork-dock");
+    if (stickyBar) stickyBar.style.display = "none";
     if (!shell) return;
     shell.innerHTML = '<div class="py-16 text-center max-w-lg mx-auto bg-white dark:bg-white/5 rounded-3xl border border-gray-200 dark:border-white/10 p-8 space-y-5 shadow-2xl">' +
       '<div class="w-16 h-16 rounded-full bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto text-2xl"><i class="fas fa-compass"></i></div>' +

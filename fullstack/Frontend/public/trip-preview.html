@@ -59,6 +59,20 @@
       border-radius: 1.25rem;
       z-index: 10;
     }
+
+    #sticky-fork-bar {
+      position: fixed !important;
+      bottom: 24px !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      height: auto !important;
+      max-height: 72px !important;
+      min-height: 60px !important;
+      top: auto !important;
+      z-index: 9999 !important;
+      box-sizing: border-box !important;
+      margin: 0 !important;
+    }
   </style>
 
   <script>
@@ -103,13 +117,18 @@
 
     </main>
 
-    <!-- Sticky Bottom CTA Bar -->
-    <div id="sticky-fork-bar" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 max-w-lg w-[90%] p-4 rounded-full bg-[#121212] border border-amber-500/40 shadow-2-[#121212] shadow-2xl flex items-center justify-between gap-4 text-white backdrop-blur-xl">
-      <div class="pl-3 overflow-hidden">
-        <span class="text-[10px] font-black text-amber-400 uppercase tracking-widest block">Ready to Customize?</span>
-        <strong class="text-xs sm:text-sm font-extrabold text-white truncate block" id="sticky-trip-title">Fork this itinerary into your planner</strong>
+    <!-- Fresh Guaranteed Inline Floating Capsule -->
+    <div id="community-fork-dock" style="position: fixed !important; bottom: 24px !important; left: 50% !important; transform: translateX(-50%) !important; z-index: 99999 !important; width: 90% !important; max-width: 520px !important; height: 64px !important; min-height: 64px !important; max-height: 64px !important; background: #0a0a0a !important; border: 1px solid rgba(245, 158, 11, 0.4) !important; border-radius: 9999px !important; box-shadow: 0 20px 40px rgba(0,0,0,0.7) !important; display: flex !important; align-items: center !important; justify-content: space-between !important; padding: 0 16px 0 20px !important; color: #ffffff !important; margin: 0 !important; top: auto !important; right: auto !important;">
+      <div style="display: flex !important; align-items: center !important; gap: 12px !important; min-width: 0 !important;">
+        <div style="width: 36px !important; height: 36px !important; border-radius: 50% !important; background: rgba(245, 158, 11, 0.15) !important; color: #f59e0b !important; display: flex !important; align-items: center !important; justify-content: center !important; font-size: 14px !important; flex-shrink: 0 !important; border: 1px solid rgba(245, 158, 11, 0.3) !important;">
+          <i class="fas fa-compass"></i>
+        </div>
+        <div style="min-width: 0 !important; display: flex !important; flex-direction: column !important;">
+          <span style="font-size: 9px !important; font-weight: 900 !important; letter-spacing: 1px !important; text-transform: uppercase !important; color: #f59e0b !important; line-height: 1.2 !important; margin-bottom: 2px !important;">Ready to Customize?</span>
+          <strong id="sticky-trip-title" style="font-size: 13px !important; font-weight: 800 !important; color: #ffffff !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; max-width: 220px !important; line-height: 1.2 !important;">Fork this itinerary into your planner</strong>
+        </div>
       </div>
-      <button type="button" id="sticky-fork-btn" class="px-6 py-2.5 rounded-full bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs shadow-lg transition flex items-center gap-2 shrink-0 cursor-pointer">
+      <button type="button" id="sticky-fork-btn" style="padding: 10px 22px !important; border-radius: 9999px !important; background: #f59e0b !important; color: #000000 !important; font-size: 12px !important; font-weight: 900 !important; border: none !important; cursor: pointer !important; display: flex !important; align-items: center !important; gap: 8px !important; flex-shrink: 0 !important; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4) !important;">
         <i class="fas fa-code-branch"></i>
         <span>Fork Itinerary</span>
       </button>

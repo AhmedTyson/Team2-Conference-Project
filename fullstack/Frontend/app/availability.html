@@ -1,113 +1,512 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Itinera – Availability</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <link rel="stylesheet" href="../assets/css/app.css" />
-    <link rel="stylesheet" href="../assets/css/app.css" />
-  <script>/* FOUC prevention — default dark */
-    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
-    if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
-      document.documentElement.classList.add("dark","fouc-ready");
-    else document.documentElement.classList.add("fouc-ready");
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Schedule & Availability · Itinari Dashboard</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome 6 Free -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Shared App & Layout Styling -->
+  <link rel="stylesheet" href="../assets/css/app.css" />
+
+  <style>
+    :root {
+      --sched-bg: #F7F5F0;
+      --sched-card: #FFFFFF;
+      --sched-border: #EBE8E0;
+      --sched-text: #17181A;
+      --sched-accent: #F59E0B;
+      --sched-accent-soft: #FEF3C7;
+    }
+
+    html.dark {
+      --sched-bg: #0D0E10;
+      --sched-card: #16171A;
+      --sched-border: rgba(255, 255, 255, 0.08);
+      --sched-text: #FFFFFF;
+      --sched-accent: #F59E0B;
+      --sched-accent-soft: rgba(245, 158, 11, 0.15);
+    }
+
+    body {
+      background-color: var(--sched-bg);
+      color: var(--sched-text);
+      font-family: 'Inter', sans-serif;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .sched-card {
+      background-color: var(--sched-card);
+      border: 1px solid var(--sched-border);
+      border-radius: 1.75rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+      transition: all 0.25s ease;
+    }
+
+    .sched-card:hover {
+      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.06);
+    }
+
+    .time-slot-pill {
+      background: #FFFBEB;
+      border: 1px solid #FDE68A;
+      color: #92400E;
+    }
+
+    html.dark .time-slot-pill {
+      background: rgba(245, 158, 11, 0.12);
+      border-color: rgba(245, 158, 11, 0.3);
+      color: #FBBF24;
+    }
+
+    .golden-highlight-card {
+      background: linear-gradient(135deg, #FDE68A 0%, #F59E0B 100%);
+      color: #000000;
+    }
+
+    .golden-highlight-card-subtle {
+      background: #FEF3C7;
+      color: #92400E;
+      border: 1px solid #FDE68A;
+    }
+
+    html.dark .golden-highlight-card-subtle {
+      background: rgba(245, 158, 11, 0.18);
+      color: #FCD34D;
+      border-color: rgba(245, 158, 11, 0.35);
+    }
+  </style>
+
+  <script>
+    (function(){
+      var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+      if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
+        document.documentElement.classList.add("dark","fouc-ready");
+      else document.documentElement.classList.add("fouc-ready");
     })();
-  </script>  <script src="https://cdn.tailwindcss.com"></script>
+  </script>
 </head>
-<body data-page="availability" data-auth="protected" data-layout="app">
+<body data-page="availability" data-auth="protected" data-layout="app" class="min-h-screen flex flex-col font-['Inter']">
+
+  <!-- Top App Navigation -->
   <header class="app-nav-header"></header>
 
-    <nav class="sidebar" id="sidebar"></nav>
+  <!-- Sidebar Navigation -->
+  <nav class="sidebar" id="sidebar"></nav>
 
-    <div class="main">
-        <div class="itinera-layout">
-
-            <!-- LEFT COLUMN: Calendar -->
-            <div class="itinera-calendar">
-                <div class="itinera-header">
-                    <h1 class="page-title">
-                        Availability
-                        <small id="schedTripName">Select a trip</small>
-                    </h1>
-                    <a class="btn btn-dark" href="itinerary.html#attach">
-                        <i class="fas fa-plus"></i> Add
-                    </a>
-                </div>
-
-                <!-- Month tabs -->
-                <div class="month-tabs" id="monthTabs"></div>
-
-                <!-- Day view -->
-                <div class="flex-between" style="margin: 8px 0 4px;">
-                    <span style="font-weight:600; font-size:14px; color:#555;">
-                        <i class="far fa-calendar-alt"></i> Day view
-                    </span>
-                    <span style="font-size:13px; color:#888;" id="schedMonthLabel">Loading…</span>
-                </div>
-
-                <div class="day-grid" id="dayGrid"></div>
-
-                <div class="mt-16 flex" style="gap:16px; font-size:13px; color:#555;">
-                    <span><span style="display:inline-block; width:14px; height:14px; background:#1a1a1a; border-radius:4px; vertical-align:middle; margin-right:4px;"></span> Selected</span>
-                    <span><span style="display:inline-block; width:14px; height:14px; background:#fff; border:2px solid #1a1a1a; border-radius:4px; vertical-align:middle; margin-right:4px;"></span> Available</span>
-                    <span><span style="display:inline-block; width:14px; height:14px; background:#e8e8e8; border:2px solid #ccc; border-radius:4px; vertical-align:middle; margin-right:4px;"></span> No activities</span>
-                </div>
-            </div>
-
-            <!-- RIGHT SIDEBAR -->
-            <div class="itinera-sidebar">
-
-                <!-- Trip card -->
-                <div class="card" id="addTripCard">
-                    <div class="card-header">
-                        <h4><i class="fas fa-plane-departure"></i> Trip</h4>
-                        <a class="btn btn-sm btn-dark" href="itinerary.html">Open</a>
-                    </div>
-                    <div class="flex-between" style="align-items:flex-start;">
-                        <div class="flex" style="gap:12px; align-items:center;">
-                            <div class="avatar" id="tripAvatar">—</div>
-                            <div>
-                                <div class="name" id="addTripName" style="font-weight:700; font-size:15px;">No trip selected</div>
-                                <div class="sub" id="addTripMeta" style="font-size:12px; color:#777;">—</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stats-row">
-                        <span class="stat"><i class="fas fa-list"></i> <span id="addTripActivities">0</span> Activities</span>
-                        <span class="stat"><i class="fas fa-calendar-week"></i> <span id="addTripDays">—</span> Days</span>
-                        <span class="stat"><i class="fas fa-user-group"></i> <span id="addTripTravelers">—</span> Travelers</span>
-                    </div>
-                </div>
-
-                <!-- Activity feed -->
-                <div class="card" style="padding:16px 18px;">
-                    <div class="card-header" style="margin-bottom:10px;">
-                        <h4><i class="fas fa-rss"></i> Activity feed</h4>
-                    </div>
-                    <div id="feedList">
-                        <div class="empty-state" style="padding:16px;"><i class="fas fa-inbox"></i> No activities yet.</div>
-                    </div>
-                </div>
-
-                <!-- Time slots -->
-                <div class="card" style="padding:16px 18px;">
-                    <div class="card-header" style="margin-bottom:10px;">
-                        <h4><i class="fas fa-clock"></i> Time slots</h4>
-                    </div>
-                    <div class="time-slots" id="slotList">
-                        <span class="time-slot occupied">—</span>
-                    </div>
-                </div>
-
-            </div>
-            <!-- /itinera-sidebar -->
+  <!-- Main Content Wrapper -->
+  <main class="main flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full space-y-6">
+    
+    <!-- Top Header Bar & Month Tabs -->
+    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-2">
+      <div>
+        <div class="flex items-center gap-3">
+          <h1 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">Availability & Schedule</h1>
+          <span class="px-3 py-1 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 font-extrabold text-xs border border-amber-500/20" id="schedTripBadge">
+            Loading Trip…
+          </span>
         </div>
-        <!-- /itinera-layout -->
+        <p class="text-xs text-gray-500 dark:text-white/60 mt-1">Manage daily travel agenda, pinned reminders, time slots, and companion activity.</p>
+      </div>
+
+      <div class="flex items-center gap-3 flex-wrap">
+        <div class="flex items-center gap-1.5 bg-white dark:bg-[#16171A] p-1.5 rounded-full border border-gray-200 dark:border-white/10 text-xs font-bold shadow-sm" id="viewModeSelector">
+          <button type="button" class="view-mode-btn active px-4 py-1.5 rounded-full bg-amber-500 text-black font-extrabold shadow-sm transition">Day view</button>
+          <button type="button" class="view-mode-btn px-4 py-1.5 rounded-full text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition">Week view</button>
+          <button type="button" class="view-mode-btn px-4 py-1.5 rounded-full text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition">Month view</button>
+        </div>
+
+        <button type="button" id="open-add-modal-btn" class="px-5 py-2.5 rounded-full bg-amber-500 hover:bg-amber-400 text-black font-black text-xs shadow-lg shadow-amber-500/20 transition flex items-center gap-2 cursor-pointer shrink-0">
+          <i class="fas fa-plus"></i>
+          <span>Add Activity</span>
+        </button>
+      </div>
     </div>
 
-    <script src="../js/common.js"></script>
-    <script src="../js/availability.js"></script>
-    <script src="../assets/js/core/navbar-component.js"></script>
+    <!-- Month Navigation Bar -->
+    <div class="sched-card p-3 flex items-center justify-between gap-2 overflow-x-auto no-scrollbar text-xs font-extrabold">
+      <div class="flex items-center gap-1 sm:gap-2 min-w-max" id="monthTabsList">
+        <button class="px-4 py-2 rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-white transition">December</button>
+        <button class="px-4 py-2 rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-white transition">January</button>
+        <button class="px-4 py-2 rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-white transition">February</button>
+        <button class="px-4 py-2 rounded-full bg-amber-500 text-black font-black shadow-md">March 2026</button>
+        <button class="px-4 py-2 rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-white transition">April</button>
+        <button class="px-4 py-2 rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-white transition">May</button>
+        <button class="px-4 py-2 rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-white transition">June</button>
+        <button class="px-4 py-2 rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-white transition">July</button>
+      </div>
+    </div>
+
+    <!-- Main 3-Column Dashboard Layout (Matching References) -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      
+      <!-- COLUMN 1: Weekly Pinned & Mini Calendar (3 cols on lg) -->
+      <div class="lg:col-span-3 space-y-6">
+        
+        <!-- Weekly Pinned Cards -->
+        <div class="sched-card p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="text-sm font-black text-gray-900 dark:text-white">Weekly Pinned</h3>
+            <a href="#" class="text-[11px] font-bold text-amber-500 hover:underline">View all</a>
+          </div>
+
+          <div class="space-y-3" id="weeklyPinnedList">
+            <!-- Pinned Item 1 -->
+            <div class="p-4 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 space-y-2 hover:border-amber-500/40 transition">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-500 flex items-center justify-center text-xs font-black shrink-0">
+                  <i class="fas fa-stethoscope"></i>
+                </div>
+                <div>
+                  <h4 class="font-black text-xs text-gray-900 dark:text-white leading-snug">Call doctor for tests</h4>
+                  <span class="text-[10px] text-gray-400 font-medium">15 Mar 2026 - 9:00 AM</span>
+                </div>
+              </div>
+              <span class="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-300 font-extrabold text-[9px] inline-block uppercase">Personal</span>
+              <p class="text-[11px] text-gray-500 dark:text-white/60 leading-normal">Ask for blood tests and GYM health certificate.</p>
+            </div>
+
+            <!-- Pinned Item 2 -->
+            <div class="p-4 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 flex items-center justify-between gap-3 hover:border-amber-500/40 transition">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-xl bg-rose-500/15 text-rose-500 flex items-center justify-center text-xs font-black shrink-0">
+                  <i class="fas fa-cake-candles"></i>
+                </div>
+                <div>
+                  <h4 class="font-black text-xs text-gray-900 dark:text-white leading-snug">Beatrice's bday</h4>
+                  <span class="text-[10px] font-bold text-gray-400">22 Mar 2026</span>
+                </div>
+              </div>
+              <i class="fas fa-chevron-right text-[10px] text-gray-400"></i>
+            </div>
+
+            <!-- Add New Pin Button -->
+            <button type="button" id="add-pin-btn" class="w-full py-3 rounded-2xl border-2 border-dashed border-gray-200 dark:border-white/10 hover:border-amber-500 text-gray-500 dark:text-white/60 hover:text-amber-500 font-extrabold text-xs transition flex items-center justify-center gap-2 cursor-pointer">
+              <i class="fas fa-plus text-amber-500"></i>
+              <span>Add new weekly pin</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Mini Month Calendar -->
+        <div class="sched-card p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <h4 class="text-xs font-black text-gray-900 dark:text-white">March, 2026</h4>
+            <div class="flex items-center gap-1 text-xs text-gray-400">
+              <button class="w-6 h-6 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 flex items-center justify-center"><i class="fas fa-chevron-left text-[9px]"></i></button>
+              <button class="w-6 h-6 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 flex items-center justify-center"><i class="fas fa-chevron-right text-[9px]"></i></button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-gray-400 uppercase pb-1">
+            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+          </div>
+
+          <div class="grid grid-cols-7 gap-1 text-center text-xs font-bold" id="miniCalendarDays">
+            <span class="p-1.5 text-gray-300 dark:text-white/20">1</span>
+            <span class="p-1.5 text-gray-300 dark:text-white/20">2</span>
+            <span class="p-1.5 text-gray-300 dark:text-white/20">3</span>
+            <span class="p-1.5 text-gray-700 dark:text-white/80">4</span>
+            <span class="p-1.5 text-gray-700 dark:text-white/80">5</span>
+            <span class="p-1.5 text-gray-700 dark:text-white/80">6</span>
+            <span class="p-1.5 text-gray-700 dark:text-white/80">7</span>
+
+            <span class="p-1.5 text-gray-700 dark:text-white/80">8</span>
+            <span class="p-1.5 text-gray-700 dark:text-white/80">9</span>
+            <span class="p-1.5 text-gray-700 dark:text-white/80">10</span>
+            <span class="p-1.5 rounded-full bg-amber-500 text-black font-black shadow-md">11</span>
+            <span class="p-1.5 text-gray-700 dark:text-white/80">12</span>
+            <span class="p-1.5 text-gray-700 dark:text-white/80">13</span>
+            <span class="p-1.5 text-gray-700 dark:text-white/80">14</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- COLUMN 2: Today's Schedule Timeline (6 cols on lg) -->
+      <div class="lg:col-span-6 space-y-6">
+        
+        <div class="sched-card p-6 space-y-6">
+          <!-- Timeline Header -->
+          <div class="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-white/10">
+            <div>
+              <span class="text-[10px] font-black uppercase text-amber-500 tracking-wider block">Timeline Agenda</span>
+              <h2 class="text-xl font-black text-gray-900 dark:text-white flex items-center gap-2">
+                Today's schedule
+              </h2>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-extrabold text-amber-500" id="currentDayLabel">Thursday 11</span>
+              <div class="flex items-center gap-1 text-xs">
+                <button type="button" id="prev-day-btn" class="w-7 h-7 rounded-full bg-gray-100 dark:bg-white/10 hover:bg-amber-500 hover:text-black transition flex items-center justify-center cursor-pointer">
+                  <i class="fas fa-chevron-left text-[10px]"></i>
+                </button>
+                <button type="button" id="next-day-btn" class="w-7 h-7 rounded-full bg-gray-100 dark:bg-white/10 hover:bg-amber-500 hover:text-black transition flex items-center justify-center cursor-pointer">
+                  <i class="fas fa-chevron-right text-[10px]"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Schedule Timeline List (Matching References) -->
+          <div class="space-y-4" id="scheduleTimeline">
+
+            <!-- Item 1: Morning Wakeup (Golden Active Pill) -->
+            <div class="p-4 rounded-2xl bg-amber-400 text-black shadow-lg shadow-amber-400/20 flex items-center justify-between gap-4 font-bold text-xs transition transform hover:scale-[1.01]">
+              <div class="flex items-center gap-3">
+                <span class="w-6 h-6 rounded-full bg-black/10 flex items-center justify-center text-xs"><i class="fas fa-check text-[10px]"></i></span>
+                <span class="font-extrabold text-sm">Wake up Buddy</span>
+              </div>
+              <span class="px-3 py-1 rounded-full bg-black/10 font-black text-[11px]">7:00 AM</span>
+            </div>
+
+            <!-- Item 2: Morning Yoga (Warm Gold Pill) -->
+            <div class="p-4 rounded-2xl bg-amber-200 dark:bg-amber-500/20 text-gray-900 dark:text-amber-200 border border-amber-300 dark:border-amber-500/30 flex items-center justify-between gap-4 font-bold text-xs">
+              <div class="flex items-center gap-3">
+                <span class="w-6 h-6 rounded-full bg-amber-500/20 flex items-center justify-center text-xs text-amber-600 dark:text-amber-400"><i class="fas fa-person-walking"></i></span>
+                <span class="font-extrabold text-sm">Morning Yoga & Breakfast</span>
+              </div>
+              <span class="px-3 py-1 rounded-full bg-amber-500/20 font-black text-[11px]">8:00 AM</span>
+            </div>
+
+            <!-- Item 3: Daily Workout Checklist -->
+            <div class="p-5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <span class="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-500 flex items-center justify-center text-xs font-black"><i class="fas fa-dumbbell"></i></span>
+                  <strong class="font-black text-sm text-gray-900 dark:text-white">Daily workout</strong>
+                </div>
+                <span class="px-3 py-1 rounded-full bg-gray-200 dark:bg-white/10 text-gray-700 dark:text-white/80 font-bold text-[11px]">9:00 AM</span>
+              </div>
+
+              <div class="pl-11 space-y-1.5 text-xs text-gray-600 dark:text-white/70">
+                <div class="flex items-center gap-2"><i class="far fa-square text-amber-500"></i> <span>Squat 10x3</span></div>
+                <div class="flex items-center gap-2"><i class="far fa-square text-amber-500"></i> <span>Push up 10x3</span></div>
+                <div class="flex items-center gap-2"><i class="far fa-square text-amber-500"></i> <span>Core Plank 60s</span></div>
+              </div>
+            </div>
+
+            <!-- Item 4: Project Kickoff / Flight Transfer -->
+            <div class="p-5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 space-y-3">
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                  <span class="w-8 h-8 rounded-xl bg-sky-500/15 text-sky-500 flex items-center justify-center text-xs font-black"><i class="fas fa-plane-departure"></i></span>
+                  <div>
+                    <strong class="font-black text-sm text-gray-900 dark:text-white block">Shift project kick off pt.1</strong>
+                    <span class="text-[11px] text-gray-400">Zoom call & itinerary sync with Elena and Jordan</span>
+                  </div>
+                </div>
+                <span class="px-3 py-1 rounded-full bg-gray-200 dark:bg-white/10 text-gray-700 dark:text-white/80 font-bold text-[11px]">10:00 AM - 11:30 AM</span>
+              </div>
+
+              <div class="pl-11 flex items-center gap-2 pt-1">
+                <div class="flex -space-x-2">
+                  <span class="w-6 h-6 rounded-full bg-blue-500 text-white text-[9px] font-bold flex items-center justify-center border-2 border-white dark:border-[#16171A]">M</span>
+                  <span class="w-6 h-6 rounded-full bg-rose-500 text-white text-[9px] font-bold flex items-center justify-center border-2 border-white dark:border-[#16171A]">A</span>
+                  <span class="w-6 h-6 rounded-full bg-emerald-500 text-white text-[9px] font-bold flex items-center justify-center border-2 border-white dark:border-[#16171A]">S</span>
+                </div>
+                <span class="text-[11px] text-gray-500 dark:text-white/60 font-medium">+3 attendees</span>
+              </div>
+            </div>
+
+            <!-- Item 5: Skype Sushi / Lunch -->
+            <div class="p-5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 flex items-center justify-between gap-4">
+              <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-xl bg-rose-500/15 text-rose-500 flex items-center justify-center text-xs font-black"><i class="fas fa-utensils"></i></span>
+                <div>
+                  <strong class="font-black text-sm text-gray-900 dark:text-white block">Skype Sushi Dining</strong>
+                  <span class="text-[11px] text-gray-400">Lunch with Ally & itinerary review</span>
+                </div>
+              </div>
+              <span class="px-3 py-1 rounded-full bg-gray-200 dark:bg-white/10 text-gray-700 dark:text-white/80 font-bold text-[11px]">12:30 PM</span>
+            </div>
+
+            <!-- Item 6: Dribbble Shot / Itinerary Update -->
+            <div class="p-5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 flex items-center justify-between gap-4">
+              <div class="flex items-center gap-3">
+                <span class="w-8 h-8 rounded-xl bg-purple-500/15 text-purple-500 flex items-center justify-center text-xs font-black"><i class="fas fa-laptop-code"></i></span>
+                <div>
+                  <strong class="font-black text-sm text-gray-900 dark:text-white block">Dribbble Shot & Travel Notes</strong>
+                  <span class="text-[11px] text-gray-400">Working on new schedule layout</span>
+                </div>
+              </div>
+              <span class="px-3 py-1 rounded-full bg-gray-200 dark:bg-white/10 text-gray-700 dark:text-white/80 font-bold text-[11px]">2:00 PM</span>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- COLUMN 3: Profile Card, Audio Player & Side Widgets (3 cols on lg) -->
+      <div class="lg:col-span-3 space-y-6">
+        
+        <!-- User Profile Card (Matching Ref 1 & 2) -->
+        <div class="sched-card p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <span class="w-11 h-11 rounded-full bg-amber-500 text-black font-black text-lg flex items-center justify-center shadow-md">MC</span>
+              <div>
+                <strong class="font-black text-sm text-gray-900 dark:text-white block" id="profileUserName">Mark Collins</strong>
+                <a href="profile-settings.html" class="text-[11px] font-bold text-amber-500 hover:underline">My settings</a>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-300 font-black text-[10px] uppercase">19 LVL</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 pt-2 text-center text-xs border-t border-gray-100 dark:border-white/10">
+            <div class="p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 space-y-0.5">
+              <span class="text-[10px] text-gray-400 font-bold uppercase block">Travelers</span>
+              <strong class="font-black text-sm text-gray-900 dark:text-white">64</strong>
+            </div>
+            <div class="p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 space-y-0.5">
+              <span class="text-[10px] text-gray-400 font-bold uppercase block">Trips</span>
+              <strong class="font-black text-sm text-gray-900 dark:text-white">3</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Audio Travel Guide / Player Widget (Matching Ref 1) -->
+        <div class="sched-card p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-2xl bg-red-500 text-white font-black flex items-center justify-center shadow-md">
+                <i class="fas fa-music"></i>
+              </div>
+              <div>
+                <strong class="font-black text-xs text-gray-900 dark:text-white block">Godzilla</strong>
+                <span class="text-[10px] text-gray-400 font-medium block">Eminem · Tokyo Guide</span>
+              </div>
+            </div>
+            <button class="text-gray-400 hover:text-gray-600 dark:hover:text-white text-xs"><i class="fas fa-ellipsis-v"></i></button>
+          </div>
+
+          <div class="space-y-1.5">
+            <div class="w-full h-1.5 rounded-full bg-gray-200 dark:bg-white/10 overflow-hidden">
+              <div class="h-full bg-amber-500 rounded-full w-[65%]"></div>
+            </div>
+            <div class="flex justify-between text-[10px] font-bold text-gray-400">
+              <span>03:15</span>
+              <span>00:45</span>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-center gap-4 text-xs pt-1">
+            <button class="text-gray-400 hover:text-amber-500 transition"><i class="fas fa-backward-step"></i></button>
+            <button class="w-8 h-8 rounded-full bg-amber-500 text-black flex items-center justify-center shadow-md hover:scale-105 transition"><i class="fas fa-play text-[10px]"></i></button>
+            <button class="text-gray-400 hover:text-amber-500 transition"><i class="fas fa-forward-step"></i></button>
+          </div>
+        </div>
+
+        <!-- Live Clock & Weather Widget (Matching Ref 1) -->
+        <div class="sched-card p-5 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-2xl font-black text-gray-900 dark:text-white">8:48 AM</span>
+            <i class="fas fa-cloud-sun text-amber-500 text-lg"></i>
+          </div>
+          <span class="text-xs text-gray-500 dark:text-white/60 font-medium block">🌤️ Now is almost Sunny</span>
+        </div>
+
+        <!-- Promo Banner Widget (Matching Ref 1) -->
+        <div class="sched-card p-5 space-y-3 bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent border border-amber-500/30">
+          <h4 class="font-black text-sm text-gray-900 dark:text-white leading-tight">Unleash the freelance super power</h4>
+          <p class="text-xs text-gray-500 dark:text-white/60">Unlimited task, premium features and much more.</p>
+          <div class="flex items-center justify-between pt-1">
+            <span class="w-8 h-8 rounded-full bg-black text-white dark:bg-white dark:text-black flex items-center justify-center font-bold text-xs"><i class="fas fa-user-ninja"></i></span>
+            <a href="../plans.html" class="w-8 h-8 rounded-full bg-amber-500 text-black flex items-center justify-center font-black shadow-md hover:scale-105 transition">
+              <i class="fas fa-arrow-right text-xs"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Travel Companion Activity Feed (Matching Ref 2) -->
+        <div class="sched-card p-5 space-y-4">
+          <h4 class="text-xs font-black text-gray-900 dark:text-white">Travelers Feed</h4>
+          <div class="space-y-3 text-xs" id="travelersFeed">
+            <div class="flex items-start gap-3">
+              <span class="w-7 h-7 rounded-full bg-blue-600 text-white font-bold text-[10px] flex items-center justify-center shrink-0">MS</span>
+              <div>
+                <strong class="font-black text-gray-900 dark:text-white block text-[11px]">Michael Scott</strong>
+                <span class="text-gray-500 dark:text-white/60 block text-[10px]">Has completed his flight booking.</span>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+              <span class="w-7 h-7 rounded-full bg-emerald-600 text-white font-bold text-[10px] flex items-center justify-center shrink-0">AJ</span>
+              <div>
+                <strong class="font-black text-gray-900 dark:text-white block text-[11px]">Anthony Joe</strong>
+                <span class="text-gray-500 dark:text-white/60 block text-[10px]">Sent you his holiday notes.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Add Activity Modal -->
+  <div id="add-activity-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-[#16171A] border border-gray-200 dark:border-white/10 rounded-3xl p-6 max-w-md w-full space-y-5 shadow-2xl">
+      <div class="flex items-center justify-between">
+        <h3 class="text-lg font-black text-gray-900 dark:text-white flex items-center gap-2">
+          <i class="fas fa-calendar-plus text-amber-500"></i> Add Schedule Activity
+        </h3>
+        <button type="button" id="close-activity-modal-btn" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-white/60 hover:text-gray-900 dark:hover:text-white flex items-center justify-center"><i class="fas fa-times"></i></button>
+      </div>
+
+      <form id="activity-form" class="space-y-4 text-xs">
+        <div class="space-y-1">
+          <label class="font-bold text-gray-700 dark:text-white/80">Activity Title</label>
+          <input type="text" id="act-title" required placeholder="e.g. Morning Yoga, Guided Museum Tour" class="w-full px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-300 dark:border-white/10 text-gray-900 dark:text-white focus:outline-none focus:border-amber-500" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="space-y-1">
+            <label class="font-bold text-gray-700 dark:text-white/80">Time Slot</label>
+            <input type="text" id="act-time" placeholder="e.g. 9:00 AM" class="w-full px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-300 dark:border-white/10 text-gray-900 dark:text-white focus:outline-none focus:border-amber-500" />
+          </div>
+          <div class="space-y-1">
+            <label class="font-bold text-gray-700 dark:text-white/80">Category</label>
+            <select id="act-category" class="w-full px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-300 dark:border-white/10 text-gray-900 dark:text-white focus:outline-none focus:border-amber-500">
+              <option value="personal">Personal</option>
+              <option value="sightseeing">Sightseeing</option>
+              <option value="dining">Dining</option>
+              <option value="flight">Flight / Transit</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="space-y-1">
+          <label class="font-bold text-gray-700 dark:text-white/80">Notes / Details</label>
+          <textarea id="act-notes" rows="2" placeholder="Subtasks or meeting details…" class="w-full px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-300 dark:border-white/10 text-gray-900 dark:text-white focus:outline-none focus:border-amber-500"></textarea>
+        </div>
+
+        <button type="submit" class="w-full py-3 rounded-full bg-amber-500 hover:bg-amber-400 text-black font-black text-xs shadow-lg transition">
+          Save Activity
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../assets/js/api.js"></script>
+  <script src="../assets/js/nav-config.js"></script>
+  <script src="../assets/js/core/navbar-component.js"></script>
+  <script src="../assets/js/core/sidebar.js"></script>
+  <script src="../assets/js/availability.js"></script>
 </body>
 </html>
