@@ -23,6 +23,10 @@ class AIController extends Controller
     {
         $request->validate(['content' => 'required|string']);
 
+        if ($request->user()) {
+            $this->aiUsage->consumeQuota($request->user());
+        }
+
         $enhancedContent = $this->groq->enhance($request->input('content'));
 
         return ApiResponse::success($enhancedContent, 'Content enhanced successfully');

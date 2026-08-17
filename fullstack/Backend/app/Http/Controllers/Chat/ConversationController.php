@@ -166,8 +166,15 @@ class ConversationController extends Controller
             'message' => new MessageResource($message),
         ];
 
-        // If this is an AI concierge conversation, auto-generate AI reply for any user message
+        // If this is an AI concierge conversation, consume quota credit and auto-generate AI reply
         if ($conversation->type === 'ai_concierge' && $senderType !== 'ai') {
+            try {
+                $aiUsage = app(\App\Services\Trips\AiUsageService::class);
+                $aiUsage->consumeQuota($user);
+            } catch (\Throwable $quotaErr) {
+                return ApiResponse::fail($quotaErr->getMessage(), 'ai_quota_exhausted', 422);
+            }
+
             $aiMessage = $this->generateAiReply($conversation, $message->body);
             if ($aiMessage) {
                 $responseData['ai_reply'] = new MessageResource($aiMessage);

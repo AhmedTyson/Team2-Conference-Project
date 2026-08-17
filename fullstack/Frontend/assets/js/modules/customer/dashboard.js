@@ -906,24 +906,40 @@
       setFeed(paymentsFeed, paymentsData.slice(0, 4), "No payment history found.", renderPaymentsFeed);
 
       // AI Quota & Plan Status Bar
-      const subObj = (subRes && subRes.ok && subRes.body && subRes.body.data) ? subRes.body.data : (user && user.subscription ? user.subscription : {});
-      const planName = subObj.plan_name || (subObj.plan ? subObj.plan.name : "Pro Plan");
+      const subObj = (statsRes && statsRes.ok && statsRes.body && statsRes.body.data && statsRes.body.data.subscription) 
+        ? statsRes.body.data.subscription 
+        : ((subRes && subRes.ok && subRes.body && subRes.body.data) ? subRes.body.data : (user && user.subscription ? user.subscription : {}));
+
+      const planName = subObj.plan_name || (subObj.plan ? subObj.plan.name : "Free Explorer");
       const totalQuota = subObj.ai_quota_total || (subObj.plan ? subObj.plan.ai_quota_monthly : 500);
       const usedQuota = typeof (user && user.ai_generations_count) === "number" ? user.ai_generations_count : (subObj.ai_quota_used || 0);
       const remainingQuota = Math.max(0, totalQuota - usedQuota);
       const usagePct = Math.min(100, Math.round((usedQuota / totalQuota) * 100));
+
+      let expiryText = "Monthly Refresh (1st of month)";
+      const rawExpiry = subObj.expires_at || subObj.ends_at || subObj.renews_at;
+      if (rawExpiry) {
+        try {
+          const d = new Date(rawExpiry);
+          expiryText = "Renews: " + d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+        } catch (e) {
+          expiryText = String(rawExpiry);
+        }
+      }
 
       const planBadge = el("ai-plan-badge");
       const quotaVal = el("stat-val-quota");
       const usedText = el("ai-quota-used-text");
       const availText = el("ai-quota-avail-text");
       const barEl = el("ai-quota-bar");
+      const expiryEl = el("ai-plan-expiry-text");
 
       if (planBadge) planBadge.textContent = planName;
       if (quotaVal) quotaVal.textContent = remainingQuota + " Available";
       if (usedText) usedText.innerHTML = '<i class="fas fa-chart-pie text-purple-500 mr-1"></i> ' + usedQuota + " / " + totalQuota + " used";
       if (availText) availText.textContent = remainingQuota + " available";
       if (barEl) barEl.style.width = usagePct + "%";
+      if (expiryEl) expiryEl.textContent = expiryText;
 
     }).catch(function (err) {
       console.warn("Backend API unavailable, loading fallback mockup stats:", err);

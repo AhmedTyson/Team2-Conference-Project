@@ -19,7 +19,13 @@ class AiUsageService
 
         $monthlyLimit = 0;
         if ($activeSub && $activeSub->plan) {
-            $monthlyLimit = $activeSub->plan->ai_quota_monthly;
+            $monthlyLimit = (int) $activeSub->plan->ai_quota_monthly;
+        } else {
+            $monthlyLimit = (int) config('ai.rate_limit_per_day', 500);
+        }
+
+        if ($monthlyLimit <= 0) {
+            $monthlyLimit = 500;
         }
 
         // 2. Check if reset date has passed to reset count
@@ -28,10 +34,6 @@ class AiUsageService
                 'ai_generations_count' => 0,
                 'ai_reset_at' => now()->addMonth(),
             ])->save();
-        }
-
-        if ($monthlyLimit <= 0) {
-            throw new Exception('You need an active subscription with an AI quota to generate itineraries.');
         }
 
         // 3. Atomically increment the usage counter to prevent race conditions

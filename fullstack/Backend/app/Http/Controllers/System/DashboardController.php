@@ -38,10 +38,33 @@ class DashboardController extends Controller
         // Total number of favorites
         $totalFavourites = Favourite::where('user_id', $user->id)->count();
 
+        // Active Subscription & Shared AI Quota details
+        $activeSub = $user->subscriptions()->where('status', 'active')->latest()->first();
+        $plan = $activeSub ? $activeSub->plan : null;
+        $planName = $plan ? $plan->name : 'Free Explorer';
+        $totalQuota = $plan ? (int) $plan->ai_quota_monthly : (int) config('ai.rate_limit_per_day', 500);
+        if ($totalQuota <= 0) {
+            $totalQuota = 500;
+        }
+        $usedQuota = (int) ($user->ai_generations_count ?? 0);
+        $remainingQuota = max(0, $totalQuota - $usedQuota);
+        $expiresAt = $activeSub ? ($activeSub->ends_at ? $activeSub->ends_at->toIso8601String() : ($activeSub->renews_at ? $activeSub->renews_at->toIso8601String() : null)) : null;
+
         return ApiResponse::success([
             'total_trips' => $totalTrips,
             'trip_statistics' => $formattedStats,
             'total_favourites' => $totalFavourites,
+            'subscription' => [
+                'plan_id' => $plan ? $plan->id : null,
+                'plan_name' => $planName,
+                'status' => $activeSub ? $activeSub->status : 'active',
+                'ai_quota_total' => $totalQuota,
+                'ai_quota_used' => $usedQuota,
+                'ai_quota_remaining' => $remainingQuota,
+                'renews_at' => $activeSub ? ($activeSub->renews_at ? $activeSub->renews_at->toIso8601String() : null) : null,
+                'expires_at' => $expiresAt,
+                'ends_at' => $expiresAt,
+            ],
         ], 'Dashboard statistics retrieved successfully.');
     }
 
