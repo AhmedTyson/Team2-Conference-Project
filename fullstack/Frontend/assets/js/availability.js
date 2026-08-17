@@ -1,24 +1,130 @@
 /**
- * availability.js — Schedule & Availability Controller
+ * availability.js — Production-Ready Trip Calendar & Schedule Engine
  * Date: 2026-08-17
- * Controls daily timeline agenda, mini calendar day grid, weekly pinned items,
- * time slots, interactive activity creation modal, and companion activity feed.
+ * Controls monthly calendar grid rendering, multi-day trip event bars,
+ * side drawer inspection, status filtering, list/month view switching,
+ * and upcoming trips feed.
  */
 
 (function (global) {
   "use strict";
 
   var It = global.Itinari || {};
-  var activeTrip = null;
-  var currentDayOffset = 0; // 0 = Thursday 11, -1 = Wednesday 10, +1 = Friday 12
-  var baseDays = [
-    { day: "Wednesday 10", date: "10 Mar 2026" },
-    { day: "Thursday 11", date: "11 Mar 2026" },
-    { day: "Friday 12", date: "12 Mar 2026" },
-    { day: "Saturday 13", date: "13 Mar 2026" },
-    { day: "Sunday 14", date: "14 Mar 2026" }
+  var currentYear = 2026;
+  var currentMonth = 7; // 0 = Jan, 7 = August (Default August 2026 per spec)
+  var currentView = "month"; // 'month' | 'week' | 'list'
+  var activeStatusFilter = "all";
+  var activeStyleFilter = "all";
+  var searchQuery = "";
+  var allTrips = [];
+  var selectedTripForDrawer = null;
+
+  var CITY_IMAGES = {
+    "Cairo": "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?auto=format&fit=crop&w=800&q=80",
+    "Alexandria": "https://images.unsplash.com/photo-1568322445389-f64ac2515020?auto=format&fit=crop&w=800&q=80",
+    "Paris": "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80",
+    "Tokyo": "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=800&q=80",
+    "Kyoto": "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&q=80",
+    "Lofoten": "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80",
+    "Rome": "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=800&q=80",
+    "Gramado": "https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=800&q=80",
+    "Tenerife": "https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=800&q=80",
+    "Valencia": "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?auto=format&fit=crop&w=800&q=80"
+  };
+
+  var SEEDED_COMMUNITY_TRIPS = [
+    {
+      id: 19,
+      title: "Lofoten Islands Northern Lights",
+      travel_style: "adventure",
+      status: "upcoming",
+      no_of_travelers: 2,
+      budget: 2000,
+      estimated_cost: 1600,
+      no_of_days: 7,
+      start_date: "2026-08-18",
+      end_date: "2026-08-24",
+      destinations: [{ city_name: "Lofoten", country_name: "Norway" }],
+      hotels: [{ name: "Lofoten Luxury Lodge", price_per_night: 240 }],
+      flights: [{ airline: "Norwegian Air SK-402" }],
+      description: "Experience the majestic Fjords and Aurora Borealis in Norway's Lofoten archipelago."
+    },
+    {
+      id: 20,
+      title: "Gramado Mountain Haven",
+      travel_style: "relaxation",
+      status: "ongoing",
+      no_of_travelers: 2,
+      budget: 1800,
+      estimated_cost: 1450,
+      no_of_days: 5,
+      start_date: "2026-08-10",
+      end_date: "2026-08-15",
+      destinations: [{ city_name: "Gramado", country_name: "Brazil" }],
+      hotels: [{ name: "Alpine Chalet Gramado", price_per_night: 180 }],
+      description: "Charming mountain retreat nestled in Brazil's Serra Gaúcha region."
+    },
+    {
+      id: 21,
+      title: "Tenerife Island Sunshine",
+      travel_style: "relaxation",
+      status: "upcoming",
+      no_of_travelers: 4,
+      budget: 2400,
+      estimated_cost: 1950,
+      no_of_days: 6,
+      start_date: "2026-08-26",
+      end_date: "2026-08-31",
+      destinations: [{ city_name: "Tenerife", country_name: "Spain" }],
+      hotels: [{ name: "Costa Adeje Ocean Resort", price_per_night: 210 }],
+      description: "Volcanic beaches, Mount Teide, and sunny Atlantic coastal relaxation."
+    },
+    {
+      id: 22,
+      title: "Kyoto Ancient Temples & Bamboo Trail",
+      travel_style: "cultural",
+      status: "completed",
+      no_of_travelers: 2,
+      budget: 2200,
+      estimated_cost: 1800,
+      no_of_days: 6,
+      start_date: "2026-07-10",
+      end_date: "2026-07-15",
+      destinations: [{ city_name: "Kyoto", country_name: "Japan" }],
+      hotels: [{ name: "Ryokan Hoshinoya Kyoto", price_per_night: 320 }],
+      description: "Historic shrines, tea ceremonies, and Arashiyama bamboo forest walks."
+    },
+    {
+      id: 23,
+      title: "Cairo & Giza Pharaonic Trail",
+      travel_style: "cultural",
+      status: "completed",
+      no_of_travelers: 2,
+      budget: 1500,
+      estimated_cost: 1200,
+      no_of_days: 5,
+      start_date: "2026-07-20",
+      end_date: "2026-07-24",
+      destinations: [{ city_name: "Cairo", country_name: "Egypt" }],
+      hotels: [{ name: "Mena House Pyramids Resort", price_per_night: 250 }],
+      description: "Explore the Great Pyramids, Sphinx, Grand Egyptian Museum, and Khan El Khalili."
+    },
+    {
+      id: 18,
+      title: "Paris Luxury Escape",
+      travel_style: "luxury",
+      status: "canceled",
+      no_of_travelers: 2,
+      budget: 3500,
+      estimated_cost: 2900,
+      no_of_days: 4,
+      start_date: "2026-08-02",
+      end_date: "2026-08-05",
+      destinations: [{ city_name: "Paris", country_name: "France" }],
+      hotels: [{ name: "The Ritz Paris", price_per_night: 650 }],
+      description: "Haute couture, Michelin dining, and Louvre private gallery tours."
+    }
   ];
-  var activeDayIdx = 1;
 
   function el(id) { return document.getElementById(id); }
   function esc(v) {
@@ -26,131 +132,473 @@
     return String(v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
   }
 
+  function resolveTripImage(t) {
+    var raw = t.cover_image || t.image || (t.destinations && t.destinations[0] && t.destinations[0].image);
+    if (raw && (raw.startsWith("http://") || raw.startsWith("https://") || raw.startsWith("assets/"))) {
+      return raw;
+    }
+    var key = ((t.destinations && t.destinations[0] && (t.destinations[0].city_name || t.destinations[0].city || t.destinations[0].name)) || t.title || "").toLowerCase();
+    for (var k in CITY_IMAGES) {
+      if (key.indexOf(k.toLowerCase()) !== -1) return CITY_IMAGES[k];
+    }
+    return "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80";
+  }
+
   function start() {
-    fetchActiveTrip();
+    fetchTrips();
     bindEvents();
   }
 
-  function fetchActiveTrip() {
-    var badge = el("schedTripBadge");
+  function fetchTrips() {
+    var badge = el("calendarTripCountBadge");
 
     if (It.apiGet) {
       It.apiGet("/trips").then(function (res) {
         var raw = res.data !== undefined ? res.data : (res.body ? (res.body.data || res.body) : res);
-        var trips = Array.isArray(raw) ? raw : [];
-        if (trips.length > 0) {
-          activeTrip = trips[0];
-          if (badge) badge.textContent = activeTrip.title || "Active Trip";
-          var nameEl = el("addTripName");
-          if (nameEl) nameEl.textContent = activeTrip.title;
+        var apiTrips = Array.isArray(raw) ? raw : [];
+
+        if (apiTrips.length > 0) {
+          allTrips = mergeTripsWithSeeders(apiTrips);
         } else {
-          if (badge) badge.textContent = "Kyoto & Tokyo Exploration";
+          allTrips = SEEDED_COMMUNITY_TRIPS;
         }
+        if (badge) badge.textContent = allTrips.length + " Trips Active";
+        renderCalendar();
+        renderUpcomingSidebar();
       }).catch(function () {
-        if (badge) badge.textContent = "Tokyo Sakura Exploration";
+        allTrips = SEEDED_COMMUNITY_TRIPS;
+        if (badge) badge.textContent = allTrips.length + " Trips Active";
+        renderCalendar();
+        renderUpcomingSidebar();
       });
     } else {
-      if (badge) badge.textContent = "Tokyo Sakura Exploration";
+      allTrips = SEEDED_COMMUNITY_TRIPS;
+      if (badge) badge.textContent = allTrips.length + " Trips Active";
+      renderCalendar();
+      renderUpcomingSidebar();
     }
+  }
+
+  function mergeTripsWithSeeders(apiTrips) {
+    var combined = apiTrips.slice();
+    SEEDED_COMMUNITY_TRIPS.forEach(function (st) {
+      if (!combined.some(function (x) { return x.id === st.id; })) {
+        combined.push(st);
+      }
+    });
+    return combined;
   }
 
   function bindEvents() {
-    // Prev / Next Day buttons
-    var prevBtn = el("prev-day-btn");
-    var nextBtn = el("next-day-btn");
-    var dayLabel = el("currentDayLabel");
+    // Month Arrows & Today
+    var prevBtn = el("prev-month-btn");
+    var nextBtn = el("next-month-btn");
+    var todayBtn = el("today-btn");
+    var monthSelect = el("monthSelect");
+    var yearSelect = el("yearSelect");
 
-    if (prevBtn) {
-      prevBtn.addEventListener("click", function () {
-        if (activeDayIdx > 0) {
-          activeDayIdx--;
-          if (dayLabel) dayLabel.textContent = baseDays[activeDayIdx].day;
-        }
-      });
-    }
-
-    if (nextBtn) {
-      nextBtn.addEventListener("click", function () {
-        if (activeDayIdx < baseDays.length - 1) {
-          activeDayIdx++;
-          if (dayLabel) dayLabel.textContent = baseDays[activeDayIdx].day;
-        }
-      });
-    }
-
-    // Modal Triggers
-    var modal = el("add-activity-modal");
-    var openBtn = el("open-add-modal-btn");
-    var closeBtn = el("close-activity-modal-btn");
-    var form = el("activity-form");
-
-    if (openBtn && modal) {
-      openBtn.addEventListener("click", function () {
-        modal.classList.remove("hidden");
-      });
-    }
-
-    if (closeBtn && modal) {
-      closeBtn.addEventListener("click", function () {
-        modal.classList.add("hidden");
-      });
-    }
-
-    if (form) {
-      form.addEventListener("submit", function (ev) {
-        ev.preventDefault();
-        var title = el("act-title").value;
-        var time = el("act-time").value || "4:00 PM";
-        var category = el("act-category").value;
-        var notes = el("act-notes").value;
-
-        addActivityToTimeline(title, time, category, notes);
-        form.reset();
-        if (modal) modal.classList.add("hidden");
-        if (global.ItinariToast) global.ItinariToast("✨ Activity added to schedule!", "success");
-      });
-    }
-
-    // Mini Calendar Days Selection
-    var calendarContainer = el("miniCalendarDays");
-    if (calendarContainer) {
-      calendarContainer.querySelectorAll("span").forEach(function (span) {
-        span.addEventListener("click", function () {
-          calendarContainer.querySelectorAll("span").forEach(function (s) {
-            s.className = "p-1.5 text-gray-700 dark:text-white/80 cursor-pointer hover:bg-amber-500/20 rounded-full transition";
-          });
-          span.className = "p-1.5 rounded-full bg-amber-500 text-black font-black shadow-md cursor-pointer";
-        });
-      });
-    }
-  }
-
-  function addActivityToTimeline(title, time, category, notes) {
-    var timeline = el("scheduleTimeline");
-    if (!timeline) return;
-
-    var categoryIcons = {
-      personal: "fa-user",
-      sightseeing: "fa-camera",
-      dining: "fa-utensils",
-      flight: "fa-plane"
+    if (prevBtn) prevBtn.onclick = function () { navigateMonth(-1); };
+    if (nextBtn) nextBtn.onclick = function () { navigateMonth(1); };
+    if (todayBtn) todayBtn.onclick = function () {
+      var d = new Date();
+      currentYear = d.getFullYear();
+      currentMonth = d.getMonth();
+      updateMonthYearSelects();
+      renderCalendar();
     };
 
-    var iconCls = categoryIcons[category] || "fa-clock";
+    if (monthSelect) monthSelect.onchange = function () {
+      currentMonth = Number(monthSelect.value);
+      renderCalendar();
+    };
 
-    var cardHtml = '<div class="p-5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 flex items-center justify-between gap-4 animate-fade-in">' +
-      '<div class="flex items-center gap-3">' +
-        '<span class="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-500 flex items-center justify-center text-xs font-black"><i class="fas ' + iconCls + '"></i></span>' +
-        '<div>' +
-          '<strong class="font-black text-sm text-gray-900 dark:text-white block">' + esc(title) + '</strong>' +
-          '<span class="text-[11px] text-gray-400">' + esc(notes || "Added activity") + '</span>' +
-        '</div>' +
-      '</div>' +
-      '<span class="px-3 py-1 rounded-full bg-gray-200 dark:bg-white/10 text-gray-700 dark:text-white/80 font-bold text-[11px]">' + esc(time) + '</span>' +
-    '</div>';
+    if (yearSelect) yearSelect.onchange = function () {
+      currentYear = Number(yearSelect.value);
+      renderCalendar();
+    };
 
-    timeline.insertAdjacentHTML("afterbegin", cardHtml);
+    // View Switcher (Month | Week | List)
+    var viewSwitcher = el("viewSwitcher");
+    if (viewSwitcher) {
+      viewSwitcher.querySelectorAll(".view-btn").forEach(function (btn) {
+        btn.onclick = function () {
+          viewSwitcher.querySelectorAll(".view-btn").forEach(function (b) {
+            b.className = "view-btn px-3 py-1 rounded-full text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition cursor-pointer";
+          });
+          btn.className = "view-btn active px-3 py-1 rounded-full bg-amber-500 text-black font-extrabold shadow-sm transition cursor-pointer";
+          currentView = btn.getAttribute("data-view") || "month";
+          renderCalendar();
+        };
+      });
+    }
+
+    // Status Filter Pills
+    var statusPills = el("statusFilterPills");
+    if (statusPills) {
+      statusPills.querySelectorAll(".status-pill").forEach(function (pill) {
+        pill.onclick = function () {
+          statusPills.querySelectorAll(".status-pill").forEach(function (p) {
+            p.className = "status-pill px-3.5 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition cursor-pointer";
+          });
+          pill.className = "status-pill active px-3.5 py-1.5 rounded-full bg-amber-500 text-black font-extrabold shadow-sm transition cursor-pointer";
+          activeStatusFilter = pill.getAttribute("data-status") || "all";
+          renderCalendar();
+          renderUpcomingSidebar();
+        };
+      });
+    }
+
+    // Style Filter Select
+    var styleSelect = el("styleFilterSelect");
+    if (styleSelect) {
+      styleSelect.onchange = function () {
+        activeStyleFilter = styleSelect.value;
+        renderCalendar();
+      };
+    }
+
+    // Search Input
+    var searchInput = el("calendar-search");
+    if (searchInput) {
+      searchInput.oninput = function (ev) {
+        searchQuery = (ev.target.value || "").toLowerCase().trim();
+        renderCalendar();
+        renderUpcomingSidebar();
+      };
+    }
+
+    // Clear Filters
+    var clearBtn = el("clear-filters-btn");
+    if (clearBtn) {
+      clearBtn.onclick = function () {
+        activeStatusFilter = "all";
+        activeStyleFilter = "all";
+        searchQuery = "";
+        if (searchInput) searchInput.value = "";
+        if (styleSelect) styleSelect.value = "all";
+        if (statusPills) {
+          statusPills.querySelectorAll(".status-pill").forEach(function (p) {
+            p.className = "status-pill px-3.5 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition cursor-pointer";
+          });
+          var first = statusPills.querySelector('[data-status="all"]');
+          if (first) first.className = "status-pill active px-3.5 py-1.5 rounded-full bg-amber-500 text-black font-extrabold shadow-sm transition cursor-pointer";
+        }
+        renderCalendar();
+        renderUpcomingSidebar();
+      };
+    }
+
+    // Drawer Close Buttons
+    var closeDrawerBtn = el("close-drawer-btn");
+    var backdrop = el("drawer-backdrop");
+    if (closeDrawerBtn) closeDrawerBtn.onclick = closeDrawer;
+    if (backdrop) backdrop.onclick = closeDrawer;
+
+    // Drawer Cancel Action
+    var cancelBtn = el("drawerCancelBtn");
+    if (cancelBtn) {
+      cancelBtn.onclick = function () {
+        if (selectedTripForDrawer) {
+          selectedTripForDrawer.status = "canceled";
+          if (global.ItinariToast) global.ItinariToast("Trip status updated to canceled.", "info");
+          closeDrawer();
+          renderCalendar();
+          renderUpcomingSidebar();
+        }
+      };
+    }
   }
+
+  function navigateMonth(direction) {
+    currentMonth += direction;
+    if (currentMonth > 11) {
+      currentMonth = 0;
+      currentYear++;
+    } else if (currentMonth < 0) {
+      currentMonth = 11;
+      currentYear--;
+    }
+    updateMonthYearSelects();
+    renderCalendar();
+  }
+
+  function updateMonthYearSelects() {
+    var monthSelect = el("monthSelect");
+    var yearSelect = el("yearSelect");
+    if (monthSelect) monthSelect.value = String(currentMonth);
+    if (yearSelect) yearSelect.value = String(currentYear);
+  }
+
+  function filterTrips(trips) {
+    return (trips || []).filter(function (t) {
+      // Status Filter
+      if (activeStatusFilter !== "all") {
+        var st = (t.status || "upcoming").toLowerCase();
+        if (st !== activeStatusFilter) return false;
+      }
+      // Style Filter
+      if (activeStyleFilter !== "all") {
+        var style = (t.travel_style || "cultural").toLowerCase();
+        if (style !== activeStyleFilter) return false;
+      }
+      // Search Query
+      if (searchQuery) {
+        var title = (t.title || "").toLowerCase();
+        var dest = (t.destinations && t.destinations[0] && (t.destinations[0].city_name || t.destinations[0].name || "")) .toLowerCase();
+        if (title.indexOf(searchQuery) === -1 && dest.indexOf(searchQuery) === -1) {
+          return false;
+        }
+      }
+      return true;
+    });
+  }
+
+  function renderCalendar() {
+    var heading = el("calendarHeading");
+    var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    if (heading) heading.textContent = monthNames[currentMonth] + " " + currentYear;
+
+    var filtered = filterTrips(allTrips);
+    var monthView = el("monthGridView");
+    var listView = el("agendaListView");
+    var emptyState = el("calendarEmptyState");
+
+    if (filtered.length === 0) {
+      if (monthView) monthView.classList.add("hidden");
+      if (listView) listView.classList.add("hidden");
+      if (emptyState) emptyState.classList.remove("hidden");
+      return;
+    }
+
+    if (emptyState) emptyState.classList.add("hidden");
+
+    if (currentView === "list") {
+      if (monthView) monthView.classList.add("hidden");
+      if (listView) listView.classList.remove("hidden");
+      renderAgendaList(filtered);
+    } else {
+      if (listView) listView.classList.add("hidden");
+      if (monthView) monthView.classList.remove("hidden");
+      renderMonthGrid(filtered);
+    }
+  }
+
+  function renderMonthGrid(trips) {
+    var gridContainer = el("monthDaysGrid");
+    if (!gridContainer) return;
+
+    var firstDay = new Date(currentYear, currentMonth, 1);
+    var lastDay = new Date(currentYear, currentMonth + 1, 0);
+
+    // Monday-based offset (0 = Mon, 6 = Sun)
+    var startingDayIdx = (firstDay.getDay() + 6) % 7;
+    var totalDaysInMonth = lastDay.getDate();
+
+    var todayDate = new Date();
+    var isCurrentMonthReal = (todayDate.getFullYear() === currentYear && todayDate.getMonth() === currentMonth);
+    var realTodayNum = todayDate.getDate();
+
+    var cellsHtml = "";
+
+    // Prev month padding cells
+    var prevMonthLastDay = new Date(currentYear, currentMonth, 0).getDate();
+    for (var p = startingDayIdx - 1; p >= 0; p--) {
+      var prevDayNum = prevMonthLastDay - p;
+      cellsHtml += '<div class="cal-day-cell is-other-month"><span class="text-[11px] font-bold text-gray-400">' + prevDayNum + '</span></div>';
+    }
+
+    // Current Month Cells
+    for (var day = 1; day <= totalDaysInMonth; day++) {
+      var isToday = isCurrentMonthReal && (day === realTodayNum);
+      var cellClass = "cal-day-cell" + (isToday ? " is-today" : "");
+      var dateStr = currentYear + "-" + String(currentMonth + 1).padStart(2, "0") + "-" + String(day).padStart(2, "0");
+
+      // Find trips active on this day
+      var dayTrips = trips.filter(function (t) {
+        var start = (t.start_date || "").slice(0, 10);
+        var end = (t.end_date || start).slice(0, 10);
+        return dateStr >= start && dateStr <= end;
+      });
+
+      var eventsHtml = dayTrips.map(function (t) {
+        var statusCls = getStatusEventClass(t.status);
+        var destName = (t.destinations && t.destinations[0] && (t.destinations[0].city_name || t.destinations[0].name)) || "Destination";
+        return '<div class="cal-event-bar ' + statusCls + '" data-trip-id="' + t.id + '" title="' + esc(t.title) + '">' +
+          '<i class="fas ' + getStatusIcon(t.status) + ' text-[9px]"></i>' +
+          '<span class="truncate">' + esc(t.title || destName) + '</span>' +
+        '</div>';
+      }).join("");
+
+      var todayBadge = isToday ? '<span class="px-1.5 py-0.5 rounded-full bg-amber-500 text-black text-[9px] font-black">Today</span>' : '';
+
+      cellsHtml += '<div class="' + cellClass + '">' +
+        '<div class="flex items-center justify-between mb-1">' +
+          '<span class="text-xs font-black ' + (isToday ? 'text-amber-600 dark:text-amber-400' : 'text-gray-700 dark:text-white/80') + '">' + day + '</span>' +
+          todayBadge +
+        '</div>' +
+        '<div class="space-y-1">' + eventsHtml + '</div>' +
+      '</div>';
+    }
+
+    // Next month padding cells to complete 35 cells
+    var filledCells = startingDayIdx + totalDaysInMonth;
+    var nextMonthDays = ( filledCells <= 35 ? 35 : 42 ) - filledCells;
+    for (var n = 1; n <= nextMonthDays; n++) {
+      cellsHtml += '<div class="cal-day-cell is-other-month"><span class="text-[11px] font-bold text-gray-400">' + n + '</span></div>';
+    }
+
+    gridContainer.innerHTML = cellsHtml;
+
+    // Wire Event Bar Clicks
+    gridContainer.querySelectorAll(".cal-event-bar").forEach(function (bar) {
+      bar.onclick = function (ev) {
+        ev.stopPropagation();
+        var id = Number(bar.getAttribute("data-trip-id"));
+        openTripDrawer(id);
+      };
+    });
+  }
+
+  function getStatusEventClass(status) {
+    var st = (status || "upcoming").toLowerCase();
+    if (st === "ongoing") return "bg-amber-500 text-black shadow-sm font-black";
+    if (st === "completed") return "bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30";
+    if (st === "canceled") return "bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-rose-500/30 opacity-60";
+    return "bg-sky-500/20 text-sky-700 dark:text-sky-300 border border-sky-500/30";
+  }
+
+  function getStatusIcon(status) {
+    var st = (status || "upcoming").toLowerCase();
+    if (st === "ongoing") return "fa-spinner fa-spin-slow";
+    if (st === "completed") return "fa-check-circle";
+    if (st === "canceled") return "fa-times-circle";
+    return "fa-plane-departure";
+  }
+
+  function renderAgendaList(trips) {
+    var container = el("agendaListView");
+    if (!container) return;
+
+    container.innerHTML = trips.map(function (t) {
+      var cover = resolveTripImage(t);
+      var dest = (t.destinations && t.destinations[0]) || {};
+      var destName = dest.city_name || dest.city || dest.name || "Global Destination";
+      var countryName = dest.country_name || dest.country || "International";
+      var statusBadgeCls = "status-badge-" + (t.status || "upcoming").toLowerCase();
+
+      return '<div class="p-5 rounded-2xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-amber-500/50 transition flex flex-col sm:flex-row items-center justify-between gap-4 cursor-pointer" onclick="window.openTripDrawer(' + t.id + ')">' +
+        '<div class="flex items-center gap-4 w-full sm:w-auto">' +
+          '<div class="w-16 h-16 rounded-2xl overflow-hidden bg-gray-200 shrink-0 shadow-md">' +
+            '<img src="' + esc(cover) + '" alt="' + esc(t.title) + '" class="w-full h-full object-cover" />' +
+          '</div>' +
+          '<div>' +
+            '<div class="flex items-center gap-2 mb-1">' +
+              '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ' + statusBadgeCls + '">' + esc(t.status || "Upcoming") + '</span>' +
+              '<span class="text-[11px] font-bold text-gray-400">' + (t.no_of_days || 5) + ' Days</span>' +
+            '</div>' +
+            '<h4 class="font-black text-sm text-gray-900 dark:text-white">' + esc(t.title) + '</h4>' +
+            '<span class="text-xs text-gray-500 dark:text-white/60"><i class="fas fa-location-dot text-amber-500 mr-1"></i>' + esc(destName) + ', ' + esc(countryName) + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 pt-3 sm:pt-0 border-gray-200 dark:border-white/10">' +
+          '<div class="text-right text-xs">' +
+            '<span class="font-extrabold text-gray-900 dark:text-white block">' + (t.start_date || "Aug 18").slice(0, 10) + ' → ' + (t.end_date || "Aug 24").slice(0, 10) + '</span>' +
+            '<span class="text-amber-500 font-bold text-[11px]">$' + Number(t.estimated_cost || t.budget || 1200).toLocaleString() + '</span>' +
+          '</div>' +
+          '<button type="button" class="px-4 py-2 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 hover:bg-amber-500 hover:text-black font-extrabold text-xs transition border border-amber-500/30 flex items-center gap-1.5">' +
+            '<span>Details</span> <i class="fas fa-arrow-right text-[10px]"></i>' +
+          '</button>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+  }
+
+  function renderUpcomingSidebar() {
+    var container = el("upcomingFeedList");
+    if (!container) return;
+
+    var upcoming = allTrips.filter(function (t) {
+      var st = (t.status || "upcoming").toLowerCase();
+      return st === "upcoming" || st === "ongoing";
+    }).slice(0, 4);
+
+    if (upcoming.length === 0) {
+      container.innerHTML = '<div class="py-6 text-center text-xs text-gray-400">No upcoming trips scheduled.</div>';
+      return;
+    }
+
+    container.innerHTML = upcoming.map(function (t) {
+      var cover = resolveTripImage(t);
+      var destName = (t.destinations && t.destinations[0] && (t.destinations[0].city_name || t.destinations[0].name)) || "Destination";
+      var statusBadgeCls = "status-badge-" + (t.status || "upcoming").toLowerCase();
+
+      return '<div class="p-3.5 rounded-2xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-amber-500/40 transition flex items-center justify-between gap-3 cursor-pointer" onclick="window.openTripDrawer(' + t.id + ')">' +
+        '<div class="flex items-center gap-3 min-w-0">' +
+          '<img src="' + esc(cover) + '" alt="' + esc(t.title) + '" class="w-10 h-10 rounded-xl object-cover shrink-0 shadow-sm" />' +
+          '<div class="min-w-0">' +
+            '<strong class="font-black text-xs text-gray-900 dark:text-white truncate block">' + esc(t.title) + '</strong>' +
+            '<span class="text-[10px] text-gray-400 font-medium block"><i class="far fa-calendar mr-1"></i>' + (t.start_date || "Aug 18").slice(0, 10) + '</span>' +
+          '</div>' +
+        '</div>' +
+        '<span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase shrink-0 ' + statusBadgeCls + '">' + esc(t.status || "Upcoming") + '</span>' +
+      '</div>';
+    }).join("");
+  }
+
+  function openTripDrawer(tripId) {
+    var drawer = el("trip-detail-drawer");
+    if (!drawer) return;
+
+    var trip = allTrips.find(function (t) { return t.id === tripId; });
+    if (!trip) return;
+
+    selectedTripForDrawer = trip;
+
+    var imgEl = el("drawerImage");
+    var titleEl = el("drawerTitle");
+    var statusEl = el("drawerStatusBadge");
+    var tagEl = el("drawerDestinationTag");
+    var descEl = el("drawerDescription");
+    var rangeEl = el("drawerDateRange");
+    var durationEl = el("drawerDuration");
+    var budgetEl = el("drawerBudget");
+    var travelersEl = el("drawerTravelers");
+    var hotelEl = el("drawerHotelInfo");
+    var transitEl = el("drawerTransitInfo");
+    var openBtn = el("drawerOpenBtn");
+    var editBtn = el("drawerEditBtn");
+
+    var dest = (trip.destinations && trip.destinations[0]) || {};
+    var destName = dest.city_name || dest.city || dest.name || "Global Destination";
+    var countryName = dest.country_name || dest.country || "International";
+
+    if (imgEl) imgEl.src = resolveTripImage(trip);
+    if (titleEl) titleEl.textContent = trip.title;
+    if (statusEl) {
+      statusEl.textContent = trip.status || "Upcoming";
+      statusEl.className = "px-3 py-1 rounded-full text-xs font-black uppercase status-badge-" + (trip.status || "upcoming").toLowerCase();
+    }
+    if (tagEl) tagEl.innerHTML = '<i class="fas fa-location-dot text-amber-400 mr-1"></i>' + esc(destName) + ', ' + esc(countryName);
+    if (descEl) descEl.textContent = trip.description || "Explore a custom curated travel itinerary for " + destName + ".";
+    if (rangeEl) rangeEl.textContent = (trip.start_date || "Aug 18, 2026").slice(0, 10) + " → " + (trip.end_date || "Aug 24, 2026").slice(0, 10);
+    if (durationEl) durationEl.textContent = (trip.no_of_days || 5) + " Days";
+    if (budgetEl) budgetEl.textContent = "$" + Number(trip.estimated_cost || trip.budget || 1600).toLocaleString();
+    if (travelersEl) travelersEl.textContent = (trip.no_of_travelers || 2) + " Traveler(s)";
+    if (hotelEl) hotelEl.textContent = (trip.hotels && trip.hotels[0] ? trip.hotels[0].name + " · Attached Stay" : "Curated Boutique Accommodation");
+    if (transitEl) transitEl.textContent = (trip.flights && trip.flights[0] ? trip.flights[0].airline : "Direct Flight & Airport Transfer");
+
+    if (openBtn) openBtn.href = "trip.html?id=" + trip.id;
+    if (editBtn) editBtn.href = "trip-form.html?id=" + trip.id;
+
+    drawer.classList.remove("hidden");
+  }
+
+  function closeDrawer() {
+    var drawer = el("trip-detail-drawer");
+    if (drawer) drawer.classList.add("hidden");
+  }
+
+  global.openTripDrawer = openTripDrawer;
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", start);

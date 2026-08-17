@@ -1,89 +1,159 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme-luxury>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Schedule & Availability · Itinari Dashboard</title>
-
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Trip Calendar & Schedule · Itinari</title>
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..900;1,14..32,300..900&display=swap" rel="stylesheet" />
 
   <!-- Font Awesome 6 Free -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
-  <!-- Shared App & Layout Styling -->
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Custom Stylesheets -->
+  <link rel="stylesheet" href="../assets/css/tokens.css" />
   <link rel="stylesheet" href="../assets/css/app.css" />
+  <link rel="stylesheet" href="../assets/css/components.css" />
+  <link rel="stylesheet" href="../assets/css/luxury-theme.css" />
 
   <style>
     :root {
-      --sched-bg: #F7F5F0;
-      --sched-card: #FFFFFF;
-      --sched-border: #EBE8E0;
-      --sched-text: #17181A;
-      --sched-accent: #F59E0B;
-      --sched-accent-soft: #FEF3C7;
+      --cal-bg: #FAF9F6;
+      --cal-card: #FFFFFF;
+      --cal-border: #E7E5E4;
+      --cal-text: #1C1917;
+      --cal-accent: #F59E0B;
+      --cal-accent-light: #FEF3C7;
     }
 
     html.dark {
-      --sched-bg: #0D0E10;
-      --sched-card: #16171A;
-      --sched-border: rgba(255, 255, 255, 0.08);
-      --sched-text: #FFFFFF;
-      --sched-accent: #F59E0B;
-      --sched-accent-soft: rgba(245, 158, 11, 0.15);
+      --cal-bg: #0A0A0C;
+      --cal-card: #121215;
+      --cal-border: rgba(255, 255, 255, 0.08);
+      --cal-text: #FAFAFA;
+      --cal-accent: #F59E0B;
+      --cal-accent-light: rgba(245, 158, 11, 0.15);
     }
 
     body {
-      background-color: var(--sched-bg);
-      color: var(--sched-text);
+      background-color: var(--cal-bg);
+      color: var(--cal-text);
       font-family: 'Inter', sans-serif;
-      transition: background-color 0.3s ease, color 0.3s ease;
+      transition: background-color 0.25s ease, color 0.25s ease;
     }
 
-    .sched-card {
-      background-color: var(--sched-card);
-      border: 1px solid var(--sched-border);
-      border-radius: 1.75rem;
+    .cal-shell {
+      max-width: 1320px;
+      margin: 0 auto;
+      padding: var(--space-6) var(--space-4) var(--space-12);
+    }
+
+    .cal-panel {
+      background-color: var(--cal-card);
+      border: 1px solid var(--cal-border);
+      border-radius: var(--radius-xl, 20px);
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
-      transition: all 0.25s ease;
     }
 
-    .sched-card:hover {
-      box-shadow: 0 14px 35px rgba(0, 0, 0, 0.06);
+    /* Status Badges */
+    .status-badge-upcoming {
+      background: rgba(56, 189, 248, 0.12);
+      color: #0284C7;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    html.dark .status-badge-upcoming {
+      color: #38BDF8;
+      background: rgba(56, 189, 248, 0.18);
     }
 
-    .time-slot-pill {
-      background: #FFFBEB;
-      border: 1px solid #FDE68A;
-      color: #92400E;
+    .status-badge-ongoing {
+      background: rgba(245, 158, 11, 0.15);
+      color: #D97706;
+      border: 1px solid rgba(245, 158, 11, 0.35);
     }
-
-    html.dark .time-slot-pill {
-      background: rgba(245, 158, 11, 0.12);
-      border-color: rgba(245, 158, 11, 0.3);
+    html.dark .status-badge-ongoing {
       color: #FBBF24;
+      background: rgba(245, 158, 11, 0.2);
     }
 
-    .golden-highlight-card {
-      background: linear-gradient(135deg, #FDE68A 0%, #F59E0B 100%);
-      color: #000000;
+    .status-badge-completed {
+      background: rgba(16, 185, 129, 0.12);
+      color: #059669;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    html.dark .status-badge-completed {
+      color: #34D399;
+      background: rgba(16, 185, 129, 0.18);
     }
 
-    .golden-highlight-card-subtle {
-      background: #FEF3C7;
-      color: #92400E;
-      border: 1px solid #FDE68A;
+    .status-badge-canceled {
+      background: rgba(239, 68, 68, 0.12);
+      color: #DC2626;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+    html.dark .status-badge-canceled {
+      color: #F87171;
+      background: rgba(239, 68, 68, 0.18);
     }
 
-    html.dark .golden-highlight-card-subtle {
-      background: rgba(245, 158, 11, 0.18);
-      color: #FCD34D;
-      border-color: rgba(245, 158, 11, 0.35);
+    /* Month Calendar Grid Cell Styling */
+    .cal-day-cell {
+      min-height: 110px;
+      background: var(--cal-card);
+      border-right: 1px solid var(--cal-border);
+      border-bottom: 1px solid var(--cal-border);
+      padding: 0.5rem;
+      transition: background-color 0.15s ease;
+    }
+    .cal-day-cell:hover {
+      background: rgba(245, 158, 11, 0.03);
+    }
+    .cal-day-cell.is-other-month {
+      opacity: 0.35;
+      background: rgba(0, 0, 0, 0.02);
+    }
+    html.dark .cal-day-cell.is-other-month {
+      background: rgba(255, 255, 255, 0.02);
+    }
+    .cal-day-cell.is-today {
+      background: var(--cal-accent-light);
+    }
+
+    /* Event Bar Spanning */
+    .cal-event-bar {
+      border-radius: 9999px;
+      padding: 0.2rem 0.55rem;
+      font-size: 0.72rem;
+      font-weight: 700;
+      line-height: 1.25;
+      margin-bottom: 0.25rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
+      transition: transform 0.15s ease, filter 0.15s ease;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .cal-event-bar:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+    }
+
+    /* Side Drawer Animation */
+    .side-drawer-backdrop {
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+    }
+    .side-drawer-panel {
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
   </style>
 
@@ -104,401 +174,285 @@
   <!-- Sidebar Navigation -->
   <nav class="sidebar" id="sidebar"></nav>
 
-  <!-- Main Content Wrapper -->
-  <main class="main flex-1 max-w-7xl mx-auto px-4 sm:px-6 py-6 w-full space-y-6">
-    
-    <!-- Top Header Bar & Month Tabs -->
-    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-2">
-      <div>
-        <div class="flex items-center gap-3">
-          <h1 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">Availability & Schedule</h1>
-          <span class="px-3 py-1 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 font-extrabold text-xs border border-amber-500/20" id="schedTripBadge">
-            Loading Trip…
-          </span>
-        </div>
-        <p class="text-xs text-gray-500 dark:text-white/60 mt-1">Manage daily travel agenda, pinned reminders, time slots, and companion activity.</p>
-      </div>
+  <!-- Main Shell -->
+  <main class="app__main pt-20" id="main-content-target">
+    <div class="cal-shell space-y-6">
 
-      <div class="flex items-center gap-3 flex-wrap">
-        <div class="flex items-center gap-1.5 bg-white dark:bg-[#16171A] p-1.5 rounded-full border border-gray-200 dark:border-white/10 text-xs font-bold shadow-sm" id="viewModeSelector">
-          <button type="button" class="view-mode-btn active px-4 py-1.5 rounded-full bg-amber-500 text-black font-extrabold shadow-sm transition">Day view</button>
-          <button type="button" class="view-mode-btn px-4 py-1.5 rounded-full text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition">Week view</button>
-          <button type="button" class="view-mode-btn px-4 py-1.5 rounded-full text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition">Month view</button>
+      <!-- Page Top Header Bar -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2.5">
+            <h1 class="text-2xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tight">Trips Calendar & Schedule</h1>
+            <span class="px-3 py-1 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 font-extrabold text-xs border border-amber-500/25" id="calendarTripCountBadge">
+              Loading Trips…
+            </span>
+          </div>
+          <p class="text-xs text-gray-500 dark:text-white/60 mt-1">Organize, track multi-day itineraries, and manage upcoming travel schedules.</p>
         </div>
 
-        <button type="button" id="open-add-modal-btn" class="px-5 py-2.5 rounded-full bg-amber-500 hover:bg-amber-400 text-black font-black text-xs shadow-lg shadow-amber-500/20 transition flex items-center gap-2 cursor-pointer shrink-0">
+        <a href="planner.html" class="px-6 py-2.5 rounded-full bg-amber-500 hover:bg-amber-400 text-black font-black text-xs shadow-lg shadow-amber-500/20 transition flex items-center gap-2 shrink-0">
           <i class="fas fa-plus"></i>
-          <span>Add Activity</span>
-        </button>
+          <span>Plan a Trip</span>
+        </a>
       </div>
-    </div>
 
-    <!-- Month Navigation Bar -->
-    <div class="sched-card p-3 flex items-center justify-between gap-2 overflow-x-auto no-scrollbar text-xs font-extrabold">
-      <div class="flex items-center gap-1 sm:gap-2 min-w-max" id="monthTabsList">
-        <button class="px-4 py-2 rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-white transition">December</button>
-        <button class="px-4 py-2 rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-white transition">January</button>
-        <button class="px-4 py-2 rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-white transition">February</button>
-        <button class="px-4 py-2 rounded-full bg-amber-500 text-black font-black shadow-md">March 2026</button>
-        <button class="px-4 py-2 rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-white transition">April</button>
-        <button class="px-4 py-2 rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-white transition">May</button>
-        <button class="px-4 py-2 rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-white transition">June</button>
-        <button class="px-4 py-2 rounded-full text-gray-400 hover:text-gray-700 dark:hover:text-white transition">July</button>
-      </div>
-    </div>
-
-    <!-- Main 3-Column Dashboard Layout (Matching References) -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-      
-      <!-- COLUMN 1: Weekly Pinned & Mini Calendar (3 cols on lg) -->
-      <div class="lg:col-span-3 space-y-6">
-        
-        <!-- Weekly Pinned Cards -->
-        <div class="sched-card p-5 space-y-4">
-          <div class="flex items-center justify-between">
-            <h3 class="text-sm font-black text-gray-900 dark:text-white">Weekly Pinned</h3>
-            <a href="#" class="text-[11px] font-bold text-amber-500 hover:underline">View all</a>
+      <!-- Filter Controls & Search Bar -->
+      <div class="cal-panel p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-2 w-full md:w-auto overflow-x-auto no-scrollbar">
+          <!-- Search Input -->
+          <div class="relative min-w-[220px]">
+            <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+            <input type="text" id="calendar-search" placeholder="Search trips or places…" class="w-full pl-9 pr-4 py-2 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs text-gray-900 dark:text-white focus:outline-none focus:border-amber-500" />
           </div>
 
-          <div class="space-y-3" id="weeklyPinnedList">
-            <!-- Pinned Item 1 -->
-            <div class="p-4 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 space-y-2 hover:border-amber-500/40 transition">
-              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-500 flex items-center justify-center text-xs font-black shrink-0">
-                  <i class="fas fa-stethoscope"></i>
-                </div>
-                <div>
-                  <h4 class="font-black text-xs text-gray-900 dark:text-white leading-snug">Call doctor for tests</h4>
-                  <span class="text-[10px] text-gray-400 font-medium">15 Mar 2026 - 9:00 AM</span>
-                </div>
-              </div>
-              <span class="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-300 font-extrabold text-[9px] inline-block uppercase">Personal</span>
-              <p class="text-[11px] text-gray-500 dark:text-white/60 leading-normal">Ask for blood tests and GYM health certificate.</p>
-            </div>
-
-            <!-- Pinned Item 2 -->
-            <div class="p-4 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 flex items-center justify-between gap-3 hover:border-amber-500/40 transition">
-              <div class="flex items-center gap-3">
-                <div class="w-8 h-8 rounded-xl bg-rose-500/15 text-rose-500 flex items-center justify-center text-xs font-black shrink-0">
-                  <i class="fas fa-cake-candles"></i>
-                </div>
-                <div>
-                  <h4 class="font-black text-xs text-gray-900 dark:text-white leading-snug">Beatrice's bday</h4>
-                  <span class="text-[10px] font-bold text-gray-400">22 Mar 2026</span>
-                </div>
-              </div>
-              <i class="fas fa-chevron-right text-[10px] text-gray-400"></i>
-            </div>
-
-            <!-- Add New Pin Button -->
-            <button type="button" id="add-pin-btn" class="w-full py-3 rounded-2xl border-2 border-dashed border-gray-200 dark:border-white/10 hover:border-amber-500 text-gray-500 dark:text-white/60 hover:text-amber-500 font-extrabold text-xs transition flex items-center justify-center gap-2 cursor-pointer">
-              <i class="fas fa-plus text-amber-500"></i>
-              <span>Add new weekly pin</span>
-            </button>
+          <!-- Status Filter Pills -->
+          <div class="flex items-center gap-1 text-xs font-extrabold" id="statusFilterPills">
+            <button type="button" data-status="all" class="status-pill active px-3.5 py-1.5 rounded-full bg-amber-500 text-black shadow-sm transition">All</button>
+            <button type="button" data-status="upcoming" class="status-pill px-3.5 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition">Upcoming</button>
+            <button type="button" data-status="ongoing" class="status-pill px-3.5 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition">Ongoing</button>
+            <button type="button" data-status="completed" class="status-pill px-3.5 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition">Completed</button>
+            <button type="button" data-status="canceled" class="status-pill px-3.5 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition">Canceled</button>
           </div>
         </div>
 
-        <!-- Mini Month Calendar -->
-        <div class="sched-card p-5 space-y-4">
-          <div class="flex items-center justify-between">
-            <h4 class="text-xs font-black text-gray-900 dark:text-white">March, 2026</h4>
-            <div class="flex items-center gap-1 text-xs text-gray-400">
-              <button class="w-6 h-6 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 flex items-center justify-center"><i class="fas fa-chevron-left text-[9px]"></i></button>
-              <button class="w-6 h-6 rounded-full hover:bg-gray-100 dark:hover:bg-white/10 flex items-center justify-center"><i class="fas fa-chevron-right text-[9px]"></i></button>
-            </div>
-          </div>
+        <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
+          <select id="styleFilterSelect" class="px-3.5 py-2 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs font-bold text-gray-700 dark:text-white/80 focus:outline-none">
+            <option value="all">All Styles</option>
+            <option value="cultural">Cultural</option>
+            <option value="adventure">Adventure</option>
+            <option value="luxury">Luxury</option>
+            <option value="relaxation">Relaxation</option>
+          </select>
 
-          <div class="grid grid-cols-7 gap-1 text-center text-[10px] font-bold text-gray-400 uppercase pb-1">
-            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
-          </div>
-
-          <div class="grid grid-cols-7 gap-1 text-center text-xs font-bold" id="miniCalendarDays">
-            <span class="p-1.5 text-gray-300 dark:text-white/20">1</span>
-            <span class="p-1.5 text-gray-300 dark:text-white/20">2</span>
-            <span class="p-1.5 text-gray-300 dark:text-white/20">3</span>
-            <span class="p-1.5 text-gray-700 dark:text-white/80">4</span>
-            <span class="p-1.5 text-gray-700 dark:text-white/80">5</span>
-            <span class="p-1.5 text-gray-700 dark:text-white/80">6</span>
-            <span class="p-1.5 text-gray-700 dark:text-white/80">7</span>
-
-            <span class="p-1.5 text-gray-700 dark:text-white/80">8</span>
-            <span class="p-1.5 text-gray-700 dark:text-white/80">9</span>
-            <span class="p-1.5 text-gray-700 dark:text-white/80">10</span>
-            <span class="p-1.5 rounded-full bg-amber-500 text-black font-black shadow-md">11</span>
-            <span class="p-1.5 text-gray-700 dark:text-white/80">12</span>
-            <span class="p-1.5 text-gray-700 dark:text-white/80">13</span>
-            <span class="p-1.5 text-gray-700 dark:text-white/80">14</span>
-          </div>
+          <button type="button" id="clear-filters-btn" class="text-xs font-bold text-amber-500 hover:underline cursor-pointer">
+            <i class="fas fa-rotate-left mr-1"></i> Clear Filters
+          </button>
         </div>
-
       </div>
 
-      <!-- COLUMN 2: Today's Schedule Timeline (6 cols on lg) -->
-      <div class="lg:col-span-6 space-y-6">
-        
-        <div class="sched-card p-6 space-y-6">
-          <!-- Timeline Header -->
-          <div class="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-white/10">
-            <div>
-              <span class="text-[10px] font-black uppercase text-amber-500 tracking-wider block">Timeline Agenda</span>
-              <h2 class="text-xl font-black text-gray-900 dark:text-white flex items-center gap-2">
-                Today's schedule
-              </h2>
+      <!-- Main Layout: Sidebar (Upcoming & Filters) + Main Calendar Container -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+        <!-- LEFT SIDEBAR: Upcoming Trips Feed & Extra Controls (4 cols on lg) -->
+        <aside class="lg:col-span-4 space-y-6">
+          
+          <!-- Upcoming Trips Feed Card -->
+          <div class="cal-panel p-5 space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-white/10">
+              <h3 class="text-sm font-black text-gray-900 dark:text-white flex items-center gap-2">
+                <i class="fas fa-clock text-amber-500"></i> Upcoming Trips Feed
+              </h3>
+              <a href="trips.html" class="text-[11px] font-bold text-amber-500 hover:underline">View All</a>
             </div>
 
-            <div class="flex items-center gap-2">
-              <span class="text-sm font-extrabold text-amber-500" id="currentDayLabel">Thursday 11</span>
+            <div class="space-y-3" id="upcomingFeedList">
+              <!-- Skeleton loader -->
+              <div class="p-3.5 rounded-2xl bg-gray-100 dark:bg-white/5 animate-pulse h-20"></div>
+              <div class="p-3.5 rounded-2xl bg-gray-100 dark:bg-white/5 animate-pulse h-20"></div>
+            </div>
+          </div>
+
+          <!-- Calendar Overview Summary -->
+          <div class="cal-panel p-5 space-y-3 bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent border-amber-500/25">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-black text-amber-600 dark:text-amber-400 uppercase tracking-wider">Quick Legend</span>
+              <i class="fas fa-circle-info text-amber-500 text-xs"></i>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-[11px] font-bold">
+              <span class="flex items-center gap-1.5 text-sky-600 dark:text-sky-400"><i class="fas fa-circle text-[8px]"></i> Upcoming Trip</span>
+              <span class="flex items-center gap-1.5 text-amber-600 dark:text-amber-400"><i class="fas fa-circle text-[8px]"></i> Ongoing Trip</span>
+              <span class="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400"><i class="fas fa-circle text-[8px]"></i> Completed</span>
+              <span class="flex items-center gap-1.5 text-rose-600 dark:text-rose-400"><i class="fas fa-circle text-[8px]"></i> Canceled</span>
+            </div>
+          </div>
+
+        </aside>
+
+        <!-- MAIN CALENDAR CONTAINER (8 cols on lg) -->
+        <section class="lg:col-span-8 space-y-4">
+          
+          <!-- Calendar Header Controls -->
+          <div class="cal-panel p-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            
+            <!-- Month/Year Navigation -->
+            <div class="flex items-center gap-3">
+              <div class="flex items-center gap-1">
+                <button type="button" id="prev-month-btn" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 hover:bg-amber-500 hover:text-black transition flex items-center justify-center cursor-pointer" title="Previous Month">
+                  <i class="fas fa-chevron-left text-xs"></i>
+                </button>
+                <button type="button" id="next-month-btn" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 hover:bg-amber-500 hover:text-black transition flex items-center justify-center cursor-pointer" title="Next Month">
+                  <i class="fas fa-chevron-right text-xs"></i>
+                </button>
+              </div>
+
+              <h2 class="text-lg sm:text-xl font-black text-gray-900 dark:text-white" id="calendarHeading">August 2026</h2>
+
+              <button type="button" id="today-btn" class="px-3 py-1 rounded-full bg-gray-100 dark:bg-white/10 hover:bg-amber-500/20 text-gray-700 dark:text-white/80 hover:text-amber-500 font-extrabold text-xs transition border border-gray-200 dark:border-white/10 cursor-pointer">
+                Today
+              </button>
+            </div>
+
+            <!-- Month Selectors & View Switcher -->
+            <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
               <div class="flex items-center gap-1 text-xs">
-                <button type="button" id="prev-day-btn" class="w-7 h-7 rounded-full bg-gray-100 dark:bg-white/10 hover:bg-amber-500 hover:text-black transition flex items-center justify-center cursor-pointer">
-                  <i class="fas fa-chevron-left text-[10px]"></i>
-                </button>
-                <button type="button" id="next-day-btn" class="w-7 h-7 rounded-full bg-gray-100 dark:bg-white/10 hover:bg-amber-500 hover:text-black transition flex items-center justify-center cursor-pointer">
-                  <i class="fas fa-chevron-right text-[10px]"></i>
-                </button>
-              </div>
-            </div>
-          </div>
+                <select id="monthSelect" class="px-3 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs font-bold text-gray-700 dark:text-white/80 focus:outline-none">
+                  <option value="0">January</option>
+                  <option value="1">February</option>
+                  <option value="2">March</option>
+                  <option value="3">April</option>
+                  <option value="4">May</option>
+                  <option value="5">June</option>
+                  <option value="6">July</option>
+                  <option value="7" selected>August</option>
+                  <option value="8">September</option>
+                  <option value="9">October</option>
+                  <option value="10">November</option>
+                  <option value="11">December</option>
+                </select>
 
-          <!-- Schedule Timeline List (Matching References) -->
-          <div class="space-y-4" id="scheduleTimeline">
-
-            <!-- Item 1: Morning Wakeup (Golden Active Pill) -->
-            <div class="p-4 rounded-2xl bg-amber-400 text-black shadow-lg shadow-amber-400/20 flex items-center justify-between gap-4 font-bold text-xs transition transform hover:scale-[1.01]">
-              <div class="flex items-center gap-3">
-                <span class="w-6 h-6 rounded-full bg-black/10 flex items-center justify-center text-xs"><i class="fas fa-check text-[10px]"></i></span>
-                <span class="font-extrabold text-sm">Wake up Buddy</span>
-              </div>
-              <span class="px-3 py-1 rounded-full bg-black/10 font-black text-[11px]">7:00 AM</span>
-            </div>
-
-            <!-- Item 2: Morning Yoga (Warm Gold Pill) -->
-            <div class="p-4 rounded-2xl bg-amber-200 dark:bg-amber-500/20 text-gray-900 dark:text-amber-200 border border-amber-300 dark:border-amber-500/30 flex items-center justify-between gap-4 font-bold text-xs">
-              <div class="flex items-center gap-3">
-                <span class="w-6 h-6 rounded-full bg-amber-500/20 flex items-center justify-center text-xs text-amber-600 dark:text-amber-400"><i class="fas fa-person-walking"></i></span>
-                <span class="font-extrabold text-sm">Morning Yoga & Breakfast</span>
-              </div>
-              <span class="px-3 py-1 rounded-full bg-amber-500/20 font-black text-[11px]">8:00 AM</span>
-            </div>
-
-            <!-- Item 3: Daily Workout Checklist -->
-            <div class="p-5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 space-y-3">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                  <span class="w-8 h-8 rounded-xl bg-amber-500/15 text-amber-500 flex items-center justify-center text-xs font-black"><i class="fas fa-dumbbell"></i></span>
-                  <strong class="font-black text-sm text-gray-900 dark:text-white">Daily workout</strong>
-                </div>
-                <span class="px-3 py-1 rounded-full bg-gray-200 dark:bg-white/10 text-gray-700 dark:text-white/80 font-bold text-[11px]">9:00 AM</span>
+                <select id="yearSelect" class="px-3 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs font-bold text-gray-700 dark:text-white/80 focus:outline-none">
+                  <option value="2025">2025</option>
+                  <option value="2026" selected>2026</option>
+                  <option value="2027">2027</option>
+                </select>
               </div>
 
-              <div class="pl-11 space-y-1.5 text-xs text-gray-600 dark:text-white/70">
-                <div class="flex items-center gap-2"><i class="far fa-square text-amber-500"></i> <span>Squat 10x3</span></div>
-                <div class="flex items-center gap-2"><i class="far fa-square text-amber-500"></i> <span>Push up 10x3</span></div>
-                <div class="flex items-center gap-2"><i class="far fa-square text-amber-500"></i> <span>Core Plank 60s</span></div>
+              <!-- View Switcher -->
+              <div class="flex items-center gap-1 p-1 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs font-bold" id="viewSwitcher">
+                <button type="button" data-view="month" class="view-btn active px-3 py-1 rounded-full bg-amber-500 text-black font-extrabold shadow-sm transition">Month</button>
+                <button type="button" data-view="week" class="view-btn px-3 py-1 rounded-full text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition">Week</button>
+                <button type="button" data-view="list" class="view-btn px-3 py-1 rounded-full text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition">List</button>
               </div>
-            </div>
-
-            <!-- Item 4: Project Kickoff / Flight Transfer -->
-            <div class="p-5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 space-y-3">
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                  <span class="w-8 h-8 rounded-xl bg-sky-500/15 text-sky-500 flex items-center justify-center text-xs font-black"><i class="fas fa-plane-departure"></i></span>
-                  <div>
-                    <strong class="font-black text-sm text-gray-900 dark:text-white block">Shift project kick off pt.1</strong>
-                    <span class="text-[11px] text-gray-400">Zoom call & itinerary sync with Elena and Jordan</span>
-                  </div>
-                </div>
-                <span class="px-3 py-1 rounded-full bg-gray-200 dark:bg-white/10 text-gray-700 dark:text-white/80 font-bold text-[11px]">10:00 AM - 11:30 AM</span>
-              </div>
-
-              <div class="pl-11 flex items-center gap-2 pt-1">
-                <div class="flex -space-x-2">
-                  <span class="w-6 h-6 rounded-full bg-blue-500 text-white text-[9px] font-bold flex items-center justify-center border-2 border-white dark:border-[#16171A]">M</span>
-                  <span class="w-6 h-6 rounded-full bg-rose-500 text-white text-[9px] font-bold flex items-center justify-center border-2 border-white dark:border-[#16171A]">A</span>
-                  <span class="w-6 h-6 rounded-full bg-emerald-500 text-white text-[9px] font-bold flex items-center justify-center border-2 border-white dark:border-[#16171A]">S</span>
-                </div>
-                <span class="text-[11px] text-gray-500 dark:text-white/60 font-medium">+3 attendees</span>
-              </div>
-            </div>
-
-            <!-- Item 5: Skype Sushi / Lunch -->
-            <div class="p-5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 flex items-center justify-between gap-4">
-              <div class="flex items-center gap-3">
-                <span class="w-8 h-8 rounded-xl bg-rose-500/15 text-rose-500 flex items-center justify-center text-xs font-black"><i class="fas fa-utensils"></i></span>
-                <div>
-                  <strong class="font-black text-sm text-gray-900 dark:text-white block">Skype Sushi Dining</strong>
-                  <span class="text-[11px] text-gray-400">Lunch with Ally & itinerary review</span>
-                </div>
-              </div>
-              <span class="px-3 py-1 rounded-full bg-gray-200 dark:bg-white/10 text-gray-700 dark:text-white/80 font-bold text-[11px]">12:30 PM</span>
-            </div>
-
-            <!-- Item 6: Dribbble Shot / Itinerary Update -->
-            <div class="p-5 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/10 flex items-center justify-between gap-4">
-              <div class="flex items-center gap-3">
-                <span class="w-8 h-8 rounded-xl bg-purple-500/15 text-purple-500 flex items-center justify-center text-xs font-black"><i class="fas fa-laptop-code"></i></span>
-                <div>
-                  <strong class="font-black text-sm text-gray-900 dark:text-white block">Dribbble Shot & Travel Notes</strong>
-                  <span class="text-[11px] text-gray-400">Working on new schedule layout</span>
-                </div>
-              </div>
-              <span class="px-3 py-1 rounded-full bg-gray-200 dark:bg-white/10 text-gray-700 dark:text-white/80 font-bold text-[11px]">2:00 PM</span>
             </div>
 
           </div>
-        </div>
 
-      </div>
-
-      <!-- COLUMN 3: Profile Card, Audio Player & Side Widgets (3 cols on lg) -->
-      <div class="lg:col-span-3 space-y-6">
-        
-        <!-- User Profile Card (Matching Ref 1 & 2) -->
-        <div class="sched-card p-5 space-y-4">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <span class="w-11 h-11 rounded-full bg-amber-500 text-black font-black text-lg flex items-center justify-center shadow-md">MC</span>
-              <div>
-                <strong class="font-black text-sm text-gray-900 dark:text-white block" id="profileUserName">Mark Collins</strong>
-                <a href="profile-settings.html" class="text-[11px] font-bold text-amber-500 hover:underline">My settings</a>
+          <!-- CALENDAR VIEW CONTAINER -->
+          <div class="cal-panel overflow-hidden" id="calendarViewContainer">
+            
+            <!-- MONTHLY GRID VIEW -->
+            <div id="monthGridView" class="w-full">
+              <!-- Weekday Headers -->
+              <div class="grid grid-cols-7 text-center text-xs font-black text-gray-500 dark:text-white/60 bg-gray-100/70 dark:bg-white/5 border-b border-gray-200 dark:border-white/10 py-2.5">
+                <span>Mon</span>
+                <span>Tue</span>
+                <span>Wed</span>
+                <span>Thu</span>
+                <span>Fri</span>
+                <span>Sat</span>
+                <span>Sun</span>
               </div>
-            </div>
-            <span class="px-2.5 py-1 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-300 font-black text-[10px] uppercase">19 LVL</span>
-          </div>
 
-          <div class="grid grid-cols-2 gap-3 pt-2 text-center text-xs border-t border-gray-100 dark:border-white/10">
-            <div class="p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 space-y-0.5">
-              <span class="text-[10px] text-gray-400 font-bold uppercase block">Travelers</span>
-              <strong class="font-black text-sm text-gray-900 dark:text-white">64</strong>
-            </div>
-            <div class="p-2.5 rounded-xl bg-gray-50 dark:bg-white/5 space-y-0.5">
-              <span class="text-[10px] text-gray-400 font-bold uppercase block">Trips</span>
-              <strong class="font-black text-sm text-gray-900 dark:text-white">3</strong>
-            </div>
-          </div>
-        </div>
-
-        <!-- Audio Travel Guide / Player Widget (Matching Ref 1) -->
-        <div class="sched-card p-5 space-y-4">
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-2xl bg-red-500 text-white font-black flex items-center justify-center shadow-md">
-                <i class="fas fa-music"></i>
-              </div>
-              <div>
-                <strong class="font-black text-xs text-gray-900 dark:text-white block">Godzilla</strong>
-                <span class="text-[10px] text-gray-400 font-medium block">Eminem · Tokyo Guide</span>
-              </div>
-            </div>
-            <button class="text-gray-400 hover:text-gray-600 dark:hover:text-white text-xs"><i class="fas fa-ellipsis-v"></i></button>
-          </div>
-
-          <div class="space-y-1.5">
-            <div class="w-full h-1.5 rounded-full bg-gray-200 dark:bg-white/10 overflow-hidden">
-              <div class="h-full bg-amber-500 rounded-full w-[65%]"></div>
-            </div>
-            <div class="flex justify-between text-[10px] font-bold text-gray-400">
-              <span>03:15</span>
-              <span>00:45</span>
-            </div>
-          </div>
-
-          <div class="flex items-center justify-center gap-4 text-xs pt-1">
-            <button class="text-gray-400 hover:text-amber-500 transition"><i class="fas fa-backward-step"></i></button>
-            <button class="w-8 h-8 rounded-full bg-amber-500 text-black flex items-center justify-center shadow-md hover:scale-105 transition"><i class="fas fa-play text-[10px]"></i></button>
-            <button class="text-gray-400 hover:text-amber-500 transition"><i class="fas fa-forward-step"></i></button>
-          </div>
-        </div>
-
-        <!-- Live Clock & Weather Widget (Matching Ref 1) -->
-        <div class="sched-card p-5 space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="text-2xl font-black text-gray-900 dark:text-white">8:48 AM</span>
-            <i class="fas fa-cloud-sun text-amber-500 text-lg"></i>
-          </div>
-          <span class="text-xs text-gray-500 dark:text-white/60 font-medium block">🌤️ Now is almost Sunny</span>
-        </div>
-
-        <!-- Promo Banner Widget (Matching Ref 1) -->
-        <div class="sched-card p-5 space-y-3 bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent border border-amber-500/30">
-          <h4 class="font-black text-sm text-gray-900 dark:text-white leading-tight">Unleash the freelance super power</h4>
-          <p class="text-xs text-gray-500 dark:text-white/60">Unlimited task, premium features and much more.</p>
-          <div class="flex items-center justify-between pt-1">
-            <span class="w-8 h-8 rounded-full bg-black text-white dark:bg-white dark:text-black flex items-center justify-center font-bold text-xs"><i class="fas fa-user-ninja"></i></span>
-            <a href="../plans.html" class="w-8 h-8 rounded-full bg-amber-500 text-black flex items-center justify-center font-black shadow-md hover:scale-105 transition">
-              <i class="fas fa-arrow-right text-xs"></i>
-            </a>
-          </div>
-        </div>
-
-        <!-- Travel Companion Activity Feed (Matching Ref 2) -->
-        <div class="sched-card p-5 space-y-4">
-          <h4 class="text-xs font-black text-gray-900 dark:text-white">Travelers Feed</h4>
-          <div class="space-y-3 text-xs" id="travelersFeed">
-            <div class="flex items-start gap-3">
-              <span class="w-7 h-7 rounded-full bg-blue-600 text-white font-bold text-[10px] flex items-center justify-center shrink-0">MS</span>
-              <div>
-                <strong class="font-black text-gray-900 dark:text-white block text-[11px]">Michael Scott</strong>
-                <span class="text-gray-500 dark:text-white/60 block text-[10px]">Has completed his flight booking.</span>
+              <!-- 35 Day Cells Grid -->
+              <div class="grid grid-cols-7" id="monthDaysGrid">
+                <!-- Dynamically rendered cells -->
               </div>
             </div>
 
-            <div class="flex items-start gap-3">
-              <span class="w-7 h-7 rounded-full bg-emerald-600 text-white font-bold text-[10px] flex items-center justify-center shrink-0">AJ</span>
-              <div>
-                <strong class="font-black text-gray-900 dark:text-white block text-[11px]">Anthony Joe</strong>
-                <span class="text-gray-500 dark:text-white/60 block text-[10px]">Sent you his holiday notes.</span>
-              </div>
+            <!-- AGENDA / LIST VIEW (Mobile & List Mode) -->
+            <div id="agendaListView" class="hidden p-6 space-y-4">
+              <!-- Dynamically rendered list -->
             </div>
+
+            <!-- EMPTY STATE CONTAINER -->
+            <div id="calendarEmptyState" class="hidden py-16 px-6 text-center space-y-4">
+              <div class="w-16 h-16 rounded-full bg-amber-500/15 text-amber-500 flex items-center justify-center mx-auto text-2xl shadow-inner">
+                <i class="fas fa-calendar-xmark"></i>
+              </div>
+              <div class="space-y-1">
+                <h3 class="text-xl font-black text-gray-900 dark:text-white">No trips scheduled</h3>
+                <p class="text-xs text-gray-500 dark:text-white/60 max-w-sm mx-auto">Expand your horizon and plan your next journey with our interactive trip builder.</p>
+              </div>
+              <a href="planner.html" class="px-6 py-2.5 rounded-full bg-amber-500 hover:bg-amber-400 text-black font-black text-xs shadow-lg shadow-amber-500/20 inline-flex items-center gap-2">
+                <i class="fas fa-plus"></i> Plan a Trip
+              </a>
+            </div>
+
           </div>
-        </div>
+
+        </section>
 
       </div>
 
     </div>
-
   </main>
 
-  <!-- Add Activity Modal -->
-  <div id="add-activity-modal" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-[#16171A] border border-gray-200 dark:border-white/10 rounded-3xl p-6 max-w-md w-full space-y-5 shadow-2xl">
-      <div class="flex items-center justify-between">
-        <h3 class="text-lg font-black text-gray-900 dark:text-white flex items-center gap-2">
-          <i class="fas fa-calendar-plus text-amber-500"></i> Add Schedule Activity
-        </h3>
-        <button type="button" id="close-activity-modal-btn" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-white/60 hover:text-gray-900 dark:hover:text-white flex items-center justify-center"><i class="fas fa-times"></i></button>
+  <!-- TRIP DETAILS SIDE DRAWER / MODAL -->
+  <div id="trip-detail-drawer" class="fixed inset-0 z-50 hidden flex justify-end">
+    <!-- Backdrop -->
+    <div id="drawer-backdrop" class="side-drawer-backdrop absolute inset-0"></div>
+
+    <!-- Drawer Panel -->
+    <div id="drawer-panel" class="side-drawer-panel relative w-full max-w-md bg-white dark:bg-[#121215] border-l border-gray-200 dark:border-white/10 h-full shadow-2xl overflow-y-auto p-6 space-y-6 flex flex-col justify-between">
+      <div class="space-y-6">
+        <!-- Top Drawer Bar -->
+        <div class="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-white/10">
+          <div class="flex items-center gap-2">
+            <span id="drawerStatusBadge" class="px-3 py-1 rounded-full text-xs font-black uppercase">Upcoming</span>
+            <span class="text-xs text-gray-400 font-bold" id="drawerTripId">Trip #12</span>
+          </div>
+          <button type="button" id="close-drawer-btn" class="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/10 text-gray-500 dark:text-white/60 hover:text-gray-900 dark:hover:text-white flex items-center justify-center cursor-pointer">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+
+        <!-- Cover Image -->
+        <div class="relative h-48 w-full rounded-2xl overflow-hidden bg-gray-200 dark:bg-white/10 shadow-md">
+          <img id="drawerImage" src="" alt="Trip Cover" class="w-full h-full object-cover" />
+          <span class="absolute bottom-3 left-3 bg-black/70 text-amber-300 font-black text-[11px] px-3 py-1 rounded-full backdrop-blur-md" id="drawerDestinationTag">
+            <i class="fas fa-location-dot text-amber-400 mr-1"></i> Cairo, Egypt
+          </span>
+        </div>
+
+        <!-- Title & Metadata -->
+        <div class="space-y-2">
+          <h2 class="text-2xl font-black text-gray-900 dark:text-white leading-tight" id="drawerTitle">Trip Title</h2>
+          <p class="text-xs text-gray-500 dark:text-white/60 leading-relaxed" id="drawerDescription">Trip description will appear here.</p>
+        </div>
+
+        <!-- Key Details Grid -->
+        <div class="grid grid-cols-2 gap-3 text-xs">
+          <div class="p-3.5 rounded-2xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 space-y-1">
+            <span class="text-[10px] font-bold text-amber-500 uppercase tracking-wider block"><i class="far fa-calendar mr-1"></i> Date Range</span>
+            <strong class="font-extrabold text-gray-900 dark:text-white block" id="drawerDateRange">Aug 18 → Aug 24</strong>
+            <span class="text-[11px] text-gray-500 dark:text-white/60" id="drawerDuration">7 Days</span>
+          </div>
+
+          <div class="p-3.5 rounded-2xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 space-y-1">
+            <span class="text-[10px] font-bold text-amber-500 uppercase tracking-wider block"><i class="fas fa-wallet mr-1"></i> Budget / Price</span>
+            <strong class="font-extrabold text-gray-900 dark:text-white block" id="drawerBudget">$1,600</strong>
+            <span class="text-[11px] text-gray-500 dark:text-white/60" id="drawerTravelers">2 Travelers</span>
+          </div>
+        </div>
+
+        <!-- Accommodations & Transportation Summary -->
+        <div class="space-y-3 pt-2 border-t border-gray-100 dark:border-white/10 text-xs">
+          <div class="p-3.5 rounded-2xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 space-y-1">
+            <span class="text-[10px] font-bold text-amber-500 uppercase tracking-wider block"><i class="fas fa-hotel mr-1"></i> Accommodation</span>
+            <span class="font-bold text-gray-900 dark:text-white block" id="drawerHotelInfo">Lofoten Luxury Lodge · 5 Nights</span>
+          </div>
+
+          <div class="p-3.5 rounded-2xl bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 space-y-1">
+            <span class="text-[10px] font-bold text-amber-500 uppercase tracking-wider block"><i class="fas fa-plane-departure mr-1"></i> Transportation</span>
+            <span class="font-bold text-gray-900 dark:text-white block" id="drawerTransitInfo">Flight SK-402 · Direct Transfer</span>
+          </div>
+        </div>
       </div>
 
-      <form id="activity-form" class="space-y-4 text-xs">
-        <div class="space-y-1">
-          <label class="font-bold text-gray-700 dark:text-white/80">Activity Title</label>
-          <input type="text" id="act-title" required placeholder="e.g. Morning Yoga, Guided Museum Tour" class="w-full px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-300 dark:border-white/10 text-gray-900 dark:text-white focus:outline-none focus:border-amber-500" />
+      <!-- Action Buttons -->
+      <div class="pt-4 border-t border-gray-100 dark:border-white/10 space-y-2">
+        <div class="flex items-center gap-2">
+          <a href="#" id="drawerOpenBtn" class="flex-1 py-2.5 rounded-full bg-amber-500 hover:bg-amber-400 text-black font-black text-xs text-center shadow-lg transition flex items-center justify-center gap-2">
+            <i class="fas fa-arrow-right-to-bracket"></i> View Full Trip
+          </a>
+          <a href="#" id="drawerEditBtn" class="py-2.5 px-4 rounded-full bg-gray-100 dark:bg-white/10 hover:bg-gray-200 dark:hover:bg-white/20 text-gray-900 dark:text-white font-bold text-xs transition">
+            <i class="fas fa-pen-to-square"></i> Edit
+          </a>
         </div>
-
-        <div class="grid grid-cols-2 gap-3">
-          <div class="space-y-1">
-            <label class="font-bold text-gray-700 dark:text-white/80">Time Slot</label>
-            <input type="text" id="act-time" placeholder="e.g. 9:00 AM" class="w-full px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-300 dark:border-white/10 text-gray-900 dark:text-white focus:outline-none focus:border-amber-500" />
-          </div>
-          <div class="space-y-1">
-            <label class="font-bold text-gray-700 dark:text-white/80">Category</label>
-            <select id="act-category" class="w-full px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-300 dark:border-white/10 text-gray-900 dark:text-white focus:outline-none focus:border-amber-500">
-              <option value="personal">Personal</option>
-              <option value="sightseeing">Sightseeing</option>
-              <option value="dining">Dining</option>
-              <option value="flight">Flight / Transit</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="space-y-1">
-          <label class="font-bold text-gray-700 dark:text-white/80">Notes / Details</label>
-          <textarea id="act-notes" rows="2" placeholder="Subtasks or meeting details…" class="w-full px-4 py-2.5 rounded-xl bg-gray-50 dark:bg-white/5 border border-gray-300 dark:border-white/10 text-gray-900 dark:text-white focus:outline-none focus:border-amber-500"></textarea>
-        </div>
-
-        <button type="submit" class="w-full py-3 rounded-full bg-amber-500 hover:bg-amber-400 text-black font-black text-xs shadow-lg transition">
-          Save Activity
+        <button type="button" id="drawerCancelBtn" class="w-full py-2 rounded-full text-rose-500 hover:bg-rose-500/10 font-bold text-xs transition">
+          Cancel Trip
         </button>
-      </form>
+      </div>
     </div>
   </div>
 
