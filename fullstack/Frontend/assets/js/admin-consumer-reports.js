@@ -15,6 +15,7 @@
     filteredReports: [],
     search: '',
     statusFilter: '',
+    roleFilter: '',
     page: 1,
     pageSize: 10,
     loading: false,
@@ -26,65 +27,25 @@
     return document.getElementById(id);
   }
 
-  function esc(s) {
-    if (s === null || s === undefined) return '';
-    return String(s)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
-  }
-
-  function formatDate(dateStr) {
-    if (!dateStr) return '–';
-    try {
-      var d = new Date(dateStr);
-      if (isNaN(d.getTime())) return dateStr;
-      return d.toLocaleDateString(undefined, {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
+  function isAgencyReporter(item) {
+    if (!item) return false;
+    if (item.reporter_type === 'agency' || item.reporter_type === 'agent') return true;
+    if (item.reporter && Array.isArray(item.reporter.roles)) {
+      return item.reporter.roles.some(function(r) {
+        var name = (typeof r === 'object' ? (r.name || r.role || r.slug) : r) || '';
+        return String(name).toLowerCase().indexOf('agency') !== -1;
       });
-    } catch (e) {
-      return dateStr;
     }
-  }
-
-  function formatEntityName(type) {
-    if (!type) return 'N/A';
-    var clean = type.split('\\').pop();
-    return clean.replace(/([A-Z])/g, ' $1').trim();
-  }
-
-  function fetchReports() {
-    state.loading = true;
-    state.error = false;
-    renderLoadingState();
-
-    It.apiGet('/admin/flags', { auth: true })
-      .then(function (res) {
-        state.loading = false;
-        if (res.ok) {
-          state.allReports = It.unwrapData(res) || [];
-          applyFilters();
-        } else {
-          state.error = true;
-          renderErrorState(res.body && res.body.message ? res.body.message : 'Unable to load consumer reports.');
-        }
-      })
-      .catch(function (err) {
-        state.loading = false;
-        state.error = true;
-        renderErrorState('Network error: Unable to connect to server.');
-      });
+    if (item.reporter && typeof item.reporter.role === 'string') {
+      return item.reporter.role.toLowerCase().indexOf('agency') !== -1;
+    }
+    return false;
   }
 
   function applyFilters() {
     var q = state.search.trim().toLowerCase();
     var sf = state.statusFilter.trim().toLowerCase();
+    var rf = state.roleFilter.trim().toLowerCase();
 
     state.filteredReports = state.allReports.filter(function (item) {
       var idStr = String(item.id || '');
@@ -92,9 +53,9 @@
       var details = (item.details || '').toLowerCase();
       var reporterName = (item.reporter && item.reporter.name ? item.reporter.name : '').toLowerCase();
       var reporterEmail = (item.reporter && item.reporter.email ? item.reporter.email : '').toLowerCase();
-      var entityType = (item.flaggable_type || '').toLowerCase();
       var assignId = String(item.agency_assignment_id || '');
       var status = (item.status || 'pending').toLowerCase();
+      var isAgency = isAgencyReporter(item);
 
       var matchSearch = !q ||
         idStr.indexOf(q) !== -1 ||
@@ -102,53 +63,17 @@
         details.indexOf(q) !== -1 ||
         reporterName.indexOf(q) !== -1 ||
         reporterEmail.indexOf(q) !== -1 ||
-        entityType.indexOf(q) !== -1 ||
         assignId.indexOf(q) !== -1 ||
         status.indexOf(q) !== -1;
 
       var matchStatus = !sf || status === sf;
+      var matchRole = !rf || (rf === 'agency' ? isAgency : !isAgency);
 
-      return matchSearch && matchStatus;
+      return matchSearch && matchStatus && matchRole;
     });
 
     state.page = 1;
     renderReports();
-  }
-
-  function renderLoadingState() {
-    var tbody = el('consumer-reports-tbody') || el('admin-flags-tbody');
-    if (!tbody) return;
-    tbody.innerHTML =
-      '<tr><td colspan="7" style="text-align: center; padding: 2.5rem 1rem;">' +
-        '<div style="display:inline-flex; align-items:center; gap:0.75rem; color:hsl(var(--muted-foreground)); font-size:0.95rem;">' +
-          '<span>Loading consumer reports from backend...</span>' +
-        '</div>' +
-      '</td></tr>';
-  }
-
-  function renderErrorState(msg) {
-    var tbody = el('consumer-reports-tbody') || el('admin-flags-tbody');
-    if (!tbody) return;
-    tbody.innerHTML =
-      '<tr><td colspan="7" style="text-align: center; padding: 3rem 1rem;">' +
-        '<div style="max-width: 420px; margin: 0 auto;">' +
-          '<div style="font-size:2rem; margin-bottom:0.5rem; color:hsl(var(--destructive));">⚠️</div>' +
-          '<h3 style="margin:0 0 0.5rem 0; font-size:1.1rem; color:hsl(var(--foreground));">Failed to load reports</h3>' +
-          '<p style="margin:0 0 1rem 0; font-size:0.875rem; color:hsl(var(--muted-foreground));">' + esc(msg) + '</p>' +
-          '<button type="button" id="btn-retry-fetch" class="btn btn-primary btn-sm">' +
-            '<span>🔄 Retry Loading</span>' +
-          '</button>' +
-        '</div>' +
-      '</td></tr>';
-
-    var retryBtn = el('btn-retry-fetch');
-    if (retryBtn) {
-      retryBtn.addEventListener('click', function () {
-        fetchReports();
-      });
-    }
-
-    renderPager();
   }
 
   function renderReports() {
@@ -158,15 +83,15 @@
     if (state.loading || state.error) return;
 
     if (!state.filteredReports || !state.filteredReports.length) {
-      var isFiltered = state.search || state.statusFilter;
+      var isFiltered = state.search || state.statusFilter || state.roleFilter;
       tbody.innerHTML =
         '<tr><td colspan="7" style="text-align: center; padding: 3rem 1rem; color: hsl(var(--muted-foreground));">' +
           '<div style="font-size:1.75rem; margin-bottom:0.5rem;">📋</div>' +
           '<p style="margin:0 0 0.35rem 0; font-weight:600; font-size:1rem; color:hsl(var(--foreground));">' +
-            (isFiltered ? 'No reports match your search criteria' : 'No consumer reports found') +
+            (isFiltered ? 'No incident reports match your filter criteria' : 'No incident reports found') +
           '</p>' +
           '<p style="margin:0; font-size:0.85rem;">' +
-            (isFiltered ? 'Try clearing your search or changing status filter.' : 'Consumer reports will appear here when users submit flags.') +
+            (isFiltered ? 'Try clearing search keywords or changing role/status filters.' : 'Incident flags submitted by customers or agencies will appear here.') +
           '</p>' +
         '</td></tr>';
       renderPager();
@@ -181,20 +106,36 @@
       var badgeCls = status === 'approved' ? 'badge-ok' : (status === 'declined' ? 'badge-danger' : 'badge-warn');
       var statusBadge = '<span class="badge ' + badgeCls + '">' + esc(status.toUpperCase()) + '</span>';
 
-      var consumerName = item.reporter ? esc(item.reporter.name || item.reporter.email) : 'User #' + esc(item.reporter_id || 'N/A');
-      var consumerSub = item.reporter && item.reporter.email ? '<div style="font-size:0.75rem; color:hsl(var(--muted-foreground));">' + esc(item.reporter.email) + '</div>' : '';
+      var isAgency = isAgencyReporter(item);
 
-      var targetInfo = esc(formatEntityName(item.flaggable_type));
+      // Reporter Badge & Role Differentiation
+      var reporterRoleBadge = isAgency
+        ? '<span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"><i class="fas fa-briefcase mr-1"></i> Agency Partner</span>'
+        : '<span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-amber-500/20 text-amber-300 border border-amber-500/40"><i class="fas fa-user mr-1"></i> Customer Traveler</span>';
+
+      var reporterName = item.reporter ? esc(item.reporter.name || item.reporter.email) : 'User #' + esc(item.reporter_id || 'N/A');
+      var reporterEmail = item.reporter && item.reporter.email ? '<div style="font-size:0.75rem; color:hsl(var(--muted-foreground));">' + esc(item.reporter.email) + '</div>' : '';
+
+      // Direction Flow Indicator
+      var directionHtml = isAgency
+        ? '<div style="font-size:0.8rem; font-weight:700;" class="flex items-center gap-1.5"><span style="color:#A7F3D0;">Agency Partner</span> <span style="opacity:0.6;">➔</span> <span style="color:#FEF3C7;">Customer Traveler</span></div>'
+        : '<div style="font-size:0.8rem; font-weight:700;" class="flex items-center gap-1.5"><span style="color:#FEF3C7;">Customer Traveler</span> <span style="opacity:0.6;">➔</span> <span style="color:#A7F3D0;">Agency Partner</span></div>';
+
       if (item.agency_assignment_id) {
-        targetInfo += ' <span style="font-size:0.75rem; opacity:0.8;">(Assignment #' + esc(item.agency_assignment_id) + ')</span>';
+        directionHtml += '<div style="font-size:0.72rem; color:hsl(var(--muted-foreground));">Assignment #' + esc(item.agency_assignment_id) + '</div>';
       }
 
       var reasonText = esc(item.reason || '–');
+      var detailsText = item.details ? '<div style="font-size:0.75rem; color:hsl(var(--muted-foreground)); max-width:260px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">' + esc(item.details) + '</div>' : '';
       var dateText = formatDate(item.created_at);
 
       var actionsHtml =
-        '<div class="action-btns" style="display:flex; gap:0.35rem; align-items:center;">' +
-          '<button type="button" class="btn-sm btn-ghost view-report-btn" data-id="' + item.id + '" title="View report details">View</button>';
+        '<div class="action-btns" style="display:flex; gap:0.35rem; align-items:center; flex-wrap:wrap;">' +
+          '<button type="button" class="btn-sm btn-ghost view-report-btn" data-id="' + item.id + '" title="View incident details">View Details</button>';
+
+      if (item.agency_assignment_id) {
+        actionsHtml += '<a href="../app/chat.html?assignment_id=' + esc(item.agency_assignment_id) + '&mentor=1" target="_blank" class="btn-sm btn-outline" style="color:#E9D5FF; border-color:rgba(168,85,247,0.4); background:rgba(168,85,247,0.15);" title="Inspect chat thread in Read-Only Mentoring Mode"><i class="fas fa-eye mr-1"></i> Mentor Chat</a>';
+      }
 
       if (status === 'pending') {
         actionsHtml +=
@@ -204,11 +145,14 @@
 
       actionsHtml += '</div>';
 
-      return '<tr>' +
+      // Left Accent Border for Visual Distinction
+      var rowBorderAccent = isAgency ? 'border-left: 3px solid #10b981;' : 'border-left: 3px solid #f59e0b;';
+
+      return '<tr style="' + rowBorderAccent + '">' +
         '<td><strong>#' + item.id + '</strong></td>' +
-        '<td><div><strong>' + consumerName + '</strong></div>' + consumerSub + '</td>' +
-        '<td>' + targetInfo + '</td>' +
-        '<td><div style="max-width:240px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="' + reasonText + '">' + reasonText + '</div></td>' +
+        '<td><div style="margin-bottom:0.25rem;">' + reporterRoleBadge + '</div><div><strong>' + reporterName + '</strong></div>' + reporterEmail + '</td>' +
+        '<td>' + directionHtml + '</td>' +
+        '<td><div><strong style="color:hsl(var(--foreground)); font-size:0.88rem;">' + reasonText + '</strong></div>' + detailsText + '</td>' +
         '<td>' + statusBadge + '</td>' +
         '<td style="white-space:nowrap; font-size:0.8rem; color:hsl(var(--muted-foreground));">' + dateText + '</td>' +
         '<td>' + actionsHtml + '</td>' +
@@ -510,6 +454,14 @@
     if (statusFilter) {
       statusFilter.addEventListener('change', function () {
         state.statusFilter = statusFilter.value;
+        applyFilters();
+      });
+    }
+
+    var roleFilter = el('role-filter');
+    if (roleFilter) {
+      roleFilter.addEventListener('change', function () {
+        state.roleFilter = roleFilter.value;
         applyFilters();
       });
     }

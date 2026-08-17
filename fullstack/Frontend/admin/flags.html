@@ -66,38 +66,47 @@
       </div>
       <header class="content-head" style="margin-bottom: var(--space-3);">
         <div class="right">
-          <p class="label-eyebrow" style="margin: 0 0 0.35rem;">MODERATION</p>
-          <h1 style="margin: 0 0 0.25rem 0;">User Reports & Flags</h1>
-          <p class="view-sub" style="margin: 0;">Review and action user-filed reports against agencies</p>
+          <p class="label-eyebrow" style="margin: 0 0 0.35rem;">TRUST &amp; SAFETY MODERATION</p>
+          <h1 style="margin: 0 0 0.25rem 0;">Incident Reports &amp; Disputes</h1>
+          <p class="view-sub" style="margin: 0;">Monitor and action flagged disputes submitted by Customer Travelers and Agency Partners</p>
         </div>
       </header>
 
       <div class="kit-toolbar" style="display: flex; gap: 0.75rem; margin-bottom: var(--space-4); align-items: center; flex-wrap: wrap;">
-        <label class="table-search-group" style="flex: 1; min-width: 200px;">
+        <label class="table-search-group" style="flex: 1; min-width: 220px;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
-          <input id="global-search" class="table-search" type="search" placeholder="Search reports by reason or agency/user ID..." autocomplete="off" aria-label="Search reports" />
+          <input id="global-search" class="table-search" type="search" placeholder="Search reports by reason, user name, or assignment ID..." autocomplete="off" aria-label="Search reports" />
         </label>
+        
+        <select id="role-filter" class="ctl-select" style="min-width: 170px;" aria-label="Filter by reporter role">
+          <option value="">All Reporters</option>
+          <option value="customer">Customer Reports (User ➔ Agency)</option>
+          <option value="agency">Agency Disputes (Agency ➔ Customer)</option>
+        </select>
+
         <select id="status-filter" class="ctl-select" style="min-width: 150px;" aria-label="Filter by status">
           <option value="">All Statuses</option>
-          <option value="pending">Pending</option>
-          <option value="approved">Approved</option>
+          <option value="pending">Pending Review</option>
+          <option value="approved">Approved / Actioned</option>
           <option value="declined">Declined</option>
         </select>
       </div>
 
       <section class="ticket ticket-panel" aria-label="Report Flags">
-        <div class="panel-head">
-          <p class="label-eyebrow" style="margin: 0 0 0.25rem;">ADMIN · FLAGS</p>
-          <h2 style="margin: 0;">Pending Reports</h2>
+        <div class="panel-head" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+          <div>
+            <p class="label-eyebrow" style="margin: 0 0 0.25rem;">ADMIN · MODERATION QUEUE</p>
+            <h2 style="margin: 0;">Incident Flag Audit Stream</h2>
+          </div>
         </div>
         <div class="panel-body" style="padding: 0; overflow-x: auto;">
           <table class="log-table">
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Consumer / Reporter</th>
-                <th>Target / Assignment</th>
-                <th>Reason</th>
+                <th>Reporter / Initiator</th>
+                <th>Incident Direction</th>
+                <th>Reason &amp; Details</th>
                 <th>Status</th>
                 <th>Date</th>
                 <th>Actions</th>
@@ -105,7 +114,7 @@
             </thead>
             <tbody id="consumer-reports-tbody">
               <tr>
-                <td colspan="7" style="text-align: center; padding: 20px;">Loading reports...</td>
+                <td colspan="7" style="text-align: center; padding: 20px;">Loading incident reports...</td>
               </tr>
             </tbody>
           </table>
