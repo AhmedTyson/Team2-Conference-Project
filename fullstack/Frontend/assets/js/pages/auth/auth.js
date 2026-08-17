@@ -43,7 +43,7 @@
             return;
           }
           const role = It.session.roleOf(user);
-          const destination = It.session.getRedirectPath(role);
+          const destination = It.session.getRedirectPath(role, user);
           global.location.href = destination;
         }, 900);
       },
@@ -78,7 +78,7 @@
         fb.banner("Account created — welcome to Itinera!", "is-ok");
         setTimeout(function () {
           const role = It.session.roleOf(user);
-          const destination = It.session.getRedirectPath(role);
+          const destination = It.session.getRedirectPath(role, user);
           global.location.href = destination;
         }, 900);
       },
@@ -109,11 +109,36 @@
         };
       },
       successNote: "rv-success-note",
-      onSuccess: function () {
-        fb.banner("Password updated — redirecting to log in…", "is-ok");
+      onSuccess: function (body, form) {
+        fb.banner("Password reset link sent! Check your inbox.", "is-ok");
+        const successNote = document.getElementById("fp-success-note");
+        if (successNote) {
+          successNote.textContent = "Check your email for password reset instructions.";
+          successNote.style.display = "block";
+        }
+      },
+    },
+
+    "complete-profile": {
+      route: "profile",
+      fields: {
+        phone: { on: "blur", rules: [R.required, R.phone] },
+      },
+      successNote: "cp-success-note",
+      onSuccess: function (body, form) {
+        const user = (It.session && It.session.extractUser ? It.session.extractUser(body) : null) || (body && body.data && body.data.user) || (body && body.user) || (body && body.data);
+        if (user && typeof user === "object") {
+          if (It.storeUser) It.storeUser(user);
+          else {
+            try { localStorage.setItem("itinari_user", JSON.stringify(user)); } catch (e) {}
+          }
+        }
+        fb.banner("Profile completed — taking you to your dashboard…", "is-ok");
         setTimeout(function () {
-          global.location.href = "login.html";
-        }, 1400);
+          const role = It.session ? It.session.roleOf(user) : "customer";
+          const destination = It.session ? It.session.getRedirectPath(role) : "/app/dashboard.html";
+          global.location.href = destination;
+        }, 900);
       },
     },
   };

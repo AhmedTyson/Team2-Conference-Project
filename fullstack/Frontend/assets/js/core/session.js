@@ -77,10 +77,23 @@
     return role === "admin" || role === "super_admin";
   }
 
-  function getRedirectPath(role) {
+  function needsProfileCompletion(user) {
+    if (!user) return false;
+    if (user.user && typeof user.user === "object") user = user.user;
+    if (user.data && typeof user.data === "object") user = user.data;
+    return !user.phone || String(user.phone).trim() === "";
+  }
+
+  function getRedirectPath(role, user) {
     var cur = (global.location.pathname || "").toLowerCase();
     var isAuthDir = cur.indexOf("/auth/") !== -1;
     var isRoot = !isAuthDir && cur.indexOf("/app/") === -1 && cur.indexOf("/admin/") === -1 && cur.indexOf("/agency/") === -1 && cur.indexOf("/public/") === -1;
+
+    if (user && needsProfileCompletion(user) && cur.indexOf("complete-profile.html") === -1) {
+      if (isAuthDir) return "complete-profile.html";
+      if (isRoot) return "auth/complete-profile.html";
+      return "/auth/complete-profile.html";
+    }
 
     if (role === "super_admin" || role === "admin") {
       if (isAuthDir) return "../admin/index.html";

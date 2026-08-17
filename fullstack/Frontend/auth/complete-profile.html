@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Complete Profile · Itinera</title>
+  
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../assets/css/tokens.css" />
+  <link rel="stylesheet" href="../assets/css/auth.css" />
+
+  <script>/* FOUC prevention — default dark */
+    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+    if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
+      document.documentElement.classList.add("dark","fouc-ready");
+    else document.documentElement.classList.add("fouc-ready");
+    })();
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body data-page="complete-profile" data-layout="auth">
+  <a href="#main-content-target" class="skip-link">Skip to main content</a>
+
+  <!-- Top Navigation Header -->
+  <header class="app-nav-header"></header>
+
+  <!-- Main Auth Container -->
+  <div class="auth-main-wrapper" id="main-content-target">
+    <main class="auth-shell">
+      <section class="auth-visual">
+        <div class="auth-slides">
+          <div class="auth-slide active" style="background-image: url('../assets/img/slide1.png');"></div>
+          <div class="auth-slide" style="background-image: url('../assets/img/slide2.png');"></div>
+          <div class="auth-slide" style="background-image: url('../assets/img/slide3.png');"></div>
+        </div>
+        <div class="brand">Itinera</div>
+        <div>
+          <h1>Almost there!</h1>
+          <p>Please provide your phone number to complete setting up your account.</p>
+        </div>
+      </section>
+
+      <section class="auth-form-side">
+        <div class="auth-card">
+          <h2>One last step</h2>
+          <p class="sub">Please enter your phone number to finish your account setup.</p>
+
+          <form id="auth-form" novalidate>
+            <div class="field">
+              <label for="phone">Phone number</label>
+              <input id="phone" name="phone" type="tel" autocomplete="tel" placeholder="+1 (555) 000-0000" />
+              <p class="field-hint" id="hint-phone" role="alert"></p>
+            </div>
+
+            <button type="submit" class="btn-primary">
+              <span class="spinner"></span>
+              <span class="btn-label">Continue to dashboard</span>
+            </button>
+
+            <div class="success-note" id="cp-success-note"></div>
+          </form>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="auth-footer">
+    <span>Itinera · Luxury Travel & Concierge</span>
+    <span>•</span>
+    <span>Plan. Explore. Remember.</span>
+  </footer>
+
+  <div id="site-banner" role="status">
+    <span id="site-banner-msg"></span><span id="site-banner-drain" aria-hidden="true"></span>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="../assets/js/core/config.js"></script>
+  <script src="../assets/js/core/api.js"></script>
+  <script src="../assets/js/utils/validation.js"></script>
+  <script src="../assets/js/core/animations.js"></script>
+  <script src="../assets/js/core/session.js"></script>
+  <script src="../assets/js/pages/auth/auth.js"></script>
+  <script src="../assets/js/core/navbar-component.js"></script>
+  <script src="../assets/js/core/topbar.js"></script>
+  <script src="../assets/js/core/theme.js"></script>
+</body>
+</html>
