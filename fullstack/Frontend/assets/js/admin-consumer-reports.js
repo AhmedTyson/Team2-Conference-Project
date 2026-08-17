@@ -329,28 +329,34 @@
   }
 
   function bindRowActions() {
+    var tbody = el('consumer-reports-tbody') || el('admin-flags-tbody');
+    if (tbody && !tbody.dataset.actionsBound) {
+      tbody.dataset.actionsBound = "1";
+      tbody.addEventListener('click', function(e) {
+        var target = e.target.closest('button');
+        if (!target) return;
+        var id = target.getAttribute('data-id');
+        if (!id) return;
+        if (target.classList.contains('view-report-btn')) {
+          e.preventDefault();
+          openReportDetails(id);
+        } else if (target.classList.contains('action-approve-btn')) {
+          e.preventDefault();
+          processFlag(id, 'approve', target);
+        } else if (target.classList.contains('action-decline-btn')) {
+          e.preventDefault();
+          processFlag(id, 'decline', target);
+        }
+      });
+    }
+
     var viewBtns = document.querySelectorAll('.view-report-btn');
     viewBtns.forEach(function (btn) {
-      btn.addEventListener('click', function () {
+      btn.onclick = function (e) {
+        e.preventDefault();
         var id = this.getAttribute('data-id');
         openReportDetails(id);
-      });
-    });
-
-    var approveBtns = document.querySelectorAll('.action-approve-btn');
-    approveBtns.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var id = this.getAttribute('data-id');
-        processFlag(id, 'approve', this);
-      });
-    });
-
-    var declineBtns = document.querySelectorAll('.action-decline-btn');
-    declineBtns.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var id = this.getAttribute('data-id');
-        processFlag(id, 'decline', this);
-      });
+      };
     });
   }
 
@@ -427,13 +433,11 @@
     var backdrop = document.createElement('div');
     backdrop.className = 'kit-modal-backdrop';
     backdrop.id = 'report-detail-modal';
+    backdrop.style.cssText = 'position:fixed; inset:0; z-index:999999; background:rgba(0,0,0,0.75); display:flex; align-items:center; justify-content:center; padding:1rem; backdrop-filter:blur(6px);';
 
     var modal = document.createElement('div');
     modal.className = 'kit-modal is-medium';
-    modal.style.background = 'hsl(var(--card))';
-    modal.style.padding = '1.5rem';
-    modal.style.borderRadius = '12px';
-    modal.style.border = '1px solid hsl(var(--border))';
+    modal.style.cssText = 'width:min(600px, 95vw); max-height:90vh; overflow-y:auto; background:hsl(var(--card, #171717)); padding:1.5rem; border-radius:16px; border:1px solid hsl(var(--border, rgba(255,255,255,0.15))); box-shadow:0 25px 50px -12px rgba(0,0,0,0.7); color:#fff;';
 
     var reporterInfo = report.reporter ? (
       '<div><strong>' + esc(report.reporter.name || 'N/A') + '</strong></div>' +
