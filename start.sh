@@ -13,10 +13,15 @@ if [ ! -f ".env" ]; then
     fi
 fi
 
-# ─── Application Key & JWT ─────────────────────────────────────────────────
-if php artisan key:generate --show --force 2>&1 | grep -q "base64:"; then
-    echo "==> APP_KEY already present, refreshing..."
+# ─── Composer — install if vendor/ is missing (Railway gitignores it) ──────
+if [ ! -f "vendor/autoload.php" ]; then
+    echo "==> vendor/ not found — running composer install..."
+    composer install --no-dev --optimize-autoloader --no-interaction --ignore-platform-reqs
+else
+    echo "==> vendor/ already present, skipping composer install."
 fi
+
+# ─── Application Key & JWT ─────────────────────────────────────────────────
 php artisan key:generate --force || true
 php artisan jwt:secret --force || true
 
@@ -50,7 +55,6 @@ php artisan optimize     || true
 # ─── Copy Frontend into Laravel public/ ────────────────────────────────────
 if [ -d "../Frontend" ]; then
     echo "==> Syncing Frontend assets into Laravel public/..."
-    # Sync Frontend into public, excluding Laravel-owned files
     rsync -a --exclude="index.php" \
               --exclude=".htaccess" \
               --exclude="robots.txt" \
