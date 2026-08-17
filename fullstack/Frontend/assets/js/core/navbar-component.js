@@ -107,15 +107,7 @@
       doc.body.insertBefore(navEl, doc.body.firstChild);
     }
 
-    // Ensure non-hero pages have top padding so content is never covered by the fixed navbar
-    var hasHero = !!doc.querySelector(".hero-wrapper");
-    var isAuth = !!doc.querySelector(".auth-main-wrapper") || (doc.body && doc.body.getAttribute("data-layout") === "auth");
-    if (!hasHero && !isAuth) {
-      var appWrap = doc.querySelector(".page-scroll") || doc.querySelector(".dashboard-shell") || doc.querySelector(".agency-shell") || doc.querySelector(".admin-shell") || doc.querySelector(".app-wrapper") || doc.querySelector("main");
-      if (appWrap) {
-        appWrap.style.paddingTop = "6.5rem";
-      }
-    }
+
 
     // 1. Fix all link Hrefs & image Srcs relative to current directory
     navEl.querySelectorAll("a[href]").forEach(function (a) {
