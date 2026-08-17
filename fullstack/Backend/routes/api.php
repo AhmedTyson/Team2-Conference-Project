@@ -335,9 +335,9 @@ Route::middleware(['auth:api', 'verified'])->prefix('admin')->name('admin.')->gr
     Route::delete('/reviews/{id}', [AdminReviewController::class, 'destroy'])->middleware('permission:manage reviews');
     Route::patch('/reviews/{id}/restore', [AdminReviewController::class, 'restore'])->middleware('permission:manage reviews');
     // Flags
-    Route::get('/flags', [AdminFlagController::class, 'index'])->middleware('role:admin|super_admin,api');
-    Route::post('/flags/{id}/approve', [AdminFlagController::class, 'approve'])->middleware('role:admin|super_admin,api');
-    Route::post('/flags/{id}/decline', [AdminFlagController::class, 'decline'])->middleware('role:admin|super_admin,api');
+    Route::get('/flags', [AdminFlagController::class, 'index'])->middleware('role:admin|super_admin');
+    Route::post('/flags/{id}/approve', [AdminFlagController::class, 'approve'])->middleware('role:admin|super_admin');
+    Route::post('/flags/{id}/decline', [AdminFlagController::class, 'decline'])->middleware('role:admin|super_admin');
 });
 
 // ============================================================

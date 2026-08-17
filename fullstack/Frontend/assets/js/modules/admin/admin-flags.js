@@ -22,24 +22,37 @@
         }
 
         tbody.innerHTML = items.map(function(item) {
-          var status = item.status || 'pending';
-          var statusBadge = '<span class="status-badge ' + status + '">' + status.toUpperCase() + '</span>';
+          var status = (item.status || 'pending').toLowerCase();
+          var badgeCls = status === 'approved' ? 'badge-ok' : (status === 'declined' ? 'badge-danger' : 'badge-warn');
+          var statusBadge = '<span class="badge ' + badgeCls + '">' + status.toUpperCase() + '</span>';
           
-          var actions = '';
+          var reporterName = item.reporter ? (item.reporter.name || item.reporter.email) : 'User #' + item.reporter_id;
+          var assignmentInfo = item.agency_assignment_id
+            ? ('Assignment #' + item.agency_assignment_id + (item.agency_assignment && item.agency_assignment.customer ? ' (' + item.agency_assignment.customer.name + ')' : ''))
+            : 'Direct Chat Inquiry';
+
+          var mentorBtn = item.agency_assignment_id
+            ? '<a href="../app/chat.html?assignment_id=' + item.agency_assignment_id + '&mentor=1" class="btn-sm btn-outline" style="white-space:nowrap;"><i class="fas fa-shield-halved mr-1"></i> Mentor Chat</a>'
+            : '';
+
+          var actions = '<div class="action-btns" style="display:flex; gap:0.4rem; align-items:center; flex-wrap:wrap;">';
           if (status === 'pending') {
-            actions = '<div class="action-btns">' +
-              '<button class="btn btn--sm flag-action" data-id="' + item.id + '" data-action="approve" style="background:var(--ok-line);color:#fff;">Approve</button>' +
-              '<button class="btn btn--sm flag-action" data-id="' + item.id + '" data-action="decline" style="background:var(--danger-fg);color:#fff;">Decline</button>' +
-              '</div>';
+            actions += '<button type="button" class="btn-sm btn-primary flag-action" data-id="' + item.id + '" data-action="approve">Approve</button>' +
+              '<button type="button" class="btn-sm btn-ghost flag-action" data-id="' + item.id + '" data-action="decline" style="color:hsl(var(--destructive));">Decline</button>';
           } else {
-            actions = '<span style="color:var(--text-muted);font-style:italic;">Actioned</span>';
+            actions += '<span style="color:hsl(var(--muted-foreground)); font-size:0.85rem; font-style:italic;">Actioned</span>';
           }
+          if (mentorBtn) actions += mentorBtn;
+          actions += '</div>';
+
+          var detailsText = item.details ? '<div style="font-size:0.8rem; color:hsl(var(--muted-foreground)); margin-top:4px;">' + (It.app && It.app.esc ? It.app.esc(item.details) : item.details) + '</div>' : '';
+          var reasonText = (It.app && It.app.esc ? It.app.esc(item.reason || '–') : (item.reason || '–'));
 
           return '<tr>' +
-            '<td><span class="log-type info">#' + item.id + '</span></td>' +
-            '<td>AGN-' + (item.agency_id || 'Unknown') + '</td>' +
-            '<td>USR-' + (item.user_id || 'Unknown') + '</td>' +
-            '<td>' + It.app.esc(item.reason || '') + '</td>' +
+            '<td><strong>#' + item.id + '</strong></td>' +
+            '<td><strong>' + (It.app && It.app.esc ? It.app.esc(reporterName) : reporterName) + '</strong></td>' +
+            '<td>' + (It.app && It.app.esc ? It.app.esc(assignmentInfo) : assignmentInfo) + '</td>' +
+            '<td><div><strong>' + reasonText + '</strong></div>' + detailsText + '</td>' +
             '<td>' + statusBadge + '</td>' +
             '<td>' + actions + '</td>' +
           '</tr>';
