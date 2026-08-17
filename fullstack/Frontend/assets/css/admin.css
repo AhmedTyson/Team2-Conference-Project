@@ -345,10 +345,10 @@ html.dark .panel {
 }
 #site-banner.is-show { transform: translate(-50%, 0); opacity: 1; }
 #site-banner.is-error { border-color: hsl(var(--destructive)); }
-#site-banner.is-error::before { content: "⚠"; color: hsl(var(--destructive)); font-weight: 700; }
+#site-banner.is-error::before { content: "Ã¢Å¡Â "; color: hsl(var(--destructive)); font-weight: 700; }
 #site-banner.is-info { border-color: hsl(var(--ring)); }
 #site-banner.is-ok { border-color: var(--ok-line); }
-#site-banner.is-ok::before { content: "✓"; color: var(--ok-line); font-weight: 700; }
+#site-banner.is-ok::before { content: "Ã¢Å“â€œ"; color: var(--ok-line); font-weight: 700; }
 #site-banner-drain {
   position: absolute;
   left: 0;
@@ -488,11 +488,11 @@ html.dark .panel {
 .field-error { font-size: 0.76rem; color: hsl(var(--destructive)); }
 
 /* =====================================================================
-   Phase 16 — BOARDING-PASS / DEPARTURE-BOARD MOTIF (admin.css v2)
+   Phase 16 Ã¢â‚¬â€ BOARDING-PASS / DEPARTURE-BOARD MOTIF (admin.css v2)
    All colors/radii/spacing from tokens.css zinc set. No new colors.
    ===================================================================== */
 
-/* mono "gate label" eyebrow — section labels, ticket captions */
+/* mono "gate label" eyebrow Ã¢â‚¬â€ section labels, ticket captions */
 .label-eyebrow {
   font-family: var(--font-mono);
   font-size: var(--text-eyebrow);
@@ -502,13 +502,13 @@ html.dark .panel {
   color: hsl(var(--muted-foreground));
 }
 
-/* dashed divider — boarding-pass perforation strip */
+/* dashed divider Ã¢â‚¬â€ boarding-pass perforation strip */
 .dash {
   height: 1px;
   background: repeating-linear-gradient(90deg, hsl(var(--border)) 0 4px, transparent 4px 8px);
 }
 
-/* ticket card — perforated bottom edge w/ two cutout notches */
+/* ticket card Ã¢â‚¬â€ perforated bottom edge w/ two cutout notches */
 .ticket {
   position: relative;
   padding: var(--space-5);
@@ -540,7 +540,7 @@ html.dark .panel {
   gap: var(--space-4);
 }
 
-/* flat layered silhouette — departure-board skyline (no imagery) */
+/* flat layered silhouette Ã¢â‚¬â€ departure-board skyline (no imagery) */
 .sil {
   display: flex;
   align-items: flex-end;
@@ -600,7 +600,7 @@ html.dark .panel {
 }
 .ticket-panel table { margin-top: var(--space-3); }
 /* =====================================================================
-   Phase 16.9 — DESKTOP DENSITY PASS (generous desktop scale)
+   Phase 16.9 Ã¢â‚¬â€ DESKTOP DENSITY PASS (generous desktop scale)
    Same zinc tokens; widens shell, bumps type/padding/table rows.
    ===================================================================== */
 
@@ -678,7 +678,7 @@ html.dark .panel {
 .kit-field textarea { padding: 0.6rem 0.8rem; font-size: 0.95rem; border-radius: var(--radius-md); }
 .kit-grid-2 { gap: var(--space-4); }
 /* =====================================================================
-   Phase 17 — SHADCNSPACE-INSPIRED REFINEMENT (topbar, dark, datatable,
+   Phase 17 Ã¢â‚¬â€ SHADCNSPACE-INSPIRED REFINEMENT (topbar, dark, datatable,
    toasts, dialogs). Ported patterns only; zinc tokens from tokens.css.
    ===================================================================== */
 
@@ -1027,7 +1027,7 @@ body.is-modal-open { overflow: hidden; }
 .kit-modal-close:hover { color: hsl(var(--foreground)); }
 
 /* =====================================================================
-   Phase 18 — SIDEBAR MINI / COLLAPSED RAIL
+   Phase 18 Ã¢â‚¬â€ SIDEBAR MINI / COLLAPSED RAIL
    Icons per nav item, width transition, hover+focus tooltips, monogram,
    dual-icon collapse button, compact logout. (P0 baseline kept.)
    ===================================================================== */
@@ -1208,7 +1208,7 @@ html.dark .user-menu-trigger .chip-role {
 .user-menu-item.is-danger.is-active { background: hsl(var(--destructive) / 0.12); }
 .user-menu-panel hr { border: 0; border-top: 1px solid hsl(var(--border)); margin: 0.3rem 0; }
 
-/* ---------- Phase 3: command palette (⌘K) ---------- */
+/* ---------- Phase 3: command palette (Ã¢Å’ËœK) ---------- */
 .palette-trigger { flex-shrink: 0; }
 .palette-backdrop {
   position: fixed; inset: 0; z-index: 120;
@@ -1390,7 +1390,7 @@ html.dark .user-menu-trigger .chip-role {
   background: transparent; border: 0; cursor: pointer;
   padding: 0 var(--space-1); border-radius: 0.3rem;
 }
-.bulk-close::before { content: "✕"; }
+.bulk-close::before { content: "Ã¢Å“â€¢"; }
 .bulk-close:hover { color: hsl(var(--foreground)); background: hsl(var(--muted) / 0.4); }
 
 .kit-table .td-actions { white-space: nowrap; }
@@ -1405,7 +1405,7 @@ html.dark .user-menu-trigger .chip-role {
 }
 
 /* =====================================================================
-   Phase 10 — chart axes / gridlines / tooltips / skeletons
+   Phase 10 Ã¢â‚¬â€ chart axes / gridlines / tooltips / skeletons
    ===================================================================== */
 .chart-bars {
   flex: 1;
@@ -1472,7 +1472,7 @@ html.dark .user-menu-trigger .chip-role {
 .chart-bar-badges { display: none; }
 
 /* =====================================================================
-   Phase 12 — mobile off-canvas drawer
+   Phase 12 Ã¢â‚¬â€ mobile off-canvas drawer
    ===================================================================== */
 .topbar-burger { display: none; }
 
@@ -2190,40 +2190,40 @@ html.dark .drawer {
    ===================================================================== */
 
 /* 1. Body & Canvas */
-body[data-page="admin"], body[data-page="agency"] {
+html.dark body[data-page="admin"], html.dark body[data-page="agency"] {
   background: #0a0a0a !important;
   color: #f4f4f5 !important;
   font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
 }
 
 /* 2. Sidebar Glassmorphism */
-.sidebar {
+html.dark .sidebar {
   background: rgba(18, 20, 28, 0.85) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
   border-right: 1px solid rgba(251, 191, 36, 0.2) !important;
 }
 
-.sidebar-brand {
+html.dark .sidebar-brand {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
   padding: 1.5rem 1.25rem !important;
 }
 
-.sidebar-brand .brand-gate {
+html.dark .sidebar-brand .brand-gate {
   color: #fbbf24 !important;
   font-weight: 800 !important;
   letter-spacing: 0.18em !important;
   font-size: 0.65rem !important;
 }
 
-.sidebar-brand .brand {
+html.dark .sidebar-brand .brand {
   color: #ffffff !important;
   font-size: 1.15rem !important;
   font-weight: 900 !important;
   letter-spacing: -0.02em !important;
 }
 
-.nav-section {
+html.dark .nav-section {
   color: #fbbf24 !important;
   font-weight: 800 !important;
   font-size: 0.65rem !important;
@@ -2231,7 +2231,7 @@ body[data-page="admin"], body[data-page="agency"] {
   padding: 1.25rem 0.75rem 0.35rem !important;
 }
 
-.nav-item {
+html.dark .nav-item {
   color: rgba(255, 255, 255, 0.7) !important;
   font-weight: 600 !important;
   border-radius: 9999px !important;
@@ -2240,48 +2240,48 @@ body[data-page="admin"], body[data-page="agency"] {
   transition: all 0.2s ease !important;
 }
 
-.nav-item:hover {
+html.dark .nav-item:hover {
   background: rgba(255, 255, 255, 0.08) !important;
   color: #ffffff !important;
   transform: translateX(2px) !important;
 }
 
-.nav-item.is-active {
+html.dark .nav-item.is-active {
   background: linear-gradient(135deg, #f59e0b, #d97706) !important;
   color: #000000 !important;
   font-weight: 800 !important;
   box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35) !important;
 }
 
-.nav-item.is-active::before {
+html.dark .nav-item.is-active::before {
   display: none !important;
 }
 
-.nav-item svg {
+html.dark .nav-item svg {
   stroke: currentColor !important;
   width: 17px !important;
   height: 17px !important;
   margin-right: 0.5rem !important;
 }
 
-.nav-item.is-active svg {
+html.dark .nav-item.is-active svg {
   stroke: #000000 !important;
 }
 
 /* 3. Topbar & Header */
-.topbar {
+html.dark .topbar {
   background: rgba(10, 10, 10, 0.6) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
 }
 
-.content-head {
+html.dark .content-head {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
   padding: 2rem 0 1.5rem !important;
 }
 
-.content-head h1 {
+html.dark .content-head h1 {
   background: linear-gradient(to right, #ffffff, #fbbf24) !important;
   -webkit-background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
@@ -2290,7 +2290,7 @@ body[data-page="admin"], body[data-page="agency"] {
   letter-spacing: -0.025em !important;
 }
 
-.label-eyebrow {
+html.dark .label-eyebrow {
   color: #fbbf24 !important;
   font-weight: 800 !important;
   letter-spacing: 0.15em !important;
@@ -2298,7 +2298,7 @@ body[data-page="admin"], body[data-page="agency"] {
 }
 
 /* 4. Luxury KPI Metric Cards */
-.kpi-ticket, .kpi, .panel, .ticket-panel {
+html.dark .kpi-ticket, html.dark .kpi, html.dark .panel, html.dark .ticket-panel {
   background: rgba(18, 20, 28, 0.75) !important;
   backdrop-filter: blur(16px) !important;
   -webkit-backdrop-filter: blur(16px) !important;
@@ -2308,19 +2308,19 @@ body[data-page="admin"], body[data-page="agency"] {
   transition: all 0.3s ease !important;
 }
 
-.kpi-ticket:hover {
+html.dark .kpi-ticket:hover {
   border-color: rgba(251, 191, 36, 0.4) !important;
   box-shadow: 0 12px 35px rgba(251, 191, 36, 0.15) !important;
   transform: translateY(-2px) !important;
 }
 
-.kpi-ticket .kpi-value {
+html.dark .kpi-ticket .kpi-value {
   color: #fbbf24 !important;
   font-weight: 900 !important;
   letter-spacing: -0.03em !important;
 }
 
-.kpi-delta.is-up {
+html.dark .kpi-delta.is-up {
   background: rgba(16, 185, 129, 0.15) !important;
   border: 1px solid rgba(16, 185, 129, 0.3) !important;
   color: #34d399 !important;
@@ -2329,7 +2329,7 @@ body[data-page="admin"], body[data-page="agency"] {
   font-weight: 700 !important;
 }
 
-.kpi-delta.is-down {
+html.dark .kpi-delta.is-down {
   background: rgba(244, 63, 94, 0.15) !important;
   border: 1px solid rgba(244, 63, 94, 0.3) !important;
   color: #fb7185 !important;
@@ -2339,7 +2339,7 @@ body[data-page="admin"], body[data-page="agency"] {
 }
 
 /* 5. Filter Controls & Search Bars */
-.table-search-group {
+html.dark .table-search-group {
   background: rgba(0, 0, 0, 0.4) !important;
   border: 1px solid rgba(255, 255, 255, 0.15) !important;
   border-radius: 9999px !important;
@@ -2347,17 +2347,17 @@ body[data-page="admin"], body[data-page="agency"] {
   transition: all 0.2s ease !important;
 }
 
-.table-search-group:focus-within {
+html.dark .table-search-group:focus-within {
   border-color: #fbbf24 !important;
   box-shadow: 0 0 0 2px rgba(251, 191, 36, 0.2) !important;
 }
 
-.table-search {
+html.dark .table-search {
   color: #ffffff !important;
   font-size: 0.85rem !important;
 }
 
-.btn-filter {
+html.dark .btn-filter {
   border-radius: 9999px !important;
   padding: 0.45rem 1rem !important;
   font-size: 0.78rem !important;
@@ -2368,12 +2368,12 @@ body[data-page="admin"], body[data-page="agency"] {
   transition: all 0.2s ease !important;
 }
 
-.btn-filter:hover {
+html.dark .btn-filter:hover {
   background: rgba(255, 255, 255, 0.12) !important;
   color: #ffffff !important;
 }
 
-.btn-filter.is-active {
+html.dark .btn-filter.is-active {
   background: #fbbf24 !important;
   color: #000000 !important;
   font-weight: 800 !important;
@@ -2382,7 +2382,7 @@ body[data-page="admin"], body[data-page="agency"] {
 }
 
 /* 6. Buttons */
-.btn-primary, #btn-new {
+html.dark .btn-primary, html.dark #btn-new {
   background: linear-gradient(135deg, #f59e0b, #d97706) !important;
   color: #000000 !important;
   font-weight: 800 !important;
@@ -2394,12 +2394,12 @@ body[data-page="admin"], body[data-page="agency"] {
   transition: all 0.2s ease !important;
 }
 
-.btn-primary:hover, #btn-new:hover {
+html.dark .btn-primary:hover, html.dark #btn-new:hover {
   transform: translateY(-1px) !important;
   box-shadow: 0 6px 18px rgba(245, 158, 11, 0.45) !important;
 }
 
-.btn-ghost {
+html.dark .btn-ghost {
   border-radius: 9999px !important;
   background: rgba(255, 255, 255, 0.08) !important;
   border: 1px solid rgba(255, 255, 255, 0.15) !important;
@@ -2407,19 +2407,19 @@ body[data-page="admin"], body[data-page="agency"] {
   font-weight: 700 !important;
 }
 
-.btn-ghost:hover {
+html.dark .btn-ghost:hover {
   background: rgba(255, 255, 255, 0.15) !important;
   border-color: rgba(251, 191, 36, 0.4) !important;
   color: #fbbf24 !important;
 }
 
 /* 7. Data Tables */
-.kit-table {
+html.dark .kit-table {
   border-collapse: separate !important;
   border-spacing: 0 !important;
 }
 
-.kit-table th {
+html.dark .kit-table th {
   background: rgba(0, 0, 0, 0.4) !important;
   color: #fbbf24 !important;
   font-weight: 800 !important;
@@ -2430,19 +2430,19 @@ body[data-page="admin"], body[data-page="agency"] {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
-.kit-table td {
+html.dark .kit-table td {
   padding: 0.85rem 1rem !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
   color: rgba(255, 255, 255, 0.85) !important;
   font-size: 0.85rem !important;
 }
 
-.kit-table tr:hover td {
+html.dark .kit-table tr:hover td {
   background: rgba(255, 255, 255, 0.04) !important;
 }
 
 /* 8. Status Badges */
-.badge {
+html.dark .badge {
   padding: 0.25rem 0.7rem !important;
   border-radius: 9999px !important;
   font-size: 0.68rem !important;
@@ -2450,43 +2450,43 @@ body[data-page="admin"], body[data-page="agency"] {
   letter-spacing: 0.05em !important;
 }
 
-.badge-ok {
+html.dark .badge-ok {
   background: rgba(16, 185, 129, 0.15) !important;
   border: 1px solid rgba(16, 185, 129, 0.3) !important;
   color: #34d399 !important;
 }
 
-.badge-warn {
+html.dark .badge-warn {
   background: rgba(245, 158, 11, 0.15) !important;
   border: 1px solid rgba(245, 158, 11, 0.3) !important;
   color: #fbbf24 !important;
 }
 
-.badge-danger {
+html.dark .badge-danger {
   background: rgba(244, 63, 94, 0.15) !important;
   border: 1px solid rgba(244, 63, 94, 0.3) !important;
   color: #fb7185 !important;
 }
 
 /* 9. Modals & Drawers */
-.kit-modal {
+html.dark .kit-modal {
   background: #12141c !important;
   border: 1px solid rgba(251, 191, 36, 0.3) !important;
   border-radius: 1.5rem !important;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8) !important;
 }
 
-.kit-modal-head {
+html.dark .kit-modal-head {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
-.kit-modal-head h3 {
+html.dark .kit-modal-head h3 {
   color: #ffffff !important;
   font-weight: 800 !important;
 }
 
-/* User-Provided Modal Shell — Ultra-Refined Luxury Design System */
-.kit-modal-backdrop {
+/* User-Provided Modal Shell Ã¢â‚¬â€ Ultra-Refined Luxury Design System */
+html.dark .kit-modal-backdrop {
   position: fixed !important;
   inset: 0 !important;
   display: flex !important;
@@ -2501,7 +2501,7 @@ body[data-page="admin"], body[data-page="agency"] {
   animation: modal-fade-in 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-.kit-modal {
+html.dark .kit-modal {
   position: relative !important;
   width: 100% !important;
   max-width: 44rem !important;
@@ -2516,7 +2516,7 @@ body[data-page="admin"], body[data-page="agency"] {
   animation: modal-scale-up 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-.kit-modal-head {
+html.dark .kit-modal-head {
   padding: 1.35rem 1.65rem !important;
   background: linear-gradient(to right, rgba(245, 158, 11, 0.08), rgba(15, 20, 32, 0.8)) !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
@@ -2525,7 +2525,7 @@ body[data-page="admin"], body[data-page="agency"] {
   justify-content: space-between !important;
 }
 
-.kit-modal-head h3 {
+html.dark .kit-modal-head h3 {
   color: #ffffff !important;
   font-size: 1.15rem !important;
   font-weight: 800 !important;
@@ -2533,7 +2533,7 @@ body[data-page="admin"], body[data-page="agency"] {
   margin: 0 !important;
 }
 
-.kit-modal-icon {
+html.dark .kit-modal-icon {
   width: 2.75rem !important;
   height: 2.75rem !important;
   border-radius: 0.85rem !important;
@@ -2547,12 +2547,12 @@ body[data-page="admin"], body[data-page="agency"] {
   box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15) !important;
 }
 
-.kit-modal-icon svg {
+html.dark .kit-modal-icon svg {
   width: 1.35rem !important;
   height: 1.35rem !important;
 }
 
-.kit-modal-subtitle {
+html.dark .kit-modal-subtitle {
   color: #f59e0b !important;
   font-size: 0.68rem !important;
   font-family: var(--font-mono, monospace) !important;
@@ -2562,7 +2562,7 @@ body[data-page="admin"], body[data-page="agency"] {
   margin-top: 0.2rem !important;
 }
 
-.kit-modal-close {
+html.dark .kit-modal-close {
   width: 2.25rem !important;
   height: 2.25rem !important;
   border-radius: 0.75rem !important;
@@ -2578,13 +2578,13 @@ body[data-page="admin"], body[data-page="agency"] {
   transition: all 0.2s ease !important;
 }
 
-.kit-modal-close:hover {
+html.dark .kit-modal-close:hover {
   background: rgba(255, 255, 255, 0.12) !important;
   color: #ffffff !important;
   transform: scale(1.05) !important;
 }
 
-.kit-modal-body {
+html.dark .kit-modal-body {
   flex: 1 1 auto !important;
   overflow-y: auto !important;
   max-height: 62vh !important;
@@ -2594,7 +2594,7 @@ body[data-page="admin"], body[data-page="agency"] {
   gap: 1.35rem !important;
 }
 
-.kit-modal-body .view-sub {
+html.dark .kit-modal-body .view-sub {
   grid-column: span 2 / span 2 !important;
   color: rgba(255, 255, 255, 0.45) !important;
   font-size: 0.78rem !important;
@@ -2604,21 +2604,21 @@ body[data-page="admin"], body[data-page="agency"] {
   margin-bottom: 0.25rem !important;
 }
 
-.kit-field {
+html.dark .kit-field {
   display: flex !important;
   flex-direction: column !important;
 }
 
-.kit-field[data-field="description"],
-.kit-field[data-field="image"],
-.kit-field[data-field="flag_url"],
-.kit-field[data-field="notes"],
-.kit-field[data-field="address"],
-.kit-field[data-field="languages"] {
+html.dark .kit-field[data-field="description"],
+html.dark .kit-field[data-field="image"],
+html.dark .kit-field[data-field="flag_url"],
+html.dark .kit-field[data-field="notes"],
+html.dark .kit-field[data-field="address"],
+html.dark .kit-field[data-field="languages"] {
   grid-column: span 2 / span 2 !important;
 }
 
-.kit-field label {
+html.dark .kit-field label {
   color: #e2e8f0 !important;
   font-size: 0.75rem !important;
   font-weight: 700 !important;
@@ -2630,7 +2630,7 @@ body[data-page="admin"], body[data-page="agency"] {
   justify-content: space-between !important;
 }
 
-.field-hint {
+html.dark .field-hint {
   background: rgba(245, 158, 11, 0.15) !important;
   border: 1px solid rgba(245, 158, 11, 0.3) !important;
   color: #fbbf24 !important;
@@ -2642,7 +2642,7 @@ body[data-page="admin"], body[data-page="agency"] {
   letter-spacing: 0.04em !important;
 }
 
-.kit-field input, .kit-field select, .kit-field textarea {
+html.dark .kit-field input, html.dark .kit-field select, html.dark .kit-field textarea {
   background: rgba(4, 7, 13, 0.8) !important;
   border: 1px solid rgba(255, 255, 255, 0.12) !important;
   color: #ffffff !important;
@@ -2655,14 +2655,14 @@ body[data-page="admin"], body[data-page="agency"] {
   width: 100% !important;
 }
 
-.searchable-select-wrap {
+html.dark .searchable-select-wrap {
   position: relative !important;
   display: flex !important;
   flex-direction: column !important;
   gap: 0.35rem !important;
 }
 
-.searchable-select-wrap .ctl-search-input {
+html.dark .searchable-select-wrap .ctl-search-input {
   background: rgba(15, 23, 42, 0.95) !important;
   border: 1px solid rgba(245, 158, 11, 0.3) !important;
   color: #fbbf24 !important;
@@ -2673,31 +2673,31 @@ body[data-page="admin"], body[data-page="agency"] {
   transition: all 0.2s ease !important;
 }
 
-.searchable-select-wrap .ctl-search-input:focus {
+html.dark .searchable-select-wrap .ctl-search-input:focus {
   border-color: #f59e0b !important;
   box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25) !important;
 }
 
-.kit-field input:focus, .kit-field select:focus, .kit-field textarea:focus {
+html.dark .kit-field input:focus, html.dark .kit-field select:focus, html.dark .kit-field textarea:focus {
   border-color: #f59e0b !important;
   box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.5) !important;
 }
 
-.kit-field.has-error input,
-.kit-field.has-error select,
-.kit-field.has-error textarea {
+html.dark .kit-field.has-error input,
+html.dark .kit-field.has-error select,
+html.dark .kit-field.has-error textarea {
   border-color: #f43f5e !important;
   box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.2), inset 0 2px 4px rgba(0, 0, 0, 0.5) !important;
 }
 
-.field-error {
+html.dark .field-error {
   color: #fb7185 !important;
   font-size: 0.72rem !important;
   font-weight: 600 !important;
   margin-top: 0.35rem !important;
 }
 
-.kit-modal-foot {
+html.dark .kit-modal-foot {
   padding: 1.1rem 1.65rem !important;
   background: rgba(6, 9, 15, 0.9) !important;
   border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
@@ -2707,7 +2707,7 @@ body[data-page="admin"], body[data-page="agency"] {
   gap: 0.85rem !important;
 }
 
-.kit-modal-foot .btn-ghost {
+html.dark .kit-modal-foot .btn-ghost {
   padding: 0.65rem 1.35rem !important;
   border-radius: 0.85rem !important;
   background: rgba(255, 255, 255, 0.06) !important;
@@ -2719,12 +2719,12 @@ body[data-page="admin"], body[data-page="agency"] {
   transition: all 0.2s ease !important;
 }
 
-.kit-modal-foot .btn-ghost:hover {
+html.dark .kit-modal-foot .btn-ghost:hover {
   background: rgba(255, 255, 255, 0.12) !important;
 }
 
-.kit-modal-foot .btn-primary,
-.kit-modal-foot .btn-primary.is-danger {
+html.dark .kit-modal-foot .btn-primary,
+html.dark .kit-modal-foot .btn-primary.is-danger {
   padding: 0.65rem 1.75rem !important;
   border-radius: 0.85rem !important;
   background: linear-gradient(135deg, #f59e0b, #fbbf24) !important;
@@ -2738,13 +2738,13 @@ body[data-page="admin"], body[data-page="agency"] {
   transition: all 0.2s ease !important;
 }
 
-.kit-modal-foot .btn-primary:hover,
-.kit-modal-foot .btn-primary.is-danger:hover {
+html.dark .kit-modal-foot .btn-primary:hover,
+html.dark .kit-modal-foot .btn-primary.is-danger:hover {
   transform: translateY(-1px) !important;
   box-shadow: 0 14px 28px -4px rgba(245, 158, 11, 0.45) !important;
 }
 
-.animate-slide-up {
+html.dark .animate-slide-up {
   animation: toast-slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
@@ -2765,17 +2765,17 @@ body[data-page="admin"], body[data-page="agency"] {
 
 
 /* 10. ALWAYS VISIBLE TABLE ACTION BUTTONS (No hover needed) */
-.kit-table .td-actions,
-.kit-table tbody .td-actions,
-.kit-table tbody .td-actions .btn-ghost,
-.kit-table tbody tr .td-actions .btn-ghost {
+html.dark .kit-table .td-actions,
+html.dark .kit-table tbody .td-actions,
+html.dark .kit-table tbody .td-actions .btn-ghost,
+html.dark .kit-table tbody tr .td-actions .btn-ghost {
   opacity: 1 !important;
   visibility: visible !important;
   display: inline-flex !important;
   align-items: center !important;
 }
 
-.td-actions .btn-ghost {
+html.dark .td-actions .btn-ghost {
   opacity: 1 !important;
   background: rgba(255, 255, 255, 0.08) !important;
   border: 1px solid rgba(255, 255, 255, 0.2) !important;
@@ -2787,28 +2787,28 @@ body[data-page="admin"], body[data-page="agency"] {
   transition: all 0.2s ease !important;
 }
 
-.td-actions .btn-ghost:hover {
+html.dark .td-actions .btn-ghost:hover {
   background: #fbbf24 !important;
   color: #000000 !important;
   border-color: #fbbf24 !important;
   box-shadow: 0 2px 8px rgba(251, 191, 36, 0.35) !important;
 }
 
-.td-actions .btn-ghost.is-danger-text,
-.td-actions .btn-ghost.btn-danger {
+html.dark .td-actions .btn-ghost.is-danger-text,
+html.dark .td-actions .btn-ghost.btn-danger {
   color: #fb7185 !important;
   border-color: rgba(244, 63, 94, 0.3) !important;
 }
 
-.td-actions .btn-ghost.is-danger-text:hover,
-.td-actions .btn-ghost.btn-danger:hover {
+html.dark .td-actions .btn-ghost.is-danger-text:hover,
+html.dark .td-actions .btn-ghost.btn-danger:hover {
   background: #f43f5e !important;
   color: #ffffff !important;
   border-color: #f43f5e !important;
 }
 
-/* 11. GLOBAL PAGE SCROLLING ONLY — ZERO IN-CONTAINER SCROLLBARS */
-html, body, .shell, .content, main, .ticket, .ticket-panel, .panel-body, .crud-table, .table-scroll, table, .kit-table {
+/* 11. GLOBAL PAGE SCROLLING ONLY Ã¢â‚¬â€ ZERO IN-CONTAINER SCROLLBARS */
+html.dark html, html.dark body, html.dark .shell, html.dark .content, html.dark main, html.dark .ticket, html.dark .ticket-panel, html.dark .panel-body, html.dark .crud-table, html.dark .table-scroll, html.dark table, html.dark .kit-table {
   max-height: none !important;
   height: auto !important;
   overflow: visible !important;
@@ -2817,8 +2817,8 @@ html, body, .shell, .content, main, .ticket, .ticket-panel, .panel-body, .crud-t
 }
 
 /* 12. FILTER TOOLBAR INTEGRATION INSIDE TABLE HEADER CARD */
-.ticket-panel .kit-toolbar,
-.kit-toolbar {
+html.dark .ticket-panel .kit-toolbar,
+html.dark .kit-toolbar {
   display: flex !important;
   flex-wrap: wrap !important;
   gap: 1rem !important;
@@ -2832,7 +2832,7 @@ html, body, .shell, .content, main, .ticket, .ticket-panel, .panel-body, .crud-t
   margin-bottom: 0 !important;
 }
 
-.table-toolbar {
+html.dark .table-toolbar {
   display: flex !important;
   flex-direction: row !important;
   flex-wrap: nowrap !important;
@@ -2845,7 +2845,7 @@ html, body, .shell, .content, main, .ticket, .ticket-panel, .panel-body, .crud-t
   overflow-x: auto !important;
 }
 
-.cols-group {
+html.dark .cols-group {
   display: flex !important;
   flex-direction: row !important;
   flex-wrap: nowrap !important;
@@ -2854,7 +2854,7 @@ html, body, .shell, .content, main, .ticket, .ticket-panel, .panel-body, .crud-t
   white-space: nowrap !important;
 }
 
-.cols-tag {
+html.dark .cols-tag {
   color: #fbbf24 !important;
   font-size: 0.72rem !important;
   font-weight: 800 !important;
@@ -2868,7 +2868,7 @@ html, body, .shell, .content, main, .ticket, .ticket-panel, .panel-body, .crud-t
 }
 
 /* 13. SINGLE HORIZONTAL ROW COLUMN SELECTOR BAR (cols-pop) */
-.cols-pop {
+html.dark .cols-pop {
   position: static !important;
   z-index: auto !important;
   background: transparent !important;
@@ -2887,11 +2887,11 @@ html, body, .shell, .content, main, .ticket, .ticket-panel, .panel-body, .crud-t
   max-width: none !important;
 }
 
-.cols-pop[hidden] {
+html.dark .cols-pop[hidden] {
   display: flex !important; /* Force visible */
 }
 
-.cols-opt {
+html.dark .cols-opt {
   display: inline-flex !important;
   flex-direction: row !important;
   align-items: center !important;
@@ -2909,20 +2909,20 @@ html, body, .shell, .content, main, .ticket, .ticket-panel, .panel-body, .crud-t
   white-space: nowrap !important;
 }
 
-.cols-opt:hover {
+html.dark .cols-opt:hover {
   background: rgba(251, 191, 36, 0.15) !important;
   border-color: rgba(251, 191, 36, 0.4) !important;
   color: #fbbf24 !important;
 }
 
-.cols-opt input[type="checkbox"] {
+html.dark .cols-opt input[type="checkbox"] {
   accent-color: #fbbf24 !important;
   width: 14px !important;
   height: 14px !important;
   cursor: pointer !important;
 }
 
-.table-ctl-right {
+html.dark .table-ctl-right {
   display: flex !important;
   flex-direction: row !important;
   flex-wrap: nowrap !important;
@@ -2932,7 +2932,7 @@ html, body, .shell, .content, main, .ticket, .ticket-panel, .panel-body, .crud-t
 }
 
 
-.ctl-select {
+html.dark .ctl-select {
   background: rgba(0, 0, 0, 0.5) !important;
   border: 1px solid rgba(255, 255, 255, 0.15) !important;
   color: #ffffff !important;
@@ -2946,7 +2946,7 @@ html, body, .shell, .content, main, .ticket, .ticket-panel, .panel-body, .crud-t
 /* =====================================================================
    14. ULTRA-PROFESSIONAL LUXURY DATA TABLES DESIGN
    ===================================================================== */
-.kit-table {
+html.dark .kit-table {
   width: 100% !important;
   border-collapse: separate !important;
   border-spacing: 0 !important;
@@ -2956,11 +2956,11 @@ html, body, .shell, .content, main, .ticket, .ticket-panel, .panel-body, .crud-t
 }
 
 /* Header Row */
-.kit-table thead tr {
+html.dark .kit-table thead tr {
   background: rgba(10, 12, 18, 0.95) !important;
 }
 
-.kit-table thead th {
+html.dark .kit-table thead th {
   padding: 1rem 1.25rem !important;
   font-size: 0.68rem !important;
   font-weight: 800 !important;
@@ -2977,15 +2977,15 @@ html, body, .shell, .content, main, .ticket, .ticket-panel, .panel-body, .crud-t
 }
 
 /* Checkbox Column */
-.kit-table td.td-select,
-.kit-table th.td-select {
+html.dark .kit-table td.td-select,
+html.dark .kit-table th.td-select {
   width: 44px !important;
   text-align: center !important;
   padding-left: 1.25rem !important;
   padding-right: 0.5rem !important;
 }
 
-.kit-table input[type="checkbox"] {
+html.dark .kit-table input[type="checkbox"] {
   accent-color: #fbbf24 !important;
   width: 16px !important;
   height: 16px !important;
@@ -2994,26 +2994,26 @@ html, body, .shell, .content, main, .ticket, .ticket-panel, .panel-body, .crud-t
 }
 
 /* Body Rows */
-.kit-table tbody tr {
+html.dark .kit-table tbody tr {
   transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1) !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
 }
 
-.kit-table tbody tr:nth-child(even) {
+html.dark .kit-table tbody tr:nth-child(even) {
   background: rgba(255, 255, 255, 0.015) !important;
 }
 
-.kit-table tbody tr:hover {
+html.dark .kit-table tbody tr:hover {
   background: rgba(251, 191, 36, 0.06) !important;
   box-shadow: inset 3px 0 0 #fbbf24 !important;
 }
 
-.kit-table tbody tr.is-selected {
+html.dark .kit-table tbody tr.is-selected {
   background: rgba(251, 191, 36, 0.12) !important;
   box-shadow: inset 4px 0 0 #fbbf24 !important;
 }
 
-.kit-table td {
+html.dark .kit-table td {
   padding: 1.1rem 1.25rem !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
   color: rgba(255, 255, 255, 0.9) !important;
@@ -3023,16 +3023,16 @@ html, body, .shell, .content, main, .ticket, .ticket-panel, .panel-body, .crud-t
 }
 
 /* Density Compact Mode */
-.kit-table.density-compact td {
+html.dark .kit-table.density-compact td {
   padding: 0.65rem 1.25rem !important;
 }
 
-.kit-table.density-compact th {
+html.dark .kit-table.density-compact th {
   padding: 0.75rem 1.25rem !important;
 }
 
 /* Status Badges */
-.badge {
+html.dark .badge {
   display: inline-flex !important;
   align-items: center !important;
   gap: 0.4rem !important;
@@ -3045,35 +3045,35 @@ html, body, .shell, .content, main, .ticket, .ticket-panel, .panel-body, .crud-t
   line-height: 1 !important;
 }
 
-.badge-ok {
+html.dark .badge-ok {
   background: rgba(16, 185, 129, 0.15) !important;
   border: 1px solid rgba(16, 185, 129, 0.35) !important;
   color: #34d399 !important;
   box-shadow: 0 0 10px rgba(16, 185, 129, 0.15) !important;
 }
 
-.badge-warn {
+html.dark .badge-warn {
   background: rgba(245, 158, 11, 0.15) !important;
   border: 1px solid rgba(245, 158, 11, 0.35) !important;
   color: #fbbf24 !important;
   box-shadow: 0 0 10px rgba(245, 158, 11, 0.15) !important;
 }
 
-.badge-danger {
+html.dark .badge-danger {
   background: rgba(244, 63, 94, 0.15) !important;
   border: 1px solid rgba(244, 63, 94, 0.35) !important;
   color: #fb7185 !important;
   box-shadow: 0 0 10px rgba(244, 63, 94, 0.15) !important;
 }
 
-.badge-off {
+html.dark .badge-off {
   background: rgba(255, 255, 255, 0.08) !important;
   border: 1px solid rgba(255, 255, 255, 0.15) !important;
   color: rgba(255, 255, 255, 0.6) !important;
 }
 
-/* Action Buttons Container — Single Flat Layer in Normal Flow */
-.td-actions, .th-actions, .kit-table td.td-actions, .kit-table th.th-actions {
+/* Action Buttons Container Ã¢â‚¬â€ Single Flat Layer in Normal Flow */
+html.dark .td-actions, html.dark .th-actions, html.dark .kit-table td.td-actions, html.dark .kit-table th.th-actions {
   position: static !important;
   z-index: auto !important;
   box-shadow: none !important;
@@ -3085,7 +3085,7 @@ html, body, .shell, .content, main, .ticket, .ticket-panel, .panel-body, .crud-t
   white-space: nowrap !important;
 }
 
-.td-actions .btn-ghost {
+html.dark .td-actions .btn-ghost {
   opacity: 1 !important;
   visibility: visible !important;
   background: rgba(255, 255, 255, 0.06) !important;
@@ -3101,7 +3101,7 @@ html, body, .shell, .content, main, .ticket, .ticket-panel, .panel-body, .crud-t
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2) !important;
 }
 
-.td-actions .btn-ghost:hover {
+html.dark .td-actions .btn-ghost:hover {
   background: #fbbf24 !important;
   color: #000000 !important;
   border-color: #fbbf24 !important;
@@ -3109,15 +3109,15 @@ html, body, .shell, .content, main, .ticket, .ticket-panel, .panel-body, .crud-t
   transform: translateY(-1px) !important;
 }
 
-.td-actions .btn-ghost.is-danger-text,
-.td-actions .btn-ghost.btn-danger {
+html.dark .td-actions .btn-ghost.is-danger-text,
+html.dark .td-actions .btn-ghost.btn-danger {
   color: #fb7185 !important;
   border-color: rgba(244, 63, 94, 0.35) !important;
   background: rgba(244, 63, 94, 0.08) !important;
 }
 
-.td-actions .btn-ghost.is-danger-text:hover,
-.td-actions .btn-ghost.btn-danger:hover {
+html.dark .td-actions .btn-ghost.is-danger-text:hover,
+html.dark .td-actions .btn-ghost.btn-danger:hover {
   background: #f43f5e !important;
   color: #ffffff !important;
   border-color: #f43f5e !important;
@@ -3125,7 +3125,7 @@ html, body, .shell, .content, main, .ticket, .ticket-panel, .panel-body, .crud-t
 }
 
 /* Pagination Bar */
-.pager-bar {
+html.dark .pager-bar {
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
@@ -3136,13 +3136,13 @@ html, body, .shell, .content, main, .ticket, .ticket-panel, .panel-body, .crud-t
   border-bottom-right-radius: 1.5rem !important;
 }
 
-.pager-info {
+html.dark .pager-info {
   font-size: 0.78rem !important;
   color: rgba(255, 255, 255, 0.6) !important;
   font-weight: 600 !important;
 }
 
-.pager-btn {
+html.dark .pager-btn {
   background: rgba(255, 255, 255, 0.06) !important;
   border: 1px solid rgba(255, 255, 255, 0.15) !important;
   color: #ffffff !important;
@@ -3154,13 +3154,13 @@ html, body, .shell, .content, main, .ticket, .ticket-panel, .panel-body, .crud-t
   cursor: pointer !important;
 }
 
-.pager-btn:hover:not(:disabled) {
+html.dark .pager-btn:hover:not(:disabled) {
   background: #fbbf24 !important;
   color: #000000 !important;
   border-color: #fbbf24 !important;
 }
 
-.pager-btn:disabled {
+html.dark .pager-btn:disabled {
   opacity: 0.35 !important;
   cursor: not-allowed !important;
 }

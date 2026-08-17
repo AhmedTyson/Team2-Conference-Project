@@ -41,6 +41,9 @@
     currentPlan: null
   };
 
+  // Agency-launched planning context (opened from agency/create-trip.html)
+  let agencyCtx = { assignmentId: null, customerId: null, customerName: null };
+
   function el(id) {
     return document.getElementById(id);
   }
@@ -53,6 +56,39 @@
     setTimeout(() => {
       toast.style.display = "none";
     }, 4000);
+  }
+
+  function escapeHtml(str) {
+    return String(str || "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  // Agency-launched context — banner + assignment-aware save behaviour
+  function initAgencyContext() {
+    const container = document.querySelector(".planner-container");
+    if (container) {
+      const banner = document.createElement("div");
+      banner.setAttribute("role", "status");
+      banner.style.cssText =
+        "display:flex;align-items:center;gap:0.75rem;padding:0.9rem 1.15rem;border-radius:14px;margin-bottom:1.5rem;" +
+        "border:1px solid rgba(245,158,11,0.35);background:rgba(245,158,11,0.08);color:#fbbf24;font-size:0.85rem;line-height:1.5;";
+      banner.innerHTML =
+        '<i class="fas fa-user-tie" aria-hidden="true"></i>' +
+        '<span><strong>Planning on behalf of ' + escapeHtml(agencyCtx.customerName) + '</strong>' +
+        ' &middot; Assignment #' + agencyCtx.assignmentId +
+        ' &mdash; the finished plan is attached to this customer\'s account.</span>';
+      container.insertBefore(banner, container.firstChild);
+    }
+    const btnBook = el("btn-book-paymob");
+    if (btnBook) btnBook.style.display = "none";
+    const btnSave = el("btn-save-master-plan");
+    if (btnSave) {
+      const label = btnSave.querySelector("span");
+      if (label) label.textContent = "Save to Customer's Assignment";
+    }
   }
 
   // Quota Management
@@ -587,25 +623,27 @@
 
     let createdRecord = null;
 
-    // Save locally
-    const savedTrips = JSON.parse(localStorage.getItem("itinari_my_trips") || "[]");
-    const localTrip = {
-      id: "trip_" + Date.now(),
-      title: plan.title,
-      city: plannerState.city,
-      duration: plannerState.duration,
-      start_date: plannerState.startDate,
-      travel_party: plannerState.travelParty,
-      budget: plan.estimated_budget,
-      plan: plan,
-      created_at: new Date().toISOString()
-    };
-    savedTrips.unshift(localTrip);
-    localStorage.setItem("itinari_my_trips", JSON.stringify(savedTrips));
+    // Save locally (customer flow only — agency plans attach to the assignment instead)
+    if (!agencyCtx.assignmentId) {
+      const savedTrips = JSON.parse(localStorage.getItem("itinari_my_trips") || "[]");
+      const localTrip = {
+        id: "trip_" + Date.now(),
+        title: plan.title,
+        city: plannerState.city,
+        duration: plannerState.duration,
+        start_date: plannerState.startDate,
+        travel_party: plannerState.travelParty,
+        budget: plan.estimated_budget,
+        plan: plan,
+        created_at: new Date().toISOString()
+      };
+      savedTrips.unshift(localTrip);
+      localStorage.setItem("itinari_my_trips", JSON.stringify(savedTrips));
 
-    // Update Nav counter badge
-    const badge = el("my-trips-count-badge");
-    if (badge) badge.textContent = savedTrips.length;
+      // Update Nav counter badge
+      const badge = el("my-trips-count-badge");
+      if (badge) badge.textContent = savedTrips.length;
+    }
 
     // Persist to backend database if logged in
     const token = (It.readToken && It.readToken()) || localStorage.getItem("itinari_token");
@@ -632,7 +670,22 @@
         };
 
         let resJson;
-        if (typeof It.apiPost === "function") {
+        if (agencyCtx.assignmentId) {
+          // Agency flow: attach the plan to the assigned customer via the agency endpoint
+          const agPayload = {
+            title: plan.title || ("Trip to " + (plannerState.city || "Destination")),
+            description: String(plan.description || "").slice(0, 2000),
+            price: cleanBudget,
+            capacity: 1,
+            no_of_travelers: 2,
+            start_date: startDate,
+            end_date: endDate,
+            currency: "USD"
+          };
+          if (typeof It.apiPost === "function") {
+            resJson = await It.apiPost("/agency/assignments/" + agencyCtx.assignmentId + "/trips", agPayload, { auth: true });
+          }
+        } else if (typeof It.apiPost === "function") {
           resJson = await It.apiPost("/trips", payload);
         } else {
           const apiBase = (window.ITINERA_CONFIG && window.ITINERA_CONFIG.apiBase) || "/api";
@@ -658,9 +711,13 @@
       }
     }
 
-    showToast("Master Plan saved to My Trips successfully!");
+    showToast(agencyCtx.assignmentId
+      ? "Master Plan attached to the customer's assignment successfully!"
+      : "Master Plan saved to My Trips successfully!");
     if (btn) {
-      btn.innerHTML = '<i class="fas fa-check"></i> Saved to My Trips';
+      btn.innerHTML = agencyCtx.assignmentId
+        ? '<i class="fas fa-check"></i> Saved to Customer\'s Assignment'
+        : '<i class="fas fa-check"></i> Saved to My Trips';
       btn.disabled = false;
     }
 
@@ -688,6 +745,15 @@
       const customInput = el("custom-city-input");
       if (customInput) customInput.value = qCity;
       renderDestinationCards();
+    }
+
+    // Agency-launched planning (from agency/create-trip.html gateway)
+    const aId = urlParams.get("assignment_id");
+    if (aId) {
+      agencyCtx.assignmentId = aId;
+      agencyCtx.customerId = urlParams.get("customer_id") || null;
+      agencyCtx.customerName = urlParams.get("customer") || "the assigned customer";
+      initAgencyContext();
     }
   });
 

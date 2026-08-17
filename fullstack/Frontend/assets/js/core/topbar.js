@@ -173,7 +173,7 @@
     btn.addEventListener("click", function (e) {
       e.preventDefault();
       if (layout === "admin") window.location.href = prefix + "admin/notifications.html";
-      else if (layout === "agency") window.location.href = prefix + "agency/index.html";
+      else if (layout === "agency") window.location.href = prefix + "agency/assignments.html";
       else window.location.href = prefix + "app/notifications.html";
     });
 
@@ -253,9 +253,7 @@
       ];
     } else if (role === "agency") {
       menuItems = [
-        { label: "Agency Desk", icon: ICONS.compass, href: prefix + "agency/index.html" },
-        { label: "Assignments", icon: ICONS.trips, href: prefix + "agency/assignments.html" },
-        { label: "Create Trip", icon: ICONS.trips, href: prefix + "agency/create-trip.html" }
+        { label: "My Assignments", icon: ICONS.trips, href: prefix + "agency/assignments.html" }
       ];
     } else {
       menuItems = [

@@ -18,6 +18,7 @@ class StoreConversationRequest extends FormRequest
             'title' => 'nullable|string|max:255',
             'trip_id' => 'nullable|exists:trips,id',
             'agency_id' => 'nullable|exists:users,id',
+            'customer_id' => 'nullable|exists:users,id',
             'initial_message' => 'nullable|string|max:5000',
         ];
     }

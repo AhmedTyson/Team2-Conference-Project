@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Report a User · Travel Planner</title>
+  <link rel="stylesheet" href="../assets/css/tokens.css" />
+  <link rel="stylesheet" href="../assets/css/app.css" />
+  <script>/* FOUC prevention — default dark */
+    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+    if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
+      document.documentElement.classList.add("dark","fouc-ready");
+    else document.documentElement.classList.add("fouc-ready");
+    })();
+  </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+</head>
+<body data-page="report" class="is-booting" data-layout="app">
+  <div class="app">
+    <!-- Top Navigation Header -->
+    <header class="app-nav-header"></header>
+
+    <main class="app__main">
+      <div class="page">
+        <header class="page-header">
+          <p class="page-header__eyebrow">Agency Trust &amp; Safety</p>
+          <h1 class="page-header__title">Report a user issue</h1>
+          <p class="page-header__lead">File a report regarding a customer's conduct on an assignment, such as fraud, abuse, or failure to pay.</p>
+        </header>
+
+        <div class="form__card border border-black/10 dark:border-white/10 p-6 rounded-2xl bg-black/5 dark:bg-white/5 mb-4 text-sm text-neutral-600 dark:text-white/70" id="context-line">
+          Resolving assignment context...
+        </div>
+
+        <form class="form" id="report-user-form" novalidate>
+          <input type="hidden" id="assignment_id" />
+
+          <div class="form__card border border-black/10 dark:border-white/10 p-6 rounded-2xl bg-black/5 dark:bg-white/5">
+            <div class="field mb-4">
+              <label class="field__label block text-xs font-bold text-neutral-600 dark:text-white/70 uppercase mb-1" for="report-reason">Reason for Report</label>
+              <input id="report-reason" class="input w-full px-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-neutral-900 dark:text-white text-sm" type="text" placeholder="e.g. Harassment, abuse, fraudulent booking, failure to pay" required />
+            </div>
+
+            <div class="field mb-6">
+              <label class="field__label block text-xs font-bold text-neutral-600 dark:text-white/70 uppercase mb-1" for="report-details">Detailed Explanation</label>
+              <textarea id="report-details" class="input w-full px-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-neutral-900 dark:text-white text-sm" rows="5" placeholder="Provide dates, booking reference numbers, and specific details..." required></textarea>
+            </div>
+
+            <div class="btn-row flex justify-end">
+              <button type="submit" class="btn px-6 py-3 rounded-xl bg-rose-500 hover:bg-rose-400 text-neutral-900 dark:text-white font-bold text-sm transition" id="submit-btn">Submit Official Report</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <footer class="app__footer">
+      <span>Travel Planner</span>
+      <span>•</span>
+      <span>Plan. Explore. Remember.</span>
+    </footer>
+  </div>
+
+  <script src="../assets/js/core/config.js"></script>
+  <script src="../assets/js/core/api.js"></script>
+  <script src="../assets/js/core/session.js"></script>
+  <script src="../assets/js/core/nav-config.js"></script>
+  <script src="../assets/js/core/app-shell.js"></script>
+  <script src="../assets/js/report-user.js"></script>
+  <script src="../assets/js/core/navbar-component.js"></script>
+</body>
+</html>

@@ -18,6 +18,48 @@
 
   var elements = {};
 
+  var deepLink = { customerId: null, assignmentId: null, customerName: null };
+
+  function parseDeepLink() {
+    try {
+      var qs = new global.URLSearchParams(global.location.search || '');
+      var cid = qs.get('customer_id');
+      var aid = qs.get('assignment_id');
+      if (cid) deepLink.customerId = parseInt(cid, 10);
+      if (aid) deepLink.assignmentId = parseInt(aid, 10);
+      deepLink.customerName = qs.get('customer') || null;
+    } catch (err) {}
+  }
+
+  function sessionUser() {
+    try {
+      var It = global.Itinari || {};
+      return (It.session && It.session.user) || JSON.parse(global.localStorage.getItem('itinari_user') || 'null');
+    } catch (err) {
+      return null;
+    }
+  }
+
+  function currentRole() {
+    try {
+      var user = sessionUser();
+      return user ? (user.role || (user.roles && user.roles[0]) || '') : '';
+    } catch (err) {
+      return '';
+    }
+  }
+
+  function agencyName() {
+    var user = sessionUser();
+    if (!user) return 'Agency Support';
+    return user.name || 'Agency Support';
+  }
+
+  function isAgencyUser() {
+    var role = currentRole();
+    return role === 'agency' || role === 'agency_manager' || role === 'agent';
+  }
+
   var PROMPTS_AI = [
     { label: '✨ Recommend top 3 cultural highlights', text: 'Recommend top 3 luxury cultural highlights for my next journey' },
     { label: '🍽️ Suggest Michelin fine dining', text: 'Suggest 5-star Michelin fine dining restaurants with reservation tips' },
@@ -32,10 +74,28 @@
     { label: '🏨 أسعار الفنادق والطيران المتاحة', text: 'ما هي أفضل العروض والخصومات المتاحة حالياً على الفنادق والطيران؟' }
   ];
 
+  var PROMPTS_AGENCY = [
+    { label: '✈️ Send trip brief', text: 'Hi! Your trip assignment is confirmed. Here is what happens next: our team will prepare your personalized itinerary, and you can review and adjust it with me at any time.' },
+    { label: '💰 Check budget', text: 'To tailor the best itinerary for you, could you share your preferred budget range and travel dates?' },
+    { label: '🏨 Offer options', text: 'I can arrange your 5-star hotel, flights and private experiences. Let me know your top preferences and I will prepare the options.' },
+    { label: '✅ Confirm details', text: 'Everything is set for your trip. I will confirm the final details shortly — feel free to ask me anything in the meantime.' }
+  ];
+
   function init() {
     cacheElements();
     attachEvents();
     initEchoReverb();
+    parseDeepLink();
+    if (isAgencyUser()) {
+      if (elements.chatInput) elements.chatInput.setAttribute('placeholder', 'Message this customer as the agency...');
+      if (elements.switchAiModeBtn) elements.switchAiModeBtn.style.display = 'none';
+      if (elements.switchAgencyModeBtn) elements.switchAgencyModeBtn.style.display = 'none';
+      var reportBtn = document.getElementById('reportUserBtn');
+      if (reportBtn) {
+        reportBtn.href = 'report-user.html?assignment_id=' + (deepLink.assignmentId || '') + '&customer=' + encodeURIComponent(deepLink.customerName || '');
+      }
+      renderQuickPrompts('agency_inquiry');
+    }
     loadConversations();
     startPolling();
   }
@@ -203,10 +263,10 @@
     // Update Mode button visual styles
     if (modeType === 'ai_concierge') {
       if (elements.switchAiModeBtn) elements.switchAiModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 bg-amber-500 text-black shadow';
-      if (elements.switchAgencyModeBtn) elements.switchAgencyModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold text-white/70 hover:text-white transition flex items-center gap-1.5';
+      if (elements.switchAgencyModeBtn) elements.switchAgencyModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold text-neutral-600 dark:text-white/70 hover:text-neutral-900 dark:hover:text-neutral-900 dark:text-white transition flex items-center gap-1.5';
     } else {
       if (elements.switchAgencyModeBtn) elements.switchAgencyModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 bg-emerald-500 text-black shadow';
-      if (elements.switchAiModeBtn) elements.switchAiModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold text-white/70 hover:text-white transition flex items-center gap-1.5';
+      if (elements.switchAiModeBtn) elements.switchAiModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold text-neutral-600 dark:text-white/70 hover:text-neutral-900 dark:hover:text-neutral-900 dark:text-white transition flex items-center gap-1.5';
     }
 
     // Update Quick Prompts Bar
@@ -241,7 +301,9 @@
 
   function renderQuickPrompts(modeType) {
     if (!elements.quickPromptsContainer) return;
-    var prompts = modeType === 'agency_inquiry' || modeType === 'direct_support' ? PROMPTS_EGYPTIAN_SUPPORT : PROMPTS_AI;
+    var prompts = isAgencyUser()
+      ? PROMPTS_AGENCY
+      : (modeType === 'agency_inquiry' || modeType === 'direct_support' ? PROMPTS_EGYPTIAN_SUPPORT : PROMPTS_AI);
 
     var html = '';
     prompts.forEach(function (p) {
@@ -267,13 +329,68 @@
       conversations = Array.isArray(data) ? data : [];
       renderConversations('all');
 
-      // Auto-select first conversation if not already selected
-      if (!currentConversationId && conversations.length > 0) {
-        selectConversation(conversations[0].id);
+      // Auto-select: honor a customer deep-link first, otherwise pick the latest thread
+      if (!currentConversationId) {
+        if (deepLink.customerId) {
+          var target = conversations.find(function (c) {
+            return c.user && Number(c.user.id) === deepLink.customerId;
+          });
+          if (target) {
+            selectConversation(target.id);
+          } else {
+            showDeepLinkEmpty();
+          }
+        } else if (conversations.length > 0) {
+          selectConversation(conversations[0].id);
+        }
       }
     } catch (err) {
       console.error('Failed to load conversations:', err);
     }
+  }
+
+  async function startAgencyChat() {
+    if (!deepLink.customerId) return;
+    var btn = document.querySelector('[data-start-chat]');
+    if (btn) {
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Starting chat...';
+    }
+    try {
+      var res = await global.It.apiPost('/conversations', {
+        type: 'agency_inquiry',
+        customer_id: deepLink.customerId,
+        title: 'Agency Support' + (deepLink.customerName ? ' · ' + deepLink.customerName : ''),
+        initial_message: 'Hello! Your Itinari agency partner is here to help plan your trip.'
+      }, { auth: true });
+    } catch (err) {
+      console.error('Failed to start agency chat:', err);
+    }
+    if (elements.emptyState) elements.emptyState.classList.add('hidden');
+    await loadConversations();
+  }
+
+  function showDeepLinkEmpty() {
+    var stage = elements.emptyState;
+    if (!stage) return;
+    stage.classList.remove('hidden');
+    if (elements.chatActiveStage) elements.chatActiveStage.classList.add('hidden');
+    var ref = [];
+    if (deepLink.assignmentId) ref.push('Assignment #' + deepLink.assignmentId);
+    if (deepLink.customerId) ref.push('Customer #' + deepLink.customerId);
+    stage.innerHTML =
+      '<div class="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl mb-4">' +
+      '<i class="fas fa-comments"></i></div>' +
+      '<h3 class="text-xl font-bold text-neutral-900 dark:text-white mb-2">No active chat with this customer yet</h3>' +
+      '<p class="text-sm text-neutral-500 dark:text-white/60 max-w-md mb-6 leading-relaxed">' +
+      'You can open a new support thread now. The customer will see it in their AI Concierge / travel support chat and can reply from there.</p>' +
+      (isAgencyUser()
+        ? '<button type="button" data-start-chat class="px-4 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-black text-xs font-bold transition flex items-center gap-1.5">' +
+          '<i class="fas fa-plus"></i> Start a chat with this customer</button>'
+        : '') +
+      (ref.length ? '<p class="text-xs text-neutral-500 dark:text-white/40 max-w-md mt-4">' + ref.join(' · ') + '</p>' : '');
+    var startBtn = stage.querySelector('[data-start-chat]');
+    if (startBtn) startBtn.addEventListener('click', startAgencyChat);
   }
 
   function renderConversations(filter) {
@@ -285,7 +402,7 @@
     }
 
     if (filtered.length === 0) {
-      elements.convList.innerHTML = '<div class="text-center py-8 text-white/40 text-xs">No conversations found. Start a new chat!</div>';
+      elements.convList.innerHTML = '<div class="text-center py-8 text-neutral-500 dark:text-white/40 text-xs">No conversations found. Start a new chat!</div>';
       return;
     }
 
@@ -295,6 +412,7 @@
       var isEgyptianSupport = conv.type === 'agency_inquiry' || (conv.title && conv.title.includes('خدمة العملاء'));
       var avatarClass = conv.type === 'ai_concierge' ? 'ai' : (isEgyptianSupport ? 'agency' : '');
       var icon = conv.type === 'ai_concierge' ? '<i class="fas fa-robot"></i>' : (isEgyptianSupport ? '<span class="text-xs">🇪🇬</span>' : '<i class="fas fa-headset"></i>');
+      var displayTitle = isAgencyUser() && conv.user && conv.user.name ? conv.user.name : (conv.title || 'Itinera Support');
       var excerpt = conv.latest_message ? conv.latest_message.body : 'No messages yet';
       if (excerpt.length > 45) excerpt = excerpt.substring(0, 42) + '...';
 
@@ -302,12 +420,12 @@
       html += '  <div class="chat-avatar ' + avatarClass + '">' + icon + '</div>';
       html += '  <div class="flex-1 min-w-0">';
       html += '    <div class="flex items-center justify-between gap-1">';
-      html += '      <span class="font-semibold text-sm truncate text-white">' + escapeHtml(conv.title || 'Itinera Support') + '</span>';
+      html += '      <span class="font-semibold text-sm truncate text-neutral-900 dark:text-white">' + escapeHtml(displayTitle) + '</span>';
       if (conv.unread_count > 0) {
         html += '      <span class="px-1.5 py-0.5 rounded-full text-[10px] font-bold bg-amber-500 text-black">' + conv.unread_count + '</span>';
       }
       html += '    </div>';
-      html += '    <p class="text-xs text-white/50 truncate mt-0.5">' + escapeHtml(excerpt) + '</p>';
+      html += '    <p class="text-xs text-neutral-500 dark:text-white/50 truncate mt-0.5">' + escapeHtml(excerpt) + '</p>';
       html += '  </div>';
       html += '</div>';
     });
@@ -336,13 +454,17 @@
       var isEgyptian = conv.type === 'agency_inquiry' || (conv.title && conv.title.includes('خدمة العملاء'));
       
       if (elements.activeTitle) {
-        elements.activeTitle.textContent = conv.title || (isEgyptian ? 'خدمة العملاء المصرية' : 'Itinera AI Concierge');
+        elements.activeTitle.textContent = isAgencyUser() && conv.user && conv.user.name
+          ? conv.user.name
+          : (conv.title || (isEgyptian ? 'خدمة العملاء المصرية' : 'Itinera AI Concierge'));
       }
 
       if (elements.activeSubtitle) {
-        var sub = conv.type === 'ai_concierge' 
-          ? 'AI Travel Assistant · Always Active ⚡' 
-          : (isEgyptian ? '🇪🇬 خدمة العملاء المصرية · ممثل خدمة العملاء متصل الآن' : 'Dedicated Support Agent');
+        var sub = conv.type === 'ai_concierge'
+          ? 'AI Travel Assistant · Always Active ⚡'
+          : (isAgencyUser()
+            ? 'Chatting with ' + ((conv.user && conv.user.name) || 'customer')
+            : (isEgyptian ? '🇪🇬 خدمة العملاء المصرية · ممثل خدمة العملاء متصل الآن' : 'Dedicated Support Agent'));
         if (conv.trip) sub += ' · Trip: ' + conv.trip.title;
         elements.activeSubtitle.textContent = sub;
       }
@@ -350,11 +472,11 @@
       // Update Mode button active styles
       if (conv.type === 'ai_concierge') {
         if (elements.switchAiModeBtn) elements.switchAiModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 bg-amber-500 text-black shadow';
-        if (elements.switchAgencyModeBtn) elements.switchAgencyModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold text-white/70 hover:text-white transition flex items-center gap-1.5';
+        if (elements.switchAgencyModeBtn) elements.switchAgencyModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold text-neutral-600 dark:text-white/70 hover:text-neutral-900 dark:hover:text-neutral-900 dark:text-white transition flex items-center gap-1.5';
         renderQuickPrompts('ai_concierge');
       } else {
         if (elements.switchAgencyModeBtn) elements.switchAgencyModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 bg-emerald-500 text-black shadow';
-        if (elements.switchAiModeBtn) elements.switchAiModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold text-white/70 hover:text-white transition flex items-center gap-1.5';
+        if (elements.switchAiModeBtn) elements.switchAiModeBtn.className = 'px-3 py-1 rounded-lg text-xs font-semibold text-neutral-600 dark:text-white/70 hover:text-neutral-900 dark:hover:text-neutral-900 dark:text-white transition flex items-center gap-1.5';
         renderQuickPrompts('agency_inquiry');
       }
     }
@@ -379,7 +501,9 @@
     if (!elements.messagesStream) return;
 
     if (messages.length === 0) {
-      elements.messagesStream.innerHTML = '<div class="text-center py-12 text-white/40 text-sm"><i class="fas fa-sparkles text-amber-400 mb-2 text-xl block"></i>Start the conversation with your AI Concierge or خدمة العملاء المصرية!</div>';
+      elements.messagesStream.innerHTML = isAgencyUser()
+        ? '<div class="text-center py-12 text-neutral-500 dark:text-white/40 text-sm"><i class="fas fa-paper-plane text-emerald-400 mb-2 text-xl block"></i>No messages yet — say hello to your customer to open the conversation.</div>'
+        : '<div class="text-center py-12 text-neutral-500 dark:text-white/40 text-sm"><i class="fas fa-sparkles text-amber-400 mb-2 text-xl block"></i>Start the conversation with your AI Concierge or خدمة العملاء المصرية!</div>';
       return;
     }
 
@@ -387,13 +511,16 @@
     messages.forEach(function (msg) {
       var isUser = msg.sender_type === 'user';
       var isAgency = msg.sender_type === 'agency' || msg.sender_type === 'admin';
+      var myMessage = isUser || (isAgencyUser() && isAgency);
       var avatarClass = msg.sender_type === 'ai' ? 'ai' : (isAgency ? 'agency' : '');
       var icon = msg.sender_type === 'ai' ? '<i class="fas fa-robot"></i>' : (isAgency ? '<span class="text-xs">🇪🇬</span>' : '<i class="fas fa-user"></i>');
       var time = msg.created_at ? new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
-      var senderLabel = msg.sender_name || (msg.sender_type === 'ai' ? 'Itinera AI' : (isAgency ? 'خدمة العملاء المصرية' : 'You'));
+      var senderLabel = isAgencyUser() && isAgency
+        ? agencyName()
+        : (msg.sender_name || (msg.sender_type === 'ai' ? 'Itinera AI' : (isAgency ? 'خدمة العملاء المصرية' : 'You')));
 
-      html += '<div class="message-row ' + (isUser ? 'user' : (msg.sender_type === 'ai' ? 'ai' : 'agency')) + '">';
-      if (!isUser) {
+      html += '<div class="message-row ' + (myMessage ? 'user' : (msg.sender_type === 'ai' ? 'ai' : 'agency')) + '">';
+      if (!myMessage) {
         html += '  <div class="chat-avatar ' + avatarClass + '">' + icon + '</div>';
       }
       html += '  <div class="message-bubble">';
@@ -419,16 +546,17 @@
       elements.chatInput.style.height = 'auto';
     }
 
-    // Optimistic UI append
+    // Optimistic UI append (agency sends as agency, customer sends as user)
+    var actingAsAgency = isAgencyUser();
     messages.push({
-      sender_type: 'user',
-      sender_name: 'You',
+      sender_type: actingAsAgency ? 'agency' : 'user',
+      sender_name: actingAsAgency ? agencyName() : 'You',
       body: text,
       created_at: new Date().toISOString()
     });
     renderMessages();
 
-    // Show AI or Agent typing indicator
+    // Show AI or Agent typing indicator (the *other* side is typing)
     var conv = conversations.find(function (c) { return c.id === currentConversationId; });
     var typingEl = null;
     if (conv && conv.type === 'ai_concierge') {
@@ -438,9 +566,15 @@
       elements.messagesStream.appendChild(typingEl);
       elements.messagesStream.scrollTop = elements.messagesStream.scrollHeight;
     } else if (conv && (conv.type === 'agency_inquiry' || conv.type === 'direct_support')) {
-      typingEl = document.createElement('div');
-      typingEl.className = 'message-row agency typing-indicator';
-      typingEl.innerHTML = '<div class="chat-avatar agency"><span class="text-xs">🇪🇬</span></div><div class="message-bubble text-emerald-400 text-xs flex items-center gap-2"><i class="fas fa-spinner fa-spin"></i> ممثل خدمة العملاء المصرية يكتب الآن...</div>';
+      if (actingAsAgency) {
+        typingEl = document.createElement('div');
+        typingEl.className = 'message-row user typing-indicator';
+        typingEl.innerHTML = '<div class="message-bubble text-neutral-500 dark:text-white/60 text-xs flex items-center gap-2 justify-end"><i class="fas fa-spinner fa-spin"></i> Customer is typing...</div>';
+      } else {
+        typingEl = document.createElement('div');
+        typingEl.className = 'message-row agency typing-indicator';
+        typingEl.innerHTML = '<div class="chat-avatar agency"><span class="text-xs">🇪🇬</span></div><div class="message-bubble text-emerald-400 text-xs flex items-center gap-2"><i class="fas fa-spinner fa-spin"></i> ممثل خدمة العملاء المصرية يكتب الآن...</div>';
+      }
       elements.messagesStream.appendChild(typingEl);
       elements.messagesStream.scrollTop = elements.messagesStream.scrollHeight;
     }

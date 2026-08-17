@@ -11,10 +11,7 @@
       document.documentElement.classList.add("dark","fouc-ready");
     else document.documentElement.classList.add("fouc-ready");
     })();
-  </script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-</head>
+  </script></head>
 <body data-page="agency" data-module="assignments" data-layout="agency">
   <a href="#main" class="skip-link">Skip to main content</a>
   <div class="shell">
@@ -34,9 +31,9 @@
       </div>
       <header class="content-head">
         <div class="right">
-          <p class="label-eyebrow" style="margin: 0 0 0.35rem;">GATE A-09 · PARTNER OPERATIONS</p>
-          <h1>My assignments</h1>
-          <p class="view-sub">Tours routed to you — accept, decline, or build the trip</p>
+          <p class="label-eyebrow" style="margin: 0 0 0.35rem;">AGENCY DESK · ASSIGNED CUSTOMERS</p>
+          <h1>My Assignments</h1>
+          <p class="view-sub">Customers routed to you — chat, or plan their trip</p>
         </div>
         <span id="user-chip" class="chip" hidden>
           <span id="chip-name"></span>
@@ -44,19 +41,14 @@
         </span>
       </header>
 
+      <div class="kit-toolbar" style="margin-bottom: var(--space-4);">
+          <label class="table-search-group">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+  <input id="global-search" class="table-search" type="search" placeholder="Search..." autocomplete="off" aria-label="Search records" />
+</label>
+      </div>
+
       <section class="ticket ticket-panel" aria-label="Assignments">
-        <div class="panel-head" style="display:flex; flex-wrap:wrap; gap:1rem; justify-content:space-between; align-items:center; padding:1.25rem 1.5rem; border-bottom:1px solid var(--color-border);">
-          <div class="search-box" style="position:relative; flex:1; max-width:320px;">
-            <input type="search" id="search-input" class="input input-sm" placeholder="Search customer or ID..." style="width:100%; padding-left:2.25rem;" />
-            <i class="fas fa-search" style="position:absolute; left:0.75rem; top:50%; transform:translateY(-50%); opacity:0.5; font-size:0.85rem;"></i>
-          </div>
-          <div class="filter-tabs" style="display:flex; gap:0.4rem; flex-wrap:wrap;">
-            <button type="button" class="btn btn-xs is-active" data-status-filter="all">All</button>
-            <button type="button" class="btn btn-xs" data-status-filter="admin_approved">Ready</button>
-            <button type="button" class="btn btn-xs" data-status-filter="agency_approved">Accepted</button>
-            <button type="button" class="btn btn-xs" data-status-filter="completed">Completed</button>
-          </div>
-        </div>
         <div id="assignments-table" class="panel-body"></div>
       </section>
     </main>
