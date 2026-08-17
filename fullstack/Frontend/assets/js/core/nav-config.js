@@ -141,6 +141,7 @@
         icon: "agency",
         dropdown: [
           { to: "/agency/assignments.html", label: "My Assignments", icon: "assignments" },
+          { to: "/app/chat.html", label: "Messages & Support", icon: "reviews" },
         ]
       },
       { to: "/contact.html", label: "Contact", icon: "contact" },

@@ -157,4 +157,36 @@ class ConversationApiTest extends TestCase
             'is_read' => 1,
         ]);
     }
+
+    public function test_admin_cannot_view_unreported_conversation_unless_flagged(): void
+    {
+        $admin = User::factory()->create(['email_verified_at' => now()]);
+        $admin->assignRole('admin');
+
+        $conversation = Conversation::create([
+            'type' => 'agency_inquiry',
+            'title' => 'Private Customer-Agency Discussion',
+            'user_id' => $this->user->id,
+            'agency_id' => $this->agency->id,
+        ]);
+
+        // Unreported chat: Admin MUST be denied access (403 Forbidden)
+        $this->actingAs($admin, 'api')
+            ->getJson("/api/conversations/{$conversation->id}")
+            ->assertStatus(403);
+
+        // Once a Flag report is created on the user/agency, Admin CAN view it
+        \App\Models\System\Flag::create([
+            'reporter_id' => $this->user->id,
+            'flaggable_type' => 'user',
+            'flaggable_id' => $this->agency->id,
+            'reason' => 'inappropriate_content',
+            'details' => 'Customer reported agency conduct',
+            'status' => 'pending',
+        ]);
+
+        $this->actingAs($admin, 'api')
+            ->getJson("/api/conversations/{$conversation->id}")
+            ->assertOk();
+    }
 }
