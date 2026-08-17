@@ -311,13 +311,22 @@ html.dark,
    UNIVERSAL GLASSMORPHISM NAVBAR (Public & Auth Pages)
    State-of-the-art multi-layer frosted translucency & specular rim reflection
    ===================================================================== */
-#global-navbar,
+#global-navbar {
+  z-index: 2147483647 !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  box-sizing: border-box;
+}
+
 #mobile-nav-drawer {
   z-index: 2147483647 !important;
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
+  bottom: 0;
   box-sizing: border-box;
 }
 

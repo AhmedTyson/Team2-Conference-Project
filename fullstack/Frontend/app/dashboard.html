@@ -415,7 +415,7 @@
     <header class="app-nav-header"></header>
 
     <!-- Main Content -->
-    <main class="app__main" id="main-content-target">
+    <main class="app__main pt-20" id="main-content-target">
       <div class="dashboard-shell">
         
         <!-- Welcome Hero Section -->
@@ -505,37 +505,45 @@
           </a>
 
           <!-- AI Generation Quota & Plan Status Card -->
-          <div class="stat-card-glass flex-col items-start gap-2 col-span-full md:col-span-2 lg:col-span-1" id="stat-ai-quota" style="grid-column: span 2 / span 2;">
+          <div class="stat-card-glass flex-col items-start justify-between gap-3 col-span-full md:col-span-2 lg:col-span-1 p-5 rounded-2xl bg-slate-900/60 dark:bg-white/[0.04] border border-amber-500/20 shadow-xl backdrop-blur-xl transition-all duration-300 hover:border-amber-400/40" id="stat-ai-quota" style="grid-column: span 2 / span 2;">
             <div class="flex items-center justify-between w-full">
-              <div class="flex items-center gap-2.5">
-                <div class="stat-card-glass__icon" style="background:rgba(168,85,247,0.15);color:#a855f7;">
-                  <i class="fas fa-sparkles"></i>
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-purple-500/15 text-purple-400 flex items-center justify-center font-bold text-lg shrink-0 border border-purple-500/30 shadow-inner">
+                  <i class="fas fa-sparkles text-amber-400"></i>
                 </div>
                 <div>
-                  <span class="stat-card-glass__label" style="font-weight:700;">AI Generation Quota</span>
-                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-600 dark:text-amber-300 border border-amber-400/30" id="ai-plan-badge">Jetsetter</span>
+                  <div class="flex items-center gap-2 mb-0.5">
+                    <span class="text-xs font-bold text-white/90 uppercase tracking-wider">AI Generation Quota</span>
+                    <span class="text-[11px] font-black px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40 uppercase tracking-wide" id="ai-plan-badge">Jetsetter</span>
+                  </div>
+                  <span class="text-[11px] text-white/50" id="ai-plan-pricing-sub">EGP 199.00 / month · Shared Quota Pool</span>
                 </div>
               </div>
-              <span class="stat-card-glass__value text-base font-bold text-emerald-600 dark:text-emerald-400" id="stat-val-quota">100 Available</span>
-            </div>
-
-            <!-- Progress Bar (n used / n available & remaining) -->
-            <div class="w-full mt-1">
-              <div class="flex items-center justify-between text-[11px] font-semibold text-gray-600 dark:text-white/70 mb-1">
-                <span id="ai-quota-used-text"><i class="fas fa-chart-pie text-purple-500 mr-1"></i> 0 / 100 used</span>
-                <span id="ai-quota-avail-text" class="text-emerald-600 dark:text-emerald-400 font-bold">100 available</span>
-              </div>
-              <div class="w-full h-2 rounded-full bg-gray-200 dark:bg-white/10 overflow-hidden">
-                <div id="ai-quota-bar" class="h-full rounded-full bg-gradient-to-r from-amber-500 via-purple-500 to-emerald-500 transition-all duration-500" style="width: 0%;"></div>
+              <div class="text-right">
+                <span class="text-xl font-extrabold text-emerald-400 block tracking-tight" id="stat-val-quota">96 Available</span>
               </div>
             </div>
 
-            <!-- Plan Expiration Date & Shared Quota Info -->
-            <div class="flex items-center justify-between w-full mt-2 pt-2 border-t border-gray-200/60 dark:border-white/10 text-[11px]">
-              <span class="text-gray-500 dark:text-white/60 font-medium flex items-center gap-1.5">
-                <i class="fas fa-calendar-alt text-amber-500"></i> Plan Expiration:
+            <!-- Progress Bar & Detailed Usage -->
+            <div class="w-full mt-2">
+              <div class="flex items-center justify-between text-xs font-semibold text-white/80 mb-1.5">
+                <span id="ai-quota-used-text" class="flex items-center gap-1.5">
+                  <i class="fas fa-chart-pie text-purple-400"></i>
+                  <strong class="text-amber-400" id="ai-used-count">4</strong> / <span id="ai-total-count">100</span> used
+                </span>
+                <span id="ai-quota-avail-text" class="text-emerald-400 font-extrabold">96 available</span>
+              </div>
+              <div class="w-full h-2.5 rounded-full bg-white/10 overflow-hidden p-0.5 border border-white/10">
+                <div id="ai-quota-bar" class="h-full rounded-full bg-cyan-500 transition-all duration-700 ease-out" style="width: 4%;"></div>
+              </div>
+            </div>
+
+            <!-- Expiration & Renewal Row -->
+            <div class="flex items-center justify-between w-full mt-1 pt-2.5 border-t border-white/10 text-xs">
+              <span class="text-white/60 font-medium flex items-center gap-1.5">
+                <i class="fas fa-calendar-check text-amber-400"></i> Next Billing Cycle / Expiration:
               </span>
-              <span class="font-extrabold text-amber-600 dark:text-amber-400" id="ai-plan-expiry-text">Renews: Monthly</span>
+              <span class="font-extrabold text-amber-300 px-2 py-0.5 rounded bg-amber-400/10 border border-amber-400/20" id="ai-plan-expiry-text">Renews: Sep 16, 2026</span>
             </div>
           </div>
 

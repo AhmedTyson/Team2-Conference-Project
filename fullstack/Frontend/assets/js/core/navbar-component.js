@@ -93,17 +93,19 @@
     var navEl = temp.firstElementChild;
     if (!navEl) return;
 
-    // 2. Clean up any existing global-navbar or placeholder elements
+    // 2. Mount navEl in place of placeholder <header class="app-nav-header"> or existing #global-navbar
     var existingNav = el("global-navbar");
-    if (existingNav && existingNav.parentNode) {
-      existingNav.parentNode.removeChild(existingNav);
-    }
-    doc.querySelectorAll("header.app-nav-header, header.app__header").forEach(function (ph) {
-      if (ph.parentNode) ph.parentNode.removeChild(ph);
-    });
+    var placeholderNav = doc.querySelector("header.app-nav-header, header.app__header");
 
-    // 3. Mount directly at top level of document.body so it escapes all parent stacking contexts & transforms
-    if (doc.body) {
+    if (placeholderNav && placeholderNav.parentNode) {
+      placeholderNav.parentNode.replaceChild(navEl, placeholderNav);
+      // Remove any extra duplicate placeholders
+      doc.querySelectorAll("header.app-nav-header, header.app__header").forEach(function (ph) {
+        if (ph !== navEl && ph.parentNode) ph.parentNode.removeChild(ph);
+      });
+    } else if (existingNav && existingNav.parentNode) {
+      existingNav.parentNode.replaceChild(navEl, existingNav);
+    } else if (doc.body) {
       doc.body.insertBefore(navEl, doc.body.firstChild);
     }
 

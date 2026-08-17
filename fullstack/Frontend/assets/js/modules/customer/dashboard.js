@@ -872,23 +872,34 @@
     ];
 
     Promise.all([
-      It.apiGet(DASH.stats, { auth: true }),
-      It.apiGet(DASH.trips, { auth: true }),
-      It.apiGet(DASH.favs, { auth: true }),
-      It.apiGet(DASH.notifs, { auth: true }),
-      It.apiGet("/me/reviews", { auth: true }).catch(() => null),
-      It.apiGet("/me/payments", { auth: true }).catch(() => null),
-      It.apiGet("/me/subscription", { auth: true }).catch(() => null),
-      It.apiGet("/me/ai-quota", { auth: true }).catch(() => null),
+      It.apiGet(DASH.stats + "?_t=" + Date.now(), { auth: true }).catch(() => null),
+      It.apiGet(DASH.trips, { auth: true }).catch(() => null),
+      It.apiGet(DASH.favs, { auth: true }).catch(() => null),
+      It.apiGet(DASH.notifs, { auth: true }).catch(() => null),
+      It.apiGet("/me/reviews?_t=" + Date.now(), { auth: true }).catch(() => null),
+      It.apiGet("/me/payments?_t=" + Date.now(), { auth: true }).catch(() => null),
+      It.apiGet("/me/subscription?_t=" + Date.now(), { auth: true }).catch(() => null),
+      It.apiGet("/me/ai-quota?_t=" + Date.now(), { auth: true }).catch(() => null),
     ]).then(function (results) {
       const [statsRes, tripsRes, favsRes, notifsRes, reviewsRes, paymentsRes, subRes, quotaRes] = results;
       const stats = (statsRes && statsRes.ok && statsRes.body && statsRes.body.data) ? statsRes.body.data : null;
-      const quotaData = (quotaRes && quotaRes.ok && quotaRes.body && quotaRes.body.data) ? quotaRes.body.data : null;
-      const tripsData = tripsRes.ok && tripsRes.body && tripsRes.body.data ? tripsRes.body.data : mockTrips;
-      const favsData = favsRes.ok && favsRes.body && favsRes.body.data ? favsRes.body.data : mockFavs;
-      const notifsData = notifsRes.ok && notifsRes.body && notifsRes.body.data ? notifsRes.body.data : mockNotifs;
-      const reviewsData = reviewsRes && reviewsRes.ok && reviewsRes.body && reviewsRes.body.data ? reviewsRes.body.data : mockReviews;
-      const paymentsData = paymentsRes && paymentsRes.ok && paymentsRes.body && paymentsRes.body.data ? paymentsRes.body.data : mockPaymentsList;
+      
+      let quotaData = null;
+      if (quotaRes) {
+        if (quotaRes.ok && quotaRes.body) {
+          quotaData = quotaRes.body.data || quotaRes.body;
+        } else if (quotaRes.data) {
+          quotaData = quotaRes.data;
+        } else if (typeof quotaRes.ai_quota_total === "number") {
+          quotaData = quotaRes;
+        }
+      }
+
+      const tripsData = (tripsRes && tripsRes.ok && tripsRes.body && Array.isArray(tripsRes.body.data)) ? tripsRes.body.data : mockTrips;
+      const favsData = (favsRes && favsRes.ok && favsRes.body && Array.isArray(favsRes.body.data)) ? favsRes.body.data : mockFavs;
+      const notifsData = (notifsRes && notifsRes.ok && notifsRes.body && Array.isArray(notifsRes.body.data)) ? notifsRes.body.data : mockNotifs;
+      const reviewsData = (reviewsRes && reviewsRes.ok && reviewsRes.body && Array.isArray(reviewsRes.body.data)) ? reviewsRes.body.data : mockReviews;
+      const paymentsData = (paymentsRes && paymentsRes.ok && paymentsRes.body && Array.isArray(paymentsRes.body.data)) ? paymentsRes.body.data : mockPaymentsList;
 
       // Compute stat counts dynamically
       const totalTripsCount = (stats && stats.total_trips) ? stats.total_trips : tripsData.length;
@@ -909,12 +920,14 @@
       setFeed(paymentsFeed, paymentsData.slice(0, 4), "No payment history found.", renderPaymentsFeed);
 
       // AI Quota & Plan Status Bar
-      const subObj = quotaData || ((stats && stats.subscription) 
-        ? stats.subscription 
-        : ((subRes && subRes.ok && subRes.body && subRes.body.data) ? subRes.body.data : (user && user.subscription ? user.subscription : {})));
+      const subObj = (quotaData && typeof quotaData.ai_quota_total === "number")
+        ? quotaData
+        : ((stats && stats.subscription && typeof stats.subscription.ai_quota_total === "number")
+            ? stats.subscription
+            : ((subRes && subRes.ok && subRes.body && subRes.body.data) ? subRes.body.data : (user && user.subscription ? user.subscription : {})));
 
-      const planName = subObj.plan_name || (subObj.plan ? subObj.plan.name : "Free Explorer");
-      const totalQuota = subObj.ai_quota_total || (subObj.plan ? subObj.plan.ai_quota_monthly : 500);
+      const planName = subObj.plan_name || (subObj.plan ? subObj.plan.name : "Jetsetter");
+      const totalQuota = typeof subObj.ai_quota_total === "number" ? subObj.ai_quota_total : (subObj.plan ? subObj.plan.ai_quota_monthly : 100);
       const usedQuota = typeof subObj.ai_quota_used === "number" 
         ? subObj.ai_quota_used 
         : (typeof (user && user.ai_generations_count) === "number" ? user.ai_generations_count : 0);
@@ -925,8 +938,8 @@
         ? subObj.usage_percentage
         : Math.min(100, Math.round((usedQuota / totalQuota) * 100));
 
-      let expiryText = subObj.formatted_expiration || "Monthly Refresh (1st of month)";
-      if (!subObj.formatted_expiration) {
+      let expiryText = subObj.formatted_expiration;
+      if (!expiryText) {
         const rawExpiry = subObj.expires_at || subObj.ends_at || subObj.renews_at;
         if (rawExpiry) {
           try {
@@ -935,22 +948,37 @@
           } catch (e) {
             expiryText = String(rawExpiry);
           }
+        } else {
+          const d = new Date();
+          d.setMonth(d.getMonth() + 1);
+          expiryText = "Renews: " + d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
         }
       }
 
       const planBadge = el("ai-plan-badge");
       const quotaVal = el("stat-val-quota");
+      const usedCountEl = el("ai-used-count");
+      const totalCountEl = el("ai-total-count");
       const usedText = el("ai-quota-used-text");
       const availText = el("ai-quota-avail-text");
       const barEl = el("ai-quota-bar");
       const expiryEl = el("ai-plan-expiry-text");
+      const priceSubEl = el("ai-plan-pricing-sub");
 
       if (planBadge) planBadge.textContent = planName;
       if (quotaVal) quotaVal.textContent = remainingQuota + " Available";
-      if (usedText) usedText.innerHTML = '<i class="fas fa-chart-pie text-purple-500 mr-1"></i> ' + usedQuota + " / " + totalQuota + " used";
+      if (usedCountEl) usedCountEl.textContent = usedQuota;
+      if (totalCountEl) totalCountEl.textContent = totalQuota;
+      if (usedText && !usedCountEl) {
+        usedText.innerHTML = '<i class="fas fa-chart-pie text-purple-400 mr-1"></i> <strong class="text-amber-400">' + usedQuota + '</strong> / ' + totalQuota + ' used';
+      }
       if (availText) availText.textContent = remainingQuota + " available";
       if (barEl) barEl.style.width = usagePct + "%";
       if (expiryEl) expiryEl.textContent = expiryText;
+      if (priceSubEl && subObj.price_cents) {
+        const priceStr = new Intl.NumberFormat("en-US", { style: "currency", currency: subObj.currency || "EGP" }).format(subObj.price_cents / 100);
+        priceSubEl.textContent = priceStr + " / month · Shared Quota Pool";
+      }
 
     }).catch(function (err) {
       console.warn("Backend API unavailable, loading fallback mockup stats:", err);
@@ -1086,7 +1114,8 @@
       It.session.redirectToLogin();
       return;
     }
-    It.session.currentUser().then(function (user) {
+    // Force refresh user profile on dashboard boot so live DB ai_generations_count is loaded
+    It.session.currentUser(true).then(function (user) {
       if (!user) {
         It.session.redirectToLogin();
         return;
