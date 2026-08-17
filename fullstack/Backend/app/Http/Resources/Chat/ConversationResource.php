@@ -20,7 +20,7 @@ class ConversationResource extends JsonResource
             ->where('is_read', false)
             ->where(function ($q) use ($userId) {
                 $q->where('sender_id', '!=', $userId)
-                  ->orWhereNull('sender_id');
+                    ->orWhereNull('sender_id');
             })
             ->count();
 

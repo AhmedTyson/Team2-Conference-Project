@@ -2,7 +2,7 @@
 
 namespace App\Http\Requests\Catalog;
 
-use Illuminate\Contracts\Validation\ValidationRule;
+use App\Models\Catalog\Region;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -25,6 +25,6 @@ class ListDestinationsRequest extends FormRequest
 
     protected function existingRegionKeys(): array
     {
-        return \App\Models\Catalog\Region::query()->pluck('key')->all();
+        return Region::query()->pluck('key')->all();
     }
 }

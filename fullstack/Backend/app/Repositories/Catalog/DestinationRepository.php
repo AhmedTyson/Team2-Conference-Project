@@ -5,7 +5,6 @@ namespace App\Repositories\Catalog;
 use App\Interfaces\Catalog\DestinationRepositoryInterface;
 use App\Models\Catalog\Destination;
 use App\Models\Trips\Trip;
-use Illuminate\Database\Eloquent\Collection;
 
 class DestinationRepository implements DestinationRepositoryInterface
 {

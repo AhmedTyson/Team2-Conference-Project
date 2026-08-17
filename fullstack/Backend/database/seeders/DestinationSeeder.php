@@ -17,14 +17,16 @@ class DestinationSeeder extends Seeder
     public function run(): void
     {
         $path = database_path('seeders/fixtures/countries.json');
-        if (!file_exists($path)) {
+        if (! file_exists($path)) {
             Destination::factory()->count(20)->create();
+
             return;
         }
 
         $countriesData = json_decode(file_get_contents($path), true);
-        if (!is_array($countriesData)) {
+        if (! is_array($countriesData)) {
             Destination::factory()->count(20)->create();
+
             return;
         }
 
@@ -46,7 +48,7 @@ class DestinationSeeder extends Seeder
 
         foreach ($countriesData as $item) {
             $country = Country::where('iso_code', $item['iso_code'] ?? '')->first();
-            if (!$country) {
+            if (! $country) {
                 $country = Country::create([
                     'name' => $item['name'],
                     'iso_code' => $item['iso_code'] ?? strtoupper(substr($item['name'], 0, 2)),
@@ -57,8 +59,8 @@ class DestinationSeeder extends Seeder
                 ]);
             }
 
-            $capital = $item['capital'] ?? ($item['name'] . ' City');
-            if (!Destination::where('country_id', $country->id)->where('name', $capital)->exists()) {
+            $capital = $item['capital'] ?? ($item['name'].' City');
+            if (! Destination::where('country_id', $country->id)->where('name', $capital)->exists()) {
                 $meta = $cityMeta[$capital] ?? [
                     'lat' => rand(10, 60) + (rand(1, 99) / 100),
                     'lng' => rand(-100, 100) + (rand(1, 99) / 100),

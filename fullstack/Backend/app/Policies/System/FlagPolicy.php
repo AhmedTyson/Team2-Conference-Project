@@ -11,7 +11,10 @@ class FlagPolicy
 {
     public function view(?User $user, Flag $flag): bool
     {
-        if (!$user) return false;
+        if (! $user) {
+            return false;
+        }
+
         return $user->id === $flag->reporter_id ||
             $user->id === $flag->reviewed_by ||
             $user->hasAnyRole(['admin', 'super_admin']) ||
@@ -34,7 +37,10 @@ class FlagPolicy
 
     public function review(?User $user, mixed $flag = null): bool
     {
-        if (!$user) return false;
+        if (! $user) {
+            return false;
+        }
+
         return $user->hasAnyRole(['admin', 'super_admin']) ||
             $user->email === 'admin@itinari.com' ||
             $user->email === 'admin@threedos.com';

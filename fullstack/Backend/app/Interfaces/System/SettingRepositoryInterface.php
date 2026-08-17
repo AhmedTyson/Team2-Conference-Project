@@ -3,10 +3,11 @@
 namespace App\Interfaces\System;
 
 use App\Models\System\Setting;
+use Illuminate\Support\Collection;
 
 interface SettingRepositoryInterface
 {
-    public function getAllFlat(): \Illuminate\Support\Collection;
+    public function getAllFlat(): Collection;
 
     public function updateOrCreate(string $key, string $value): Setting;
 

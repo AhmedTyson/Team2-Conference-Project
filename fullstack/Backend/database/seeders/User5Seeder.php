@@ -17,6 +17,7 @@ use App\Models\Trips\Trip;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Spatie\Permission\Models\Role;
 
 class User5Seeder extends Seeder
@@ -236,7 +237,7 @@ class User5Seeder extends Seeder
                 'user_id' => $user->id,
                 'title' => $n['title'],
             ], [
-                'id' => (string) \Illuminate\Support\Str::uuid(),
+                'id' => (string) Str::uuid(),
                 'body' => $n['body'],
                 'type' => $n['type'],
                 'status' => $n['status'],

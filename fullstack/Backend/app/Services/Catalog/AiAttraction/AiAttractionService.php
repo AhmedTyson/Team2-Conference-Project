@@ -12,7 +12,6 @@ class AiAttractionService
     /**
      * Retrieve 10 tourist attractions for a given city using OpenAI.
      *
-     * @param string $city
      * @return array<int, array{name: string, lat: float, lng: float}>
      */
     public function getAttractions(string $city): array
@@ -22,7 +21,7 @@ class AiAttractionService
             return [];
         }
 
-        $cacheKey = 'ai:attractions:' . strtolower($cityTrimmed);
+        $cacheKey = 'ai:attractions:'.strtolower($cityTrimmed);
 
         return Cache::remember($cacheKey, now()->addHours(24), function () use ($cityTrimmed) {
             return $this->fetchAttractionsFromAi($cityTrimmed);
@@ -38,11 +37,12 @@ class AiAttractionService
 
         if (empty($apiKey)) {
             Log::warning('OpenAI API key is missing from configuration.');
+
             return [];
         }
 
         try {
-            Log::info('Calling OpenAI API for attractions in: ' . $city);
+            Log::info('Calling OpenAI API for attractions in: '.$city);
 
             $response = Http::retry(2, 1000)
                 ->connectTimeout(5)
@@ -80,6 +80,7 @@ class AiAttractionService
                     'status' => $response->status(),
                     'body' => $response->body(),
                 ]);
+
                 return [];
             }
 
@@ -89,7 +90,7 @@ class AiAttractionService
             return $this->parseResponseContent($content);
 
         } catch (Throwable $e) {
-            Log::error('Exception in AiAttractionService: ' . $e->getMessage(), [
+            Log::error('Exception in AiAttractionService: '.$e->getMessage(), [
                 'city' => $city,
                 'exception' => $e,
             ]);
@@ -111,7 +112,7 @@ class AiAttractionService
         $cleanJson = preg_replace('/^```(?:json)?\s*|\s*```$/i', '', trim($content));
         $decoded = json_decode($cleanJson, true);
 
-        if (!is_array($decoded)) {
+        if (! is_array($decoded)) {
             return [];
         }
 
@@ -119,7 +120,7 @@ class AiAttractionService
         $rawItems = $decoded['attractions'] ?? (array_is_list($decoded) ? $decoded : []);
 
         return collect($rawItems)
-            ->filter(fn ($item) => is_array($item) && !empty($item['name']))
+            ->filter(fn ($item) => is_array($item) && ! empty($item['name']))
             ->map(fn ($item) => [
                 'name' => (string) ($item['name'] ?? ''),
                 'lat' => (float) ($item['lat'] ?? 0.0),

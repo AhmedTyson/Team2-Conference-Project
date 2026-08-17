@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Trips;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Carbon;
 
 class StoreTripRequest extends FormRequest
 {
@@ -34,7 +35,7 @@ class StoreTripRequest extends FormRequest
         if (! $this->filled('end_date') && $this->filled('start_date')) {
             $days = (int) ($this->input('no_of_days', 3));
             $this->merge([
-                'end_date' => \Illuminate\Support\Carbon::parse($this->input('start_date'))->addDays($days)->toDateString(),
+                'end_date' => Carbon::parse($this->input('start_date'))->addDays($days)->toDateString(),
             ]);
         }
 

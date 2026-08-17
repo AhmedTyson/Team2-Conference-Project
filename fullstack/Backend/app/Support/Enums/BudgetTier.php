@@ -10,7 +10,7 @@ enum BudgetTier: string
 
     public function priceMultiplier(): float
     {
-        return match($this) {
+        return match ($this) {
             self::Economy => 1.0,
             self::Standard => 1.5,
             self::Premium => 2.0,
@@ -19,7 +19,7 @@ enum BudgetTier: string
 
     public function maxTravelers(): int
     {
-        return match($this) {
+        return match ($this) {
             self::Economy => 2,
             self::Standard => 4,
             self::Premium => 8,
@@ -28,7 +28,7 @@ enum BudgetTier: string
 
     public function description(): string
     {
-        return match($this) {
+        return match ($this) {
             self::Economy => 'Budget-friendly option',
             self::Standard => 'Comfortable experience',
             self::Premium => 'Luxury experience',

@@ -14,6 +14,7 @@ use App\Support\ApiResponse;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Pagination\AbstractPaginator;
 
 class DestinationController extends Controller
 {
@@ -30,7 +31,7 @@ class DestinationController extends Controller
     public function index(ListDestinationsRequest $request): JsonResponse
     {
         $destinations = $this->destinationService->index($request->validated());
-        if ($destinations instanceof \Illuminate\Pagination\AbstractPaginator) {
+        if ($destinations instanceof AbstractPaginator) {
             return response()->json(DestinationCardResource::collection($destinations)->response()->getData(true));
         }
 

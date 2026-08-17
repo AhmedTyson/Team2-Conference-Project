@@ -38,7 +38,7 @@ class StatsService
             'tours' => $this->tripRepository->countAll(),
             'flights' => $this->flightRepository->countAll(),
             'reviews' => $approvedReviews >= 1000
-                ? round($approvedReviews / 1000, 1) . 'K'
+                ? round($approvedReviews / 1000, 1).'K'
                 : (string) $approvedReviews,
         ];
     }

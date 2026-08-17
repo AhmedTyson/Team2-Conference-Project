@@ -6,6 +6,7 @@ use App\Enums\AgencyAssignmentStatus;
 use App\Models\Account\User;
 use App\Models\Catalog\Hotel;
 use App\Models\Commerce\AgencyAssignment;
+use Database\Seeders\RoleAndPermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
@@ -17,7 +18,7 @@ class AgencyTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->seed(\Database\Seeders\RoleAndPermissionSeeder::class);
+        $this->seed(RoleAndPermissionSeeder::class);
     }
 
     public function test_customer_can_request_agency()

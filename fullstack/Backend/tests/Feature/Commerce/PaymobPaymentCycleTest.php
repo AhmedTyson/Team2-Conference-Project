@@ -158,7 +158,7 @@ class PaymobPaymentCycleTest extends TestCase
         $this->assertEquals('failed', $paymentStatus);
 
         // Verify order lookup endpoint reflects database failure
-        $lookupResponse = $this->actingAs($user, 'api')->getJson("/api/orders/lookup/ORDER_72_1786910300");
+        $lookupResponse = $this->actingAs($user, 'api')->getJson('/api/orders/lookup/ORDER_72_1786910300');
         $lookupResponse->assertStatus(200)
             ->assertJsonPath('data.order_id', $order->id)
             ->assertJsonPath('data.is_success', false);

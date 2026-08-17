@@ -20,7 +20,6 @@ use App\Interfaces\System\ContactMessageRepositoryInterface;
 use App\Interfaces\System\FlagRepositoryInterface;
 use App\Interfaces\System\SettingRepositoryInterface;
 use App\Interfaces\System\SurveyRepositoryInterface;
-use App\Models\Commerce\AgencyAssignment;
 use App\Interfaces\Trips\ReviewRepositoryInterface;
 use App\Interfaces\Trips\TripRepositoryInterface;
 use App\Models\Account\User;
@@ -29,8 +28,13 @@ use App\Models\Catalog\Destination;
 use App\Models\Catalog\Flight;
 use App\Models\Catalog\Hotel;
 use App\Models\Catalog\Restaurant;
+use App\Models\Commerce\AgencyAssignment;
 use App\Models\Commerce\Plan;
+use App\Models\System\Flag;
 use App\Models\Trips\Trip;
+use App\Policies\Commerce\AgencyAssignmentPolicy;
+use App\Policies\System\FlagPolicy;
+use App\Policies\TripPolicy;
 use App\Repositories\Account\UserRepository;
 use App\Repositories\Catalog\AttractionRepository;
 use App\Repositories\Catalog\CategoryRepository;
@@ -54,8 +58,8 @@ use App\Services\Commerce\PaymobGateway;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -84,18 +88,13 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(SettingRepositoryInterface::class, SettingRepository::class);
         $this->app->bind(TripRepositoryInterface::class, TripRepository::class);
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
-
-        if ($this->app->environment('local') && class_exists(\Laravel\Telescope\TelescopeServiceProvider::class)) {
-            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
-            $this->app->register(TelescopeServiceProvider::class);
-        }
     }
 
     public function boot(): void
     {
-        Gate::policy(\App\Models\Commerce\AgencyAssignment::class, \App\Policies\Commerce\AgencyAssignmentPolicy::class);
-        Gate::policy(\App\Models\System\Flag::class, \App\Policies\System\FlagPolicy::class);
-        Gate::policy(\App\Models\Trips\Trip::class, \App\Policies\TripPolicy::class);
+        Gate::policy(AgencyAssignment::class, AgencyAssignmentPolicy::class);
+        Gate::policy(Flag::class, FlagPolicy::class);
+        Gate::policy(Trip::class, TripPolicy::class);
 
         // Implicitly grant Super Admin all permissions
         Gate::before(function ($user, $ability) {

@@ -4,9 +4,18 @@ namespace App\Http\Controllers\System;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TripResource;
+use App\Models\Catalog\Attraction;
+use App\Models\Catalog\Destination;
+use App\Models\Catalog\Flight;
+use App\Models\Catalog\Hotel;
+use App\Models\Catalog\Restaurant;
+use App\Models\Commerce\Order;
+use App\Models\Commerce\Payment;
+use App\Models\Commerce\Plan;
 use App\Models\Trips\Favourite;
 use App\Models\Trips\Trip;
 use App\Support\ApiResponse;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -42,7 +51,7 @@ class DashboardController extends Controller
         $activeSub = $user->subscriptions()->where('status', 'active')->latest()->first();
         $plan = $activeSub ? $activeSub->plan : null;
         if (! $plan) {
-            $plan = \App\Models\Commerce\Plan::where('name', 'Jetsetter')->first() ?: \App\Models\Commerce\Plan::find(2);
+            $plan = Plan::where('name', 'Jetsetter')->first() ?: Plan::find(2);
         }
 
         $planName = $plan ? $plan->name : 'Jetsetter';
@@ -63,7 +72,7 @@ class DashboardController extends Controller
             $renewsAt = $expiresAt;
         }
 
-        $formattedExp = 'Renews: ' . \Carbon\Carbon::parse($expiresAt)->format('M d, Y');
+        $formattedExp = 'Renews: '.Carbon::parse($expiresAt)->format('M d, Y');
 
         return ApiResponse::success([
             'total_trips' => $totalTrips,
@@ -93,7 +102,7 @@ class DashboardController extends Controller
         $activeSub = $user->subscriptions()->where('status', 'active')->latest()->first();
         $plan = $activeSub ? $activeSub->plan : null;
         if (! $plan) {
-            $plan = \App\Models\Commerce\Plan::where('name', 'Jetsetter')->first() ?: \App\Models\Commerce\Plan::find(2);
+            $plan = Plan::where('name', 'Jetsetter')->first() ?: Plan::find(2);
         }
 
         $planName = $plan ? $plan->name : 'Jetsetter';
@@ -115,7 +124,7 @@ class DashboardController extends Controller
             $renewsAt = $endsAt;
         }
 
-        $formattedExp = 'Renews: ' . \Carbon\Carbon::parse($endsAt)->format('M d, Y');
+        $formattedExp = 'Renews: '.Carbon::parse($endsAt)->format('M d, Y');
 
         return ApiResponse::success([
             'plan_id' => $plan ? $plan->id : null,
@@ -164,11 +173,11 @@ class DashboardController extends Controller
         return ApiResponse::success(
             $favourites->map(function ($fav) {
                 $typeMap = [
-                    \App\Models\Catalog\Hotel::class => 'hotel',
-                    \App\Models\Catalog\Restaurant::class => 'restaurant',
-                    \App\Models\Catalog\Attraction::class => 'attraction',
-                    \App\Models\Catalog\Destination::class => 'destination',
-                    \App\Models\Catalog\Flight::class => 'flight',
+                    Hotel::class => 'hotel',
+                    Restaurant::class => 'restaurant',
+                    Attraction::class => 'attraction',
+                    Destination::class => 'destination',
+                    Flight::class => 'flight',
                 ];
                 $shortType = $typeMap[$fav->favorable_type] ?? strtolower(class_basename($fav->favorable_type));
 
@@ -192,7 +201,7 @@ class DashboardController extends Controller
     {
         $user = $request->user();
 
-        $orders = \App\Models\Commerce\Order::with(['items', 'payments'])
+        $orders = Order::with(['items', 'payments'])
             ->where('user_id', $user->id)
             ->latest()
             ->get();
@@ -207,7 +216,7 @@ class DashboardController extends Controller
 
                 return [
                     'id' => $order->id,
-                    'merchant_order_id' => "ORDER_{$order->id}_" . ($order->created_at ? $order->created_at->timestamp : time()),
+                    'merchant_order_id' => "ORDER_{$order->id}_".($order->created_at ? $order->created_at->timestamp : time()),
                     'status' => $statusStr,
                     'total_amount' => (float) ($order->total_amount ?: (($order->total_cents ?? 0) / 100)),
                     'total_cents' => (int) ($order->total_cents ?? 0),
@@ -249,13 +258,13 @@ class DashboardController extends Controller
 
         $order = null;
         if ($numericId) {
-            $order = \App\Models\Commerce\Order::with(['items', 'payments', 'user'])->find($numericId);
+            $order = Order::with(['items', 'payments', 'user'])->find($numericId);
         }
 
         if (! $order) {
-            $payment = \App\Models\Commerce\Payment::where('paymob_transaction_id', $orderRef)->first();
+            $payment = Payment::where('paymob_transaction_id', $orderRef)->first();
             if ($payment) {
-                $order = \App\Models\Commerce\Order::with(['items', 'payments', 'user'])->find($payment->order_id);
+                $order = Order::with(['items', 'payments', 'user'])->find($payment->order_id);
             }
         }
 
@@ -280,7 +289,7 @@ class DashboardController extends Controller
 
         return ApiResponse::success([
             'order_id' => $order->id,
-            'merchant_order_id' => "ORDER_{$order->id}_" . ($order->created_at ? $order->created_at->timestamp : time()),
+            'merchant_order_id' => "ORDER_{$order->id}_".($order->created_at ? $order->created_at->timestamp : time()),
             'status' => $statusStr,
             'is_success' => in_array(strtolower($statusStr), ['paid', 'fulfilled', 'completed']),
             'total_cents' => $totalCents,

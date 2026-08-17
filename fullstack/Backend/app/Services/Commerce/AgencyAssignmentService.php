@@ -7,6 +7,7 @@ use App\Enums\TripStatus;
 use App\Events\Commerce\AgencyAssignmentAdminApproved;
 use App\Events\Commerce\AgencyAssignmentApproved;
 use App\Events\Commerce\AgencyAssignmentDeclined;
+use App\Exceptions\InvalidStateTransitionException;
 use App\Interfaces\Commerce\AgencyAssignmentRepositoryInterface;
 use App\Models\Catalog\Attraction;
 use App\Models\Catalog\Destination;
@@ -15,6 +16,7 @@ use App\Models\Catalog\Hotel;
 use App\Models\Catalog\Restaurant;
 use App\Models\Commerce\AgencyAssignment;
 use App\Models\Trips\Trip;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -115,11 +117,11 @@ class AgencyAssignmentService
         $this->assertStatus($assignment, AgencyAssignmentStatus::AGENCY_APPROVED);
 
         return DB::transaction(function () use ($assignment, $title, $items, $options) {
-            $startDate = !empty($options['start_date']) ? $options['start_date'] : now()->addDays(7)->toDateString();
-            $endDate = !empty($options['end_date']) ? $options['end_date'] : now()->addDays(14)->toDateString();
-            
-            $startCarbon = \Carbon\Carbon::parse($startDate);
-            $endCarbon = \Carbon\Carbon::parse($endDate);
+            $startDate = ! empty($options['start_date']) ? $options['start_date'] : now()->addDays(7)->toDateString();
+            $endDate = ! empty($options['end_date']) ? $options['end_date'] : now()->addDays(14)->toDateString();
+
+            $startCarbon = Carbon::parse($startDate);
+            $endCarbon = Carbon::parse($endDate);
             $days = max(1, $startCarbon->diffInDays($endCarbon));
 
             $trip = Trip::create([
@@ -129,7 +131,7 @@ class AgencyAssignmentService
                 'travel_style' => 'custom',
                 'no_of_travelers' => $options['no_of_travelers'] ?? 1,
                 'no_of_days' => $days,
-                'budget' => !empty($options['price']) ? (float)$options['price'] : $this->budgetForLevel($assignment->budget_level),
+                'budget' => ! empty($options['price']) ? (float) $options['price'] : $this->budgetForLevel($assignment->budget_level),
                 'start_date' => $startDate,
                 'end_date' => $endDate,
                 'status' => TripStatus::PENDING,
@@ -162,7 +164,7 @@ class AgencyAssignmentService
     private function assertStatus(AgencyAssignment $assignment, AgencyAssignmentStatus ...$expectedStatuses): void
     {
         if (! in_array($assignment->status, $expectedStatuses)) {
-            throw new \App\Exceptions\InvalidStateTransitionException(
+            throw new InvalidStateTransitionException(
                 'Invalid assignment state transition. Current state: '.($assignment->status->value ?? 'unknown')
             );
         }

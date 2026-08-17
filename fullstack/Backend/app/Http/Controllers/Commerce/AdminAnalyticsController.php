@@ -73,6 +73,7 @@ class AdminAnalyticsController extends Controller
                     'SYD' => ['city' => 'Sydney', 'country' => 'Australia'],
                 ];
                 $meta = $airportMap[$row->iata] ?? ['city' => $row->iata, 'country' => 'International'];
+
                 return [
                     'city' => $meta['city'],
                     'iata' => $row->iata,

@@ -11,7 +11,6 @@ use App\Services\Catalog\HotelService;
 use App\Services\Trips\ReviewService;
 use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class HotelController extends Controller
 {

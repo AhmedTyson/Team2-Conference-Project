@@ -34,10 +34,6 @@ class AIController extends Controller
 
     public function generate(AiTripRequest $request): JsonResponse
     {
-        if ($request->user()) {
-            $this->aiUsage->consumeQuota($request->user());
-        }
-
         $result = $this->groq->generateAi($request);
 
         $decoded = json_decode($result, true);
@@ -77,10 +73,10 @@ class AIController extends Controller
             $reviewedContent = json_encode([
                 'review_summary' => "Your {$days}-day trip '{$trip_title}' across {$destNames} is well-structured with {$itemsCount} itinerary item(s). Overall pacing is optimal for a {$trip->travel_style} travel style.",
                 'suggestions' => [
-                    "Consider reserving popular dining and cultural attractions in advance.",
-                    "Verify transit times between stops to ensure comfortable buffer windows.",
-                    "Store offline reservation confirmations for hassle-free check-ins."
-                ]
+                    'Consider reserving popular dining and cultural attractions in advance.',
+                    'Verify transit times between stops to ensure comfortable buffer windows.',
+                    'Store offline reservation confirmations for hassle-free check-ins.',
+                ],
             ]);
         }
 

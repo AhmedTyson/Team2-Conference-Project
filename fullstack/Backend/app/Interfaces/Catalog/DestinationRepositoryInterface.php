@@ -3,7 +3,6 @@
 namespace App\Interfaces\Catalog;
 
 use App\Models\Catalog\Destination;
-use Illuminate\Database\Eloquent\Collection;
 
 interface DestinationRepositoryInterface
 {

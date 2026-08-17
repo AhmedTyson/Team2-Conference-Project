@@ -6,6 +6,7 @@ use App\Enums\TripStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Trips\StoreTripRequest;
 use App\Http\Resources\TripResource;
+use App\Models\Trips\ItineraryItem;
 use App\Models\Trips\Trip;
 use App\Services\Trips\TripForkService;
 use App\Services\Trips\TripService;
@@ -31,7 +32,7 @@ class TripController extends Controller
             $query = Trip::where('is_public', true)
                 ->with(['destinations', 'user'])
                 ->latest();
-        } else if ($request->user()) {
+        } elseif ($request->user()) {
             $query = Trip::where('user_id', $request->user()->id)
                 ->with(['destinations'])
                 ->latest();
@@ -43,6 +44,7 @@ class TripController extends Controller
 
         if ($request->has('page') || $request->has('per_page')) {
             $trips = $query->paginate($perPage);
+
             return ApiResponse::success(TripResource::collection($trips), 'Trips retrieved successfully');
         }
 
@@ -185,7 +187,7 @@ class TripController extends Controller
             $trip->$relation()->attach($itemId);
             $itemModel = $modelClass::find($itemId);
             if ($itemModel) {
-                \App\Models\Trips\ItineraryItem::updateOrCreate([
+                ItineraryItem::updateOrCreate([
                     'trip_id' => $trip->id,
                     'itemable_type' => $normalizedType,
                     'itemable_id' => $itemId,

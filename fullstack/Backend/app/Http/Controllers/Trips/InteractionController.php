@@ -7,6 +7,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Trips\StoreReviewRequest;
 use App\Http\Resources\FavouriteResource;
 use App\Http\Resources\ReviewResource;
+use App\Models\Catalog\Attraction;
+use App\Models\Catalog\Destination;
+use App\Models\Catalog\Flight;
+use App\Models\Catalog\Hotel;
+use App\Models\Catalog\Restaurant;
 use App\Models\Trips\Review;
 use App\Support\ApiResponse;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -21,16 +26,16 @@ class InteractionController extends Controller
     protected function resolveModelClass(string $type): string
     {
         $map = [
-            'hotel' => \App\Models\Catalog\Hotel::class,
-            'hotels' => \App\Models\Catalog\Hotel::class,
-            'restaurant' => \App\Models\Catalog\Restaurant::class,
-            'restaurants' => \App\Models\Catalog\Restaurant::class,
-            'attraction' => \App\Models\Catalog\Attraction::class,
-            'attractions' => \App\Models\Catalog\Attraction::class,
-            'destination' => \App\Models\Catalog\Destination::class,
-            'destinations' => \App\Models\Catalog\Destination::class,
-            'flight' => \App\Models\Catalog\Flight::class,
-            'flights' => \App\Models\Catalog\Flight::class,
+            'hotel' => Hotel::class,
+            'hotels' => Hotel::class,
+            'restaurant' => Restaurant::class,
+            'restaurants' => Restaurant::class,
+            'attraction' => Attraction::class,
+            'attractions' => Attraction::class,
+            'destination' => Destination::class,
+            'destinations' => Destination::class,
+            'flight' => Flight::class,
+            'flights' => Flight::class,
         ];
 
         $class = $map[strtolower($type)] ?? Relation::getMorphedModel($type);
@@ -164,7 +169,11 @@ class InteractionController extends Controller
             $c1 = $approvedReviews->where('rating', 1)->count();
         } else {
             $avgRating = $baseRating;
-            $c5 = 0; $c4 = 0; $c3 = 0; $c2 = 0; $c1 = 0;
+            $c5 = 0;
+            $c4 = 0;
+            $c3 = 0;
+            $c2 = 0;
+            $c1 = 0;
         }
 
         $calcPerc = function ($count) use ($totalApproved) {
@@ -193,7 +202,7 @@ class InteractionController extends Controller
         // Combined feed: Filter approved reviews so user doesn't see duplicate if approved, plus pending if pending
         $feedReviews = $myPendingReviews->concat(
             $approvedReviews->filter(function ($rev) use ($currentUser) {
-                return !$currentUser || $rev->user_id !== $currentUser->id;
+                return ! $currentUser || $rev->user_id !== $currentUser->id;
             })
         );
 
@@ -209,13 +218,14 @@ class InteractionController extends Controller
         $formattedReviews = $feedReviews->map(function ($rev) {
             $u = $rev->user;
             $statusVal = $rev->status instanceof ReviewStatus ? $rev->status->value : (string) $rev->status;
+
             return [
                 'id' => $rev->id,
                 'user_id' => $rev->user_id,
                 'user_name' => $u ? $u->name : 'Verified Traveler',
                 'user_avatar' => ($u && $u->profile_image)
                     ? (str_starts_with($u->profile_image, 'http') ? $u->profile_image : url($u->profile_image))
-                    : 'https://ui-avatars.com/api/?name=' . urlencode($u ? $u->name : 'User') . '&background=262626&color=fbbf24&bold=true',
+                    : 'https://ui-avatars.com/api/?name='.urlencode($u ? $u->name : 'User').'&background=262626&color=fbbf24&bold=true',
                 'rating' => (float) $rev->rating,
                 'comment' => $rev->comment,
                 'status' => $statusVal,

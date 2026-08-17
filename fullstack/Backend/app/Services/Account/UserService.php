@@ -36,7 +36,7 @@ class UserService
 
         $user = $this->userRepository->create($userData);
 
-        if (!empty($data['role'])) {
+        if (! empty($data['role'])) {
             $user->syncRoles([$data['role']]);
         } else {
             $user->assignRole('user');
@@ -49,7 +49,7 @@ class UserService
     {
         $user = $this->userRepository->findById($id);
 
-        if (!empty($data['password'])) {
+        if (! empty($data['password'])) {
             $data['password'] = Hash::make($data['password']);
         } else {
             unset($data['password']);

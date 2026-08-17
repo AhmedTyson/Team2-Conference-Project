@@ -32,8 +32,8 @@ class SystemNotification extends AppNotification
     public function toDatabase(object $notifiable): array
     {
         return [
-            'title'      => $this->title,
-            'body'       => $this->body,
+            'title' => $this->title,
+            'body' => $this->body,
             'action_url' => $this->actionUrl,
         ];
     }

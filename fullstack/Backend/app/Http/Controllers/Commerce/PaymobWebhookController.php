@@ -12,7 +12,6 @@ use App\Interfaces\Commerce\PaymentGatewayInterface;
 use App\Interfaces\Commerce\PaymentRepositoryInterface;
 use App\Services\Commerce\WebhookService;
 use App\Support\ApiResponse;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -119,6 +118,6 @@ class PaymobWebhookController extends Controller
             'txn_response_code' => $request->query('txn_response_code', $success ? 'APPROVED' : 'FAILED'),
         ]);
 
-        return redirect(rtrim($frontendUrl, '/') . '/app/payment-success.html?' . $redirectParams);
+        return redirect(rtrim($frontendUrl, '/').'/app/payment-success.html?'.$redirectParams);
     }
 }

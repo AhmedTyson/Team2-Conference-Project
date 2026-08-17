@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Enums\AgencyAssignmentStatus;
 use App\Models\Account\User;
 use App\Models\Commerce\AgencyAssignment;
+use App\Models\Trips\Trip;
 use Illuminate\Database\Seeder;
 
 class AgencyAssignmentSeeder extends Seeder
@@ -19,7 +20,7 @@ class AgencyAssignmentSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
-        if (!$agency->hasRole('agency')) {
+        if (! $agency->hasRole('agency')) {
             $agency->assignRole('agency');
         }
 
@@ -49,7 +50,7 @@ class AgencyAssignmentSeeder extends Seeder
 
             // Create sample trip proposal for approved and completed assignments
             if (in_array($assignment->status, [AgencyAssignmentStatus::AGENCY_APPROVED, AgencyAssignmentStatus::COMPLETED])) {
-                \App\Models\Trips\Trip::firstOrCreate(
+                Trip::firstOrCreate(
                     [
                         'agency_assignment_id' => $assignment->id,
                     ],

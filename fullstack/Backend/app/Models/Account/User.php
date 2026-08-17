@@ -2,17 +2,19 @@
 
 namespace App\Models\Account;
 
+use App\Models\Commerce\Address;
 use App\Models\Commerce\Subscription;
 use App\Models\System\Notification;
 use App\Models\System\Survey;
 use App\Models\Trips\Favourite;
 use App\Models\Trips\Review;
-use App\Models\Trips\Trip;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Trips\Trip;
 use Database\Factories\Account\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -105,9 +107,9 @@ class User extends Authenticatable implements JWTSubject
     }
 
     // 1:M - has Trip
-    public function address(): \Illuminate\Database\Eloquent\Relations\MorphOne
+    public function address(): MorphOne
     {
-        return $this->morphOne(\App\Models\Commerce\Address::class, 'addressable');
+        return $this->morphOne(Address::class, 'addressable');
     }
 
     public function trips(): HasMany

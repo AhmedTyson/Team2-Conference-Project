@@ -22,7 +22,7 @@ class HotelResource extends JsonResource
             'rating' => $this->rating ? (float) $this->rating : null,
             'stars' => $this->stars,
             'availability' => $this->availability,
-            'image' => $this->image ?: 'https://image.pollinations.ai/prompt/' . urlencode(($this->name ?: 'luxury') . ' 5-star hotel resort photography') . '?width=800&height=600&nologo=true',
+            'image' => $this->image ?: 'https://image.pollinations.ai/prompt/'.urlencode(($this->name ?: 'luxury').' 5-star hotel resort photography').'?width=800&height=600&nologo=true',
             'destination_id' => $this->destination_id,
             'destination' => $this->whenLoaded('destination'),
             'reviews_count' => $this->when(! is_null($this->reviews_count), fn () => $this->reviews_count),
@@ -34,6 +34,6 @@ class HotelResource extends JsonResource
 
     private function formatReviews(int $n): string
     {
-        return $n >= 1000 ? round($n / 1000, 1) . 'K' : (string) $n;
+        return $n >= 1000 ? round($n / 1000, 1).'K' : (string) $n;
     }
 }

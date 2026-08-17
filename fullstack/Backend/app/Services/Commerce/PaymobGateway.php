@@ -55,10 +55,10 @@ class PaymobGateway implements PaymentGatewayInterface
         $frontendUrl = env('FRONTEND_URL', 'http://localhost:8080');
 
         if (empty($this->secretKey) || str_starts_with($this->secretKey, 'mock') || app()->environment('testing')) {
-            $simulatedCheckoutUrl = url('/api/v1/paymob/callback?') . http_build_query([
+            $simulatedCheckoutUrl = url('/api/v1/paymob/callback?').http_build_query([
                 'merchant_order_id' => $referenceId,
                 'success' => 'true',
-                'id' => '516' . rand(100000, 999999),
+                'id' => '516'.rand(100000, 999999),
                 'txn_response_code' => 'APPROVED',
                 'source_data_pan' => '1111',
                 'source_data_sub_type' => 'Visa',
@@ -66,7 +66,7 @@ class PaymobGateway implements PaymentGatewayInterface
 
             return [
                 'success' => true,
-                'client_secret' => 'simulated_cs_' . uniqid(),
+                'client_secret' => 'simulated_cs_'.uniqid(),
                 'checkout_url' => $simulatedCheckoutUrl,
                 'message' => 'Simulated test checkout created',
             ];
@@ -76,18 +76,18 @@ class PaymobGateway implements PaymentGatewayInterface
             // Paymob requires strings and all mandatory billing fields:
             // first_name, last_name, email, phone_number, building, floor, apartment, street, city, state, country, postal_code
             $formattedBilling = [
-                'first_name' => (string) (!empty($billingData['first_name']) ? $billingData['first_name'] : 'Traveler'),
-                'last_name' => (string) (!empty($billingData['last_name']) ? $billingData['last_name'] : 'User'),
-                'email' => (string) (!empty($billingData['email']) ? $billingData['email'] : 'traveler@example.com'),
-                'phone_number' => (string) (!empty($billingData['phone_number']) && $billingData['phone_number'] !== 'NA' ? $billingData['phone_number'] : '+201000000000'),
-                'apartment' => (string) (!empty($billingData['apartment']) ? $billingData['apartment'] : '1'),
-                'floor' => (string) (!empty($billingData['floor']) ? $billingData['floor'] : '1'),
-                'building' => (string) (!empty($billingData['building']) ? $billingData['building'] : '1'),
-                'street' => (string) (!empty($billingData['street']) ? $billingData['street'] : 'Main St'),
-                'city' => (string) (!empty($billingData['city']) ? $billingData['city'] : 'Cairo'),
-                'state' => (string) (!empty($billingData['state']) ? $billingData['state'] : 'Cairo'),
-                'country' => (string) (!empty($billingData['country']) ? $billingData['country'] : 'EG'),
-                'postal_code' => (string) (!empty($billingData['postal_code']) ? $billingData['postal_code'] : '11511'),
+                'first_name' => (string) (! empty($billingData['first_name']) ? $billingData['first_name'] : 'Traveler'),
+                'last_name' => (string) (! empty($billingData['last_name']) ? $billingData['last_name'] : 'User'),
+                'email' => (string) (! empty($billingData['email']) ? $billingData['email'] : 'traveler@example.com'),
+                'phone_number' => (string) (! empty($billingData['phone_number']) && $billingData['phone_number'] !== 'NA' ? $billingData['phone_number'] : '+201000000000'),
+                'apartment' => (string) (! empty($billingData['apartment']) ? $billingData['apartment'] : '1'),
+                'floor' => (string) (! empty($billingData['floor']) ? $billingData['floor'] : '1'),
+                'building' => (string) (! empty($billingData['building']) ? $billingData['building'] : '1'),
+                'street' => (string) (! empty($billingData['street']) ? $billingData['street'] : 'Main St'),
+                'city' => (string) (! empty($billingData['city']) ? $billingData['city'] : 'Cairo'),
+                'state' => (string) (! empty($billingData['state']) ? $billingData['state'] : 'Cairo'),
+                'country' => (string) (! empty($billingData['country']) ? $billingData['country'] : 'EG'),
+                'postal_code' => (string) (! empty($billingData['postal_code']) ? $billingData['postal_code'] : '11511'),
                 'shipping_method' => 'PKG',
             ];
 
@@ -113,7 +113,7 @@ class PaymobGateway implements PaymentGatewayInterface
             if (! $status['success']) {
                 Log::error('Paymob Intention Failed', ['response' => $status]);
 
-                $errMsg = !empty($status['message']) ? $status['message'] : (is_array($status) ? json_encode($status) : 'Paymob API Intention failed. Check PAYMOB_SECRET_KEY in .env');
+                $errMsg = ! empty($status['message']) ? $status['message'] : (is_array($status) ? json_encode($status) : 'Paymob API Intention failed. Check PAYMOB_SECRET_KEY in .env');
 
                 return [
                     'success' => false,
@@ -123,7 +123,7 @@ class PaymobGateway implements PaymentGatewayInterface
 
             $countryCode = $paymobReq->getCountryCode($this->secretKey);
             $apiUrl = $paymobReq->getApiUrl($countryCode);
-            $clientSecret = $status['cs'] ?? ('simulated_cs_' . md5($referenceId));
+            $clientSecret = $status['cs'] ?? ('simulated_cs_'.md5($referenceId));
 
             return [
                 'success' => true,
@@ -137,7 +137,7 @@ class PaymobGateway implements PaymentGatewayInterface
 
             return [
                 'success' => false,
-                'message' => 'Payment gateway error: ' . $e->getMessage(),
+                'message' => 'Payment gateway error: '.$e->getMessage(),
             ];
         }
     }

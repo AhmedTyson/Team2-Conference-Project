@@ -19,19 +19,9 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => (function () {
-        $envOrigins = env('CORS_ALLOWED_ORIGINS', '');
-        if ($envOrigins && $envOrigins !== '*') {
-            // Parse comma-separated list from env
-            return array_filter(array_map('trim', explode(',', $envOrigins)));
-        }
-        // Allow all in local/testing; production must set CORS_ALLOWED_ORIGINS
-        if (app()->environment('local', 'testing')) {
-            return ['*'];
-        }
-        // Production fallback: same-origin only (served under one domain via start.sh)
-        return [env('APP_URL', 'https://yourapp.up.railway.app')];
-    })(),
+    'allowed_origins' => env('CORS_ALLOWED_ORIGINS')
+        ? array_filter(array_map('trim', explode(',', env('CORS_ALLOWED_ORIGINS'))))
+        : ['*'],
 
     'allowed_origins_patterns' => [],
 

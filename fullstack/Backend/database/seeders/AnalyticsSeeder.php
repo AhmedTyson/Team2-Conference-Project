@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class AnalyticsSeeder extends Seeder
 {
@@ -23,8 +23,8 @@ class AnalyticsSeeder extends Seeder
                 $daysAgo = rand(1, 180);
                 $date = Carbon::now()->subDays($daysAgo)->toDateTimeString();
                 DB::table('users')->insertOrIgnore([
-                    'name' => "Passenger " . rand(100, 999),
-                    'email' => "passenger_" . $i . "_" . rand(1000, 9999) . "@itinari.com",
+                    'name' => 'Passenger '.rand(100, 999),
+                    'email' => 'passenger_'.$i.'_'.rand(1000, 9999).'@itinari.com',
                     'password' => bcrypt('password'),
                     'created_at' => $date,
                     'updated_at' => $date,
@@ -46,7 +46,7 @@ class AnalyticsSeeder extends Seeder
             'Amalfi Coast Resort Escape', 'Bali Tropical Wellness Retreat', 'Swiss Alps Hiking Expedition',
             'Barcelona Tapas & Architecture', 'New York Manhattan Tour', 'Santorini Island Sunset Cruise',
             'Kyoto Historic Shrines Walk', 'Reykjavik Northern Lights Trail', 'Maldives Private Villa Getaway',
-            'Istanbul Bosphorus Cruise', 'Vienna Classical Music Safari', 'Sydney Opera & Coastal Walk'
+            'Istanbul Bosphorus Cruise', 'Vienna Classical Music Safari', 'Sydney Opera & Coastal Walk',
         ];
 
         $statuses = ['booked', 'completed', 'planned', 'booked', 'completed'];
@@ -57,7 +57,7 @@ class AnalyticsSeeder extends Seeder
             $endDate = (clone $startDate)->addDays(rand(4, 12));
             $budget = rand(15, 120) * 100; // $1,500 - $12,000
             $style = $styles[array_rand($styles)];
-            $title = $titles[array_rand($titles)] . " #" . rand(10, 99);
+            $title = $titles[array_rand($titles)].' #'.rand(10, 99);
             $status = $statuses[array_rand($statuses)];
             $userId = $userIds[array_rand($userIds)];
 
@@ -86,7 +86,7 @@ class AnalyticsSeeder extends Seeder
             $hour = rand(0, 23);
             $depDate = Carbon::now()->addDays($daysOffset)->setHour($hour)->setMinute(rand(0, 59));
             $arrDate = (clone $depDate)->addHours(rand(2, 12));
-            
+
             $dep = $airports[array_rand($airports)];
             $arr = $airports[array_rand($airports)];
             while ($arr === $dep) {
@@ -95,7 +95,7 @@ class AnalyticsSeeder extends Seeder
 
             DB::table('flights')->insert([
                 'airline' => $airlines[array_rand($airlines)],
-                'flight_number' => strtoupper(substr($dep, 0, 2)) . "-" . rand(100, 999),
+                'flight_number' => strtoupper(substr($dep, 0, 2)).'-'.rand(100, 999),
                 'departure_airport' => $dep,
                 'arrival_airport' => $arr,
                 'departure_date' => $depDate->toDateTimeString(),

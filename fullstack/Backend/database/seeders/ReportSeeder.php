@@ -11,7 +11,6 @@ use App\Models\Commerce\OrderItem;
 use App\Models\Commerce\Payment;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class ReportSeeder extends Seeder
@@ -28,7 +27,7 @@ class ReportSeeder extends Seeder
             'Cairo & Giza Pyramids', 'Paris Luxury & Fashion', 'Tokyo Culture & Tech',
             'London Heritage', 'Dubai Desert & Marina', 'Rome Ancient Wonders',
             'Bali Tropical Sanctuary', 'Santorini Island Sunset', 'Swiss Alps Zermatt',
-            'Barcelona Tapas & Arts', 'New York Manhattan'
+            'Barcelona Tapas & Arts', 'New York Manhattan',
         ];
 
         $destinationIds = [];
@@ -110,8 +109,8 @@ class ReportSeeder extends Seeder
                 $daysAgo = rand(5, 180);
                 $createdDate = Carbon::now()->subDays($daysAgo);
                 $user = User::create([
-                    'name' => "Traveler " . rand(100, 999),
-                    'email' => "traveler_" . time() . "_{$u}_" . rand(100, 999) . "@itinari.com",
+                    'name' => 'Traveler '.rand(100, 999),
+                    'email' => 'traveler_'.time()."_{$u}_".rand(100, 999).'@itinari.com',
                     'password' => bcrypt('password'),
                     'email_verified_at' => $createdDate,
                     'created_at' => $createdDate,
@@ -170,7 +169,7 @@ class ReportSeeder extends Seeder
                 // General Flight / Trip package item
                 OrderItem::create([
                     'order_id' => $order->id,
-                    'product_type' => "App\\Models\\Catalog\\" . $type,
+                    'product_type' => 'App\\Models\\Catalog\\'.$type,
                     'product_id' => rand(1, 20),
                     'price_cents' => $totalCents,
                     'created_at' => $orderDate,
@@ -181,11 +180,11 @@ class ReportSeeder extends Seeder
             // Seed Paid Payment
             Payment::create([
                 'order_id' => $order->id,
-                'paymob_transaction_id' => 'TXN_' . strtoupper(substr(md5(uniqid()), 0, 10)),
+                'paymob_transaction_id' => 'TXN_'.strtoupper(substr(md5(uniqid()), 0, 10)),
                 'status' => 'paid',
                 'amount_cents' => $totalCents,
                 'currency' => 'USD',
-                'client_secret' => 'secret_' . md5($order->id),
+                'client_secret' => 'secret_'.md5($order->id),
                 'checkout_url' => 'https://accept.paymob.com/unifiedcheckout/',
                 'hmac_valid' => true,
                 'raw_payload' => json_encode(['order_id' => $order->id, 'status' => 'paid']),

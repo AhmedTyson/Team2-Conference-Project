@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Commerce;
 
+use App\Enums\AgencyAssignmentStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Commerce\AgencyAssignment;
+use App\Models\Trips\Trip;
 use App\Services\Commerce\AgencyAssignmentService;
 use App\Support\ApiResponse;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -21,7 +23,7 @@ class AgencyAssignmentController extends Controller
         $user = $request->user();
         $query = AgencyAssignment::query()->with(['customer', 'trips']);
 
-        if (!$user->hasRole('admin') && !$user->hasRole('super_admin')) {
+        if (! $user->hasRole('admin') && ! $user->hasRole('super_admin')) {
             $query->where('agency_user_id', $user->id);
         }
 
@@ -89,7 +91,7 @@ class AgencyAssignmentController extends Controller
             'items.*.id' => 'required|integer',
         ]);
 
-        if (isset($validated['capacity']) && !isset($validated['no_of_travelers'])) {
+        if (isset($validated['capacity']) && ! isset($validated['no_of_travelers'])) {
             $validated['no_of_travelers'] = $validated['capacity'];
         }
 
@@ -115,7 +117,7 @@ class AgencyAssignmentController extends Controller
     public function trips(Request $request): JsonResponse
     {
         $userId = $request->user()->id;
-        $trips = \App\Models\Trips\Trip::whereHas('agencyAssignment', function ($q) use ($userId) {
+        $trips = Trip::whereHas('agencyAssignment', function ($q) use ($userId) {
             $q->where('agency_user_id', $userId);
         })->with(['destinations', 'user'])->latest()->get();
 
@@ -130,11 +132,11 @@ class AgencyAssignmentController extends Controller
             ->get();
 
         $totalCount = $assignments->count();
-        $completedAssignments = $assignments->where('status', \App\Enums\AgencyAssignmentStatus::COMPLETED);
+        $completedAssignments = $assignments->where('status', AgencyAssignmentStatus::COMPLETED);
         $completedCount = $completedAssignments->count();
         $activeCount = $assignments->whereIn('status', [
-            \App\Enums\AgencyAssignmentStatus::AGENCY_APPROVED,
-            \App\Enums\AgencyAssignmentStatus::ADMIN_APPROVED
+            AgencyAssignmentStatus::AGENCY_APPROVED,
+            AgencyAssignmentStatus::ADMIN_APPROVED,
         ])->count();
 
         // Calculate real earnings based on actual trip budgets attached to assignments
@@ -144,7 +146,7 @@ class AgencyAssignmentController extends Controller
             'total_assignments' => $totalCount,
             'completed_assignments' => $completedCount,
             'active_assignments' => $activeCount,
-            'total_earnings' => round((float)$totalEarnings, 2),
+            'total_earnings' => round((float) $totalEarnings, 2),
             'currency' => 'USD',
             'payout_status' => $completedCount > 0 ? 'Active' : 'No Payouts Yet',
             'recent_payouts' => [], // Honest empty array — no synthetic/hardcoded fake payouts!
@@ -154,6 +156,7 @@ class AgencyAssignmentController extends Controller
     public function getProfile(Request $request): JsonResponse
     {
         $user = $request->user();
+
         return ApiResponse::success([
             'id' => $user->id,
             'name' => $user->name,

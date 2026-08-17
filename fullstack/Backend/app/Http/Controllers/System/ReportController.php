@@ -7,6 +7,7 @@ use App\Http\Requests\System\GenerateReportRequest;
 use App\Jobs\GenerateReportJob;
 use App\Models\System\Report;
 use App\Queries\ReportQuery;
+use App\Services\System\GenerateReportService;
 use App\Support\ApiResponse;
 use Illuminate\Cache\TaggableStore;
 use Illuminate\Http\JsonResponse;
@@ -37,7 +38,7 @@ class ReportController extends Controller
         $report->refresh();
 
         if ($report->status === 'pending') {
-            app(\App\Services\System\GenerateReportService::class)->fillReport($report);
+            app(GenerateReportService::class)->fillReport($report);
             $report->refresh();
         }
 
@@ -84,7 +85,8 @@ class ReportController extends Controller
                 if ($user) {
                     auth()->setUser($user);
                 }
-            } catch (\Throwable $e) {}
+            } catch (\Throwable $e) {
+            }
         }
 
         $report = Report::find($id);
@@ -134,7 +136,7 @@ class ReportController extends Controller
                 'status' => 'pending',
             ]);
 
-            app(\App\Services\System\GenerateReportService::class)->fillReport($report);
+            app(GenerateReportService::class)->fillReport($report);
             $report->refresh();
         }
 

@@ -3,6 +3,7 @@
 namespace Tests\Feature\Account;
 
 use App\Models\Account\User;
+use Database\Seeders\RoleAndPermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -46,7 +47,7 @@ class UserTest extends TestCase
      */
     public function test_admin_can_store_user_with_created_resource(): void
     {
-        $this->seed(\Database\Seeders\RoleAndPermissionSeeder::class);
+        $this->seed(RoleAndPermissionSeeder::class);
         $admin = User::factory()->create();
         $admin->assignRole('admin');
 

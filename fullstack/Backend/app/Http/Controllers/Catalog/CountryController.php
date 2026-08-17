@@ -26,7 +26,7 @@ class CountryController extends Controller
         if ($request->has('search')) {
             $search = $request->get('search');
             $query->where('name', 'LIKE', "%{$search}%")
-                  ->orWhere('iso_code', 'LIKE', "%{$search}%");
+                ->orWhere('iso_code', 'LIKE', "%{$search}%");
         }
 
         $countries = $query->get();
@@ -44,7 +44,7 @@ class CountryController extends Controller
     {
         $country = Country::with(['destinations', 'region'])->find($id);
 
-        if (!$country) {
+        if (! $country) {
             return response()->json(['message' => 'Country not found'], 404);
         }
 
@@ -69,7 +69,7 @@ class CountryController extends Controller
             $search = $request->get('search');
             $query->where(function ($q) use ($search) {
                 $q->where('city_name', 'LIKE', "%{$search}%")
-                  ->orWhere('name', 'LIKE', "%{$search}%");
+                    ->orWhere('name', 'LIKE', "%{$search}%");
             });
         }
 

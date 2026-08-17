@@ -9,6 +9,7 @@ use App\Models\Catalog\Destination;
 use App\Models\Catalog\Flight;
 use App\Models\Catalog\Hotel;
 use App\Models\Catalog\Restaurant;
+use App\Models\Commerce\AgencyAssignment;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -104,6 +105,6 @@ class Trip extends Model
 
     public function agencyAssignment(): BelongsTo
     {
-        return $this->belongsTo(\App\Models\Commerce\AgencyAssignment::class, 'agency_assignment_id');
+        return $this->belongsTo(AgencyAssignment::class, 'agency_assignment_id');
     }
 }

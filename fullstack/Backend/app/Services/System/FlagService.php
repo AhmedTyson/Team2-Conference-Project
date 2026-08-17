@@ -7,6 +7,7 @@ use App\Interfaces\System\FlagRepositoryInterface;
 use App\Models\Account\User;
 use App\Models\Commerce\AgencyAssignment;
 use App\Models\System\Flag;
+use App\Notifications\SystemNotification;
 
 class FlagService
 {
@@ -22,27 +23,27 @@ class FlagService
         $subject = $assignment->load(['customer', 'agency']);
 
         $flag = $this->repository->create([
-            'reporter_id'          => $reporter->id,
-            'flaggable_type'       => 'user',
-            'flaggable_id'         => $isAgencyReporter
+            'reporter_id' => $reporter->id,
+            'flaggable_type' => 'user',
+            'flaggable_id' => $isAgencyReporter
                 ? $assignment->customer_id
                 : $assignment->agency_user_id,
             'agency_assignment_id' => $assignment->id,
-            'reason'               => $reason,
-            'details'              => $details,
-            'status'               => FlagStatus::PENDING,
+            'reason' => $reason,
+            'details' => $details,
+            'status' => FlagStatus::PENDING,
         ]);
 
         $admins = User::role('admin')->get();
         foreach ($admins as $admin) {
             if ($isAgencyReporter) {
-                $admin->notify(new \App\Notifications\SystemNotification(
+                $admin->notify(new SystemNotification(
                     'User Complaint Filed',
                     "Agency {$reporter->name} reported customer {$subject->customer?->name} regarding assignment #{$assignment->id}.",
                     '/admin/flags'
                 ));
             } else {
-                $admin->notify(new \App\Notifications\SystemNotification(
+                $admin->notify(new SystemNotification(
                     'Agency Complaint Filed',
                     "Customer {$reporter->name} filed a complaint regarding assignment #{$assignment->id}.",
                     '/admin/flags'

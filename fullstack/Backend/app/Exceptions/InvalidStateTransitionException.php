@@ -4,8 +4,6 @@ namespace App\Exceptions;
 
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Validation\ValidationException;
-use LogicException;
 
 class InvalidStateTransitionException extends AuthorizationException
 {
@@ -17,7 +15,7 @@ class InvalidStateTransitionException extends AuthorizationException
     public function report(): void
     {
         // Log the exception
-        \Log::error('Invalid state transition: ' . $this->getMessage());
+        \Log::error('Invalid state transition: '.$this->getMessage());
     }
 
     public function render($request): JsonResponse

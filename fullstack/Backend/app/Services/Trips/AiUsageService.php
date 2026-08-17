@@ -15,7 +15,12 @@ class AiUsageService
     public function consumeQuota(User $user): void
     {
         // 1. Check if the user has an active plan that gives quota
+        $hasSubscriptions = $user->subscriptions()->exists();
         $activeSub = $user->subscriptions()->where('status', 'active')->latest()->first();
+
+        if ($hasSubscriptions && ! $activeSub) {
+            throw new Exception('Your subscription has expired. Please renew your subscription to continue.');
+        }
 
         $monthlyLimit = 0;
         if ($activeSub && $activeSub->plan) {

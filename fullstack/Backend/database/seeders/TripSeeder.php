@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Account\User;
 use App\Models\Catalog\Attraction;
 use App\Models\Catalog\Destination;
-use App\Models\Catalog\Flight;
 use App\Models\Catalog\Hotel;
 use App\Models\Catalog\Restaurant;
 use App\Models\Trips\ItineraryItem;
@@ -83,7 +82,7 @@ class TripSeeder extends Seeder
 
         foreach ($curatedPublicTrips as $idx => $data) {
             $user = $travelers[$idx % $travelers->count()];
-            
+
             $trip = Trip::updateOrCreate(
                 ['title' => $data['title']],
                 [
@@ -101,7 +100,7 @@ class TripSeeder extends Seeder
             );
 
             // Attach destinations
-            $dest = Destination::where('city_name', 'LIKE', '%' . strtok($data['title'], ' ') . '%')->first()
+            $dest = Destination::where('city_name', 'LIKE', '%'.strtok($data['title'], ' ').'%')->first()
                 ?? Destination::inRandomOrder()->first();
             if ($dest) {
                 $trip->destinations()->syncWithoutDetaching([$dest->id => ['day_number' => 1, 'visit_order' => 1]]);
@@ -128,7 +127,7 @@ class TripSeeder extends Seeder
             $this->seedItineraryItems($trip);
         }
 
-        $this->command?->info("Seeded public community trips with real destination relations.");
+        $this->command?->info('Seeded public community trips with real destination relations.');
     }
 
     private function seedItineraryItems(Trip $trip): void

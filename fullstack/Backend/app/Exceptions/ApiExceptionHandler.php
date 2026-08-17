@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use Spatie\Permission\Exceptions\UnauthorizedException;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
@@ -26,7 +27,7 @@ class ApiExceptionHandler
         AuthenticationException::class => 'handleAuthenticationException',
         AccessDeniedHttpException::class => 'handleAuthorizationException',
         AuthorizationException::class => 'handleAuthorizationException',
-        \Spatie\Permission\Exceptions\UnauthorizedException::class => 'handleAuthorizationException',
+        UnauthorizedException::class => 'handleAuthorizationException',
         ValidationException::class => 'handleValidationException',
         ModelNotFoundException::class => 'handleNotFoundException',
         NotFoundHttpException::class => 'handleNotFoundException',

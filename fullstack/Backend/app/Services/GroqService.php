@@ -77,7 +77,7 @@ class GroqService
             $hotels = $destinationId ? Hotel::where('destination_id', $destinationId)->first() : null;
             $attractions = $destinationId ? Attraction::where('destination_id', $destinationId)->first() : null;
 
-            $interestString = is_array($interests) ? implode(', ', $interests) : (string)$interests;
+            $interestString = is_array($interests) ? implode(', ', $interests) : (string) $interests;
 
             $prompt = "
 Generate a comprehensive luxury master travel itinerary in strict valid JSON format.
@@ -96,25 +96,25 @@ Return only a valid JSON object matching this exact schema:
   \"meta\": \"{$noOfDays} Days • {$city} • {$travelParty} • {$travelStyle}\",
   \"description\": \"Editorial luxury summary describing the curated experience, access, dining, and culture in 2-3 sentences.\",
   \"estimated_budget\": {$budget},
-  \"planned_items_count\": " . ($noOfDays * 5) . ",
-  \"osrm_waypoints\": \"Verified\",
-  \"days\": [
+  \"planned_items_count\": ".($noOfDays * 5).',
+  "osrm_waypoints": "Verified",
+  "days": [
     {
-      \"day_number\": 1,
-      \"title\": \"Theme or landmark highlight for day 1\",
-      \"items\": [
+      "day_number": 1,
+      "title": "Theme or landmark highlight for day 1",
+      "items": [
         {
-          \"time\": \"09:30 AM\",
-          \"title\": \"Private VIP Tour\",
-          \"description\": \"Detailed description of exclusive experience.\",
-          \"price\": 600,
-          \"type\": \"ATTRACTION\"
+          "time": "09:30 AM",
+          "title": "Private VIP Tour",
+          "description": "Detailed description of exclusive experience.",
+          "price": 600,
+          "type": "ATTRACTION"
         }
       ]
     }
   ]
 }
-Return pure JSON only. No markdown fences, no explanatory text.";
+Return pure JSON only. No markdown fences, no explanatory text.';
 
             $cacheKey = 'ai:generate_itinerary:'.md5(json_encode([$city, $budget, $noOfDays, $noOfTravelers, $travelStyle, $interestString]));
 

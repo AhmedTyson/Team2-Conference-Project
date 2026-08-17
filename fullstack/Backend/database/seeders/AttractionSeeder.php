@@ -29,19 +29,19 @@ class AttractionSeeder extends Seeder
         $realAttractions = json_decode(file_get_contents($path), true) ?: [];
 
         foreach ($realAttractions as $attrData) {
-            $dest = Destination::where('name', 'like', '%' . $attrData['city'] . '%')
-                ->orWhere('city_name', 'like', '%' . $attrData['city'] . '%')
+            $dest = Destination::where('name', 'like', '%'.$attrData['city'].'%')
+                ->orWhere('city_name', 'like', '%'.$attrData['city'].'%')
                 ->first();
 
-            if (!$dest) {
+            if (! $dest) {
                 $dest = Destination::factory()->create([
                     'name' => $attrData['city'],
-                    'city_name' => $attrData['city']
+                    'city_name' => $attrData['city'],
                 ]);
             }
 
             $cat = Category::where('name', $attrData['category'])->first();
-            if (!$cat) {
+            if (! $cat) {
                 $cat = Category::firstOrCreate(
                     ['name' => $attrData['category']],
                     ['type' => 'attraction']
@@ -56,7 +56,7 @@ class AttractionSeeder extends Seeder
                     'description' => $attrData['description'],
                     'image' => $attrData['image'],
                     'latitude' => $attrData['lat'],
-                    'longitude' => $attrData['lng']
+                    'longitude' => $attrData['lng'],
                 ]
             );
         }

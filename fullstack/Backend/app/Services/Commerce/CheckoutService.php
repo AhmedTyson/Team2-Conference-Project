@@ -149,10 +149,10 @@ class CheckoutService
     {
         $nameParts = explode(' ', trim($user->name ?? 'Traveler User'), 2);
 
-        $billingData['email'] = !empty($billingData['email']) ? $billingData['email'] : ($user->email ?? 'traveler@example.com');
-        $billingData['first_name'] = !empty($billingData['first_name']) ? $billingData['first_name'] : ($nameParts[0] ?? 'Traveler');
-        $billingData['last_name'] = !empty($billingData['last_name']) ? $billingData['last_name'] : ($nameParts[1] ?? 'User');
-        $billingData['phone_number'] = !empty($billingData['phone_number']) && $billingData['phone_number'] !== 'NA' ? $billingData['phone_number'] : ($user->phone ?? '+201000000000');
+        $billingData['email'] = ! empty($billingData['email']) ? $billingData['email'] : ($user->email ?? 'traveler@example.com');
+        $billingData['first_name'] = ! empty($billingData['first_name']) ? $billingData['first_name'] : ($nameParts[0] ?? 'Traveler');
+        $billingData['last_name'] = ! empty($billingData['last_name']) ? $billingData['last_name'] : ($nameParts[1] ?? 'User');
+        $billingData['phone_number'] = ! empty($billingData['phone_number']) && $billingData['phone_number'] !== 'NA' ? $billingData['phone_number'] : ($user->phone ?? '+201000000000');
         $billingData['building'] = $billingData['building'] ?? '1';
         $billingData['floor'] = $billingData['floor'] ?? '1';
         $billingData['apartment'] = $billingData['apartment'] ?? '1';

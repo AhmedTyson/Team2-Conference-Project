@@ -20,16 +20,17 @@ use App\Http\Controllers\Catalog\HotelController;
 use App\Http\Controllers\Catalog\RegionController;
 use App\Http\Controllers\Catalog\RestaurantController;
 use App\Http\Controllers\Catalog\StatsController;
-use App\Http\Controllers\Commerce\AdminAgencyController;
+use App\Http\Controllers\Chat\ConversationController;
 // Commerce
+use App\Http\Controllers\Commerce\AdminAgencyController;
 use App\Http\Controllers\Commerce\AdminAnalyticsController;
 use App\Http\Controllers\Commerce\AgencyAssignmentController;
 use App\Http\Controllers\Commerce\AgencyRequestController;
 use App\Http\Controllers\Commerce\CheckoutController;
 use App\Http\Controllers\Commerce\PaymobWebhookController;
 use App\Http\Controllers\Commerce\PlanController;
-use App\Http\Controllers\ConciergeController;
 // System
+use App\Http\Controllers\ConciergeController;
 use App\Http\Controllers\System\AdminFlagController;
 use App\Http\Controllers\System\AdminNotificationController;
 use App\Http\Controllers\System\ContactController;
@@ -40,8 +41,8 @@ use App\Http\Controllers\System\NotificationController;
 use App\Http\Controllers\System\ReportController;
 use App\Http\Controllers\System\SettingController;
 use App\Http\Controllers\System\SiteSettingsController;
-use App\Http\Controllers\System\SurveyController;
 // Trips
+use App\Http\Controllers\System\SurveyController;
 use App\Http\Controllers\System\WeatherController;
 use App\Http\Controllers\Trips\AdminReviewController;
 use App\Http\Controllers\Trips\AdminTripController;
@@ -283,12 +284,12 @@ Route::middleware(['auth:api', 'verified', 'throttle:ai'])->group(function () {
 
 // ---- Real-Time Messaging & Conversations (Travelers, Agencies, AI Concierge)
 Route::middleware(['auth:api', 'verified'])->group(function () {
-    Route::get('/conversations', [\App\Http\Controllers\Chat\ConversationController::class, 'index']);
-    Route::post('/conversations', [\App\Http\Controllers\Chat\ConversationController::class, 'store']);
-    Route::get('/conversations/{conversation}', [\App\Http\Controllers\Chat\ConversationController::class, 'show']);
-    Route::get('/conversations/{conversation}/messages', [\App\Http\Controllers\Chat\ConversationController::class, 'messages']);
-    Route::post('/conversations/{conversation}/messages', [\App\Http\Controllers\Chat\ConversationController::class, 'sendMessage']);
-    Route::patch('/conversations/{conversation}/read', [\App\Http\Controllers\Chat\ConversationController::class, 'markAsRead']);
+    Route::get('/conversations', [ConversationController::class, 'index']);
+    Route::post('/conversations', [ConversationController::class, 'store']);
+    Route::get('/conversations/{conversation}', [ConversationController::class, 'show']);
+    Route::get('/conversations/{conversation}/messages', [ConversationController::class, 'messages']);
+    Route::post('/conversations/{conversation}/messages', [ConversationController::class, 'sendMessage']);
+    Route::patch('/conversations/{conversation}/read', [ConversationController::class, 'markAsRead']);
 });
 
 // ---- Interaction & reviews

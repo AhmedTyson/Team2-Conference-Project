@@ -17,7 +17,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -256,26 +255,26 @@ class AuthController extends Controller
         if ($request->hasFile('profile_image')) {
             $file = $request->file('profile_image');
             $ext = strtolower($file->getClientOriginalExtension()) ?: 'png';
-            $fileName = time() . '_' . uniqid() . '.' . $ext;
+            $fileName = time().'_'.uniqid().'.'.$ext;
             $uploadDir = public_path('uploads/profile-images');
-            if (!file_exists($uploadDir)) {
+            if (! file_exists($uploadDir)) {
                 @mkdir($uploadDir, 0777, true);
             }
             $file->move($uploadDir, $fileName);
-            $data['profile_image'] = 'uploads/profile-images/' . $fileName;
-        } elseif (!empty($data['profile_image']) && is_string($data['profile_image'])) {
+            $data['profile_image'] = 'uploads/profile-images/'.$fileName;
+        } elseif (! empty($data['profile_image']) && is_string($data['profile_image'])) {
             if (str_starts_with($data['profile_image'], 'data:image/')) {
                 try {
                     preg_match('/data:image\/(?<type>.*?);base64,(?<data>.*)/', $data['profile_image'], $matches);
                     $imageType = $matches['type'] ?? 'png';
                     $imageData = base64_decode($matches['data'] ?? '');
-                    $fileName = time() . '_' . uniqid() . '.' . $imageType;
+                    $fileName = time().'_'.uniqid().'.'.$imageType;
                     $uploadDir = public_path('uploads/profile-images');
-                    if (!file_exists($uploadDir)) {
+                    if (! file_exists($uploadDir)) {
                         @mkdir($uploadDir, 0777, true);
                     }
-                    file_put_contents($uploadDir . '/' . $fileName, $imageData);
-                    $data['profile_image'] = 'uploads/profile-images/' . $fileName;
+                    file_put_contents($uploadDir.'/'.$fileName, $imageData);
+                    $data['profile_image'] = 'uploads/profile-images/'.$fileName;
                 } catch (\Throwable $e) {
                     // Ignore malformed base64
                 }

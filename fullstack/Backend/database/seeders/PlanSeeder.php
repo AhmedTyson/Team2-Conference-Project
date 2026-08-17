@@ -28,7 +28,7 @@ class PlanSeeder extends Seeder
                 'Unlimited active trips',
                 '100 AI Concierge generations/mo',
                 'Custom trip forking & exports',
-                'Verified agency assignment'
+                'Verified agency assignment',
             ],
         ]);
 
@@ -42,7 +42,7 @@ class PlanSeeder extends Seeder
                 'Everything in Jetsetter',
                 'Dedicated 24/7 travel desk',
                 'Unlimited AI generations',
-                'VIP airport lounge vouchers'
+                'VIP airport lounge vouchers',
             ],
         ]);
     }

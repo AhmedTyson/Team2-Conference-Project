@@ -8,23 +8,17 @@ use App\Http\Requests\Chat\SendMessageRequest;
 use App\Http\Requests\Chat\StoreConversationRequest;
 use App\Http\Resources\Chat\ConversationResource;
 use App\Http\Resources\Chat\MessageResource;
-use App\Support\ApiResponse;
-use App\Models\Catalog\Attraction;
-use App\Models\Catalog\Destination;
 use App\Models\Catalog\Flight;
-use App\Models\Catalog\Hotel;
-use App\Models\Catalog\Restaurant;
 use App\Models\Chat\Conversation;
 use App\Models\Chat\Message;
-use App\Models\Trips\Trip;
-use App\Services\ConciergeService;
 use App\Services\GroqService;
+use App\Services\Trips\AiUsageService;
+use App\Support\ApiResponse;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 use LucianoTonet\GroqLaravel\Facades\Groq;
 
 class ConversationController extends Controller
@@ -48,7 +42,7 @@ class ConversationController extends Controller
         } elseif ($user->hasRole('agency')) {
             $query->where(function ($q) use ($user) {
                 $q->where('agency_id', $user->id)
-                  ->orWhere('user_id', $user->id);
+                    ->orWhere('user_id', $user->id);
             });
         } else {
             $query->where('user_id', $user->id);
@@ -79,7 +73,7 @@ class ConversationController extends Controller
         // Agencies may open a thread on behalf of an assigned customer:
         // the conversation is owned by the customer (user_id) and linked to
         // the agency (agency_id) so both sides see it in their chat lists.
-        if ($user->hasRole('agency') && !empty($validated['customer_id'])) {
+        if ($user->hasRole('agency') && ! empty($validated['customer_id'])) {
             $userId = (int) $validated['customer_id'];
             $agencyId = $user->id;
             $senderType = 'agency';
@@ -182,7 +176,7 @@ class ConversationController extends Controller
         // If this is an AI concierge conversation, consume quota credit and auto-generate AI reply
         if ($conversation->type === 'ai_concierge' && $senderType !== 'ai') {
             try {
-                $aiUsage = app(\App\Services\Trips\AiUsageService::class);
+                $aiUsage = app(AiUsageService::class);
                 $aiUsage->consumeQuota($user);
             } catch (\Throwable $quotaErr) {
                 return ApiResponse::fail($quotaErr->getMessage(), 'ai_quota_exhausted', 422);
@@ -209,7 +203,7 @@ class ConversationController extends Controller
             ->where('is_read', false)
             ->where(function ($q) use ($user) {
                 $q->where('sender_id', '!=', $user->id)
-                  ->orWhereNull('sender_id');
+                    ->orWhereNull('sender_id');
             })
             ->update(['is_read' => true]);
 
@@ -228,7 +222,7 @@ class ConversationController extends Controller
             try {
                 $systemPrompt = "You are the Itinera AI Travel Concierge, a bespoke, highly knowledgeable luxury travel assistant.\n"
                     ."Provide elegant, helpful, and concise travel recommendations, tips, and insights.\n"
-                    ."Format your answers with clean markdown (bullet points, bold titles) and maintain a warm, sophisticated concierge tone.";
+                    .'Format your answers with clean markdown (bullet points, bold titles) and maintain a warm, sophisticated concierge tone.';
 
                 if ($conversation->trip) {
                     $trip = $conversation->trip->load(['destinationCountry', 'destinations', 'hotels', 'restaurants', 'attractions']);
@@ -298,27 +292,28 @@ class ConversationController extends Controller
 
         // 1. Query Wikipedia Live Real-World Search API for true travel facts
         try {
-            $wikiUrl = 'https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=' . urlencode($prompt) . '&format=json';
+            $wikiUrl = 'https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch='.urlencode($prompt).'&format=json';
             $res = Http::withHeaders(['User-Agent' => 'ItineraApp/1.0'])->timeout(5)->get($wikiUrl);
             $items = $res->json('query.search') ?? [];
 
-            if (!empty($items)) {
+            if (! empty($items)) {
                 $out = "**Itinera AI Concierge — Real-World Travel Information**\n\n";
-                $out .= "Here are authentic real-world travel facts & recommendations for: *\"" . e($prompt) . "\"*\n\n";
+                $out .= 'Here are authentic real-world travel facts & recommendations for: *"'.e($prompt)."\"*\n\n";
                 $count = 0;
                 foreach (array_slice($items, 0, 4) as $item) {
                     $title = $item['title'] ?? '';
                     $snippet = html_entity_decode(strip_tags($item['snippet'] ?? ''), ENT_QUOTES | ENT_HTML5, 'UTF-8');
                     // Remove citation brackets
                     $snippet = preg_replace('/\[\d+\]/', '', $snippet);
-                    if (!empty($title) && !empty($snippet)) {
+                    if (! empty($title) && ! empty($snippet)) {
                         $count++;
                         $out .= "{$count}. **{$title}**\n";
                         $out .= "   - {$snippet}...\n\n";
                     }
                 }
                 if ($count > 0) {
-                    $out .= "*Verified Real-World Data*: Retrieved live for your travel query.";
+                    $out .= '*Verified Real-World Data*: Retrieved live for your travel query.';
+
                     return $out;
                 }
             }
@@ -334,18 +329,19 @@ class ConversationController extends Controller
                 $out = "**Itinera AI Concierge — Verified Live Flight Schedules**\n\n";
                 foreach ($flights as $idx => $f) {
                     $status = is_object($f->booking_status) && isset($f->booking_status->value) ? $f->booking_status->value : 'Available';
-                    $out .= ($idx + 1) . ". **{$f->airline}** (Flight `{$f->flight_number}`)\n";
+                    $out .= ($idx + 1).". **{$f->airline}** (Flight `{$f->flight_number}`)\n";
                     $out .= "   - *Route*: **{$f->departure_airport}** ➔ **{$f->arrival_airport}**\n";
                     $out .= "   - *Price*: \${$f->price} · *Status*: {$status}\n\n";
                 }
+
                 return $out;
             }
         }
 
         // 3. Fallback Overview
         return "**Itinera AI Travel Concierge**\n\n"
-            ."I have analyzed your query: *\"".e($prompt)."\"*\n\n"
+            .'I have analyzed your query: *"'.e($prompt)."\"*\n\n"
             ."For the most comprehensive AI generation with Llama 3.3 70B, make sure your `GROQ_API_KEY` is configured in `.env`.\n\n"
-            ."*Feel free to ask about specific cities, hotels, fine dining, or flight options!*";
+            .'*Feel free to ask about specific cities, hotels, fine dining, or flight options!*';
     }
 }

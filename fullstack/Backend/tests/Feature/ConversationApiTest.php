@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\Account\User;
 use App\Models\Chat\Conversation;
-use App\Models\Trips\Trip;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Role;
 use Tests\TestCase;
@@ -14,7 +13,9 @@ class ConversationApiTest extends TestCase
     use RefreshDatabase;
 
     protected User $user;
+
     protected User $agency;
+
     protected User $otherUser;
 
     protected function setUp(): void

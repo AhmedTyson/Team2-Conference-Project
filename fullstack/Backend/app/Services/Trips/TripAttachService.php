@@ -2,11 +2,7 @@
 
 namespace App\Services\Trips;
 
-use App\Enums\OrderStatus;
-use App\Models\Catalog\Attraction;
-use App\Models\Catalog\Flight;
-use App\Models\Catalog\Hotel;
-use App\Models\Catalog\Restaurant;
+use App\Models\Trips\ItineraryItem;
 use App\Models\Trips\Trip;
 use App\Support\ApiResponse;
 use Illuminate\Http\Request;
@@ -63,7 +59,7 @@ class TripAttachService
             $trip->$relation()->attach($itemId);
             $itemModel = $modelClass::find($itemId);
             if ($itemModel) {
-                \App\Models\Trips\ItineraryItem::updateOrCreate([
+                ItineraryItem::updateOrCreate([
                     'trip_id' => $trip->id,
                     'itemable_type' => $normalizedType,
                     'itemable_id' => $itemId,
