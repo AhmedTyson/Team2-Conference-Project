@@ -56,11 +56,18 @@
   }
 
   // Quota Management
-  function initQuota() {
-    const storedQuota = localStorage.getItem("itinari_ai_quota");
-    if (storedQuota) {
-      plannerState.quotaUsed = parseInt(storedQuota, 10);
-    }
+  async function initQuota() {
+    try {
+      const getUserFunc = (window.Itinari && window.Itinari.session && window.Itinari.session.currentUser) || null;
+      if (getUserFunc) {
+        const user = await getUserFunc();
+        if (user) {
+          const sub = user.subscription || {};
+          plannerState.quotaTotal = sub.ai_quota_total || (sub.plan ? sub.plan.ai_quota_monthly : 500);
+          plannerState.quotaUsed = typeof user.ai_generations_count === "number" ? user.ai_generations_count : (sub.ai_quota_used || 0);
+        }
+      }
+    } catch (e) {}
     updateQuotaDisplay();
   }
 
@@ -247,20 +254,17 @@
     let planData = null;
 
     try {
-      // Try backend AI generation endpoint
-      const res = await fetch((It.CONFIG?.apiBase || "https://itinari.up.railway.app/api") + "/trips/generate-ai", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          ...(localStorage.getItem("itinari_token") ? { "Authorization": "Bearer " + localStorage.getItem("itinari_token") } : {})
-        },
-        body: JSON.stringify(payload)
-      });
-
-      if (res.ok) {
-        const body = await res.json();
-        planData = body.data || body;
+      // Use Itinari transport layer to route to local backend API with Bearer auth token
+      const apiPostFunc = (window.Itinari && window.Itinari.apiPost) || (window.Api && window.Api.post);
+      if (apiPostFunc) {
+        const res = await apiPostFunc("/trips/generate-ai", payload, { auth: true });
+        if (res && res.ok) {
+          planData = (window.Itinari && window.Itinari.unwrapData) ? window.Itinari.unwrapData(res) : (res.body ? (res.body.data || res.body) : res);
+          // Force refresh user session so quota count is updated immediately across dashboard
+          if (window.Itinari && window.Itinari.session && window.Itinari.session.currentUser) {
+            try { await window.Itinari.session.currentUser(true); } catch (e) {}
+          }
+        }
       }
     } catch (e) {
       console.warn("Backend AI fetch note:", e);
