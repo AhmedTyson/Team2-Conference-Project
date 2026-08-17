@@ -8,24 +8,14 @@ use App\Models\Catalog\Destination;
 use App\Models\Catalog\Flight;
 use App\Models\Catalog\Hotel;
 use App\Models\Catalog\Restaurant;
-use App\Models\Trips\AiRecommendation;
 use App\Models\Trips\ItineraryItem;
 use App\Models\Trips\Trip;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Seeder;
 
 class TripSeeder extends Seeder
 {
-    use HasFactory;
-
     public function run(): void
     {
-        if (Trip::exists()) {
-            $this->command?->warn('Trips already seeded. Skipping TripSeeder.');
-
-            return;
-        }
-
         $travelers = User::whereHas('roles', function ($q) {
             $q->where('name', 'user');
         })->get();
@@ -34,107 +24,146 @@ class TripSeeder extends Seeder
             $travelers = User::factory(5)->create();
         }
 
-        $destinations = Destination::limit(10)->get();
+        $curatedPublicTrips = [
+            [
+                'title' => 'Valencia & Costa Blanca Escape',
+                'travel_style' => 'cultural',
+                'no_of_travelers' => 2,
+                'budget' => 1500,
+                'no_of_days' => 6,
+                'estimated_cost' => 1299,
+                'is_public' => true,
+            ],
+            [
+                'title' => 'Lofoten Islands Northern Lights',
+                'travel_style' => 'adventure',
+                'no_of_travelers' => 2,
+                'budget' => 2000,
+                'no_of_days' => 7,
+                'estimated_cost' => 1600,
+                'is_public' => true,
+            ],
+            [
+                'title' => 'Gramado Mountain Haven',
+                'travel_style' => 'relaxation',
+                'no_of_travelers' => 4,
+                'budget' => 2500,
+                'no_of_days' => 6,
+                'estimated_cost' => 2000,
+                'is_public' => true,
+            ],
+            [
+                'title' => 'Tenerife Island Sunshine',
+                'travel_style' => 'relaxation',
+                'no_of_travelers' => 2,
+                'budget' => 2400,
+                'no_of_days' => 8,
+                'estimated_cost' => 2199,
+                'is_public' => true,
+            ],
+            [
+                'title' => 'Kyoto Ancient Temples & Bamboo Trail',
+                'travel_style' => 'cultural',
+                'no_of_travelers' => 2,
+                'budget' => 2200,
+                'no_of_days' => 5,
+                'estimated_cost' => 1750,
+                'is_public' => true,
+            ],
+            [
+                'title' => 'Cairo & Giza Pharaonic Trail',
+                'travel_style' => 'cultural',
+                'no_of_travelers' => 3,
+                'budget' => 1400,
+                'no_of_days' => 6,
+                'estimated_cost' => 1100,
+                'is_public' => true,
+            ],
+        ];
 
-        $tripCount = min(8, $travelers->count() * 2);
+        foreach ($curatedPublicTrips as $idx => $data) {
+            $user = $travelers[$idx % $travelers->count()];
+            
+            $trip = Trip::updateOrCreate(
+                ['title' => $data['title']],
+                [
+                    'user_id' => $user->id,
+                    'travel_style' => $data['travel_style'],
+                    'no_of_travelers' => $data['no_of_travelers'],
+                    'budget' => $data['budget'],
+                    'no_of_days' => $data['no_of_days'],
+                    'estimated_cost' => $data['estimated_cost'],
+                    'is_public' => true,
+                    'start_date' => now()->addDays(10 + $idx * 5)->toDateString(),
+                    'end_date' => now()->addDays(10 + $idx * 5 + $data['no_of_days'])->toDateString(),
+                    'status' => 'planning',
+                ]
+            );
 
-        for ($i = 0; $i < $tripCount; $i++) {
-            $trip = Trip::factory()->create([
-                'user_id' => $travelers->random()->id,
-            ]);
-
-            // Attach 2-4 destinations to the trip
-            $picked = $destinations->count() > 0
-                ? $destinations->random(min(4, $destinations->count()))
-                : collect([Destination::factory()->create()]);
-
-            $picked->each(function (Destination $destination, int $index) use ($trip) {
-                $trip->destinations()->attach($destination, [
-                    'day_number' => $index + 1,
-                    'visit_order' => $index + 1,
-                    'estimated_date' => $trip->start_date->addDays($index),
-                    'notes' => 'Day '.($index + 1).' stop',
-                ]);
-            });
-
-            // Attach 1-3 items of each type
-            $items = [
-                'hotels' => Hotel::inRandomOrder()->first(),
-                'restaurants' => Restaurant::inRandomOrder()->first(),
-                'attractions' => Attraction::inRandomOrder()->first(),
-                'flights' => Flight::inRandomOrder()->first(),
-            ];
-
-            foreach ($items as $relation => $item) {
-                if ($item) {
-                    $trip->{$relation}()->attach($item);
-                }
+            // Attach destinations
+            $dest = Destination::where('city_name', 'LIKE', '%' . strtok($data['title'], ' ') . '%')->first()
+                ?? Destination::inRandomOrder()->first();
+            if ($dest) {
+                $trip->destinations()->syncWithoutDetaching([$dest->id => ['day_number' => 1, 'visit_order' => 1]]);
             }
 
-            // Itinerary items derived from attached items
-            $this->seedItineraryItems($trip);
+            // Attach hotel
+            $hotel = Hotel::inRandomOrder()->first();
+            if ($hotel) {
+                $trip->hotels()->syncWithoutDetaching([$hotel->id]);
+            }
 
-            // AI recommendation per trip
-            AiRecommendation::factory()->create(['trip_id' => $trip->id]);
+            // Attach attraction
+            $attraction = Attraction::inRandomOrder()->first();
+            if ($attraction) {
+                $trip->attractions()->syncWithoutDetaching([$attraction->id]);
+            }
+
+            // Attach restaurant
+            $restaurant = Restaurant::inRandomOrder()->first();
+            if ($restaurant) {
+                $trip->restaurants()->syncWithoutDetaching([$restaurant->id]);
+            }
+
+            $this->seedItineraryItems($trip);
         }
 
-        $this->command?->info("Seeded {$tripCount} trips with destinations, items, itineraries, and AI recommendations.");
+        $this->command?->info("Seeded public community trips with real destination relations.");
     }
 
     private function seedItineraryItems(Trip $trip): void
     {
         $trip->loadMissing(['hotels', 'restaurants', 'attractions', 'flights']);
-
         $order = 1;
 
         foreach ($trip->hotels as $hotel) {
-            ItineraryItem::factory()->create([
-                'trip_id' => $trip->id,
-                'itemable_id' => $hotel->id,
-                'itemable_type' => $hotel->getMorphClass(),
-                'day_number' => 1,
-                'item_order' => $order++,
-                'type' => 'hotel',
-                'title' => $hotel->name,
-                'estimated_cost' => $hotel->price_per_night ?? 0,
-            ]);
-        }
-
-        foreach ($trip->restaurants as $restaurant) {
-            ItineraryItem::factory()->create([
-                'trip_id' => $trip->id,
-                'itemable_id' => $restaurant->id,
-                'itemable_type' => $restaurant->getMorphClass(),
-                'day_number' => 1,
-                'item_order' => $order++,
-                'type' => 'restaurant',
-                'title' => $restaurant->name,
-            ]);
+            ItineraryItem::updateOrCreate(
+                ['trip_id' => $trip->id, 'itemable_id' => $hotel->id, 'itemable_type' => $hotel->getMorphClass()],
+                [
+                    'day_number' => 1,
+                    'item_order' => $order++,
+                    'type' => 'hotel',
+                    'title' => $hotel->name,
+                    'time_slot' => 'Morning Check-in',
+                    'notes' => 'Confirmed hotel stay',
+                    'estimated_cost' => $hotel->price_per_night ?? 0,
+                ]
+            );
         }
 
         foreach ($trip->attractions as $attraction) {
-            ItineraryItem::factory()->create([
-                'trip_id' => $trip->id,
-                'itemable_id' => $attraction->id,
-                'itemable_type' => $attraction->getMorphClass(),
-                'day_number' => 1,
-                'item_order' => $order++,
-                'type' => 'attraction',
-                'title' => $attraction->name,
-            ]);
-        }
-
-        foreach ($trip->flights as $flight) {
-            ItineraryItem::factory()->create([
-                'trip_id' => $trip->id,
-                'itemable_id' => $flight->id,
-                'itemable_type' => $flight->getMorphClass(),
-                'day_number' => 1,
-                'item_order' => $order++,
-                'type' => 'flight',
-                'title' => $flight->airline.' '.$flight->flight_number,
-                'estimated_cost' => $flight->price ?? 0,
-            ]);
+            ItineraryItem::updateOrCreate(
+                ['trip_id' => $trip->id, 'itemable_id' => $attraction->id, 'itemable_type' => $attraction->getMorphClass()],
+                [
+                    'day_number' => 1,
+                    'item_order' => $order++,
+                    'type' => 'attraction',
+                    'title' => $attraction->name,
+                    'time_slot' => 'Afternoon Sightseeing',
+                    'notes' => 'Entry tickets included',
+                    'estimated_cost' => $attraction->entry_fee ?? 35,
+                ]
+            );
         }
     }
 }

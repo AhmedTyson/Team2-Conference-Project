@@ -106,11 +106,6 @@ class TripController extends Controller
             return ApiResponse::fail('Trip not found', 'not_found', 404);
         }
 
-        $statusVal = is_object($trip->status) ? $trip->status->value : (string) $trip->status;
-        if (in_array(strtolower($statusVal), ['booked', 'completed', 'paid'])) {
-            return ApiResponse::fail('This trip is booked & paid and cannot be edited.', 'trip_locked', 403);
-        }
-
         $validated = $request->validate([
             'title' => 'sometimes|string|max:255',
             'travel_style' => 'sometimes|string|max:100',
@@ -122,6 +117,14 @@ class TripController extends Controller
             'is_public' => 'sometimes|boolean',
             'description' => 'sometimes|nullable|string',
         ]);
+
+        $statusVal = is_object($trip->status) ? $trip->status->value : (string) $trip->status;
+        $isLocked = in_array(strtolower($statusVal), ['booked', 'completed', 'paid']);
+        $modifiesItinerary = $request->hasAny(['title', 'travel_style', 'no_of_travelers', 'budget', 'start_date', 'end_date', 'no_of_days']);
+
+        if ($isLocked && $modifiesItinerary) {
+            return ApiResponse::fail('This trip is booked & paid and its itinerary details cannot be edited.', 'trip_locked', 403);
+        }
 
         $trip->update($validated);
 

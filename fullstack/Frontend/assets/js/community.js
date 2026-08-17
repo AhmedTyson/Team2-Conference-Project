@@ -165,6 +165,67 @@
     }
   ];
 
+  var CITY_IMAGES = {
+    "Cairo": "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?auto=format&fit=crop&w=800&q=80",
+    "Alexandria": "https://images.unsplash.com/photo-1568322445389-f64ac2515020?auto=format&fit=crop&w=800&q=80",
+    "Luxor": "https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?auto=format&fit=crop&w=800&q=80",
+    "Sharm El Sheikh": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80",
+    "Paris": "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80",
+    "Nice": "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=800&q=80",
+    "Lyon": "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=800&q=80",
+    "Rome": "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=800&q=80",
+    "Venice": "https://images.unsplash.com/photo-1514890547357-a9ee288728e0?auto=format&fit=crop&w=800&q=80",
+    "Milan": "https://images.unsplash.com/photo-1513581166391-887a96ddeafd?auto=format&fit=crop&w=800&q=80",
+    "Florence": "https://images.unsplash.com/photo-1543429776-2782fc8e1acd?auto=format&fit=crop&w=800&q=80",
+    "Dubai": "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80",
+    "Abu Dhabi": "https://images.unsplash.com/photo-1512632578553-196a88798567?auto=format&fit=crop&w=800&q=80",
+    "Tokyo": "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=800&q=80",
+    "Kyoto": "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?auto=format&fit=crop&w=800&q=80",
+    "Osaka": "https://images.unsplash.com/photo-1590559899731-a382839e5549?auto=format&fit=crop&w=800&q=80",
+    "London": "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=800&q=80",
+    "Edinburgh": "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?auto=format&fit=crop&w=800&q=80",
+    "Barcelona": "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?auto=format&fit=crop&w=800&q=80",
+    "Madrid": "https://images.unsplash.com/photo-1543783207-ec64e4d95325?auto=format&fit=crop&w=800&q=80",
+    "Seville": "https://images.unsplash.com/photo-1561632669-6e0e567fbf70?auto=format&fit=crop&w=800&q=80",
+    "New York": "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=800&q=80",
+    "Los Angeles": "https://images.unsplash.com/photo-1580655653885-65763b2597d0?auto=format&fit=crop&w=800&q=80",
+    "Miami": "https://images.unsplash.com/photo-1506929562872-bb421503ef21?auto=format&fit=crop&w=800&q=80",
+    "Athens": "https://images.unsplash.com/photo-1533105079780-92b9be482077?auto=format&fit=crop&w=800&q=80",
+    "Santorini": "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=800&q=80",
+    "Istanbul": "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=800&q=80",
+    "Cappadocia": "https://images.unsplash.com/photo-1609830537033-d8c9735d1f8f?auto=format&fit=crop&w=800&q=80",
+    "Berlin": "https://images.unsplash.com/photo-1560969184-10fe8719e047?auto=format&fit=crop&w=800&q=80",
+    "Munich": "https://images.unsplash.com/photo-1595867818082-083862f3d630?auto=format&fit=crop&w=800&q=80",
+    "Zurich": "https://images.unsplash.com/photo-1516550893923-42d28e5677af?auto=format&fit=crop&w=800&q=80",
+    "Geneva": "https://images.unsplash.com/photo-1572978873099-b1d5d36e2f11?auto=format&fit=crop&w=800&q=80",
+    "Amsterdam": "https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?auto=format&fit=crop&w=800&q=80",
+    "Riyadh": "https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?auto=format&fit=crop&w=800&q=80",
+    "AlUla": "https://images.unsplash.com/photo-1616422285623-13ff0162193c?auto=format&fit=crop&w=800&q=80",
+    "Marrakech": "https://images.unsplash.com/photo-1597212618440-806262de4f6b?auto=format&fit=crop&w=800&q=80",
+    "Casablanca": "https://images.unsplash.com/photo-1565557623262-b51c2513a641?auto=format&fit=crop&w=800&q=80",
+    "Cape Town": "https://images.unsplash.com/photo-1580618672591-eb180b1a973f?auto=format&fit=crop&w=800&q=80",
+    "Bangkok": "https://images.unsplash.com/photo-1508009603885-50cf7c579365?auto=format&fit=crop&w=800&q=80",
+    "Phuket": "https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?auto=format&fit=crop&w=800&q=80",
+    "Singapore": "https://images.unsplash.com/photo-1525625293386-3f8f99389edd?auto=format&fit=crop&w=800&q=80",
+    "Sydney": "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=800&q=80",
+    "Melbourne": "https://images.unsplash.com/photo-1514395462725-fb4566210144?auto=format&fit=crop&w=800&q=80",
+    "Rio de Janeiro": "https://images.unsplash.com/photo-1483729558449-99ef09a8c325?auto=format&fit=crop&w=800&q=80"
+  };
+
+  function resolveTripImage(trip, cityName) {
+    var raw = trip.cover_image || trip.image || (trip.destinations && trip.destinations[0] && trip.destinations[0].image);
+    if (raw && (raw.startsWith("http://") || raw.startsWith("https://") || raw.startsWith("assets/"))) {
+      return raw;
+    }
+    var searchStr = (cityName || (trip.destinations && trip.destinations[0] && (trip.destinations[0].city_name || trip.destinations[0].city || trip.destinations[0].name)) || trip.title || "").toLowerCase();
+    for (var k in CITY_IMAGES) {
+      if (searchStr.indexOf(k.toLowerCase()) !== -1) {
+        return CITY_IMAGES[k];
+      }
+    }
+    return "https://images.unsplash.com/photo-1539037116277-4db20889f2d4?auto=format&fit=crop&w=800&q=80";
+  }
+
   function start() {
     fetchCommunityTrips();
     bindEvents();
@@ -178,49 +239,51 @@
     }
 
     It.apiGet("/trips?is_public=1").then(function (res) {
-      if (res.ok && res.body) {
-        var raw = res.body.data || res.body;
-        var apiTrips = Array.isArray(raw) ? raw.filter(function (t) { return t.is_public || t.public; }) : [];
-        if (apiTrips.length) {
-          communityTrips = apiTrips.map(function (t, idx) {
-            var destName = (t.destinations && t.destinations[0] && (t.destinations[0].city || t.destinations[0].name)) || "Global Destination";
-            var countryName = (t.destinations && t.destinations[0] && (t.destinations[0].country_name || t.destinations[0].country)) || "International";
+      var rawData = null;
+      if (res && res.body && res.body.data) {
+        rawData = res.body.data;
+      } else if (res && res.data) {
+        rawData = res.data;
+      } else if (res && res.body) {
+        rawData = res.body;
+      } else if (Array.isArray(res)) {
+        rawData = res;
+      }
 
-            return {
-              id: t.id,
-              title: t.title || (destName + " Experience"),
-              country: countryName !== "International" ? countryName : destName,
-              region: (t.region || "europe").toLowerCase(),
-              image: t.cover_image || t.image || (CURATED_COMMUNITY_TRIPS[idx % CURATED_COMMUNITY_TRIPS.length].image),
-              flag: "COMMUNITY SHARED",
-              duration: (t.no_of_days || t.total_days || 5) + " Days",
-              estimated_cost: Number(t.estimated_cost || t.budget || 1299),
-              rating: (4.7 + (idx % 3) * 0.1).toFixed(1),
-              friends_count: Number(t.forks_count || t.no_of_travelers) || (12 + idx * 2),
-              creator: {
-                name: (t.user && t.user.name) || "Verified Traveler",
-                avatar: ((t.user && t.user.name) || "T").charAt(0).toUpperCase(),
-                bg: idx % 2 === 0 ? "#2F6FED" : "#3E8E5A"
-              },
-              description: t.description || ("Explore a curated " + (t.no_of_days || 5) + "-day travel itinerary published by " + ((t.user && t.user.name) || "our community travelers") + "."),
-              stats: {
-                avg_cost: "$" + Number(t.estimated_cost || t.budget || 1299).toLocaleString(),
-                best_time: "Spring & Autumn",
-                visa: "Standard Entry",
-                hotels: (t.hotels && t.hotels.length ? t.hotels.length + " Options" : "Curated Options")
-              },
-              hotels: t.hotels || []
-            };
-          });
+      var apiTrips = Array.isArray(rawData) ? rawData : [];
 
-          CURATED_COMMUNITY_TRIPS.forEach(function (ct) {
-            if (!communityTrips.some(function (x) { return x.id === ct.id; })) {
-              communityTrips.push(ct);
-            }
-          });
-        } else {
-          communityTrips = CURATED_COMMUNITY_TRIPS;
-        }
+      if (apiTrips.length > 0) {
+        communityTrips = apiTrips.map(function (t, idx) {
+          var dest = (t.destinations && t.destinations[0]) || {};
+          var destName = dest.city_name || dest.city || dest.name || "Global Destination";
+          var countryName = dest.country_name || dest.country || "International";
+
+          return {
+            id: t.id,
+            title: t.title || (destName + " Experience"),
+            country: countryName !== "International" ? countryName : destName,
+            region: (t.region || "europe").toLowerCase(),
+            image: resolveTripImage(t, destName),
+            flag: "COMMUNITY SHARED",
+            duration: (t.no_of_days || t.total_days || 5) + " Days",
+            estimated_cost: Number(t.estimated_cost || t.budget || 1299),
+            rating: (4.7 + (idx % 3) * 0.1).toFixed(1),
+            friends_count: Number(t.forks_count || t.no_of_travelers) || (12 + idx * 2),
+            creator: {
+              name: (t.user && t.user.name) || "Verified Traveler",
+              avatar: ((t.user && t.user.name) || "T").charAt(0).toUpperCase(),
+              bg: idx % 2 === 0 ? "#2F6FED" : "#3E8E5A"
+            },
+            description: t.description || ("Explore a curated " + (t.no_of_days || 5) + "-day travel itinerary published by " + ((t.user && t.user.name) || "our community travelers") + "."),
+            stats: {
+              avg_cost: "$" + Number(t.estimated_cost || t.budget || 1299).toLocaleString(),
+              best_time: "Spring & Autumn",
+              visa: "Standard Entry",
+              hotels: (t.hotels && t.hotels.length ? t.hotels.length + " Options" : "Curated Options")
+            },
+            hotels: t.hotels || []
+          };
+        });
       } else {
         communityTrips = CURATED_COMMUNITY_TRIPS;
       }
