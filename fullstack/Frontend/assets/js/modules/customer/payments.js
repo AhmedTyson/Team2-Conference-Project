@@ -15,48 +15,6 @@
   var searchQuery = "";
   var allPayments = [];
 
-  var mockPayments = [
-    {
-      id: 74,
-      merchant_order_id: "ORDER_74_1786910287",
-      transaction_reference: "516712546",
-      status: "fulfilled",
-      total_amount: 8295.00,
-      currency: "EGP",
-      payment_gateway: "paymob",
-      card_type: "Visa",
-      card_pan: "1111",
-      created_at: "2026-08-16T21:32:17.000Z",
-      items: [{ name: "Pro Plan Monthly Subscription", product_type: "subscription" }]
-    },
-    {
-      id: 61,
-      merchant_order_id: "ORDER_61_1786905129",
-      transaction_reference: "516712100",
-      status: "fulfilled",
-      total_amount: 3500.00,
-      currency: "EGP",
-      payment_gateway: "paymob",
-      card_type: "Mastercard",
-      card_pan: "4321",
-      created_at: "2026-08-10T14:20:00.000Z",
-      items: [{ name: "Bali 7-Day Luxury Itinerary Package", product_type: "trip_package" }]
-    },
-    {
-      id: 45,
-      merchant_order_id: "ORDER_45_1786850000",
-      transaction_reference: "516709888",
-      status: "fulfilled",
-      total_amount: 1250.00,
-      currency: "EGP",
-      payment_gateway: "paymob",
-      card_type: "Visa",
-      card_pan: "9876",
-      created_at: "2026-07-28T10:15:30.000Z",
-      items: [{ name: "Kyoto Culinary & Culture Pass", product_type: "trip_package" }]
-    }
-  ];
-
   function formatMoney(amount, currency) {
     currency = currency || "EGP";
     var num = typeof amount === "number" ? amount : parseFloat(amount || 0);
@@ -107,7 +65,7 @@
     if (totalSpentEl) totalSpentEl.textContent = formatMoney(totalSpent, "EGP");
     if (totalTxnsEl) totalTxnsEl.textContent = totalTxns;
     if (planNameEl) {
-      var plan = (user && user.subscription && user.subscription.plan_name) || "Pro Plan";
+      var plan = (user && (user.plan_name || (user.subscription && user.subscription.plan_name))) || "Standard Free";
       planNameEl.textContent = plan;
     }
   }
@@ -140,7 +98,7 @@
     });
 
     if (filtered.length === 0) {
-      container.innerHTML = '<div class="p-12 text-center text-white/50"><i class="fas fa-receipt text-3xl mb-3 text-white/30"></i><p class="text-sm font-medium">No payment transactions found matching your filter.</p></div>';
+      container.innerHTML = '<div class="p-12 text-center text-white/50"><i class="fas fa-receipt text-3xl mb-3 text-white/30"></i><p class="text-sm font-medium">No payment transactions found in your account history.</p></div>';
       return;
     }
 
@@ -148,7 +106,7 @@
     filtered.forEach(function (p) {
       var ref = p.merchant_order_id || p.transaction_reference || ("ORDER_" + p.id);
       var txnId = p.transaction_reference || p.paymob_transaction_id || p.id || "N/A";
-      var itemName = (p.items && p.items[0] && (p.items[0].name || p.items[0].metadata?.name)) || "Itinera Travel Service / Plan";
+      var itemName = (p.items && p.items[0] && (p.items[0].name || (p.items[0].metadata && p.items[0].metadata.name))) || "Itinera Travel Service / Plan";
       var amtStr = formatMoney(p.total_amount || (p.total_cents ? p.total_cents / 100 : 0), p.currency || "EGP");
       var badge = getStatusBadge(p.status);
       var dateStr = formatDate(p.created_at);
@@ -220,29 +178,29 @@
     initTabs();
     initSearch();
 
-    // Fetch user orders & profile
-    if (window.Itinari && window.Itinari.apiGet) {
-      window.Itinari.apiGet("/me/orders", { auth: true })
+    // Fetch user orders & profile from backend API
+    var apiGetFunc = (window.Itinari && window.Itinari.apiGet) || (window.Api && window.Api.get);
+    if (apiGetFunc) {
+      apiGetFunc("/me/orders", { auth: true })
         .then(function (res) {
-          var user = (window.Itinari.session && window.Itinari.session.currentUser && window.Itinari.session.currentUser()) || null;
-          if (res.ok && res.body && Array.isArray(res.body.data) && res.body.data.length > 0) {
-            allPayments = res.body.data;
-          } else {
-            allPayments = mockPayments;
-          }
+          var user = (window.Itinari && window.Itinari.session && window.Itinari.session.currentUser && window.Itinari.session.currentUser()) || null;
+          var data = (window.Itinari && window.Itinari.unwrapData) ? window.Itinari.unwrapData(res) : (res.body ? res.body.data : res);
+          allPayments = Array.isArray(data) ? data : [];
           updateMetrics(allPayments, user);
           renderPaymentsTable(allPayments);
         })
         .catch(function () {
-          allPayments = mockPayments;
-          updateMetrics(allPayments, null);
-          renderPaymentsTable(allPayments);
+          allPayments = [];
+          updateMetrics([], null);
+          renderPaymentsTable([]);
         });
     } else {
-      allPayments = mockPayments;
-      updateMetrics(allPayments, null);
-      renderPaymentsTable(allPayments);
+      allPayments = [];
+      updateMetrics([], null);
+      renderPaymentsTable([]);
     }
   });
+
+})(window);
 
 })(window);

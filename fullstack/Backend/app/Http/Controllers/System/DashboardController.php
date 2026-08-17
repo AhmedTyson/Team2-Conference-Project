@@ -103,31 +103,41 @@ class DashboardController extends Controller
     {
         $user = $request->user();
 
-        $orders = \App\Models\Commerce\Order::with('items')
+        $orders = \App\Models\Commerce\Order::with(['items', 'payments'])
             ->where('user_id', $user->id)
             ->latest()
             ->get();
 
         return ApiResponse::success(
             $orders->map(function ($order) {
+                $latestPayment = $order->payments->last();
+                $raw = ($latestPayment && is_array($latestPayment->raw_payload)) ? $latestPayment->raw_payload : [];
+                $cardPan = $raw['source_data']['pan'] ?? ($raw['source_data_pan'] ?? '****');
+                $cardType = $raw['source_data']['sub_type'] ?? ($raw['source_data_sub_type'] ?? 'Credit / Debit Card');
+                $statusStr = $order->status instanceof \BackedEnum ? $order->status->value : (string) $order->status;
+
                 return [
                     'id' => $order->id,
-                    'status' => $order->status instanceof \BackedEnum ? $order->status->value : $order->status,
-                    'total_amount' => (float) $order->total_amount,
-                    'currency' => $order->currency ?: 'USD',
-                    'payment_gateway' => $order->payment_gateway,
-                    'transaction_reference' => $order->transaction_reference,
-                    'confirmation_code' => $order->confirmation_code,
+                    'merchant_order_id' => "ORDER_{$order->id}_" . ($order->created_at ? $order->created_at->timestamp : time()),
+                    'status' => $statusStr,
+                    'total_amount' => (float) ($order->total_amount ?: (($order->total_cents ?? 0) / 100)),
+                    'total_cents' => (int) ($order->total_cents ?? 0),
+                    'currency' => $order->currency ?: 'EGP',
+                    'payment_gateway' => 'paymob',
+                    'transaction_reference' => $latestPayment ? ($latestPayment->paymob_transaction_id ?: "PAYMOB-{$order->id}") : ($order->transaction_reference ?: "ORDER-{$order->id}"),
+                    'card_pan' => $cardPan,
+                    'card_type' => $cardType,
                     'items' => $order->items->map(function ($item) {
                         return [
                             'id' => $item->id,
                             'product_type' => $item->product_type,
                             'product_id' => $item->product_id,
                             'price_cents' => $item->price_cents,
+                            'name' => $item->metadata['name'] ?? ($item->product_type === 'subscription' ? 'Plan Subscription' : 'Trip Package'),
                             'metadata' => $item->metadata,
                         ];
                     }),
-                    'created_at' => $order->created_at,
+                    'created_at' => $order->created_at ? $order->created_at->toIso8601String() : now()->toIso8601String(),
                 ];
             }),
             'User orders retrieved successfully.'
