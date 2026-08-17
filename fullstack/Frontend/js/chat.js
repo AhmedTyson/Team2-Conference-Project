@@ -267,8 +267,6 @@
         html += '    <p class="text-xs text-neutral-500 dark:text-white/50 truncate mt-0.5">' + escapeHtml(excerpt) + '</p>';
         html += '  </div>';
         html += '</div>';
-      });
-
       elements.convList.innerHTML = html;
 
       // Attach click handlers
@@ -278,6 +276,44 @@
           selectConversation(id);
         });
       });
+    }
+
+    function isAdminUser() {
+      var role = currentRole();
+      return role === 'admin' || role === 'super_admin';
+    }
+
+    function showMentorReadOnlyBanner(conv) {
+      var composerWrap = document.querySelector('.chat-composer-wrap');
+      if (!composerWrap) return;
+      var existing = document.getElementById('adminMentorBanner');
+      if (existing) existing.remove();
+
+      var banner = document.createElement('div');
+      banner.id = 'adminMentorBanner';
+      banner.className = 'p-3.5 rounded-2xl bg-purple-950/80 border border-purple-500/35 text-purple-200 text-xs font-semibold flex items-center justify-between flex-wrap gap-3 shadow-xl mb-3';
+      banner.innerHTML =
+        '<div class="flex items-center gap-2.5">' +
+        '<div class="w-8 h-8 rounded-lg bg-purple-500/20 text-purple-300 flex items-center justify-center font-bold text-sm border border-purple-500/40"><i class="fas fa-eye"></i></div>' +
+        '<div><div class="font-bold text-white text-xs uppercase tracking-wider">Admin Mentoring Mode (Read-Only)</div>' +
+        '<div class="text-[11px] text-purple-300/80">Monitoring live chat between Customer &amp; Agency. You cannot post in this thread directly.</div></div>' +
+        '</div>' +
+        '<button type="button" id="adminIndependentChatBtn" class="px-3.5 py-1.5 rounded-xl bg-purple-500 hover:bg-purple-400 text-black font-extrabold text-xs transition flex items-center gap-1.5 shadow">' +
+        '<i class="fas fa-comments"></i> Message Separately →</button>';
+
+      composerWrap.insertBefore(banner, composerWrap.firstChild);
+
+      var btn = document.getElementById('adminIndependentChatBtn');
+      if (btn) {
+        btn.addEventListener('click', function() {
+          switchToMode('direct_support');
+        });
+      }
+    }
+
+    function hideMentorReadOnlyBanner() {
+      var existing = document.getElementById('adminMentorBanner');
+      if (existing) existing.remove();
     }
 
     async function selectConversation(id) {
@@ -291,6 +327,7 @@
         if (elements.chatActiveStage) elements.chatActiveStage.classList.remove('hidden');
         
         var isEgyptian = conv.type === 'agency_inquiry' || (conv.title && conv.title.includes('خدمة العملاء'));
+        var isMentorMode = isAdminUser() && (conv.type === 'agency_inquiry' || conv.type === 'trip_assignment');
         
         if (elements.activeTitle) {
           elements.activeTitle.textContent = isAgencyUser() && conv.user && conv.user.name
@@ -301,11 +338,24 @@
         if (elements.activeSubtitle) {
           var sub = conv.type === 'ai_concierge'
             ? 'AI Travel Assistant · Always Active ⚡'
-            : (isAgencyUser()
-              ? 'Chatting with ' + ((conv.user && conv.user.name) || 'customer')
-              : (isEgyptian ? '🇪🇬 خدمة العملاء المصرية · ممثل خدمة العملاء متصل الآن' : 'Dedicated Support Agent'));
+            : (isMentorMode
+              ? '👁️ Admin Mentoring Mode · Monitoring Customer & Agency Chat'
+              : (isAgencyUser()
+                ? 'Chatting with ' + ((conv.user && conv.user.name) || 'customer')
+                : (isEgyptian ? '🇪🇬 خدمة العملاء المصرية · ممثل خدمة العملاء متصل الآن' : 'Dedicated Support Agent')));
           if (conv.trip) sub += ' · Trip: ' + conv.trip.title;
           elements.activeSubtitle.textContent = sub;
+        }
+
+        // Mentoring vs Active Chat Composer controls
+        if (isMentorMode) {
+          if (elements.chatInput) { elements.chatInput.disabled = true; elements.chatInput.placeholder = 'Read-Only Mentoring Mode — Click "Message Separately" to initiate independent support.'; }
+          if (elements.sendBtn) elements.sendBtn.disabled = true;
+          showMentorReadOnlyBanner(conv);
+        } else {
+          if (elements.chatInput) { elements.chatInput.disabled = false; elements.chatInput.placeholder = isAgencyUser() ? 'Message customer as agency...' : 'Ask AI Concierge or Support...'; }
+          if (elements.sendBtn) elements.sendBtn.disabled = false;
+          hideMentorReadOnlyBanner();
         }
 
         // Update Mode button active styles
@@ -350,22 +400,27 @@
       messages.forEach(function (msg) {
         var isUser = msg.sender_type === 'user' || msg.sender_type === 'customer';
         var isAgency = msg.sender_type === 'agency' || msg.sender_type === 'admin' || msg.sender_type === 'agent';
+        var isAdmin = msg.sender_type === 'admin' || msg.sender_type === 'super_admin';
         var isAi = msg.sender_type === 'ai' || msg.sender_type === 'bot';
 
-        var rowClass = isAi ? 'ai' : (isAgency ? 'agency' : 'customer');
-        var avatarClass = isAi ? 'ai' : (isAgency ? 'agency' : '');
-        var icon = isAi ? '<i class="fas fa-robot"></i>' : (isAgency ? '<span class="text-xs">🇪🇬</span>' : '<i class="fas fa-user"></i>');
+        var rowClass = isAi ? 'ai' : (isAdmin ? 'admin' : (isAgency ? 'agency' : 'customer'));
+        var avatarClass = isAi ? 'ai' : (isAdmin ? 'admin' : (isAgency ? 'agency' : ''));
+        var icon = isAi ? '<i class="fas fa-robot"></i>' : (isAdmin ? '<i class="fas fa-shield-halved"></i>' : (isAgency ? '<span class="text-xs">🇪🇬</span>' : '<i class="fas fa-user"></i>'));
         var time = msg.created_at ? new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '';
 
         var roleBadge = isAi
-          ? '<span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-purple-500/20 text-purple-300 border border-purple-500/30"><i class="fas fa-robot mr-1"></i>AI Concierge</span>'
-          : (isAgency
-            ? '<span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"><i class="fas fa-briefcase mr-1"></i>Agency Partner</span>'
-            : '<span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-amber-500/20 text-amber-300 border border-amber-500/30"><i class="fas fa-user mr-1"></i>Customer Traveler</span>');
+          ? '<span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-sky-500/20 text-sky-300 border border-sky-500/40"><i class="fas fa-robot mr-1"></i>AI Concierge</span>'
+          : (isAdmin
+            ? '<span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-purple-500/20 text-purple-300 border border-purple-500/40"><i class="fas fa-shield-halved mr-1"></i>Admin Supervisor</span>'
+            : (isAgency
+              ? '<span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"><i class="fas fa-briefcase mr-1"></i>Agency Partner</span>'
+              : '<span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase bg-amber-500/20 text-amber-300 border border-amber-500/40"><i class="fas fa-user mr-1"></i>Customer Traveler</span>'));
 
-        var senderLabel = isAgencyUser() && isAgency
-          ? agencyName()
-          : (msg.sender_name || (isAi ? 'Itinera AI' : (isAgency ? 'خدمة العملاء المصرية' : 'Customer Traveler')));
+        var senderLabel = isAdmin
+          ? (msg.sender_name || 'Admin Support')
+          : (isAgencyUser() && isAgency
+            ? agencyName()
+            : (msg.sender_name || (isAi ? 'Itinera AI' : (isAgency ? 'خدمة العملاء المصرية' : 'Customer Traveler'))));
 
         html += '<div class="message-row ' + rowClass + '">';
         if (rowClass !== 'customer') {

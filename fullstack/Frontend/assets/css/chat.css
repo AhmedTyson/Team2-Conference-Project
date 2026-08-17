@@ -192,7 +192,7 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
 }
 
-/* Customer Traveler Bubble (Warm Gold/Obsidian) */
+/* Customer Traveler Bubble (Warm Gold / Obsidian) */
 .message-row.user .message-bubble,
 .message-row.customer .message-bubble {
   background: linear-gradient(135deg, #2a2218, #1c160e);
@@ -201,21 +201,29 @@
   border-bottom-right-radius: 4px;
 }
 
-/* Agency Partner / Egyptian Customer Support Bubble (Emerald Green) */
+/* Agency Partner Bubble (Mint Emerald Green) */
 .message-row.agency .message-bubble,
-.message-row.agent .message-bubble,
-.message-row.admin .message-bubble {
+.message-row.agent .message-bubble {
   background: linear-gradient(135deg, #064e3b, #022c22);
   color: #A7F3D0;
   border: 1px solid rgba(16, 185, 129, 0.45);
   border-bottom-left-radius: 4px;
 }
 
-/* AI Concierge Bubble (Violet/Purple Electric) */
-.message-row.ai .message-bubble {
+/* Admin Supervisor / Platform Mentor Bubble (Royal Indigo Purple) */
+.message-row.admin .message-bubble,
+.message-row.super_admin .message-bubble {
   background: linear-gradient(135deg, #3b0764, #2e1065);
   color: #E9D5FF;
-  border: 1px solid rgba(168, 85, 247, 0.45);
+  border: 1px solid rgba(168, 85, 247, 0.5);
+  border-bottom-left-radius: 4px;
+}
+
+/* AI Concierge Bubble (Electric Sky Blue / Slate) */
+.message-row.ai .message-bubble {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: #38BDF8;
+  border: 1px solid rgba(56, 189, 248, 0.45);
   border-bottom-left-radius: 4px;
 }
 
