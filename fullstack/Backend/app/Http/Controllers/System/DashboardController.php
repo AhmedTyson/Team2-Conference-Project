@@ -41,11 +41,16 @@ class DashboardController extends Controller
         // Active Subscription & Shared AI Quota details
         $activeSub = $user->subscriptions()->where('status', 'active')->latest()->first();
         $plan = $activeSub ? $activeSub->plan : null;
-        $planName = $plan ? $plan->name : 'Free Explorer';
-        $totalQuota = $plan ? (int) $plan->ai_quota_monthly : (int) config('ai.rate_limit_per_day', 500);
-        if ($totalQuota <= 0) {
-            $totalQuota = 500;
+        if (! $plan) {
+            $plan = \App\Models\Commerce\Plan::where('name', 'Jetsetter')->first() ?: \App\Models\Commerce\Plan::find(2);
         }
+
+        $planName = $plan ? $plan->name : 'Jetsetter';
+        $totalQuota = $plan ? (int) $plan->ai_quota_monthly : 100;
+        if ($totalQuota <= 0) {
+            $totalQuota = 100;
+        }
+
         $usedQuota = (int) ($user->ai_generations_count ?? 0);
         $remainingQuota = max(0, $totalQuota - $usedQuota);
         $expiresAt = $activeSub ? ($activeSub->ends_at ? $activeSub->ends_at->toIso8601String() : ($activeSub->renews_at ? $activeSub->renews_at->toIso8601String() : null)) : null;
@@ -66,6 +71,57 @@ class DashboardController extends Controller
                 'ends_at' => $expiresAt,
             ],
         ], 'Dashboard statistics retrieved successfully.');
+    }
+
+    /**
+     * Dedicated endpoint for user's active plan, expiration date, and shared AI quota metrics.
+     */
+    public function aiQuota(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        $activeSub = $user->subscriptions()->where('status', 'active')->latest()->first();
+        $plan = $activeSub ? $activeSub->plan : null;
+        if (! $plan) {
+            $plan = \App\Models\Commerce\Plan::where('name', 'Jetsetter')->first() ?: \App\Models\Commerce\Plan::find(2);
+        }
+
+        $planName = $plan ? $plan->name : 'Jetsetter';
+        $totalQuota = $plan ? (int) $plan->ai_quota_monthly : 100;
+        if ($totalQuota <= 0) {
+            $totalQuota = 100;
+        }
+
+        $usedQuota = (int) ($user->ai_generations_count ?? 0);
+        $remainingQuota = max(0, $totalQuota - $usedQuota);
+        $usagePct = min(100, (int) round(($usedQuota / $totalQuota) * 100));
+
+        $renewsAt = $activeSub ? ($activeSub->renews_at ? $activeSub->renews_at->toIso8601String() : null) : null;
+        $endsAt = $activeSub ? ($activeSub->ends_at ? $activeSub->ends_at->toIso8601String() : $renewsAt) : null;
+
+        $formattedExp = 'Lifetime Access';
+        if ($endsAt) {
+            try {
+                $formattedExp = 'Renews: ' . \Carbon\Carbon::parse($endsAt)->format('M d, Y');
+            } catch (\Throwable $e) {
+                $formattedExp = (string) $endsAt;
+            }
+        }
+
+        return ApiResponse::success([
+            'plan_id' => $plan ? $plan->id : null,
+            'plan_name' => $planName,
+            'status' => $activeSub ? $activeSub->status : 'active',
+            'ai_quota_total' => $totalQuota,
+            'ai_quota_used' => $usedQuota,
+            'ai_quota_remaining' => $remainingQuota,
+            'usage_percentage' => $usagePct,
+            'billing_cycle' => $plan ? $plan->billing_cycle : 'monthly',
+            'price_cents' => $plan ? (int) $plan->price_cents : 19900,
+            'currency' => $plan ? ($plan->currency ?: 'EGP') : 'EGP',
+            'renews_at' => $renewsAt,
+            'expires_at' => $endsAt,
+            'formatted_expiration' => $formattedExp,
+        ], 'AI quota details retrieved successfully.');
     }
 
     // Saved Trips & Booking History

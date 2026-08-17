@@ -407,6 +407,8 @@ Route::middleware(['auth:api', 'verified'])->group(function () {
     Route::get('/orders', [DashboardController::class, 'orders']);
     Route::get('/me/orders', [DashboardController::class, 'orders']);
     Route::get('/orders/lookup/{orderRef}', [DashboardController::class, 'lookupOrder']);
+    Route::get('/me/ai-quota', [DashboardController::class, 'aiQuota']);
+    Route::get('/ai/quota', [DashboardController::class, 'aiQuota']);
 });
 
 // ---- Notifications

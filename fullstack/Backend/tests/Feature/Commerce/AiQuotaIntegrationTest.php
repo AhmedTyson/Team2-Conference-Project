@@ -52,6 +52,38 @@ class AiQuotaIntegrationTest extends TestCase
             ->assertJsonPath('data.user.subscription.ai_quota_remaining', 488);
     }
 
+    public function test_api_me_ai_quota_endpoint_returns_dedicated_quota_and_expiration(): void
+    {
+        $user = User::factory()->create(['ai_generations_count' => 15]);
+        $user->assignRole('user');
+
+        $plan = Plan::create([
+            'name' => 'Jetsetter',
+            'slug' => 'jetsetter',
+            'price_cents' => 19900,
+            'currency' => 'EGP',
+            'ai_quota_monthly' => 100,
+            'features' => ['AI Itineraries'],
+        ]);
+
+        Subscription::create([
+            'user_id' => $user->id,
+            'plan_id' => $plan->id,
+            'status' => 'active',
+            'price_cents' => 19900,
+            'renews_at' => now()->addMonth(),
+        ]);
+
+        $response = $this->actingAs($user, 'api')->getJson('/api/me/ai-quota');
+
+        $response->assertStatus(200)
+            ->assertJsonPath('data.plan_name', 'Jetsetter')
+            ->assertJsonPath('data.ai_quota_total', 100)
+            ->assertJsonPath('data.ai_quota_used', 15)
+            ->assertJsonPath('data.ai_quota_remaining', 85)
+            ->assertJsonPath('data.usage_percentage', 15);
+    }
+
     public function test_ai_usage_service_consumes_and_restores_quota(): void
     {
         $user = User::factory()->create(['ai_generations_count' => 0]);
