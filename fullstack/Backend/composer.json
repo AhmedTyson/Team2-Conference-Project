@@ -6,12 +6,12 @@
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
+        "php": "^8.2 || ^8.3 || ^8.4 || ^8.5",
         "ext-zip": "*",
         "barryvdh/laravel-dompdf": "^3.1",
         "dedoc/scramble": "^0.13.36",
-        "laravel/framework": "^12.0 || ^13.0",
-        "laravel/telescope": "5.21",
+        "laravel/framework": "^13.0",
+        "laravel/telescope": "^5.21",
         "laravel/tinker": "^2.10 || ^3.0",
         "lucianotonet/groq-laravel": "^1.0",
         "openspout/openspout": "^4.24 || ^5.0",
@@ -86,9 +86,6 @@
         }
     },
     "config": {
-        "platform": {
-            "php": "8.2.33"
-        },
         "optimize-autoloader": true,
         "preferred-install": "dist",
         "sort-packages": true,
