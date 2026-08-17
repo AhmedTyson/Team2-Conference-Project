@@ -58,11 +58,30 @@
     }
   }
 
+  function bindPresetChips() {
+    var chips = document.querySelectorAll('.preset-chip');
+    var reasonInput = el('report-reason');
+    if (!chips || !reasonInput) return;
+
+    chips.forEach(function(chip) {
+      chip.addEventListener('click', function() {
+        var reason = this.getAttribute('data-reason');
+        if (reason) {
+          reasonInput.value = reason;
+          reasonInput.focus();
+          chips.forEach(function(c) { c.classList.remove('bg-rose-500/20', 'border-rose-500/40', 'text-white'); });
+          this.classList.add('bg-rose-500/20', 'border-rose-500/40', 'text-white');
+        }
+      });
+    });
+  }
+
   function boot() {
     var form = el('report-user-form');
     var btn = el('submit-btn');
 
     resolveContext();
+    bindPresetChips();
 
     if (form) {
       form.addEventListener('submit', function(e) {
@@ -100,13 +119,13 @@
               var errMsg = (res && res.body && res.body.message) ? res.body.message : 'Failed to submit report. Please check the assignment ID.';
               showToastMsg(errMsg, 'error');
               btn.disabled = false;
-              btn.textContent = 'Submit Report';
+              btn.textContent = 'Submit Official Incident Report';
             }
           })
           .catch(function() {
             showToastMsg('Network error while submitting report. Please try again.', 'error');
             btn.disabled = false;
-            btn.textContent = 'Submit Report';
+            btn.textContent = 'Submit Official Incident Report';
           });
       });
     }

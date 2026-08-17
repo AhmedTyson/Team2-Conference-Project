@@ -3,9 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Report a User · Travel Planner</title>
+  <title>Report User Incident · Itinari Trust & Safety Desk</title>
+  
+  <!-- Fonts & Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Design System Tokens -->
   <link rel="stylesheet" href="../assets/css/tokens.css" />
   <link rel="stylesheet" href="../assets/css/app.css" />
+  <link rel="stylesheet" href="../assets/css/luxury-theme.css" />
+
   <script>/* FOUC prevention — default dark */
     (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
     if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
@@ -13,55 +24,119 @@
     else document.documentElement.classList.add("fouc-ready");
     })();
   </script>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 </head>
-<body data-page="report" class="is-booting" data-layout="app">
-  <div class="app">
-    <!-- Top Navigation Header -->
-    <header class="app-nav-header"></header>
+<body data-page="report" class="min-h-screen flex flex-col font-sans bg-neutral-950 text-white selection:bg-rose-500 selection:text-white">
+  
+  <!-- Top Navigation Header -->
+  <header class="app-nav-header"></header>
 
-    <main class="app__main">
-      <div class="page">
-        <header class="page-header">
-          <p class="page-header__eyebrow">Agency Trust &amp; Safety</p>
-          <h1 class="page-header__title">Report a user issue</h1>
-          <p class="page-header__lead">File a report regarding a customer's conduct on an assignment, such as fraud, abuse, or failure to pay.</p>
-        </header>
+  <!-- Main Content Container -->
+  <main class="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-12">
+    
+    <!-- Hero Header -->
+    <header class="mb-8 text-center sm:text-left">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/25 text-rose-400 text-xs font-bold uppercase tracking-wider mb-4">
+        <i class="fas fa-shield-halved"></i> Trust &amp; Safety Desk · Compliance Gate
+      </div>
+      <h1 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-3">
+        Report User <span class="bg-gradient-to-r from-rose-400 to-amber-400 bg-clip-text text-transparent">Incident</span>
+      </h1>
+      <p class="text-neutral-400 text-sm sm:text-base max-w-2xl leading-relaxed">
+        File an official conduct report regarding a customer traveler or assignment dispute. Submitted reports are routed instantly to our Platform Compliance &amp; Moderation Team for investigation.
+      </p>
+    </header>
 
-        <div class="form__card border border-black/10 dark:border-white/10 p-6 rounded-2xl bg-black/5 dark:bg-white/5 mb-4 text-sm text-neutral-600 dark:text-white/70" id="context-line">
-          Resolving assignment context...
+    <!-- Assignment Context Panel -->
+    <div id="context-line" class="mb-6 p-4 sm:p-5 rounded-2xl bg-neutral-900/90 border border-rose-500/20 backdrop-blur-md flex items-center justify-between flex-wrap gap-3 shadow-xl">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-rose-500/15 text-rose-400 flex items-center justify-center font-bold text-lg border border-rose-500/30">
+          <i class="fas fa-user-shield"></i>
+        </div>
+        <div>
+          <h4 class="text-xs font-bold uppercase text-neutral-400 tracking-wider">Target Context</h4>
+          <p class="text-sm font-semibold text-white">Resolving assignment details...</p>
+        </div>
+      </div>
+      <span class="px-2.5 py-1 rounded-full text-[11px] font-mono font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/30">
+        Status: Incident Active
+      </span>
+    </div>
+
+    <!-- Report Form Card -->
+    <div class="rounded-3xl bg-neutral-900/80 border border-white/10 p-6 sm:p-8 backdrop-blur-xl shadow-2xl relative overflow-hidden">
+      
+      <!-- Quick Reason Chips -->
+      <div class="mb-6">
+        <label class="block text-xs font-bold text-neutral-400 uppercase tracking-wider mb-2">
+          Select Common Violation Categories
+        </label>
+        <div class="flex flex-wrap gap-2" id="presetCategoryChips">
+          <button type="button" class="preset-chip px-3 py-1.5 rounded-xl bg-white/5 hover:bg-rose-500/20 border border-white/10 hover:border-rose-500/40 text-xs font-semibold text-neutral-300 hover:text-white transition flex items-center gap-1.5" data-reason="Fraudulent Booking / Fake Details">
+            <i class="fas fa-user-xmark text-rose-400"></i> Fraudulent Booking
+          </button>
+          <button type="button" class="preset-chip px-3 py-1.5 rounded-xl bg-white/5 hover:bg-rose-500/20 border border-white/10 hover:border-rose-500/40 text-xs font-semibold text-neutral-300 hover:text-white transition flex items-center gap-1.5" data-reason="Harassment, Abuse or Threatening Behavior">
+            <i class="fas fa-triangle-exclamation text-amber-400"></i> Harassment / Abuse
+          </button>
+          <button type="button" class="preset-chip px-3 py-1.5 rounded-xl bg-white/5 hover:bg-rose-500/20 border border-white/10 hover:border-rose-500/40 text-xs font-semibold text-neutral-300 hover:text-white transition flex items-center gap-1.5" data-reason="Unpaid Assignment / Non-Payment Dispute">
+            <i class="fas fa-credit-card text-emerald-400"></i> Non-Payment Dispute
+          </button>
+          <button type="button" class="preset-chip px-3 py-1.5 rounded-xl bg-white/5 hover:bg-rose-500/20 border border-white/10 hover:border-rose-500/40 text-xs font-semibold text-neutral-300 hover:text-white transition flex items-center gap-1.5" data-reason="Non-Response & Unannounced Cancellation">
+            <i class="fas fa-clock text-sky-400"></i> Non-Response / Ghosting
+          </button>
+        </div>
+      </div>
+
+      <form class="space-y-6" id="report-user-form" novalidate>
+        <input type="hidden" id="assignment_id" />
+
+        <!-- Reason Input Field -->
+        <div>
+          <label class="block text-xs font-bold text-neutral-300 uppercase tracking-wider mb-2" for="report-reason">
+            Primary Reason for Report <span class="text-rose-400">*</span>
+          </label>
+          <input id="report-reason" class="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/15 focus:border-rose-500 text-white placeholder-neutral-500 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 transition font-medium" type="text" placeholder="e.g. Harassment, abusive language, fraudulent booking, or non-payment" required />
         </div>
 
-        <form class="form" id="report-user-form" novalidate>
-          <input type="hidden" id="assignment_id" />
-
-          <div class="form__card border border-black/10 dark:border-white/10 p-6 rounded-2xl bg-black/5 dark:bg-white/5">
-            <div class="field mb-4">
-              <label class="field__label block text-xs font-bold text-neutral-600 dark:text-white/70 uppercase mb-1" for="report-reason">Reason for Report</label>
-              <input id="report-reason" class="input w-full px-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-neutral-900 dark:text-white text-sm" type="text" placeholder="e.g. Harassment, abuse, fraudulent booking, failure to pay" required />
-            </div>
-
-            <div class="field mb-6">
-              <label class="field__label block text-xs font-bold text-neutral-600 dark:text-white/70 uppercase mb-1" for="report-details">Detailed Explanation</label>
-              <textarea id="report-details" class="input w-full px-4 py-2.5 rounded-xl bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 text-neutral-900 dark:text-white text-sm" rows="5" placeholder="Provide dates, booking reference numbers, and specific details..." required></textarea>
-            </div>
-
-            <div class="btn-row flex justify-end">
-              <button type="submit" class="btn px-6 py-3 rounded-xl bg-rose-500 hover:bg-rose-400 text-neutral-900 dark:text-white font-bold text-sm transition" id="submit-btn">Submit Official Report</button>
-            </div>
+        <!-- Details Input Textarea -->
+        <div>
+          <div class="flex items-center justify-between mb-2">
+            <label class="block text-xs font-bold text-neutral-300 uppercase tracking-wider" for="report-details">
+              Detailed Evidence &amp; Explanation <span class="text-rose-400">*</span>
+            </label>
+            <span class="text-[11px] text-neutral-500 font-mono">Include dates &amp; references</span>
           </div>
-        </form>
-      </div>
-    </main>
+          <textarea id="report-details" class="w-full px-4 py-3 rounded-xl bg-black/40 border border-white/15 focus:border-rose-500 text-white placeholder-neutral-500 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500/20 transition font-medium leading-relaxed" rows="5" placeholder="Provide full specifics of the incident including exact chat timestamps, booking numbers, or financial dispute amounts..." required></textarea>
+        </div>
 
-    <footer class="app__footer">
-      <span>Travel Planner</span>
-      <span>•</span>
-      <span>Plan. Explore. Remember.</span>
-    </footer>
-  </div>
+        <!-- Submission Notice -->
+        <div class="p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-start gap-3">
+          <i class="fas fa-info-circle text-rose-400 text-sm mt-0.5"></i>
+          <p class="text-xs text-rose-200/80 leading-relaxed">
+            Filing a false report is a violation of our Terms of Service. Admin moderation will inspect official chat logs and transaction histories before taking disciplinary action.
+          </p>
+        </div>
 
+        <!-- Action Row -->
+        <div class="flex items-center justify-between flex-wrap gap-4 pt-2">
+          <a href="javascript:history.back()" class="px-5 py-2.5 rounded-xl border border-white/15 hover:border-white/30 text-neutral-300 hover:text-white text-xs font-semibold transition flex items-center gap-2">
+            <i class="fas fa-arrow-left"></i> Cancel
+          </a>
+          <button type="submit" id="submit-btn" class="px-8 py-3.5 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-400 hover:to-amber-400 text-black font-extrabold text-sm tracking-wide transition shadow-lg shadow-rose-500/20 flex items-center justify-center gap-2">
+            <i class="fas fa-paper-plane"></i> Submit Official Incident Report
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-6 border-t border-white/10 text-center text-xs text-neutral-500 font-mono">
+    <span>Itinari Trust &amp; Safety Platform</span>
+    <span class="mx-2">•</span>
+    <span>Compliance &amp; Legal Protection</span>
+  </footer>
+
+  <!-- Scripts -->
   <script src="../assets/js/core/config.js"></script>
   <script src="../assets/js/core/api.js"></script>
   <script src="../assets/js/core/session.js"></script>
