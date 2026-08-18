@@ -54,7 +54,13 @@ use Illuminate\Support\Facades\Route;
 // ACCOUNT
 // ============================================================
 
-// ---- Public Auth ----
+Route::get('/auth/google', [AuthController::class, 'googleRegister']);
+Route::get('/auth/google/callback', [AuthController::class, 'googleCallback']);
+
+Route::get('/auth/facebook', [AuthController::class, 'facebookRedirect']);
+Route::get('/auth/facebook/callback', [AuthController::class, 'facebookCallback']);
+
+// ---- Public Auth ---- //
 Route::post('/register', [AuthController::class, 'register'])->middleware(['throttle:register']);
 Route::post('/login', [AuthController::class, 'login'])->middleware(['throttle:login'])->name('login');
 Route::post('/forgot-password', [AuthController::class, 'forgetPassword'])->middleware(['throttle:3,10']);
