@@ -21,7 +21,7 @@ return new class extends Migration
         });
 
         Schema::table('trips', function (Blueprint $table) {
-            $table->foreignId('agency_assignment_id')->nullable()->after('id')->constrained('agency_assignments')->nullOnDelete();
+            $table->foreignId('agency_assignment_id')->nullable()->constrained('agency_assignments')->nullOnDelete();
         });
     }
 

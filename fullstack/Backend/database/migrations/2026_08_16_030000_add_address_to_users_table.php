@@ -13,7 +13,7 @@ return new class extends Migration
     {
         if (! Schema::hasColumn('users', 'address')) {
             Schema::table('users', function (Blueprint $table) {
-                $table->string('address', 255)->nullable()->after('country');
+                $table->string('address', 255)->nullable();
             });
         }
     }

@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('status', 30)->default('pending');
             $table->integer('amount_cents');
             $table->char('currency', 3);
-            $table->text('client_secret')->nullable()->after('currency');
-            $table->text('checkout_url')->nullable()->after('client_secret');
+            $table->text('client_secret')->nullable();
+            $table->text('checkout_url')->nullable();
             $table->boolean('hmac_valid');
             $table->text('raw_payload')->nullable();
             $table->timestamps();
