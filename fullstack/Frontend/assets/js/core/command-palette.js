@@ -57,7 +57,7 @@
         { group: "Traveler Workspace", title: "AI Travel Concierge", sub: "Smart trip assistant", url: p + "app/chat.html", icon: ICONS.bolt },
         { group: "Traveler Workspace", title: "Saved Favourites", sub: "Bookmarks", url: p + "app/favourites.html", icon: ICONS.nav },
         { group: "Traveler Workspace", title: "My Reviews", sub: "Submitted feedback", url: p + "app/my-reviews.html", icon: ICONS.nav },
-        { group: "Traveler Workspace", title: "Profile Settings", sub: "Account & preferences", url: p + "app/profile-settings.html", icon: ICONS.nav }
+        { group: "Traveler Workspace", title: "Profile Settings", sub: "Account & preferences", url: p + "app/profile.html", icon: ICONS.nav }
       );
     }
 

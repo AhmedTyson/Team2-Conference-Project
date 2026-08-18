@@ -262,7 +262,7 @@
         { label: "Bookings", icon: ICONS.trips, href: prefix + "app/bookings.html" },
         { label: "Saved Places", icon: ICONS.compass, href: prefix + "app/favourites.html" },
         { label: "My Profile", icon: ICONS.user, href: prefix + "app/profile.html" },
-        { label: "Settings", icon: ICONS.settings, href: prefix + "app/profile-settings.html" }
+        { label: "Settings", icon: ICONS.settings, href: prefix + "app/profile.html" }
       ];
     }
 

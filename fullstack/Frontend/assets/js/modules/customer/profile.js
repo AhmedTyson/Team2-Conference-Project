@@ -218,7 +218,7 @@
         '<div class="profile-hero__roles">' + (user.roles || []).map(function (r) {
           return '<span class="chip">' + esc(roleLabel(r)) + "</span>";
         }).join("") + "</div>" +
-        '<div class="profile-hero__actions"><a href="/profile-settings.html" class="btn btn--ghost">Edit profile</a></div></div>' +
+        '<div class="profile-hero__actions"><a href="/profile.html" class="btn btn--ghost">Edit profile</a></div></div>' +
 
         '<a href="' + surveyHref + '" class="identity-plate anim-rise anim-rise--delay-2">' +
         '<span class="identity-plate__monogram" aria-hidden="true">' + esc(String(user.name || "?").trim().charAt(0).toUpperCase() || "?") + "</span>" +
