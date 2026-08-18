@@ -5,7 +5,7 @@ namespace App\Services\Trips;
 use App\Models\Account\User;
 use Exception;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+
 class AiUsageService
 {
     /**
@@ -14,15 +14,7 @@ class AiUsageService
      */
     public function consumeQuota(User $user): void
     {
-        Log::info('AI QUOTA REQUEST DEBUG', [
-    'user_id' => $user->id,
-    'db' => DB::connection()->getDatabaseName(),
-    'active_sub_id' => $user->subscriptions()
-        ->where('status', 'active')
-        ->latest()
-        ->first()?->id,
-]);
-        // 1. Check if the user has an active plan that gives quota
+        // 1. Resolve the monthly limit from the active subscription plan (or the fallback for free users).
         $hasSubscriptions = $user->subscriptions()->exists();
         $activeSub = $user->subscriptions()->where('status', 'active')->latest()->first();
 
@@ -30,41 +22,25 @@ class AiUsageService
             throw new Exception('Your subscription has expired. Please renew your subscription to continue.');
         }
 
-        $monthlyLimit = 0;
-        if ($activeSub && $activeSub->plan) {
-            $monthlyLimit = (int) $activeSub->plan->ai_quota_monthly;
-        } else {
-            $monthlyLimit = (int) config('ai.rate_limit_per_day', 500);
-        }
+        $monthlyLimit = $activeSub && $activeSub->plan
+            ? (int) $activeSub->plan->ai_quota_monthly
+            : (int) config('ai.rate_limit_per_day', 500);
 
         if ($monthlyLimit <= 0) {
-            $monthlyLimit = 500;
+            throw new Exception('You need an active subscription with an AI quota to generate itineraries.');
         }
 
-        // 2. Check if reset date has passed to reset count
-        if ($user->ai_reset_at && $user->ai_reset_at->isPast()) {
+        // 2. Anchor the reset cycle on first use, then roll the counter when the cycle has elapsed.
+        if (! $user->ai_reset_at) {
+            $user->forceFill(['ai_reset_at' => now()->addMonth()])->save();
+        } elseif ($user->ai_reset_at->isPast()) {
             $user->forceFill([
                 'ai_generations_count' => 0,
                 'ai_reset_at' => now()->addMonth(),
             ])->save();
         }
 
-Log::info('AI Quota Debug', [
-    'user_id' => $user->id,
-    'active_subscription_id' => $activeSub?->id,
-    'subscription_status' => $activeSub?->status,
-    'plan_id' => $activeSub?->plan_id,
-    'plan_exists' => (bool) $activeSub?->plan,
-    'monthly_limit' => $monthlyLimit,
-    'generations_count' => $user->ai_generations_count,
-    'ai_reset_at' => $user->ai_reset_at,
-]);
-
-        if ($monthlyLimit <= 0) {
-            throw new Exception('You need an active subscription with an AI quota to generate itineraries.');
-        }
-
-        // 3. Atomically increment the usage counter to prevent race conditions
+        // 3. Atomically increment the usage counter to prevent race conditions.
         $updated = DB::table('users')
             ->where('id', $user->id)
             ->where('ai_generations_count', '<', $monthlyLimit)
