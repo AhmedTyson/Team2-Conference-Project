@@ -22,10 +22,21 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body data-page="reset" data-layout="auth">
+  <!-- Minimal Auth Nav -->
+  <header class="auth-nav">
+    <a href="../index.html" class="auth-nav-brand">
+      <i class="fas fa-globe text-amber-400"></i>
+      <span>Itinera</span>
+    </a>
+    <a href="../index.html" class="auth-nav-home">
+      <i class="fas fa-arrow-left"></i>
+      <span>Back to home</span>
+    </a>
+  </header>
   <a href="#main-content-target" class="skip-link">Skip to main content</a>
 
   <!-- Top Navigation Header -->
-  <header class="app-nav-header"></header>
+  
 
   <!-- Main Auth Container -->
   <div class="auth-main-wrapper" id="main-content-target">
@@ -106,12 +117,7 @@
     </main>
   </div>
 
-  <!-- Footer -->
-  <footer class="auth-footer">
-    <span>Itinera · Luxury Travel & Concierge</span>
-    <span>•</span>
-    <span>Plan. Explore. Remember.</span>
-  </footer>
+  
 
   <div id="site-banner" role="status">
     <span id="site-banner-msg"></span><span id="site-banner-drain" aria-hidden="true"></span>
@@ -125,7 +131,6 @@
   <script src="../assets/js/core/session.js"></script>
   <script src="../assets/js/utils/password-toggle.js"></script>
   <script src="../assets/js/pages/auth/auth.js"></script>
-  <script src="../assets/js/core/navbar-component.js"></script>
   <script src="../assets/js/core/topbar.js"></script>
   <script src="../assets/js/core/theme.js"></script>
 </body>
