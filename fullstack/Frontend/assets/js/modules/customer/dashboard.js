@@ -23,6 +23,60 @@
 
   function el(id) { return document.getElementById(id); }
 
+  function toInt(value, fallback) {
+    const n = parseInt(value, 10);
+    return Number.isFinite(n) ? n : fallback;
+  }
+
+  function renderAiQuota(subObj, user) {
+    const planName = subObj.plan_name || (subObj.plan ? subObj.plan.name : "Jetsetter");
+    const totalQuota = toInt(subObj.ai_quota_total, toInt(subObj.plan && subObj.plan.ai_quota_monthly, 100));
+    const usedQuota = toInt(subObj.ai_quota_used, toInt(user && user.ai_generations_count, 0));
+    const remainingQuota = toInt(subObj.ai_quota_remaining, Math.max(0, totalQuota - usedQuota));
+    let usagePct = toInt(subObj.usage_percentage, -1);
+    if (usagePct < 0) {
+      usagePct = totalQuota > 0 ? Math.min(100, Math.round((usedQuota / totalQuota) * 100)) : 0;
+    }
+    usagePct = Math.max(0, Math.min(100, usagePct));
+
+    let expiryText = subObj.formatted_expiration;
+    if (!expiryText) {
+      const rawExpiry = subObj.expires_at || subObj.ends_at || subObj.renews_at;
+      if (rawExpiry) {
+        try {
+          const d = new Date(rawExpiry);
+          if (!isNaN(d.getTime())) expiryText = "Renews: " + d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+        } catch (e) { /* keep raw below */ }
+      }
+      if (!expiryText) expiryText = String(rawExpiry || "");
+    }
+
+    const planBadge = el("ai-plan-badge");
+    const quotaVal = el("stat-val-quota");
+    const usedCountEl = el("ai-used-count");
+    const totalCountEl = el("ai-total-count");
+    const usedText = el("ai-quota-used-text");
+    const availText = el("ai-quota-avail-text");
+    const barEl = el("ai-quota-bar");
+    const expiryEl = el("ai-plan-expiry-text");
+    const priceSubEl = el("ai-plan-pricing-sub");
+
+    if (planBadge) planBadge.textContent = planName;
+    if (quotaVal) quotaVal.textContent = remainingQuota + " Available";
+    if (usedCountEl) usedCountEl.textContent = usedQuota;
+    if (totalCountEl) totalCountEl.textContent = totalQuota;
+    if (usedText && !usedCountEl) {
+      usedText.innerHTML = '<i class="fas fa-chart-pie text-purple-400 mr-1"></i> <strong class="text-amber-400">' + usedQuota + '</strong> / ' + totalQuota + ' used';
+    }
+    if (availText) availText.textContent = remainingQuota + " available";
+    if (barEl) barEl.style.width = usagePct + "%";
+    if (expiryEl) expiryEl.textContent = expiryText;
+    if (priceSubEl && subObj.price_cents) {
+      const priceStr = new Intl.NumberFormat("en-US", { style: "currency", currency: subObj.currency || "EGP" }).format(toInt(subObj.price_cents, 0) / 100);
+      priceSubEl.textContent = priceStr + " / month · Shared Quota Pool";
+    }
+  }
+
   function setStat(id, value) {
     const valEl = el(id.replace(/^stat-/, "stat-val-")) || el(id + "-val") || (el(id) ? el(id).querySelector(".stat-card-glass__value") : null) || (el(id) ? el(id).querySelector(".stat-value") : null);
     if (valEl) {
@@ -926,59 +980,7 @@
             ? stats.subscription
             : ((subRes && subRes.ok && subRes.body && subRes.body.data) ? subRes.body.data : (user && user.subscription ? user.subscription : {})));
 
-      const planName = subObj.plan_name || (subObj.plan ? subObj.plan.name : "Jetsetter");
-      const totalQuota = typeof subObj.ai_quota_total === "number" ? subObj.ai_quota_total : (subObj.plan ? subObj.plan.ai_quota_monthly : 100);
-      const usedQuota = typeof subObj.ai_quota_used === "number" 
-        ? subObj.ai_quota_used 
-        : (typeof (user && user.ai_generations_count) === "number" ? user.ai_generations_count : 0);
-      const remainingQuota = typeof subObj.ai_quota_remaining === "number" 
-        ? subObj.ai_quota_remaining 
-        : Math.max(0, totalQuota - usedQuota);
-      const usagePct = typeof subObj.usage_percentage === "number"
-        ? subObj.usage_percentage
-        : Math.min(100, Math.round((usedQuota / totalQuota) * 100));
-
-      let expiryText = subObj.formatted_expiration;
-      if (!expiryText) {
-        const rawExpiry = subObj.expires_at || subObj.ends_at || subObj.renews_at;
-        if (rawExpiry) {
-          try {
-            const d = new Date(rawExpiry);
-            expiryText = "Renews: " + d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-          } catch (e) {
-            expiryText = String(rawExpiry);
-          }
-        } else {
-          const d = new Date();
-          d.setMonth(d.getMonth() + 1);
-          expiryText = "Renews: " + d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-        }
-      }
-
-      const planBadge = el("ai-plan-badge");
-      const quotaVal = el("stat-val-quota");
-      const usedCountEl = el("ai-used-count");
-      const totalCountEl = el("ai-total-count");
-      const usedText = el("ai-quota-used-text");
-      const availText = el("ai-quota-avail-text");
-      const barEl = el("ai-quota-bar");
-      const expiryEl = el("ai-plan-expiry-text");
-      const priceSubEl = el("ai-plan-pricing-sub");
-
-      if (planBadge) planBadge.textContent = planName;
-      if (quotaVal) quotaVal.textContent = remainingQuota + " Available";
-      if (usedCountEl) usedCountEl.textContent = usedQuota;
-      if (totalCountEl) totalCountEl.textContent = totalQuota;
-      if (usedText && !usedCountEl) {
-        usedText.innerHTML = '<i class="fas fa-chart-pie text-purple-400 mr-1"></i> <strong class="text-amber-400">' + usedQuota + '</strong> / ' + totalQuota + ' used';
-      }
-      if (availText) availText.textContent = remainingQuota + " available";
-      if (barEl) barEl.style.width = usagePct + "%";
-      if (expiryEl) expiryEl.textContent = expiryText;
-      if (priceSubEl && subObj.price_cents) {
-        const priceStr = new Intl.NumberFormat("en-US", { style: "currency", currency: subObj.currency || "EGP" }).format(subObj.price_cents / 100);
-        priceSubEl.textContent = priceStr + " / month · Shared Quota Pool";
-      }
+      renderAiQuota(subObj, user);
 
     }).catch(function (err) {
       console.warn("Backend API unavailable, loading fallback mockup stats:", err);
@@ -991,30 +993,7 @@
       setStat("stat-completed", "0");
       setStat("stat-cancelled", "0");
       // AI Quota & Plan Status Bar
-      const subObj = (user && user.subscription) ? user.subscription : {};
-      const planName = subObj.plan_name || "Jetsetter";
-      const totalQuota = subObj.ai_quota_total || 100;
-      const usedQuota = typeof (user && user.ai_generations_count) === "number" ? user.ai_generations_count : 0;
-      const remainingQuota = Math.max(0, totalQuota - usedQuota);
-      const usagePct = Math.min(100, Math.round((usedQuota / totalQuota) * 100));
-
-      const planBadge = el("ai-plan-badge");
-      const quotaVal = el("stat-val-quota");
-      const usedText = el("ai-quota-used-text");
-      const availText = el("ai-quota-avail-text");
-      const barEl = el("ai-quota-bar");
-      const expiryEl = el("ai-plan-expiry-text");
-
-      if (planBadge) planBadge.textContent = planName;
-      if (quotaVal) quotaVal.textContent = remainingQuota + " Available";
-      if (usedText) usedText.innerHTML = '<i class="fas fa-chart-pie text-purple-500 mr-1"></i> ' + usedQuota + " / " + totalQuota + " used";
-      if (availText) availText.textContent = remainingQuota + " available";
-      if (barEl) barEl.style.width = usagePct + "%";
-      if (expiryEl) {
-        const d = new Date();
-        d.setMonth(d.getMonth() + 1);
-        expiryEl.textContent = "Renews: " + d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-      }
+      renderAiQuota((user && user.subscription) ? user.subscription : {}, user);
 
       setFeed(tripsList, mockTrips.slice(0, 4), "No trips yet.", renderTrips);
       setFeed(favsList, mockFavs.slice(0, 4), "No favourites saved yet.", renderFavs);
