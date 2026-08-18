@@ -22,18 +22,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body data-page="complete-profile" data-layout="auth">
-  <!-- Minimal Auth Nav -->
-  <header class="auth-nav">
-    <a href="../index.html" class="auth-nav-brand">
-      <i class="fas fa-globe text-amber-400"></i>
-      <span>Itinera</span>
-    </a>
-    <a href="../index.html" class="auth-nav-home">
-      <i class="fas fa-arrow-left"></i>
-      <span>Back to home</span>
-    </a>
-  </header>
-  <a href="#main-content-target" class="skip-link">Skip to main content</a>
+<a href="#main-content-target" class="skip-link">Skip to main content</a>
 
   <!-- Top Navigation Header -->
   
@@ -55,7 +44,8 @@
       </section>
 
       <section class="auth-form-side">
-        <div class="auth-card">
+<div class="auth-card">
+          <div class="auth-brand">Itinera</div>
           <h2>One last step</h2>
           <p class="sub">Please enter your phone number to finish your account setup.</p>
 
@@ -71,8 +61,13 @@
               <span class="btn-label">Continue to dashboard</span>
             </button>
 
-            <div class="success-note" id="cp-success-note"></div>
+<div class="success-note" id="cp-success-note"></div>
           </form>
+
+          <a href="../index.html" class="auth-back">
+            <i class="fas fa-arrow-left"></i>
+            Back to home
+          </a>
         </div>
       </section>
     </main>

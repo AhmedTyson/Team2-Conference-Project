@@ -758,64 +758,41 @@ html.dark .btn-google:hover {
 }
 
 /* ============================================================
-   Auth nav — minimal top bar for auth pages (replaces the
-   full site navbar on login/register/reset/etc.)
+   Auth brand — quiet in-card wordmark (no top bar on auth pages)
    ============================================================ */
-.auth-nav {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1rem 1.5rem;
-  background: rgba(10, 10, 10, 0.55);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-html.dark .auth-nav {
-  background: rgba(9, 9, 11, 0.65);
-}
-
-.auth-nav-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.6rem;
-  font-weight: 800;
-  font-size: 1.05rem;
-  letter-spacing: -0.02em;
-  color: #fafafa;
-  text-decoration: none;
-}
-
-.auth-nav-brand img {
-  width: 28px;
-  height: 28px;
-  object-fit: contain;
-  border-radius: 8px;
-}
-
-.auth-nav-home {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.8rem;
+.auth-brand {
+  margin-bottom: 1.6rem;
+  font-size: 0.82rem;
   font-weight: 600;
-  color: rgba(250, 250, 250, 0.7);
-  text-decoration: none;
-  padding: 0.45rem 0.95rem;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.05);
-  transition: all 0.2s ease;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #94a3b8;
 }
 
-.auth-nav-home:hover {
-  color: #fafafa;
-  border-color: rgba(245, 158, 11, 0.5);
-  background: rgba(245, 158, 11, 0.1);
+html.dark .auth-brand {
+  color: #71717a;
+}
+
+.auth-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 1.75rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #64748b;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.auth-back:hover {
+  color: #f59e0b;
+}
+
+html.dark .auth-back {
+  color: #94a3b8;
+}
+
+html.dark .auth-back:hover {
+  color: #fbbf24;
 }

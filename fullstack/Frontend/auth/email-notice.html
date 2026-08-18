@@ -22,18 +22,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body data-page="email-notice" data-layout="auth">
-  <!-- Minimal Auth Nav -->
-  <header class="auth-nav">
-    <a href="../index.html" class="auth-nav-brand">
-      <i class="fas fa-globe text-amber-400"></i>
-      <span>Itinera</span>
-    </a>
-    <a href="../index.html" class="auth-nav-home">
-      <i class="fas fa-arrow-left"></i>
-      <span>Back to home</span>
-    </a>
-  </header>
-  <a href="#main-content-target" class="skip-link">Skip to main content</a>
+<a href="#main-content-target" class="skip-link">Skip to main content</a>
 
   <!-- Top Navigation Header -->
   
@@ -55,7 +44,8 @@
       </section>
 
       <section class="auth-form-side">
-        <div class="auth-card">
+<div class="auth-card">
+          <div class="auth-brand">Itinera</div>
           <h2>Check your inbox</h2>
           <p class="sub">Your account is pending email verification. The link expires once used, and each resend is throttled to one per minute.</p>
 
@@ -81,9 +71,14 @@
 
           <div class="auth-links">
             <a href="login.html">Back to log in</a>
-            <span class="sep">·</span>
+<span class="sep">·</span>
             <a href="../public/index.html">Home</a>
           </div>
+
+          <a href="../index.html" class="auth-back">
+            <i class="fas fa-arrow-left"></i>
+            Back to home
+          </a>
         </div>
       </section>
     </main>
