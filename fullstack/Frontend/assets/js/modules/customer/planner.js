@@ -5,7 +5,7 @@
 (function (global) {
     "use strict";
 
-    const It = global.Itinari;
+    const It = global.Itinera;
     const fb = It.feedback;
 
     let trips = [];
@@ -72,7 +72,7 @@
                 
                 // Fetch mock attachments persistent in local storage
                 trips.forEach(t => {
-                    const localAtts = localStorage.getItem(`itinari_attachments_${t.id}`);
+                    const localAtts = localStorage.getItem(`itinera_attachments_${t.id}`);
                     t.attachments = localAtts ? JSON.parse(localAtts) : [];
                     
                     // Fallback attachments if database trip is newly created
@@ -81,7 +81,7 @@
                             { id: "att-1", name: "Amnaya Resort DPS", type: "Hotel", address: "Kuta, Bali", price: 140, x: 50, y: 110 },
                             { id: "att-2", name: "Nusa Penida Tour", type: "Attraction", address: "Nusa Penida", price: 45, x: 140, y: 130 }
                         ];
-                        localStorage.setItem(`itinari_attachments_${t.id}`, JSON.stringify(t.attachments));
+                        localStorage.setItem(`itinera_attachments_${t.id}`, JSON.stringify(t.attachments));
                     }
                 });
 
@@ -167,7 +167,7 @@
                 activeTripId = res.body.data.id;
                 
                 // Initialize empty attachments
-                localStorage.setItem(`itinari_attachments_${activeTripId}`, JSON.stringify([]));
+                localStorage.setItem(`itinera_attachments_${activeTripId}`, JSON.stringify([]));
                 
                 loadTripsFromDb();
                 navigateTo("page-trips");
@@ -347,7 +347,7 @@
         if (!trip.attachments) trip.attachments = [];
         trip.attachments.push(newAtt);
 
-        localStorage.setItem(`itinari_attachments_${trip.id}`, JSON.stringify(trip.attachments));
+        localStorage.setItem(`itinera_attachments_${trip.id}`, JSON.stringify(trip.attachments));
         renderActiveTripDetails();
     }
 
@@ -358,7 +358,7 @@
         if (!trip) return;
 
         trip.attachments = (trip.attachments || []).filter(att => att.id !== itemId);
-        localStorage.setItem(`itinari_attachments_${trip.id}`, JSON.stringify(trip.attachments));
+        localStorage.setItem(`itinera_attachments_${trip.id}`, JSON.stringify(trip.attachments));
         renderActiveTripDetails();
     }
 

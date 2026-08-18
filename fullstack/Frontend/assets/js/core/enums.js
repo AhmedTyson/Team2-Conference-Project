@@ -157,7 +157,7 @@
 
   // Expose globally
   global.ItEnums = ItEnums;
-  if (global.Itinari) {
-    global.Itinari.Enums = ItEnums;
+  if (global.Itinera) {
+    global.Itinera.Enums = ItEnums;
   }
 })(typeof window !== 'undefined' ? window : this);

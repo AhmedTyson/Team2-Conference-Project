@@ -5,7 +5,7 @@
 (function (global) {
   "use strict";
 
-  var It = global.Itinari || (global.Itinari = {});
+  var It = global.Itinera || (global.Itinera = {});
 
   var EXTRA_INTERESTS = ["Food & Fine Dining", "History & Culture", "Nature & Wildlife", "Nightlife", "Photography", "Shopping & Luxury"];
   var DEFAULT_STYLES = ["solo", "couple", "family", "friends", "business"];

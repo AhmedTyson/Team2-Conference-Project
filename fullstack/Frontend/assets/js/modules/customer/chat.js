@@ -33,8 +33,8 @@
 
   function sessionUser() {
     try {
-      var It = global.Itinari || {};
-      return (It.session && It.session.user) || JSON.parse(global.localStorage.getItem('itinari_user') || 'null');
+      var It = global.Itinera || {};
+      return (It.session && It.session.user) || JSON.parse(global.localStorage.getItem('itinera_user') || 'null');
     } catch (err) {
       return null;
     }
@@ -198,7 +198,7 @@
 
     try {
       var appConfig = window.APP_CONFIG || {};
-      var token = global.Itinari ? global.Itinari.readToken() : '';
+      var token = global.Itinera ? global.Itinera.readToken() : '';
       var host = window.location.hostname || '127.0.0.1';
 
       echoInstance = new window.Echo({
@@ -361,7 +361,7 @@
         type: 'agency_inquiry',
         customer_id: deepLink.customerId,
         title: 'Agency Support' + (deepLink.customerName ? ' · ' + deepLink.customerName : ''),
-        initial_message: 'Hello! Your Itinari agency partner is here to help plan your trip.'
+        initial_message: 'Hello! Your Itinera agency partner is here to help plan your trip.'
       }, { auth: true });
     } catch (err) {
       console.error('Failed to start agency chat:', err);

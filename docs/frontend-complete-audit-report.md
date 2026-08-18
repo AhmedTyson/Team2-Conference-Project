@@ -73,7 +73,7 @@ All 42 frontend API request paths match backend definitions in `routes/api.php` 
 
 ## F. Authentication & Security
 
-- **Storage**: Real JWT stored in `localStorage.getItem("itinari_token")`.
+- **Storage**: Real JWT stored in `localStorage.getItem("itinera_token")`.
 - **401 Interception**: Transparent asynchronous token refresh queue with mutex lock.
 - **Role Resolution**: Evaluates server-provided `user.roles` (`super_admin`, `admin`, `agency`, `customer`).
 - **XSS Prevention**: Dynamic HTML properties sanitized via `esc()`.

@@ -6,7 +6,7 @@
 (function (global) {
   "use strict";
 
-  const It = global.Itinari || {};
+  const It = global.Itinera || {};
 
   // Destination Catalog
   const PRESET_DESTINATIONS = [
@@ -94,7 +94,7 @@
   // Quota Management
   async function initQuota() {
     try {
-      const getUserFunc = (window.Itinari && window.Itinari.session && window.Itinari.session.currentUser) || null;
+      const getUserFunc = (window.Itinera && window.Itinera.session && window.Itinera.session.currentUser) || null;
       if (getUserFunc) {
         const user = await getUserFunc();
         if (user) {
@@ -117,7 +117,7 @@
 
   function consumeQuota() {
     plannerState.quotaUsed++;
-    localStorage.setItem("itinari_ai_quota", plannerState.quotaUsed);
+    localStorage.setItem("itinera_ai_quota", plannerState.quotaUsed);
     updateQuotaDisplay();
   }
 
@@ -290,15 +290,15 @@
     let planData = null;
 
     try {
-      // Use Itinari transport layer to route to local backend API with Bearer auth token
-      const apiPostFunc = (window.Itinari && window.Itinari.apiPost) || (window.Api && window.Api.post);
+      // Use Itinera transport layer to route to local backend API with Bearer auth token
+      const apiPostFunc = (window.Itinera && window.Itinera.apiPost) || (window.Api && window.Api.post);
       if (apiPostFunc) {
         const res = await apiPostFunc("/trips/generate-ai", payload, { auth: true });
         if (res && res.ok) {
-          planData = (window.Itinari && window.Itinari.unwrapData) ? window.Itinari.unwrapData(res) : (res.body ? (res.body.data || res.body) : res);
+          planData = (window.Itinera && window.Itinera.unwrapData) ? window.Itinera.unwrapData(res) : (res.body ? (res.body.data || res.body) : res);
           // Force refresh user session so quota count is updated immediately across dashboard
-          if (window.Itinari && window.Itinari.session && window.Itinari.session.currentUser) {
-            try { await window.Itinari.session.currentUser(true); } catch (e) {}
+          if (window.Itinera && window.Itinera.session && window.Itinera.session.currentUser) {
+            try { await window.Itinera.session.currentUser(true); } catch (e) {}
           }
         }
       }
@@ -517,7 +517,7 @@
       btnBook.onclick = function (e) {
         e.preventDefault();
 
-        var token = (It.readToken && It.readToken()) || localStorage.getItem("itinari_token");
+        var token = (It.readToken && It.readToken()) || localStorage.getItem("itinera_token");
         if (!token) {
           if (typeof window.showToast === "function") showToast("Please sign in to proceed with Paymob payment.");
           else alert("Please sign in to proceed with Paymob payment.");
@@ -535,7 +535,7 @@
         btnBook.disabled = true;
         btnBook.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Connecting Paymob Gateway...';
 
-        sessionStorage.setItem("itinari_checkout_plan", JSON.stringify(plan));
+        sessionStorage.setItem("itinera_checkout_plan", JSON.stringify(plan));
 
         // Save trip first to ensure trip ID is stored
         savePlanToMyTrips().then(function (tripRecord) {
@@ -550,7 +550,7 @@
                   billing: {
                     first_name: "Traveler",
                     last_name: "User",
-                    email: localStorage.getItem("itinari_user_email") || "traveler@example.com",
+                    email: localStorage.getItem("itinera_user_email") || "traveler@example.com",
                     phone_number: "+201000000000"
                   }
                 }, { auth: true })
@@ -574,7 +574,7 @@
                     billing: {
                       first_name: "Traveler",
                       last_name: "User",
-                      email: localStorage.getItem("itinari_user_email") || "traveler@example.com",
+                      email: localStorage.getItem("itinera_user_email") || "traveler@example.com",
                       phone_number: "+201000000000"
                     }
                   }, { auth: true })
@@ -625,7 +625,7 @@
 
     // Save locally (customer flow only — agency plans attach to the assignment instead)
     if (!agencyCtx.assignmentId) {
-      const savedTrips = JSON.parse(localStorage.getItem("itinari_my_trips") || "[]");
+      const savedTrips = JSON.parse(localStorage.getItem("itinera_my_trips") || "[]");
       const localTrip = {
         id: "trip_" + Date.now(),
         title: plan.title,
@@ -638,7 +638,7 @@
         created_at: new Date().toISOString()
       };
       savedTrips.unshift(localTrip);
-      localStorage.setItem("itinari_my_trips", JSON.stringify(savedTrips));
+      localStorage.setItem("itinera_my_trips", JSON.stringify(savedTrips));
 
       // Update Nav counter badge
       const badge = el("my-trips-count-badge");
@@ -646,7 +646,7 @@
     }
 
     // Persist to backend database if logged in
-    const token = (It.readToken && It.readToken()) || localStorage.getItem("itinari_token");
+    const token = (It.readToken && It.readToken()) || localStorage.getItem("itinera_token");
     if (token) {
       try {
         const rawBudget = plan.estimated_budget;
@@ -733,7 +733,7 @@
     setupStepFlow();
 
     // Set existing My Trips count
-    const savedTrips = JSON.parse(localStorage.getItem("itinari_my_trips") || "[]");
+    const savedTrips = JSON.parse(localStorage.getItem("itinera_my_trips") || "[]");
     const badge = el("my-trips-count-badge");
     if (badge) badge.textContent = Math.max(1, savedTrips.length);
 

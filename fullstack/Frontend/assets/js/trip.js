@@ -5,7 +5,7 @@
 (function (global) {
   "use strict";
 
-  var It = global.Itinari || (global.Itinari = {});
+  var It = global.Itinera || (global.Itinera = {});
 
   var id = Number(new URLSearchParams(global.location.search).get("id")) || 0;
   var page = document.getElementById("trip-page");
@@ -899,7 +899,7 @@
         var targetPublicState = !currentIsPublic;
         It.apiPut("/trips/" + trip.id, { is_public: targetPublicState }, { auth: true }).then(function (res) {
           if (res.ok) {
-            if (global.ItinariToast) global.ItinariToast(targetPublicState ? "🎉 Your trip is now Public and shared on the Community feed!" : "🔒 Your trip is now Private.", "success");
+            if (global.ItineraToast) global.ItineraToast(targetPublicState ? "🎉 Your trip is now Public and shared on the Community feed!" : "🔒 Your trip is now Private.", "success");
             start();
           }
         });

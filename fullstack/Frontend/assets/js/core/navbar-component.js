@@ -37,23 +37,23 @@
   }
 
   function getCurrentUser() {
-    var It = global.Itinari;
+    var It = global.Itinera;
     var user = (It && It.session && It.session.user) || null;
     if (!user) {
       try {
-        var raw = global.localStorage.getItem("itinari_user");
+        var raw = global.localStorage.getItem("itinera_user");
         if (raw) user = JSON.parse(raw);
       } catch (e) {}
     }
     var token = null;
     try {
-      token = global.localStorage.getItem("itinari_token");
+      token = global.localStorage.getItem("itinera_token");
     } catch (e) {}
     return (token && user) ? user : null;
   }
 
   function ensureCmdPaletteLoaded() {
-    if (!global.ItinariCmd && !doc.querySelector('script[src*="command-palette.js"]')) {
+    if (!global.ItineraCmd && !doc.querySelector('script[src*="command-palette.js"]')) {
       var prefix = getBasePrefix();
       var s = doc.createElement("script");
       s.src = prefix + "assets/js/core/command-palette.js";
@@ -62,12 +62,12 @@
   }
 
   function openCommandPalette() {
-    if (global.ItinariCmd && typeof global.ItinariCmd.open === "function") {
-      global.ItinariCmd.open();
+    if (global.ItineraCmd && typeof global.ItineraCmd.open === "function") {
+      global.ItineraCmd.open();
     } else {
       ensureCmdPaletteLoaded();
       setTimeout(function () {
-        if (global.ItinariCmd && global.ItinariCmd.open) global.ItinariCmd.open();
+        if (global.ItineraCmd && global.ItineraCmd.open) global.ItineraCmd.open();
       }, 150);
     }
   }
@@ -179,12 +179,12 @@
 
       function handleLogout(e) {
         if (e) e.preventDefault();
-        if (global.Itinari && global.Itinari.session && global.Itinari.session.logout) {
-          global.Itinari.session.logout();
+        if (global.Itinera && global.Itinera.session && global.Itinera.session.logout) {
+          global.Itinera.session.logout();
         } else {
           try {
-            global.localStorage.removeItem("itinari_token");
-            global.localStorage.removeItem("itinari_user");
+            global.localStorage.removeItem("itinera_token");
+            global.localStorage.removeItem("itinera_user");
           } catch (err) {}
           global.location.href = prefix + "auth/login.html";
         }
@@ -197,7 +197,7 @@
       if (mLogoutBtn) mLogoutBtn.addEventListener("click", handleLogout);
 
       // Fetch Notification Badge Count
-      var It = global.Itinari;
+      var It = global.Itinera;
       if (It && It.apiGet) {
         It.apiGet("/notifications", { auth: true })
           .then(function (res) {
@@ -296,7 +296,7 @@
           global.ItTheme.toggle();
         } else {
           var isDark = doc.documentElement.classList.toggle("dark");
-          try { localStorage.setItem("itinari_theme", isDark ? "dark" : "light"); } catch (err) {}
+          try { localStorage.setItem("itinera_theme", isDark ? "dark" : "light"); } catch (err) {}
         }
         syncThemeIcon();
       });

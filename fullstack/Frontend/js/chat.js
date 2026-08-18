@@ -17,7 +17,7 @@
 (function (global) {
   "use strict";
 
-  const It = global.Itinari;
+  const It = global.Itinera;
   if (!It) return;
 
   const apiBase = It.CONFIG.apiBase; // e.g. http://127.0.0.1:8000/api

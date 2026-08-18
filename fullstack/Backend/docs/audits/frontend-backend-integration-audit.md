@@ -1,7 +1,7 @@
-# Full-Stack Integration Audit: Itinari Admin Suite
+# Full-Stack Integration Audit: Itinera Admin Suite
 
 ## Executive Summary
-This audit reviews the complete full-stack integration between the Itinari vanilla JS frontend and the Laravel 11 backend. The system demonstrates a functional baseline and strong visual design, but it suffers from severe architectural fragmentation, missing backend controllers, critical missing validations, and massive frontend boilerplate duplication. Three out of eight core CRUD backend controllers simply do not exist, causing fatal runtime crashes, while data pagination strategies vary wildly between every module.
+This audit reviews the complete full-stack integration between the Itinera vanilla JS frontend and the Laravel 11 backend. The system demonstrates a functional baseline and strong visual design, but it suffers from severe architectural fragmentation, missing backend controllers, critical missing validations, and massive frontend boilerplate duplication. Three out of eight core CRUD backend controllers simply do not exist, causing fatal runtime crashes, while data pagination strategies vary wildly between every module.
 
 ## Project Architecture Overview
 - **Backend:** Laravel 11 API using Spatie Permissions, Sanctum/Passport (JWT configured) for auth.

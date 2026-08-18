@@ -13,7 +13,7 @@ class AgencyAssignmentSeeder extends Seeder
     public function run(): void
     {
         $agency = User::firstOrCreate(
-            ['email' => 'agency@itinari.com'],
+            ['email' => 'agency@itinera.com'],
             [
                 'name' => 'Nile Horizon Luxury Travel Agency',
                 'password' => bcrypt('password'),

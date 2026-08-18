@@ -1,6 +1,6 @@
 (function (global) {
   "use strict";
-  var It = global.Itinari;
+  var It = global.Itinera;
   if (!It || !It.app) return;
 
   var listEl = document.getElementById("categories-list");

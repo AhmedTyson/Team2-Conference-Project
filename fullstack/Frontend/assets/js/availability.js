@@ -9,7 +9,7 @@
 (function (global) {
   "use strict";
 
-  var It = global.Itinari || {};
+  var It = global.Itinera || {};
   var currentYear = 2026;
   var currentMonth = 7; // 0 = Jan, 7 = August (Default August 2026 per spec)
   var currentView = "month"; // 'month' | 'week' | 'list'
@@ -167,7 +167,7 @@
     var user = (It && It.session && It.session.user) || null;
     if (!user) {
       try {
-        var raw = global.localStorage.getItem("itinari_user");
+        var raw = global.localStorage.getItem("itinera_user");
         if (raw) user = JSON.parse(raw);
       } catch (e) {}
     }
@@ -392,18 +392,18 @@
 
           if (It.apiPut) {
             It.apiPut("/trips/" + targetId, { status: "canceled" }).then(function () {
-              if (global.ItinariToast) global.ItinariToast("Trip status updated to canceled.", "info");
+              if (global.ItineraToast) global.ItineraToast("Trip status updated to canceled.", "info");
               closeDrawer();
               renderCalendar();
               renderUpcomingSidebar();
             }).catch(function () {
-              if (global.ItinariToast) global.ItinariToast("Trip status updated to canceled.", "info");
+              if (global.ItineraToast) global.ItineraToast("Trip status updated to canceled.", "info");
               closeDrawer();
               renderCalendar();
               renderUpcomingSidebar();
             });
           } else {
-            if (global.ItinariToast) global.ItinariToast("Trip status updated to canceled.", "info");
+            if (global.ItineraToast) global.ItineraToast("Trip status updated to canceled.", "info");
             closeDrawer();
             renderCalendar();
             renderUpcomingSidebar();

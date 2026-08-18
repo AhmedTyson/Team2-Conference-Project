@@ -35,7 +35,7 @@ class DatabaseSeeder extends Seeder
         }
 
         $admin = User::firstOrCreate(
-            ['email' => 'admin@itinari.com'],
+            ['email' => 'admin@itinera.com'],
             [
                 'name' => 'Admin User',
                 'password' => bcrypt('password'),
@@ -49,7 +49,7 @@ class DatabaseSeeder extends Seeder
         }
 
         $agency = User::firstOrCreate(
-            ['email' => 'agency@itinari.com'],
+            ['email' => 'agency@itinera.com'],
             [
                 'name' => 'Agency Partner',
                 'password' => bcrypt('password'),
@@ -63,7 +63,7 @@ class DatabaseSeeder extends Seeder
         }
 
         $customer = User::firstOrCreate(
-            ['email' => 'customer@itinari.com'],
+            ['email' => 'customer@itinera.com'],
             [
                 'name' => 'Customer Traveler',
                 'password' => bcrypt('password'),

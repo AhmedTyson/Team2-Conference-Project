@@ -23,7 +23,7 @@ sequenceDiagram
     alt Token expires in < 5 mins
         Session->>Backend: POST /api/refresh
         Backend-->>Session: 200 OK + Fresh JWT
-        Session->>Session: Update itinari_token in localStorage
+        Session->>Session: Update itinera_token in localStorage
     end
     Session->>API: Dispatch API Request with Bearer Token
     API->>Backend: GET /api/trips

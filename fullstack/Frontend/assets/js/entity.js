@@ -7,7 +7,7 @@
 (function (global) {
   "use strict";
 
-  var It = global.Itinari || (global.Itinari = {});
+  var It = global.Itinera || (global.Itinera = {});
 
   function esc(str) {
     if (str == null) return "";
@@ -42,8 +42,8 @@
 
   function imageHtml(src, alt, name, entityType, country) {
     var queryName = name || alt || "Destination";
-    var unsplashFallback = (global.Itinari && global.Itinari.getUnsplashImage) 
-      ? global.Itinari.getUnsplashImage(queryName, entityType || type, country) 
+    var unsplashFallback = (global.Itinera && global.Itinera.getUnsplashImage) 
+      ? global.Itinera.getUnsplashImage(queryName, entityType || type, country) 
       : "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=1200&q=80";
     var url = src || unsplashFallback;
     return '<div class="relative overflow-hidden rounded-3xl border border-white/10 mb-8 bg-white/5 shadow-2xl">' +

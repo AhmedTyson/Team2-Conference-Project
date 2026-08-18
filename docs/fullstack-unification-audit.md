@@ -99,7 +99,7 @@ Total Frontend Endpoint Invocations Scanned: **377**
 
 ### 1. Authentication Contract
 * **Backend:** JWT token generated via `tymon/jwt-auth` on `/api/login` and `/api/register`, sent via `Authorization: Bearer <token>`.
-* **Frontend:** Token stored in `localStorage` as `itinari_token`; cached user stored as `itinari_user`.
+* **Frontend:** Token stored in `localStorage` as `itinera_token`; cached user stored as `itinera_user`.
 * **Current User Endpoint:** `GET /api/user` (maps to `AuthController@me`).
 
 ### 2. Role / Access Matrix
@@ -243,7 +243,7 @@ As the team prepares for the next major feature (**Real-Time Communication & Tra
 | Area | Backend Authority | Frontend Handling | Current State | Recommendation | Category | Risk | Priority |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **API Base URL** | `config/app.php` (`http://localhost:8000/api`) | `core/config.js` (`apiBase`) | Minor port variance across legacy scripts | Canonicalize in `core/config.js` | **A (Must Unify)** | Low | **P1** |
-| **Authentication** | `tymon/jwt-auth` + `auth:api` | `core/session.js` (`itinari_token`) | Multiple auth helper files | Standardize on `core/session.js` | **A (Must Unify)** | Low | **P0** |
+| **Authentication** | `tymon/jwt-auth` + `auth:api` | `core/session.js` (`itinera_token`) | Multiple auth helper files | Standardize on `core/session.js` | **A (Must Unify)** | Low | **P0** |
 | **Roles & Access** | Spatie Roles (`super_admin`, `admin`, `agency`, `user`) | `core/session.js` (`roleOf`) | Consistent logic, duplicate files | Canonicalize in `core/session.js` | **A (Must Unify)** | Low | **P1** |
 | **API Responses** | `ApiResponse` (`success`, `data`, `meta`) | `core/api.js` vs legacy scripts | Envelope parsed differently in legacy files | Canonicalize `core/api.js` response unwrapper | **A (Must Unify)** | Medium | **P1** |
 | **Validation** | 42 Form Requests (422 JSON) | `utils/validation.js` | Backend is authority; UX assistance on client | Keep backend authority, align field names | **C (Keep Separate)** | Low | **P2** |

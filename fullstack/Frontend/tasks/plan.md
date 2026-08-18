@@ -28,12 +28,12 @@ Turn pure-vanilla login/register frontend into a role-aware app:
 
 ## What to reuse from C:\Programming\C2C\savory-bistro (analysis done)
 
-- `utils/validation.js` → pure password-strength scorer (0–5) + checklist rules + RFC-style email — port to `validation.js` (`Itinari.Rules.passwordStrength`).
+- `utils/validation.js` → pure password-strength scorer (0–5) + checklist rules + RFC-style email — port to `validation.js` (`Itinera.Rules.passwordStrength`).
 - Eye/EyeOff password toggles (`LoginForm.jsx`, `SignupForm.jsx`).
 - Field anatomy: `.field { icon-in-input, label, error class, inline error span }`, error clears on `input`/`change`.
 - Toast anatomy (slide+bounce in, progress-drain bar, autohide 4s).
 - Login rate-limit w/ cooldown countdown (optional, later).
-- **Not reused:** framer-motion (we are GSAP + CSS), localStorage user object (we use JWT token), no-role auth (we add roles), `savory_user` key (we keep `itinari_token`).
+- **Not reused:** framer-motion (we are GSAP + CSS), localStorage user object (we use JWT token), no-role auth (we add roles), `savory_user` key (we keep `itinera_token`).
 
 ## Backend branch inventory (read from git, no naming assumptions)
 
@@ -128,7 +128,7 @@ Reference: https://shadcnspace.com/admin-dashboard (production shadcn/ui admin k
 
 ## Stack caveat
 
-shadcnspace is React + Next.js + shadcn/ui + TS. Itinari admin is **vanilla JS + CDN GSAP, no build step**. We do NOT copy components or add a framework. We port **design patterns + UX behaviors** to `admin.css` + shared vanilla JS (`admin-shell.js`, `admin-crud.js`, `admin-kit.js`, `animations.js`). No new dependencies.
+shadcnspace is React + Next.js + shadcn/ui + TS. Itinera admin is **vanilla JS + CDN GSAP, no build step**. We do NOT copy components or add a framework. We port **design patterns + UX behaviors** to `admin.css` + shared vanilla JS (`admin-shell.js`, `admin-crud.js`, `admin-kit.js`, `animations.js`). No new dependencies.
 
 ## Apply (port) — with reference links
 

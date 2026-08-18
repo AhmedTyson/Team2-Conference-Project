@@ -8,7 +8,7 @@
 (function (global) {
   "use strict";
 
-  const It = global.Itinari;
+  const It = global.Itinera;
 
   function el(id) { return document.getElementById(id); }
 

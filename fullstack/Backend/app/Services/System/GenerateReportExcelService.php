@@ -66,7 +66,7 @@ class GenerateReportExcelService
         $currency = 'USD';
 
         // Logo wordmark
-        $writer->addRow($this->createRowWithStyle(['Itinari'], $this->coverLogoStyle(), 15.0));
+        $writer->addRow($this->createRowWithStyle(['Itinera'], $this->coverLogoStyle(), 15.0));
         $writer->addRow($this->createRowWithStyle(['Smart Travel Intelligence'], $this->coverTaglineStyle(), 15.0));
         $writer->addRow($this->createRowWithStyle([''], $this->dataStyle(false), 15.0));
 

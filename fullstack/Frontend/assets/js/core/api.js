@@ -1,12 +1,12 @@
 /**
  * api.js — Transport layer with transparent JWT auto-refresh and error resilience.
  * Pure HTTP transport. No DOM state, no UI animations.
- * Depends on config.js (window.Itinari.CONFIG / storeToken / readToken).
+ * Depends on config.js (window.Itinera.CONFIG / storeToken / readToken).
  */
 (function (global) {
   "use strict";
 
-  const It = global.Itinari || (global.Itinari = {});
+  const It = global.Itinera || (global.Itinera = {});
 
   /**
    * Normalize API path:
@@ -69,7 +69,7 @@
   }
 
   async function refreshToken() {
-    const currentTok = (It.readToken && It.readToken()) || localStorage.getItem("itinari_token");
+    const currentTok = (It.readToken && It.readToken()) || localStorage.getItem("itinera_token");
     if (!currentTok) throw new Error("No token to refresh");
 
     const defaultFallback = (global.location && global.location.origin && !global.location.origin.includes("null") && !global.location.origin.startsWith("file:")) ? global.location.origin.replace(/\/$/, "") + "/api" : "http://127.0.0.1:8000/api";
@@ -92,7 +92,7 @@
     if (!newToken) throw new Error("No token in refresh response");
 
     if (It.storeToken) It.storeToken(newToken);
-    else localStorage.setItem("itinari_token", newToken);
+    else localStorage.setItem("itinera_token", newToken);
     return newToken;
   }
 
@@ -129,7 +129,7 @@
     if (data !== undefined && !(data instanceof FormData)) headers["Content-Type"] = "application/json";
 
     // Auto-attach token if available
-    const token = (It.readToken && It.readToken()) || localStorage.getItem("itinari_token");
+    const token = (It.readToken && It.readToken()) || localStorage.getItem("itinera_token");
     if (token && !headers["Authorization"]) {
       headers["Authorization"] = "Bearer " + token;
     }
@@ -325,7 +325,7 @@
       opts.headers || {}
     );
 
-    const token = (It.readToken && It.readToken()) || localStorage.getItem("itinari_token");
+    const token = (It.readToken && It.readToken()) || localStorage.getItem("itinera_token");
     if (token && !headers["Authorization"]) {
       headers["Authorization"] = "Bearer " + token;
     }
@@ -477,7 +477,7 @@
   function imageHtml(src, name, cls, type) {
     var safeName = esc(name || '');
     var isPlaceholder = !src || src.indexOf('placeholder') > -1 || src.indexOf('null') > -1 || src.indexOf('undefined') > -1 || src.indexOf('loremflickr') > -1;
-    var unsplashFallback = (global.Itinari && global.Itinari.getUnsplashImage) ? global.Itinari.getUnsplashImage(name, type) : 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80';
+    var unsplashFallback = (global.Itinera && global.Itinera.getUnsplashImage) ? global.Itinera.getUnsplashImage(name, type) : 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80';
     var finalSrc = isPlaceholder ? unsplashFallback : src;
     return '<img class="' + (cls || '') + '" src="' + esc(finalSrc) + '" alt="' + safeName + '" loading="lazy" onerror="this.onerror=null; this.src=\'' + unsplashFallback + '\';">';
   }

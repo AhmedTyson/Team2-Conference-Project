@@ -1,4 +1,4 @@
-# Itinari Clean Code & Architecture Guidelines
+# Itinera Clean Code & Architecture Guidelines
 
 Based on the audit of the current codebase, the following strict guidelines must be adopted for the frontend implementation.
 

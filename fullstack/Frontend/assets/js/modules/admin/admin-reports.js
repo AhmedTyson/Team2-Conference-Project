@@ -4,7 +4,7 @@
 (function(global) {
   'use strict';
   
-  var It = global.Itinari;
+  var It = global.Itinera;
   if (!It || !It.app) return;
 
   function el(id) { return document.getElementById(id); }
@@ -67,7 +67,7 @@
   }
 
   global.downloadReport = function(id) {
-    var token = localStorage.getItem('itinari_token');
+    var token = localStorage.getItem('itinera_token');
     window.open(It.CONFIG.apiBase + '/admin/reports/' + id + '/download?token=' + encodeURIComponent(token), '_blank');
   };
 

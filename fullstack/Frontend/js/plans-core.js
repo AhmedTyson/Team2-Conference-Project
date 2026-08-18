@@ -34,7 +34,7 @@
 (function (global) {
   "use strict";
 
-  const It = global.Itinari || (global.Itinari = {});
+  const It = global.Itinera || (global.Itinera = {});
 
   const ROUTES = {
     plans: "/plans",
@@ -144,7 +144,7 @@
 
   /** Whether a real JWT session exists. */
   function isMember() {
-    const token = (It.readToken && It.readToken()) || localStorage.getItem("itinari_token");
+    const token = (It.readToken && It.readToken()) || localStorage.getItem("itinera_token");
     return !!token;
   }
 

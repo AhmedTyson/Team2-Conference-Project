@@ -4,7 +4,7 @@
 (function (global) {
   "use strict";
 
-  const It = global.Itinari;
+  const It = global.Itinera;
   if (!It) return;
 
   function el(id) { return document.getElementById(id); }
@@ -139,7 +139,7 @@
     load();
   }
 
-  document.addEventListener("itinari:ready", boot);
+  document.addEventListener("itinera:ready", boot);
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", boot);

@@ -1,4 +1,4 @@
-# ✈️ Itinari — Global Luxury Travel & Trip Planning Platform
+# ✈️ Itinera — Global Luxury Travel & Trip Planning Platform
 > **Conference Case Study 1 — Team 2 Fullstack Application Monorepo**
 
 [![Laravel](https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
@@ -8,7 +8,7 @@
 [![PayMob](https://img.shields.io/badge/Payments-PayMob-0052CC?style=for-the-badge)](https://paymob.com)
 [![Groq AI](https://img.shields.io/badge/AI-Groq_Llama3-F34B21?style=for-the-badge)](https://groq.com)
 
-Welcome to the **Conference Case Study 1 (Team 2)** project repository! **Itinari** is an end-to-end luxury travel orchestration platform featuring curated itineraries, verified 5-star accommodations, real-time global weather radar, automated executive telemetry PDF reporting, AI-powered itinerary reviews, PayMob payment checkout, and an operator admin suite.
+Welcome to the **Conference Case Study 1 (Team 2)** project repository! **Itinera** is an end-to-end luxury travel orchestration platform featuring curated itineraries, verified 5-star accommodations, real-time global weather radar, automated executive telemetry PDF reporting, AI-powered itinerary reviews, PayMob payment checkout, and an operator admin suite.
 
 ---
 

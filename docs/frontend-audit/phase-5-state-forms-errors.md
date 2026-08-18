@@ -12,9 +12,9 @@
 The application adopts a **hybrid distributed state model**:
 
 1. **Persistent Global State**:
-   - `localStorage.getItem("itinari_token")`: Active JWT authentication token.
-   - `localStorage.getItem("itinari_user")`: Cached profile object (ID, name, email, avatar, roles, permissions).
-   - `localStorage.getItem("itinari_theme")`: Theme token (`"dark"` or `"light"`).
+   - `localStorage.getItem("itinera_token")`: Active JWT authentication token.
+   - `localStorage.getItem("itinera_user")`: Cached profile object (ID, name, email, avatar, roles, permissions).
+   - `localStorage.getItem("itinera_theme")`: Theme token (`"dark"` or `"light"`).
 2. **Tab Synchronization**:
    - Monitored via `window.addEventListener("storage", ...)` in `session.js` to propagate login/logout states instantly across multiple tabs.
 3. **Module Local State**:

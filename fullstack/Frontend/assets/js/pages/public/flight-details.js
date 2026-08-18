@@ -4,7 +4,7 @@
 (function(global) {
   'use strict';
   
-  var It = global.Itinari;
+  var It = global.Itinera;
   if (!It || !It.app) return;
 
   function el(id) { return document.getElementById(id); }
@@ -60,7 +60,7 @@
       '</div>' +
       
       '<div style="text-align:center;">' +
-        '<button class="btn btn--primary" style="font-size: 1.1rem; padding: var(--space-3) var(--space-8);" onclick="Itinari.app.showToast(\'Booking system coming soon!\', \'info\')">Select Flight</button>' +
+        '<button class="btn btn--primary" style="font-size: 1.1rem; padding: var(--space-3) var(--space-8);" onclick="Itinera.app.showToast(\'Booking system coming soon!\', \'info\')">Select Flight</button>' +
       '</div>';
   }
 

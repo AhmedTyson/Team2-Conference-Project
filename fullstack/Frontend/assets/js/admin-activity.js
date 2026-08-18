@@ -7,7 +7,7 @@
 (function (global) {
   "use strict";
 
-  var It = global.Itinari;
+  var It = global.Itinera;
   var HOST = document.getElementById("activity-feed");
 
   if (!HOST) return;
@@ -153,7 +153,7 @@
   }
 
   // ── boot after DOMContentLoaded (dashboard.js already handles auth guard) ─
-  // We wait for the 'itinari:ready' custom event that admin-dashboard fires,
+  // We wait for the 'itinera:ready' custom event that admin-dashboard fires,
   // or fall back to a short delay.
   function tryLoad() {
     if (It && It.session && It.session.hasToken && It.session.hasToken()) {

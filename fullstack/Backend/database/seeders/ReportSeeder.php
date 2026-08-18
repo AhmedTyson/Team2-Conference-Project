@@ -110,7 +110,7 @@ class ReportSeeder extends Seeder
                 $createdDate = Carbon::now()->subDays($daysAgo);
                 $user = User::create([
                     'name' => 'Traveler '.rand(100, 999),
-                    'email' => 'traveler_'.time()."_{$u}_".rand(100, 999).'@itinari.com',
+                    'email' => 'traveler_'.time()."_{$u}_".rand(100, 999).'@itinera.com',
                     'password' => bcrypt('password'),
                     'email_verified_at' => $createdDate,
                     'created_at' => $createdDate,

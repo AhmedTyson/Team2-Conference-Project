@@ -12,7 +12,7 @@
 (function (global) {
   "use strict";
 
-  const It = global.Itinari;
+  const It = global.Itinera;
 
   const MODULES = {
     destinations: {
@@ -1098,7 +1098,7 @@
       load();
     }
 
-    document.addEventListener("itinari:ready", function(e) {
+    document.addEventListener("itinera:ready", function(e) {
       boot(e.detail);
     });
   })(window);

@@ -4,7 +4,7 @@
 (function(global) {
   'use strict';
 
-  var It = global.Itinari;
+  var It = global.Itinera;
   if (!It || !It.app) return;
 
   function el(id) { return document.getElementById(id); }

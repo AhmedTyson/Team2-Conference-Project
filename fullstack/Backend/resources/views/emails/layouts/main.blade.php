@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>@yield('title', config('app.name', 'Itinari'))</title>
+<title>@yield('title', config('app.name', 'Itinera'))</title>
 <style>
     /* ── Palette ────────────────────────────────────────────────────────────
        Cream  #E8DED2   Mint #A3D2CA   Teal #5EAAA8   Deep Teal #056676
@@ -228,10 +228,10 @@
             <div class="header">
                 @if(file_exists(public_path('images/logo.png')))
                     <div style="text-align: center; margin-bottom: 12px;">
-                        <img src="{{ $message->embed(public_path('images/logo.png')) }}" alt="Itinari Logo" style="height: 52px; width: auto; display: inline-block;" />
+                        <img src="{{ $message->embed(public_path('images/logo.png')) }}" alt="Itinera Logo" style="height: 52px; width: auto; display: inline-block;" />
                     </div>
                 @endif
-                <p class="brand">{{ config('app.name', 'Itinari') }}</p>
+                <p class="brand">{{ config('app.name', 'Itinera') }}</p>
                 <div class="brand-rule"></div>
                 <p class="brand-tagline">Curated Journeys</p>
             </div>
@@ -239,7 +239,7 @@
                 @yield('content')
             </div>
             <div class="footer">
-                <p>&copy; {{ date('Y') }} {{ config('app.name', 'Itinari') }}. All rights reserved.</p>
+                <p>&copy; {{ date('Y') }} {{ config('app.name', 'Itinera') }}. All rights reserved.</p>
                 <p style="margin-top: 8px;">Cairo, Egypt</p>
                 <p style="margin-top: 14px;">
                     You are receiving this email because you hold an account with us.<br>

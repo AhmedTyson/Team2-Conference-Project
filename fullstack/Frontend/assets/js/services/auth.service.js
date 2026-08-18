@@ -1,11 +1,11 @@
 /**
  * auth.service.js — Centralized authentication service client.
- * Interacts with Itinari.api and Itinari.session.
+ * Interacts with Itinera.api and Itinera.session.
  */
 (function (global) {
   "use strict";
 
-  var It = global.Itinari || (global.Itinari = {});
+  var It = global.Itinera || (global.Itinera = {});
   var Svc = It.services || (It.services = {});
 
   Svc.auth = {

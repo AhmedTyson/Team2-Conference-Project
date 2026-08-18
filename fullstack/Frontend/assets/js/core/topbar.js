@@ -47,17 +47,17 @@
   }
 
   function getCurrentUser() {
-    var It = global.Itinari;
+    var It = global.Itinera;
     var user = (It && It.session && It.session.user) || null;
     if (!user) {
       try {
-        var raw = global.localStorage.getItem("itinari_user");
+        var raw = global.localStorage.getItem("itinera_user");
         if (raw) user = JSON.parse(raw);
       } catch (e) {}
     }
     var token = null;
     try {
-      token = global.localStorage.getItem("itinari_token");
+      token = global.localStorage.getItem("itinera_token");
     } catch (e) {}
     return (token && user) ? user : null;
   }
@@ -77,7 +77,7 @@
 
   /* ── Ensure Command Palette Script Loaded ── */
   function ensureCmdPalette() {
-    if (!global.ItinariCmd && !doc.querySelector('script[src*="command-palette.js"]')) {
+    if (!global.ItineraCmd && !doc.querySelector('script[src*="command-palette.js"]')) {
       var s = doc.createElement("script");
       var prefix = getBasePrefix();
       s.src = prefix + "assets/js/core/command-palette.js";
@@ -101,8 +101,8 @@
 
     btn.addEventListener("click", function (e) {
       e.preventDefault();
-      if (global.ItinariCmd) {
-        global.ItinariCmd.open();
+      if (global.ItineraCmd) {
+        global.ItineraCmd.open();
       }
     });
 
@@ -129,7 +129,7 @@
         global.ItTheme.toggle();
       } else {
         var isDark = doc.documentElement.classList.toggle("dark");
-        try { localStorage.setItem("itinari_theme", isDark ? "dark" : "light"); } catch (e) {}
+        try { localStorage.setItem("itinera_theme", isDark ? "dark" : "light"); } catch (e) {}
       }
     };
     return btn;
@@ -159,7 +159,7 @@
     wrap.appendChild(badge);
 
     var prefix = getBasePrefix();
-    var It = global.Itinari;
+    var It = global.Itinera;
     if (It && It.apiGet) {
       It.apiGet("/notifications?per_page=1&unread=1", { auth: true }).then(function (res) {
         var count = (res && res.body && res.body.data && res.body.data.unread_count) || (res && res.body && res.body.meta && res.body.meta.total) || 0;
@@ -190,8 +190,8 @@
     var role = (user && (user.role || (user.roles && user.roles[0]))) || layout;
     var initials = initialsOf(name);
     var avatar = (user && user.profile_image)
-      ? (global.Itinari && global.Itinari.CONFIG && global.Itinari.CONFIG.apiBase
-          ? global.Itinari.CONFIG.apiBase.replace("/api", "") + "/storage/" + user.profile_image
+      ? (global.Itinera && global.Itinera.CONFIG && global.Itinera.CONFIG.apiBase
+          ? global.Itinera.CONFIG.apiBase.replace("/api", "") + "/storage/" + user.profile_image
           : "/storage/" + user.profile_image)
       : null;
 
@@ -287,12 +287,12 @@
     logout.innerHTML = ICONS.logout + "<span>Sign out</span>";
     logout.addEventListener("click", function (e) {
       e.preventDefault();
-      if (global.Itinari && global.Itinari.session && global.Itinari.session.logout) {
-        global.Itinari.session.logout();
+      if (global.Itinera && global.Itinera.session && global.Itinera.session.logout) {
+        global.Itinera.session.logout();
       } else {
         try {
-          global.localStorage.removeItem("itinari_token");
-          global.localStorage.removeItem("itinari_user");
+          global.localStorage.removeItem("itinera_token");
+          global.localStorage.removeItem("itinera_user");
         } catch (e) {}
         window.location.href = prefix + "auth/login.html";
       }
@@ -424,10 +424,10 @@
       logoutBtn.style.cssText = 'width:100%;text-align:left;border:none;background:none;cursor:pointer;color:hsl(var(--destructive,0 84% 60%));';
       logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i><span>Log Out</span>';
       logoutBtn.addEventListener('click', function() {
-        if (global.Itinari && global.Itinari.session && global.Itinari.session.logout) {
-          global.Itinari.session.logout();
+        if (global.Itinera && global.Itinera.session && global.Itinera.session.logout) {
+          global.Itinera.session.logout();
         } else {
-          try { global.localStorage.removeItem('itinari_token'); global.localStorage.removeItem('itinari_user'); } catch(e) {}
+          try { global.localStorage.removeItem('itinera_token'); global.localStorage.removeItem('itinera_user'); } catch(e) {}
           global.location.href = prefix + 'auth/login.html';
         }
       });

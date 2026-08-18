@@ -1,12 +1,12 @@
 /**
  * assets/js/api.js — Transport layer with transparent JWT auto-refresh and error resilience.
  * Pure HTTP transport. No DOM state, no UI animations.
- * Depends on config.js (window.Itinari.CONFIG / storeToken / readToken).
+ * Depends on config.js (window.Itinera.CONFIG / storeToken / readToken).
  */
 (function (global) {
   "use strict";
 
-  const It = global.Itinari || (global.Itinari = {});
+  const It = global.Itinera || (global.Itinera = {});
 
   /**
    * Normalize API path:
@@ -69,7 +69,7 @@
   }
 
   async function refreshToken() {
-    const currentTok = (It.readToken && It.readToken()) || localStorage.getItem("itinari_token");
+    const currentTok = (It.readToken && It.readToken()) || localStorage.getItem("itinera_token");
     if (!currentTok) throw new Error("No token to refresh");
 
     const defaultFallback = (global.location && global.location.origin && !global.location.origin.includes("null") && !global.location.origin.startsWith("file:")) ? global.location.origin.replace(/\/$/, "") + "/api" : "http://127.0.0.1:8000/api";
@@ -92,7 +92,7 @@
     if (!newToken) throw new Error("No token in refresh response");
 
     if (It.storeToken) It.storeToken(newToken);
-    else localStorage.setItem("itinari_token", newToken);
+    else localStorage.setItem("itinera_token", newToken);
     return newToken;
   }
 
@@ -129,7 +129,7 @@
     if (data !== undefined && !(data instanceof FormData)) headers["Content-Type"] = "application/json";
 
     // Auto-attach token if available
-    const token = (It.readToken && It.readToken()) || localStorage.getItem("itinari_token");
+    const token = (It.readToken && It.readToken()) || localStorage.getItem("itinera_token");
     if (token && !headers["Authorization"]) {
       headers["Authorization"] = "Bearer " + token;
     }
@@ -342,10 +342,10 @@
 
   /* Self-contained toast for pages without a toast component. */
   function toastFn(message, type) {
-    var host = document.getElementById("itinari-toast-host");
+    var host = document.getElementById("itinera-toast-host");
     if (!host) {
       host = document.createElement("div");
-      host.id = "itinari-toast-host";
+      host.id = "itinera-toast-host";
       host.style.cssText = "position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:2147483000;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;";
       document.body.appendChild(host);
     }
@@ -362,7 +362,7 @@
   }
 
   It.toast = toastFn;
-  if (!global.ItinariToast) global.ItinariToast = toastFn;
+  if (!global.ItineraToast) global.ItineraToast = toastFn;
 
   It.api = {
     get: apiGet,
@@ -410,7 +410,7 @@
   function imageHtml(src, name, cls, type) {
     var safeName = esc(name || '');
     var isPlaceholder = !src || src.indexOf('placeholder') > -1 || src.indexOf('null') > -1 || src.indexOf('undefined') > -1 || src.indexOf('loremflickr') > -1;
-    var unsplashFallback = (global.Itinari && global.Itinari.getUnsplashImage) ? global.Itinari.getUnsplashImage(name, type) : 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80';
+    var unsplashFallback = (global.Itinera && global.Itinera.getUnsplashImage) ? global.Itinera.getUnsplashImage(name, type) : 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80';
     var finalSrc = isPlaceholder ? unsplashFallback : src;
     return '<img class="' + (cls || '') + '" src="' + esc(finalSrc) + '" alt="' + safeName + '" loading="lazy" onerror="this.onerror=null; this.src=\'' + unsplashFallback + '\';">';
   }

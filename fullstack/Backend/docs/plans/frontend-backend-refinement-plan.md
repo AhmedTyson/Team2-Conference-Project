@@ -1,6 +1,6 @@
 # 10-Phase Full-Stack Refinement Plan
 
-The following phases must be executed sequentially to bring the Itinari Admin application to a clean, maintainable, and production-ready state.
+The following phases must be executed sequentially to bring the Itinera Admin application to a clean, maintainable, and production-ready state.
 
 ## PHASE 1 — Backend Missing Controllers
 ### Objective

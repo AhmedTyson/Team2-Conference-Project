@@ -6,7 +6,7 @@
 (function (global) {
   "use strict";
 
-  const It = global.Itinari;
+  const It = global.Itinera;
   if (!It) return;
 
   var state = {
@@ -257,7 +257,7 @@
     load();
   }
 
-  document.addEventListener("itinari:ready", init);
+  document.addEventListener("itinera:ready", init);
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);

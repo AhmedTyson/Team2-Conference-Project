@@ -5,7 +5,7 @@
 (function (global) {
   "use strict";
 
-  var It = global.Itinari;
+  var It = global.Itinera;
   if (!It) return;
 
   var page = document.getElementById("profile-page");
@@ -32,7 +32,7 @@
 
   function getStoredUser() {
     try {
-      var raw = (It.readUser && It.readUser()) || localStorage.getItem("itinari_user");
+      var raw = (It.readUser && It.readUser()) || localStorage.getItem("itinera_user");
       if (raw) {
         var obj = typeof raw === "string" ? JSON.parse(raw) : raw;
         if (obj && obj.user && typeof obj.user === "object") return obj.user;
@@ -44,7 +44,7 @@
 
   function hasStoredToken() {
     try {
-      var tok = (It.readToken && It.readToken()) || localStorage.getItem("itinari_token");
+      var tok = (It.readToken && It.readToken()) || localStorage.getItem("itinera_token");
       return !!tok;
     } catch (e) {
       return false;
@@ -349,7 +349,7 @@
               // Synchronize local session user
               var currentSessionUser = getStoredUser() || {};
               currentSessionUser.profile_image = updatedUser.profile_image;
-              try { localStorage.setItem("itinari_user", JSON.stringify(currentSessionUser)); } catch (e) {}
+              try { localStorage.setItem("itinera_user", JSON.stringify(currentSessionUser)); } catch (e) {}
 
               // Synchronize topbar header nav avatar
               var topNavAvatar = document.querySelector(".app-nav-header img");
@@ -401,7 +401,7 @@
             if (updatedUser && updatedUser.user) updatedUser = updatedUser.user;
             if (addressVal && updatedUser) updatedUser.address = addressVal;
             if (updatedUser && updatedUser.name) {
-              try { localStorage.setItem("itinari_user", JSON.stringify(updatedUser)); } catch (e) {}
+              try { localStorage.setItem("itinera_user", JSON.stringify(updatedUser)); } catch (e) {}
               var displayTitle = document.getElementById("profile-display-name");
               if (displayTitle) displayTitle.textContent = updatedUser.name;
             }
@@ -474,7 +474,7 @@
       var raw = userRes.data !== undefined ? userRes.data : (userRes.body ? (userRes.body.data || userRes.body) : userRes);
       var user = (raw && raw.user) ? raw.user : raw;
       if (user && (user.id || user.name || user.email)) {
-        try { localStorage.setItem("itinari_user", JSON.stringify(user)); } catch (e) {}
+        try { localStorage.setItem("itinera_user", JSON.stringify(user)); } catch (e) {}
         renderProfileForm(user);
         return;
       }

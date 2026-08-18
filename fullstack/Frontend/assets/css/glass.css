@@ -1,5 +1,5 @@
 /* =====================================================================
-   glass.css — glassmorphism utilities (Itinari tokens)
+   glass.css — glassmorphism utilities (Itinera tokens)
    Requires tokens.css (brand + glass tokens). Load AFTER theme css.
    Rules: backdrop-filter REQUIRED (no flat glass), semi-transparent bg,
    /20 borders, colored shadow, dark variant everywhere, -webkit prefix.

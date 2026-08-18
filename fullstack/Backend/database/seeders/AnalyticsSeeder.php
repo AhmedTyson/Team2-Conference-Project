@@ -24,7 +24,7 @@ class AnalyticsSeeder extends Seeder
                 $date = Carbon::now()->subDays($daysAgo)->toDateTimeString();
                 DB::table('users')->insertOrIgnore([
                     'name' => 'Passenger '.rand(100, 999),
-                    'email' => 'passenger_'.$i.'_'.rand(1000, 9999).'@itinari.com',
+                    'email' => 'passenger_'.$i.'_'.rand(1000, 9999).'@itinera.com',
                     'password' => bcrypt('password'),
                     'created_at' => $date,
                     'updated_at' => $date,

@@ -37,7 +37,7 @@
 Every HTML document executes a tiny (~150 bytes) synchronous script in `<head>` before CSS stylesheets render:
 ```javascript
 (function(){
-  var k="itinari_theme",s;
+  var k="itinera_theme",s;
   try{s=localStorage.getItem(k);}catch(e){}
   if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
     document.documentElement.classList.add("dark","fouc-ready");

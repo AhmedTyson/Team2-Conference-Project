@@ -13,7 +13,7 @@
   const DEMO_KEY = 'itinera_session';
   const REAL_KEY = 'itinera_token';
 
-  const It = window.Itinari || null;
+  const It = window.Itinera || null;
 
   let authMode = 'login';
   let authCallback = null;

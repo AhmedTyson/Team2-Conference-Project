@@ -1,12 +1,12 @@
 /**
  * animations.js — GSAP feedback layer. THE ONLY place that touches GSAP.
  * Swappable: to switch animation engines, replace this file and keep the
- * identical API surface (Itinari.feedback.*). No form logic lives here.
+ * identical API surface (Itinera.feedback.*). No form logic lives here.
  */
 (function (global) {
   "use strict";
 
-  const It = (global.Itinari = global.Itinari || {});
+  const It = (global.Itinera = global.Itinera || {});
 
   function reducedMotion() {
     return (

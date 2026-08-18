@@ -61,8 +61,8 @@
     return null;
   }
 
-  global.Itinari = global.Itinari || {};
-  global.Itinari.Rules = Rules;
-  global.Itinari.passwordStrength = passwordStrength;
-  global.Itinari.validate = validate;
+  global.Itinera = global.Itinera || {};
+  global.Itinera.Rules = Rules;
+  global.Itinera.passwordStrength = passwordStrength;
+  global.Itinera.validate = validate;
 })(window);

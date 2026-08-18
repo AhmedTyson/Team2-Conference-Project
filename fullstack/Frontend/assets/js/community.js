@@ -8,7 +8,7 @@
 (function (global) {
   "use strict";
 
-  var It = global.Itinari || {};
+  var It = global.Itinera || {};
   var communityTrips = [];
   var activeRegion = "all";
   var searchQuery = "";
@@ -426,7 +426,7 @@
         if (targetTrip && targetTrip.previewable === false) {
           ev.preventDefault();
           ev.stopPropagation();
-          if (global.ItinariToast) global.ItinariToast("Live preview is not available for this demo itinerary.", "warning");
+          if (global.ItineraToast) global.ItineraToast("Live preview is not available for this demo itinerary.", "warning");
         }
       });
     });
@@ -562,19 +562,19 @@
   function forkTrip(tripId) {
     var user = getCurrentUser();
     if (!user) {
-      if (global.ItinariToast) global.ItinariToast("Please login to fork itineraries into your planner.", "warning");
+      if (global.ItineraToast) global.ItineraToast("Please login to fork itineraries into your planner.", "warning");
       setTimeout(function () {
         global.location.href = "../auth/login.html?redirect=" + encodeURIComponent(global.location.href);
       }, 1200);
       return;
     }
 
-    if (global.ItinariToast) global.ItinariToast("Forking itinerary into your planner…", "info");
+    if (global.ItineraToast) global.ItineraToast("Forking itinerary into your planner…", "info");
 
     if (It.apiPost) {
       It.apiPost("/trips/" + tripId + "/fork", {}).then(function (res) {
         if (res.ok) {
-          if (global.ItinariToast) global.ItinariToast("✨ Itinerary forked successfully to your trips!", "success");
+          if (global.ItineraToast) global.ItineraToast("✨ Itinerary forked successfully to your trips!", "success");
           var forkedTripId = (res.body && res.body.data && res.body.data.trip && res.body.data.trip.id) || tripId;
           setTimeout(function () {
             global.location.href = "../app/trip.html?id=" + forkedTripId;
@@ -592,7 +592,7 @@
   }
 
   function cloneTripFallback(tripId) {
-    if (global.ItinariToast) global.ItinariToast("✨ Itinerary forked successfully to your trips!", "success");
+    if (global.ItineraToast) global.ItineraToast("✨ Itinerary forked successfully to your trips!", "success");
     setTimeout(function () {
       global.location.href = "../app/trips.html";
     }, 1000);
@@ -601,7 +601,7 @@
   function openShareModal() {
     var user = getCurrentUser();
     if (!user) {
-      if (global.ItinariToast) global.ItinariToast("Please login to share your trip with the community.", "warning");
+      if (global.ItineraToast) global.ItineraToast("Please login to share your trip with the community.", "warning");
       setTimeout(function () {
         global.location.href = "../auth/login.html?redirect=" + encodeURIComponent(global.location.href);
       }, 1200);
@@ -643,7 +643,7 @@
     var modal = el("share-modal");
 
     if (!select || !select.value) {
-      if (global.ItinariToast) global.ItinariToast("Please select a trip to share.", "warning");
+      if (global.ItineraToast) global.ItineraToast("Please select a trip to share.", "warning");
       return;
     }
 
@@ -656,16 +656,16 @@
         description: story
       }).then(function (res) {
         if (modal) modal.classList.add("hidden");
-        if (global.ItinariToast) global.ItinariToast("🎉 Trip published to the community feed!", "success");
+        if (global.ItineraToast) global.ItineraToast("🎉 Trip published to the community feed!", "success");
         fetchCommunityTrips();
       }).catch(function () {
         if (modal) modal.classList.add("hidden");
-        if (global.ItinariToast) global.ItinariToast("🎉 Trip published to the community feed!", "success");
+        if (global.ItineraToast) global.ItineraToast("🎉 Trip published to the community feed!", "success");
         fetchCommunityTrips();
       });
     } else {
       if (modal) modal.classList.add("hidden");
-      if (global.ItinariToast) global.ItinariToast("🎉 Trip published to the community feed!", "success");
+      if (global.ItineraToast) global.ItineraToast("🎉 Trip published to the community feed!", "success");
     }
   }
 
@@ -673,13 +673,13 @@
     var user = (It && It.session && It.session.user) || null;
     if (!user) {
       try {
-        var raw = global.localStorage.getItem("itinari_user");
+        var raw = global.localStorage.getItem("itinera_user");
         if (raw) user = JSON.parse(raw);
       } catch (e) {}
     }
     var token = null;
     try {
-      token = global.localStorage.getItem("itinari_token");
+      token = global.localStorage.getItem("itinera_token");
     } catch (e) {}
     return (token && user) ? user : null;
   }

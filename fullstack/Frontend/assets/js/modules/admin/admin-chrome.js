@@ -7,8 +7,8 @@
 (function (global) {
   "use strict";
 
-  const THEME_KEY = "itinari_theme";
-  const SIDEBAR_KEY = "itinari_sidebar";
+  const THEME_KEY = "itinera_theme";
+  const SIDEBAR_KEY = "itinera_sidebar";
 
   function el(id) { return document.getElementById(id); }
 
@@ -139,8 +139,8 @@
       e.stopPropagation();
       const root = el("modal-root");
       if (root) root.textContent = "";
-      if (global.Itinari && global.Itinari.kit && global.Itinari.kit.closeModal) {
-        global.Itinari.kit.closeModal();
+      if (global.Itinera && global.Itinera.kit && global.Itinera.kit.closeModal) {
+        global.Itinera.kit.closeModal();
       }
       syncScrollLock();
     });
@@ -229,8 +229,8 @@
     logout.textContent = "Sign out";
     logout.addEventListener("click", function () {
       close();
-      if (global.Itinari && global.Itinari.session && global.Itinari.session.logout) {
-        global.Itinari.session.logout();
+      if (global.Itinera && global.Itinera.session && global.Itinera.session.logout) {
+        global.Itinera.session.logout();
       }
     });
     panel.appendChild(logout);
@@ -372,7 +372,7 @@
           if (btn) btn.click();
         } },
       { label: "Sign out", hint: "Shortcut", run: function () {
-          if (global.Itinari && global.Itinari.session && global.Itinari.session.logout) global.Itinari.session.logout();
+          if (global.Itinera && global.Itinera.session && global.Itinera.session.logout) global.Itinera.session.logout();
         } },
     ];
   }
@@ -539,13 +539,13 @@
 
     function loadModules() {
       if (moduleCache) return;
-      if (!global.Itinari || !global.Itinari.apiGet || !global.Itinari.session || !global.Itinari.session.hasToken()) {
+      if (!global.Itinera || !global.Itinera.apiGet || !global.Itinera.session || !global.Itinera.session.hasToken()) {
         moduleCache = [];
         return;
       }
       moduleCache = [];
       PALETTE_MODULES.forEach(function (mod) {
-        global.Itinari.apiGet("/admin/" + mod.key, { auth: true }).then(function (res) {
+        global.Itinera.apiGet("/admin/" + mod.key, { auth: true }).then(function (res) {
           let list = [];
           if (res && res.ok && res.body) {
             if (Array.isArray(res.body)) list = res.body;
@@ -711,7 +711,7 @@
   }
 
   function injectRoleNav(role) {
-    const It = global.Itinari;
+    const It = global.Itinera;
     if (!It || !It.nav || !It.nav.renderSidebarHtml) return;
     const nav = document.querySelector(".sidebar nav, .sidebar .nav");
     if (!nav) return;
@@ -730,7 +730,7 @@
   }
 
   function initGlobalUser() {
-    const It = global.Itinari;
+    const It = global.Itinera;
     if (!It || !It.session) return;
     
     if (!It.session.hasToken()) { 
@@ -791,33 +791,33 @@
           logoutBtn.addEventListener("click", function () { It.session.logout(); });
       }
 
-      document.dispatchEvent(new CustomEvent("itinari:ready", { detail: user }));
+      document.dispatchEvent(new CustomEvent("itinera:ready", { detail: user }));
       updateNavigationBadges();
     });
   }
 
   function updateNavigationBadges() {
-    if (!global.Itinari || !global.Itinari.apiGet || !global.Itinari.session || !global.Itinari.session.hasToken()) return;
+    if (!global.Itinera || !global.Itinera.apiGet || !global.Itinera.session || !global.Itinera.session.hasToken()) return;
     
     // Contacts badge
-    global.Itinari.apiGet("/admin/contacts?status=unread", { auth: true }).then(function (res) {
-      const list = global.Itinari.unwrapData(res);
+    global.Itinera.apiGet("/admin/contacts?status=unread", { auth: true }).then(function (res) {
+      const list = global.Itinera.unwrapData(res);
       const count = Array.isArray(list) ? list.length : (res.body?.total || 0);
       const b = document.querySelector('.nav-badge[data-badge="contacts"]');
       if (b && count > 0) { b.textContent = count > 99 ? '99+' : count; b.hidden = false; }
     }).catch(function () {});
 
     // Agency requests badge
-    global.Itinari.apiGet("/admin/agency-requests", { auth: true }).then(function (res) {
-      const list = global.Itinari.unwrapData(res);
+    global.Itinera.apiGet("/admin/agency-requests", { auth: true }).then(function (res) {
+      const list = global.Itinera.unwrapData(res);
       const pending = Array.isArray(list) ? list.filter(function(r){ return r.status === "pending" || r.status === "requested"; }).length : (res.body?.total || 0);
       const b = document.querySelector('.nav-badge[data-badge="agency"]');
       if (b && pending > 0) { b.textContent = pending > 99 ? '99+' : pending; b.hidden = false; }
     }).catch(function () {});
 
     // Flags badge
-    global.Itinari.apiGet("/admin/flags", { auth: true }).then(function (res) {
-      const list = global.Itinari.unwrapData(res);
+    global.Itinera.apiGet("/admin/flags", { auth: true }).then(function (res) {
+      const list = global.Itinera.unwrapData(res);
       const pending = Array.isArray(list) ? list.filter(function(r){ return r.status === "pending" || r.status === "open"; }).length : (res.body?.total || 0);
       const b = document.querySelector('.nav-badge[data-badge="flags"]');
       if (b && pending > 0) { b.textContent = pending > 99 ? '99+' : pending; b.hidden = false; }
@@ -855,7 +855,7 @@
     }, duration);
   }
 
-  global.Itinari.toast = toast;
+  global.Itinera.toast = toast;
 
   function init() {
     initTheme();

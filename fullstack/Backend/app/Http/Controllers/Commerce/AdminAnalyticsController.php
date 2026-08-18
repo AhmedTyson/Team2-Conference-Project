@@ -93,7 +93,7 @@ class AdminAnalyticsController extends Controller
                     'id' => $trip->id,
                     'user' => [
                         'name' => $trip->user?->name ?? 'Guest Passenger',
-                        'email' => $trip->user?->email ?? 'guest@itinari.com',
+                        'email' => $trip->user?->email ?? 'guest@itinera.com',
                     ],
                     'title' => $trip->title,
                     'budget' => (float) $trip->budget,

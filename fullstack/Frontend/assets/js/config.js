@@ -6,8 +6,8 @@
 (function (global) {
   "use strict";
 
-  const Itinari = global.Itinari = global.Itinari || {};
-  const It = global.It = global.Itinari;
+  const Itinera = global.Itinera = global.Itinera || {};
+  const It = global.It = global.Itinera;
 
   // Docker/Railway: the entrypoint replaces the __API_BASE__ marker with
   // the real backend URL at container boot (via sed). Left untouched
@@ -16,13 +16,13 @@
   try {
     var injectedApiBase = "__API_BASE__";
     if (injectedApiBase && injectedApiBase !== "__API_" + "BASE__") {
-      global.ITINARI_API_BASE = injectedApiBase;
+      global.ITINERA_API_BASE = injectedApiBase;
     }
   } catch (e) {}
 
   function resolveApiBase() {
     // Highest priority: explicit override injected before this script
-    if (global.ITINARI_API_BASE) return global.ITINARI_API_BASE;
+    if (global.ITINERA_API_BASE) return global.ITINERA_API_BASE;
     try {
       if (typeof location !== "undefined" && location.origin &&
           !location.origin.includes("null") && !location.origin.startsWith("file:")) {
@@ -54,8 +54,8 @@
     dashboardUrl: "/app/dashboard.html",
     adminUrl: "/admin/index.html",
     agencyUrl: "/agency/assignments.html",
-    tokenKey: "itinari_token",
-    userKey: "itinari_user",
+    tokenKey: "itinera_token",
+    userKey: "itinera_user",
     tokenStorage: "localStorage",
     routes: {
       login: "/login",
@@ -130,14 +130,14 @@
     try { localStorage.removeItem(CONFIG.userKey); } catch (e) {}
   }
 
-  Itinari.CONFIG = CONFIG;
-  Itinari.storeToken = storeToken;
-  Itinari.readToken = readToken;
-  Itinari.clearToken = clearToken;
-  Itinari.storeUser = storeUser;
-  Itinari.readUser = readUser;
-  Itinari.clearUser = clearUser;
-  Itinari.resolveApiBase = resolveApiBase;
+  Itinera.CONFIG = CONFIG;
+  Itinera.storeToken = storeToken;
+  Itinera.readToken = readToken;
+  Itinera.clearToken = clearToken;
+  Itinera.storeUser = storeUser;
+  Itinera.readUser = readUser;
+  Itinera.clearUser = clearUser;
+  Itinera.resolveApiBase = resolveApiBase;
 
   global.APP_CONFIG = {
     API_BASE_URL: CONFIG.apiBase,

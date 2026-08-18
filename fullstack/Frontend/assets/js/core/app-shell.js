@@ -7,10 +7,10 @@
 (function (global) {
   "use strict";
 
-  var It = global.Itinari;
+  var It = global.Itinera;
   if (!It || !It.session) return;
 
-  var THEME_KEY = "itinari_theme";
+  var THEME_KEY = "itinera_theme";
 
   function topItems(role) {
     return (It.nav && It.nav.topFor ? It.nav.topFor(role) : null) || [
@@ -283,7 +283,7 @@
       initHeader(session.user);
       initFooter();
       document.body.classList.remove("is-booting");
-      document.dispatchEvent(new CustomEvent("itinari:ready", { detail: session.user }));
+      document.dispatchEvent(new CustomEvent("itinera:ready", { detail: session.user }));
       if (callback) callback(session.user, session.role);
     });
   }

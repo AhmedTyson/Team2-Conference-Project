@@ -57,7 +57,7 @@
   <script src="../js/plans-core.js"></script>
   <script>
     /* FOUC prevention — default dark */
-    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+    (function(){var k="itinera_theme",s;try{s=localStorage.getItem(k);}catch(e){}
     if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
       document.documentElement.classList.add("dark","fouc-ready");
     else document.documentElement.classList.add("fouc-ready");
@@ -187,8 +187,8 @@
       }
 
       // If an orderRef exists in URL parameters, fetch real database details
-      if (paramOrderRef && window.Itinari && window.Itinari.apiGet) {
-        window.Itinari.apiGet("/orders/lookup/" + encodeURIComponent(paramOrderRef), { auth: true })
+      if (paramOrderRef && window.Itinera && window.Itinera.apiGet) {
+        window.Itinera.apiGet("/orders/lookup/" + encodeURIComponent(paramOrderRef), { auth: true })
           .then(function (res) {
             if (res.ok && res.body && res.body.data) {
               const o = res.body.data;

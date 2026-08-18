@@ -11,7 +11,7 @@
 (function (global) {
   "use strict";
 
-  const It = global.Itinari || (global.Itinari = {});
+  const It = global.Itinera || (global.Itinera = {});
   const PC = It && It.plansCore;
   if (!PC) return;
 

@@ -17,7 +17,7 @@
   <link rel="stylesheet" href="../assets/css/luxury-theme.css" />
 
   <script>
-    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+    (function(){var k="itinera_theme",s;try{s=localStorage.getItem(k);}catch(e){}
     if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
       document.documentElement.classList.add("dark","fouc-ready");
     else document.documentElement.classList.add("fouc-ready");
@@ -160,7 +160,7 @@
       if (y) y.textContent = new Date().getFullYear();
 
       // Check auth for topbar
-      if (window.Itinari && window.Itinari.session) {
+      if (window.Itinera && window.Itinera.session) {
         window.
       }
 
@@ -170,8 +170,8 @@
         btn.addEventListener("click", function () {
           var planId = btn.getAttribute("data-plan-id");
           var planName = btn.getAttribute("data-plan-name") || "Membership";
-          if (window.Itinari && window.Itinari.plansCore) {
-            window.Itinari.plansCore.gateToCheckout(planName, planId, btn);
+          if (window.Itinera && window.Itinera.plansCore) {
+            window.Itinera.plansCore.gateToCheckout(planName, planId, btn);
           }
         });
       });

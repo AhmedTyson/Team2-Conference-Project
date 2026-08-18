@@ -32,10 +32,10 @@
 
   function getNavigationItems() {
     var p = getBasePrefix();
-    var It = global.Itinari;
+    var It = global.Itinera;
     var user = null;
     try {
-      var raw = global.localStorage.getItem("itinari_user");
+      var raw = global.localStorage.getItem("itinera_user");
       if (raw) user = JSON.parse(raw);
     } catch (e) {}
 
@@ -46,7 +46,7 @@
       { group: "Navigation", title: "Explore Catalog", sub: "Destinations & stays", url: p + "explore.html", icon: ICONS.nav },
       { group: "Navigation", title: "Weather Radar", sub: "Live forecasts", url: p + "weather.html", icon: ICONS.nav },
       { group: "Navigation", title: "Plans & Pricing", sub: "Subscription tiers", url: p + "plans.html", icon: ICONS.nav },
-      { group: "Navigation", title: "About Itinari", sub: "Brand story", url: p + "about.html", icon: ICONS.nav },
+      { group: "Navigation", title: "About Itinera", sub: "Brand story", url: p + "about.html", icon: ICONS.nav },
       { group: "Navigation", title: "Contact Support", sub: "Help desk", url: p + "contact.html", icon: ICONS.nav }
     ];
 
@@ -120,7 +120,7 @@
             '<span><kbd class="cmd-esc-badge">↵</kbd> Select</span>' +
             '<span><kbd class="cmd-esc-badge">ESC</kbd> Close</span>' +
           '</div>' +
-          '<span>Itinari Global Command</span>' +
+          '<span>Itinera Global Command</span>' +
         '</div>' +
       '</div>';
 
@@ -257,7 +257,7 @@
     if (query.length >= 2) {
       clearTimeout(searchTimeout);
       searchTimeout = setTimeout(function () {
-        var It = global.Itinari;
+        var It = global.Itinera;
         if (It && It.apiGet) {
           It.apiGet("/destinations?search=" + encodeURIComponent(query)).then(function (res) {
             var list = (res && res.body && (res.body.data || res.body)) || (res && res.data) || [];
@@ -286,7 +286,7 @@
 
   function loadInitialList() {
     var p = getBasePrefix();
-    var It = global.Itinari;
+    var It = global.Itinera;
     var list = [].concat(getNavigationItems(), getActionItems());
 
     // Check for recent notifications
@@ -347,7 +347,7 @@
   });
 
   // Export global API
-  global.ItinariCmd = {
+  global.ItineraCmd = {
     open: open,
     close: close,
     toggle: toggle

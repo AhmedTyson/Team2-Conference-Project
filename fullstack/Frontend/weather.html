@@ -19,7 +19,7 @@
   <!-- Custom Luxury Stylesheet -->
   <link rel="stylesheet" href="assets/css/public.css" />
   <script>/* FOUC prevention — default dark */
-    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+    (function(){var k="itinera_theme",s;try{s=localStorage.getItem(k);}catch(e){}
     if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
       document.documentElement.classList.add("dark","fouc-ready");
     else document.documentElement.classList.add("fouc-ready");
@@ -205,7 +205,7 @@
       }
 
       function fetchCityWeather(city, lat, lon) {
-        Itinari.apiGet("/weather?lat=" + encodeURIComponent(lat) + "&lon=" + encodeURIComponent(lon), { skipAuthRedirect: true }).then(function (res) {
+        Itinera.apiGet("/weather?lat=" + encodeURIComponent(lat) + "&lon=" + encodeURIComponent(lon), { skipAuthRedirect: true }).then(function (res) {
           if (res && res.ok && res.body) {
             var body = res.body.data || res.body;
             var cw = body.current_weather || body;

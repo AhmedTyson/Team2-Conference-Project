@@ -7,7 +7,7 @@
 (function (global) {
   "use strict";
 
-  var It = global.Itinari;
+  var It = global.Itinera;
   if (!It || !It.session) return;
 
   /* Theme is handled by core/theme.js (ItTheme) — no duplicate logic here. */
@@ -287,7 +287,7 @@
       initHeader(session.user);
       initFooter();
       document.body.classList.remove("is-booting");
-      document.dispatchEvent(new CustomEvent("itinari:ready", { detail: session.user }));
+      document.dispatchEvent(new CustomEvent("itinera:ready", { detail: session.user }));
       if (callback) callback(session.user, session.role);
     });
   }

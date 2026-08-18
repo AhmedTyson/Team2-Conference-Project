@@ -5,7 +5,7 @@
 (function (global) {
   "use strict";
 
-  const It = global.Itinari || (global.Itinari = {});
+  const It = global.Itinera || (global.Itinera = {});
   const PC = It.plansCore;
 
   const gridEl = document.getElementById("plansGrid");

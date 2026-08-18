@@ -13,7 +13,7 @@
 (function (global) {
   "use strict";
 
-  const It = global.Itinari;
+  const It = global.Itinera;
   if (!It) return;
 
   const ROUTES = {

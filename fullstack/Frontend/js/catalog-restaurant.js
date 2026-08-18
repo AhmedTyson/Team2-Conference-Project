@@ -5,7 +5,7 @@
 (function (global) {
   "use strict";
 
-  const It = global.Itinari;
+  const It = global.Itinera;
   const CC = It && It.catalog;
   if (!CC) return;
 

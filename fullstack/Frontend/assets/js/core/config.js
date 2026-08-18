@@ -6,11 +6,11 @@
 (function (global) {
   "use strict";
 
-  const Itinari = global.Itinari = global.Itinari || {};
-  const It = global.It = global.Itinari;
+  const Itinera = global.Itinera = global.Itinera || {};
+  const It = global.It = global.Itinera;
 
   function resolveApiBase() {
-    if (global.ITINARI_API_BASE) return global.ITINARI_API_BASE;
+    if (global.ITINERA_API_BASE) return global.ITINERA_API_BASE;
     try {
       if (typeof location !== "undefined" && location.origin && !location.origin.includes("null") && !location.origin.startsWith("file:")) {
         var hostname = location.hostname || "";
@@ -34,8 +34,8 @@
     dashboardUrl: "/app/dashboard.html",
     adminUrl: "/admin/index.html",
     agencyUrl: "/agency/assignments.html",
-    tokenKey: "itinari_token",
-    userKey: "itinari_user",
+    tokenKey: "itinera_token",
+    userKey: "itinera_user",
     tokenStorage: "localStorage",
     routes: {
       login: "/login",
@@ -110,14 +110,14 @@
     try { localStorage.removeItem(CONFIG.userKey); } catch (e) {}
   }
 
-  Itinari.CONFIG = CONFIG;
-  Itinari.storeToken = storeToken;
-  Itinari.readToken = readToken;
-  Itinari.clearToken = clearToken;
-  Itinari.storeUser = storeUser;
-  Itinari.readUser = readUser;
-  Itinari.clearUser = clearUser;
-  Itinari.resolveApiBase = resolveApiBase;
+  Itinera.CONFIG = CONFIG;
+  Itinera.storeToken = storeToken;
+  Itinera.readToken = readToken;
+  Itinera.clearToken = clearToken;
+  Itinera.storeUser = storeUser;
+  Itinera.readUser = readUser;
+  Itinera.clearUser = clearUser;
+  Itinera.resolveApiBase = resolveApiBase;
 
   global.APP_CONFIG = {
     API_BASE_URL: CONFIG.apiBase,
@@ -162,7 +162,7 @@
         } else {
           var img = document.createElement("img");
           img.src = relLogo;
-          img.alt = "Itinari Logo";
+          img.alt = "Itinera Logo";
           img.className = "brand-mark-img";
           img.style.cssText = "height: 28px; width: auto; vertical-align: middle; display: inline-block; object-fit: contain;";
           if (mark.parentNode) mark.parentNode.replaceChild(img, mark);

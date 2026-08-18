@@ -5,7 +5,7 @@
 (function (global) {
   "use strict";
 
-  var It = global.Itinari;
+  var It = global.Itinera;
   if (!It) return;
 
   var grid = document.getElementById("fav-grid");

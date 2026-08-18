@@ -5,7 +5,7 @@
 (function (global) {
   "use strict";
 
-  const It = global.Itinari;
+  const It = global.Itinera;
   const fb = It.feedback;
 
   const DASH = {
@@ -263,7 +263,7 @@
         tripsDataList = res.body.data;
         
         tripsDataList.forEach(t => {
-          const localAtts = localStorage.getItem(`itinari_attachments_${t.id}`);
+          const localAtts = localStorage.getItem(`itinera_attachments_${t.id}`);
           t.attachments = localAtts ? JSON.parse(localAtts) : [];
           
           if (t.attachments.length === 0 && t.title.includes("Bali")) {
@@ -271,7 +271,7 @@
               { id: "att-1", name: "Amnaya Resort DPS", type: "Hotel", address: "Kuta, Bali", price: 140, x: 50, y: 110 },
               { id: "att-2", name: "Nusa Penida Tour", type: "Attraction", address: "Nusa Penida", price: 45, x: 140, y: 130 }
             ];
-            localStorage.setItem(`itinari_attachments_${t.id}`, JSON.stringify(t.attachments));
+            localStorage.setItem(`itinera_attachments_${t.id}`, JSON.stringify(t.attachments));
           }
         });
 
@@ -353,7 +353,7 @@
       if (res.ok && res.body && res.body.data) {
         fb.banner("Trip created successfully!", "is-ok");
         activeTripId = res.body.data.id;
-        localStorage.setItem(`itinari_attachments_${activeTripId}`, JSON.stringify([]));
+        localStorage.setItem(`itinera_attachments_${activeTripId}`, JSON.stringify([]));
         
         loadTripsFromDb();
         switchPlannerSubTab("page-trips");
@@ -524,7 +524,7 @@
     if (!trip.attachments) trip.attachments = [];
     trip.attachments.push(newAtt);
 
-    localStorage.setItem(`itinari_attachments_${trip.id}`, JSON.stringify(trip.attachments));
+    localStorage.setItem(`itinera_attachments_${trip.id}`, JSON.stringify(trip.attachments));
     renderActiveTripDetails();
   }
 
@@ -535,7 +535,7 @@
     if (!trip) return;
 
     trip.attachments = (trip.attachments || []).filter(att => att.id !== itemId);
-    localStorage.setItem(`itinari_attachments_${trip.id}`, JSON.stringify(trip.attachments));
+    localStorage.setItem(`itinera_attachments_${trip.id}`, JSON.stringify(trip.attachments));
     renderActiveTripDetails();
   }
 
@@ -720,7 +720,7 @@
     ];
 
     const mockNotifs = [
-      { message: "Welcome to Itinari! Explore trips and bookmark your favorites.", created_at: new Date().toISOString() },
+      { message: "Welcome to Itinera! Explore trips and bookmark your favorites.", created_at: new Date().toISOString() },
       { message: "Your card payment of $580.00 was processed successfully.", created_at: new Date(Date.now() - 3600000).toISOString() },
       { message: "Your trip itinerary to DPS is finalized.", created_at: new Date(Date.now() - 7200000).toISOString() }
     ];

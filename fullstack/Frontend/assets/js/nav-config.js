@@ -4,12 +4,12 @@
  *   top nav   (customer app topbar)    : guest | user | agency
  *   sidebar   (admin shell)            : super_admin | admin | agency
  * Icons are inline SVG (lucide-style, 24 viewBox) reused from the admin pages.
- * Depends on config.js + session.js (Itinari namespace only, no DOM).
+ * Depends on config.js + session.js (Itinera namespace only, no DOM).
  */
 (function (global) {
   "use strict";
 
-  var It = global.Itinari || (global.Itinari = {});
+  var It = global.Itinera || (global.Itinera = {});
 
   var svg = function (inner) {
     return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + inner + "</svg>";

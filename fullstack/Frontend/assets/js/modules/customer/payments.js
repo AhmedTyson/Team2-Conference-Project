@@ -5,7 +5,7 @@
 (function (global) {
   "use strict";
 
-  var It = global.Itinari || {};
+  var It = global.Itinera || {};
 
   function el(id) {
     return document.getElementById(id);
@@ -179,12 +179,12 @@
     initSearch();
 
     // Fetch user orders & profile from backend API
-    var apiGetFunc = (window.Itinari && window.Itinari.apiGet) || (window.Api && window.Api.get);
+    var apiGetFunc = (window.Itinera && window.Itinera.apiGet) || (window.Api && window.Api.get);
     if (apiGetFunc) {
       apiGetFunc("/me/orders", { auth: true })
         .then(function (res) {
-          var user = (window.Itinari && window.Itinari.session && window.Itinari.session.currentUser && window.Itinari.session.currentUser()) || null;
-          var data = (window.Itinari && window.Itinari.unwrapData) ? window.Itinari.unwrapData(res) : (res.body ? res.body.data : res);
+          var user = (window.Itinera && window.Itinera.session && window.Itinera.session.currentUser && window.Itinera.session.currentUser()) || null;
+          var data = (window.Itinera && window.Itinera.unwrapData) ? window.Itinera.unwrapData(res) : (res.body ? res.body.data : res);
           allPayments = Array.isArray(data) ? data : [];
           updateMetrics(allPayments, user);
           renderPaymentsTable(allPayments);

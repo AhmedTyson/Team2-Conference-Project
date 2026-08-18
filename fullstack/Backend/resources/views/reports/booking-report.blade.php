@@ -2,9 +2,9 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Executive Analytics Report — {{ config('app.name', 'Itinari') }}</title>
+    <title>Executive Analytics Report — {{ config('app.name', 'Itinera') }}</title>
     <style>
-        /* ── Itinari Luxury Gold & Dark Onyx Palette ────────────────────────
+        /* ── Itinera Luxury Gold & Dark Onyx Palette ────────────────────────
            Onyx #0B0F19 | Gold Accent #F59E0B | Amber #FBBF24 | Slate #1E293B | Ice #F1F5F9
         ─────────────────────────────────────────────────────────────────────── */
 
@@ -702,7 +702,7 @@
         @endif
 
         <div class="footer">
-            Itinari Platform &mdash; Confidential Executive Audit Report &mdash; Generated {{ $generatedAt->format('Y-m-d H:i') }} UTC
+            Itinera Platform &mdash; Confidential Executive Audit Report &mdash; Generated {{ $generatedAt->format('Y-m-d H:i') }} UTC
         </div>
     </div>
 

@@ -14,7 +14,7 @@
 (function (global) {
   "use strict";
 
-  const It = global.Itinari || (global.Itinari = {});
+  const It = global.Itinera || (global.Itinera = {});
   const PC = It && It.plansCore;
   if (!PC) return;
 
@@ -126,13 +126,13 @@
    * of which exists in assets/js/core/session.js (confirmed by reading the
    * file — its real accessor, currentUser(), is async and can't be called
    * synchronously here without restructuring every caller). Reading the
-   * same "itinari_user" localStorage key session.js itself caches the user
+   * same "itinera_user" localStorage key session.js itself caches the user
    * under (see core/session.js line ~129/142) is the correct sync-safe fix.
    */
   function getBillingInfo() {
     let u = {};
     try {
-      const stored = localStorage.getItem("itinari_user");
+      const stored = localStorage.getItem("itinera_user");
       if (stored) u = JSON.parse(stored) || {};
     } catch (e) {}
     const raw = u.name || "";

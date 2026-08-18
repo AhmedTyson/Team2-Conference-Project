@@ -7,7 +7,7 @@
 (function (global) {
   "use strict";
 
-  var It = global.Itinari;
+  var It = global.Itinera;
   if (!It || !It.app) return;
 
   var MAX_AVATAR_BYTES = 2 * 1024 * 1024;
@@ -168,7 +168,7 @@
         if (res.ok) {
           var updatedUser = (res.body && res.body.data && res.body.data.user) || (res.body && res.body.user) || null;
           if (updatedUser) {
-            try { localStorage.setItem("itinari_user", JSON.stringify(updatedUser)); } catch (e) {}
+            try { localStorage.setItem("itinera_user", JSON.stringify(updatedUser)); } catch (e) {}
           }
           It.app.showToast("Profile updated.", "success");
           setTimeout(function () { global.location.reload(); }, 600);

@@ -12,7 +12,7 @@
 (function () {
   "use strict";
 
-  const It = window.Itinari;
+  const It = window.Itinera;
   const PC = It && It.plansCore;
   if (!PC) return;
 

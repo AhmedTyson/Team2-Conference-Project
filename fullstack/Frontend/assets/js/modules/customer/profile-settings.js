@@ -7,7 +7,7 @@
 (function (global) {
   "use strict";
 
-  var It = global.Itinari;
+  var It = global.Itinera;
   if (!It || !It.app) return;
 
   var MAX_AVATAR_BYTES = 2 * 1024 * 1024;

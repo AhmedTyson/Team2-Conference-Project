@@ -8,7 +8,7 @@
 </div>
 
 <p>Hi <strong>{{ $review->user->name ?? 'there' }}</strong>,</p>
-<p>Your review has passed moderation and is now publicly visible on <strong>{{ config('app.name', 'Itinari') }}</strong>.</p>
+<p>Your review has passed moderation and is now publicly visible on <strong>{{ config('app.name', 'Itinera') }}</strong>.</p>
 
 <div class="card">
     <div style="margin-bottom: 12px;">

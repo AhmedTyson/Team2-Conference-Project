@@ -303,12 +303,12 @@ Final deliverable ready to link to your client approvals. Files touched in this 
   - `GET /api/v1/agency/assignments` — agency lists own (with customer + trips)
 
 ### 24.6 Seeders & tests (Phase 9)
-- `AgencyAssignmentSeeder` (registered in `DatabaseSeeder`): agency user `agency@itinari.test` (role `agency`) + completed assignments for 2 non-role users.
+- `AgencyAssignmentSeeder` (registered in `DatabaseSeeder`): agency user `agency@itinera.test` (role `agency`) + completed assignments for 2 non-role users.
 - `AgencyAssignmentFactory` with `adminApproved()` / `agencyApproved()` states.
 - `tests/Feature/Commerce/AgencyTest.php`: 8 tests covering request → admin approve → agency approve/decline → authorization denials → list → build trip (incl. `trip_items` attach).
 - `php artisan migrate:fresh --seed` clean; full suite **115 passed (361 assertions)**.
 
 ### 24.7 Agency frontend (Phase 8)
-- `frontend/agency/index.html` + `frontend/assets/js/agency.js` — Itinari admin shell (admin.css, gsap, config/api/session/admin-chrome), session-gated to `agency` role.
+- `frontend/agency/index.html` + `frontend/assets/js/agency.js` — Itinera admin shell (admin.css, gsap, config/api/session/admin-chrome), session-gated to `agency` role.
 - Dashboard: KPI row (total / awaiting response / in progress / completed) + assignments table with Approve/Decline inline actions → `POST /v1/agency/assignments/{id}/approve|decline`.
 - Role landing: `config.js.role.agency = /agency/index.html`; `auth.js` login redirect + `dashboard.js` gate send agency users to the agency desk.

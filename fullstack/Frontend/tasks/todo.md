@@ -142,7 +142,7 @@ Port design patterns only to vanilla (no framework/deps). Verify on `localhost:8
 
 ### Task 17.1 — Dark theme token set + toggle
 
-**Description:** Add full `[data-theme="dark"]` override block to `admin.css` (mirror every `hsl(var(--…))` token), persist choice in `localStorage` (`itinari_theme`), apply early (inline or `admin-shell.js`) to avoid light flash. Theme toggle button in topbar (built in 17.2).
+**Description:** Add full `[data-theme="dark"]` override block to `admin.css` (mirror every `hsl(var(--…))` token), persist choice in `localStorage` (`itinera_theme`), apply early (inline or `admin-shell.js`) to avoid light flash. Theme toggle button in topbar (built in 17.2).
 
 **Acceptance criteria:**
 - [x] Every admin page renders correctly with `[data-theme="dark"]` — sidebar, tickets, tables, modal, charts

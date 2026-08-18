@@ -6,7 +6,7 @@
 (function (global) {
   "use strict";
 
-  var It = global.Itinari || (global.Itinari = {});
+  var It = global.Itinera || (global.Itinera = {});
 
   // ── Curated Hero Slides (with fallback high-res travel photography) ──
   var HERO_SLIDES = [
@@ -442,7 +442,7 @@
             var tok = It.extractToken(res.body);
             if (tok) It.storeToken(tok);
             var user = It.session.extractUser(res.body);
-            if (user) localStorage.setItem("itinari_user", JSON.stringify(user));
+            if (user) localStorage.setItem("itinera_user", JSON.stringify(user));
             showToast("Welcome back! Redirecting...", false);
             setTimeout(function () {
               var role = It.session.roleOf(user);
@@ -481,7 +481,7 @@
             var tok = It.extractToken(res.body);
             if (tok) It.storeToken(tok);
             var user = It.session.extractUser(res.body);
-            if (user) localStorage.setItem("itinari_user", JSON.stringify(user));
+            if (user) localStorage.setItem("itinera_user", JSON.stringify(user));
             showToast("Account created successfully!", false);
             setTimeout(function () {
               window.location.href = "/app/dashboard.html";

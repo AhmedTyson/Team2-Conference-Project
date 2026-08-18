@@ -19,7 +19,7 @@
   <!-- Custom Luxury Stylesheet -->
   <link rel="stylesheet" href="../assets/css/public.css" />
   <script>/* FOUC prevention — default dark */
-    (function(){var k="itinari_theme",s;try{s=localStorage.getItem(k);}catch(e){}
+    (function(){var k="itinera_theme",s;try{s=localStorage.getItem(k);}catch(e){}
     if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
       document.documentElement.classList.add("dark","fouc-ready");
     else document.documentElement.classList.add("fouc-ready");
@@ -159,7 +159,7 @@
       var y = document.getElementById("footerYear");
       if (y) y.textContent = new Date().getFullYear();
 
-      if (window.Itinari && window.Itinari.session && typeof window.Itinari.session.bootAuth === "function") {
+      if (window.Itinera && window.Itinera.session && typeof window.Itinera.session.bootAuth === "function") {
         window.
       }
 
@@ -208,7 +208,7 @@
       }
 
       function fetchCityWeather(city, lat, lon) {
-        var apiFunc = (window.Itinari && window.Itinari.apiGet) ? window.Itinari.apiGet : null;
+        var apiFunc = (window.Itinera && window.Itinera.apiGet) ? window.Itinera.apiGet : null;
         if (apiFunc) {
           apiFunc("/weather?lat=" + encodeURIComponent(lat) + "&lon=" + encodeURIComponent(lon), { skipAuthRedirect: true }).then(function (res) {
             if (res && res.ok && res.body) {

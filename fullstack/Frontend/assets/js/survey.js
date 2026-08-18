@@ -6,7 +6,7 @@
 (function (global) {
   "use strict";
 
-  var It = global.Itinari;
+  var It = global.Itinera;
   if (!It || !It.app) return;
 
   var id = Number(new URLSearchParams(global.location.search).get("id")) || 0;

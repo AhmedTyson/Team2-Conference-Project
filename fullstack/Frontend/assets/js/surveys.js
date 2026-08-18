@@ -8,7 +8,7 @@
 (function (global) {
   "use strict";
 
-  const It = global.Itinari;
+  const It = global.Itinera;
 
   let allSurveys = [];
   let currentBudgetFilter = "all";
@@ -445,10 +445,10 @@
 
   function init() {
     setupEvents();
-    if (global.Itinari && global.Itinari.session && global.Itinari.session.hasToken()) {
+    if (global.Itinera && global.Itinera.session && global.Itinera.session.hasToken()) {
       fetchSurveys();
     } else {
-      document.addEventListener("itinari:ready", function () {
+      document.addEventListener("itinera:ready", function () {
         fetchSurveys();
       });
       setTimeout(fetchSurveys, 100);

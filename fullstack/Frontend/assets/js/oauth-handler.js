@@ -9,7 +9,7 @@
 (function (global) {
   "use strict";
 
-  const It = global.Itinari || global.It;
+  const It = global.Itinera || global.It;
   if (!It) return;
 
   const qs = new URLSearchParams(global.location.search);
@@ -29,8 +29,8 @@
 
   function toast(message, kind) {
     if (It.toast) It.toast(message, kind);
-    if (global.ItinariToast && global.ItinariToast.success) {
-      var t = global.ItinariToast;
+    if (global.ItineraToast && global.ItineraToast.success) {
+      var t = global.ItineraToast;
       if (kind === "error") t.error(message); else t.success(message);
     }
   }

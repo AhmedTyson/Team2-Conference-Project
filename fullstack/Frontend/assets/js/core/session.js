@@ -6,7 +6,7 @@
 (function (global) {
   "use strict";
 
-  const It = global.Itinari || (global.Itinari = {});
+  const It = global.Itinera || (global.Itinera = {});
 
   // Cached profile so boot role resolution hits /api/user at most once
   let _user = null;
@@ -34,13 +34,13 @@
 
   /** Payload of stored token (sub, id, exp). Null when no token or undecodable. */
   function tokenPayload() {
-    const token = (It.readToken && It.readToken()) || localStorage.getItem("itinari_token");
+    const token = (It.readToken && It.readToken()) || localStorage.getItem("itinera_token");
     if (!token) return null;
     return decodeJwt(token);
   }
 
   function hasToken() {
-    return !!((It.readToken && It.readToken()) || localStorage.getItem("itinari_token"));
+    return !!((It.readToken && It.readToken()) || localStorage.getItem("itinera_token"));
   }
 
   /** Check if token is near expiration (within 5 minutes) */
@@ -139,7 +139,7 @@
     }
 
     try {
-      const stored = (It.readUser && It.readUser()) || localStorage.getItem("itinari_user");
+      const stored = (It.readUser && It.readUser()) || localStorage.getItem("itinera_user");
       if (stored && !forceRefresh) {
         const parsed = typeof stored === "string" ? JSON.parse(stored) : stored;
         const extracted = extractUser(parsed) || parsed;
@@ -158,7 +158,7 @@
           _user = user;
           if (It.storeUser) It.storeUser(user);
           else {
-            try { localStorage.setItem("itinari_user", JSON.stringify(user)); } catch (e) {}
+            try { localStorage.setItem("itinera_user", JSON.stringify(user)); } catch (e) {}
           }
           return _user;
         }
@@ -317,9 +317,9 @@
   function clearSession() {
     _user = null;
     if (It.clearToken) It.clearToken();
-    else localStorage.removeItem("itinari_token");
+    else localStorage.removeItem("itinera_token");
     if (It.clearUser) It.clearUser();
-    else try { localStorage.removeItem("itinari_user"); } catch (e) {}
+    else try { localStorage.removeItem("itinera_user"); } catch (e) {}
   }
 
   /** POST logout (best-effort), then wipe local session + go to login. */
@@ -334,7 +334,7 @@
   // Multi-tab synchronization via StorageEvent
   if (typeof window !== "undefined" && window.addEventListener) {
     window.addEventListener("storage", function (e) {
-      var tokenKey = (It.CONFIG && It.CONFIG.tokenKey) || "itinari_token";
+      var tokenKey = (It.CONFIG && It.CONFIG.tokenKey) || "itinera_token";
       if (e.key === tokenKey) {
         if (!e.newValue) {
           // Token removed in another tab -> Logout in this tab too

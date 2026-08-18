@@ -8,7 +8,7 @@
 (function (global) {
   "use strict";
 
-  var It = global.Itinari || {};
+  var It = global.Itinera || {};
   var params = new URLSearchParams(global.location.search);
   var tripId = params.get("id");
   var currentTripData = null;
@@ -562,19 +562,19 @@
   function forkTrip(idToFork) {
     var user = getCurrentUser();
     if (!user) {
-      if (global.ItinariToast) global.ItinariToast("Please login to fork itineraries into your planner.", "warning");
+      if (global.ItineraToast) global.ItineraToast("Please login to fork itineraries into your planner.", "warning");
       setTimeout(function () {
         global.location.href = "../auth/login.html?redirect=" + encodeURIComponent(global.location.href);
       }, 1200);
       return;
     }
 
-    if (global.ItinariToast) global.ItinariToast("Forking itinerary into your planner…", "info");
+    if (global.ItineraToast) global.ItineraToast("Forking itinerary into your planner…", "info");
 
     if (It.apiPost) {
       It.apiPost("/trips/" + idToFork + "/fork", {}).then(function (res) {
         if (res.ok) {
-          if (global.ItinariToast) global.ItinariToast("✨ Itinerary forked successfully to your trips!", "success");
+          if (global.ItineraToast) global.ItineraToast("✨ Itinerary forked successfully to your trips!", "success");
           var forkedTripId = (res.body && res.body.data && res.body.data.trip && res.body.data.trip.id) || idToFork;
           setTimeout(function () {
             global.location.href = "../app/trip.html?id=" + forkedTripId;
@@ -591,7 +591,7 @@
   }
 
   function cloneTripFallback(idToFork) {
-    if (global.ItinariToast) global.ItinariToast("✨ Itinerary forked successfully to your trips!", "success");
+    if (global.ItineraToast) global.ItineraToast("✨ Itinerary forked successfully to your trips!", "success");
     setTimeout(function () {
       global.location.href = "../app/trips.html";
     }, 1000);
@@ -616,13 +616,13 @@
     var user = (It && It.session && It.session.user) || null;
     if (!user) {
       try {
-        var raw = global.localStorage.getItem("itinari_user");
+        var raw = global.localStorage.getItem("itinera_user");
         if (raw) user = JSON.parse(raw);
       } catch (e) {}
     }
     var token = null;
     try {
-      token = global.localStorage.getItem("itinari_token");
+      token = global.localStorage.getItem("itinera_token");
     } catch (e) {}
     return (token && user) ? user : null;
   }

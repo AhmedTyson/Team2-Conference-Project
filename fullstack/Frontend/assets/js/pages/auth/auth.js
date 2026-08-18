@@ -1,14 +1,14 @@
 /**
  * auth.js — page glue. Wires forms to api.js + validation.js + animations.js.
  * Contains ZERO animation code and ZERO validation rules of its own:
- *   - rules come from Itinari.Rules (validation.js)
- *   - visuals come from Itinari.feedback (animations.js)
- *   - transport comes from Itinari.apiPost (api.js)
+ *   - rules come from Itinera.Rules (validation.js)
+ *   - visuals come from Itinera.feedback (animations.js)
+ *   - transport comes from Itinera.apiPost (api.js)
  */
 (function (global) {
   "use strict";
 
-  const It = global.Itinari;
+  const It = global.Itinera;
   const R = It.Rules;
   const fb = It.feedback;
 
@@ -31,7 +31,7 @@
         if (user && typeof user === "object") {
           if (It.storeUser) It.storeUser(user);
           else {
-            try { localStorage.setItem("itinari_user", JSON.stringify(user)); } catch (e) {}
+            try { localStorage.setItem("itinera_user", JSON.stringify(user)); } catch (e) {}
           }
         }
         fb.banner("Logged in — taking you to your dashboard…", "is-ok");
@@ -72,7 +72,7 @@
         if (user && typeof user === "object") {
           if (It.storeUser) It.storeUser(user);
           else {
-            try { localStorage.setItem("itinari_user", JSON.stringify(user)); } catch (e) {}
+            try { localStorage.setItem("itinera_user", JSON.stringify(user)); } catch (e) {}
           }
         }
         fb.banner("Account created — welcome to Itinera!", "is-ok");
@@ -130,7 +130,7 @@
         if (user && typeof user === "object") {
           if (It.storeUser) It.storeUser(user);
           else {
-            try { localStorage.setItem("itinari_user", JSON.stringify(user)); } catch (e) {}
+            try { localStorage.setItem("itinera_user", JSON.stringify(user)); } catch (e) {}
           }
         }
         fb.banner("Profile completed — taking you to your dashboard…", "is-ok");

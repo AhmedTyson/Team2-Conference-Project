@@ -7,7 +7,7 @@
 (function (global) {
   "use strict";
 
-  var It = global.Itinari || {};
+  var It = global.Itinera || {};
   var activeView = "countries"; // 'countries' | 'cities'
   var activeRegion = "all";
   var searchQuery = "";

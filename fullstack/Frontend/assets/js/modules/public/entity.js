@@ -1,7 +1,7 @@
 (function (global) {
   "use strict";
 
-  var It = global.Itinari || (global.Itinari = {});
+  var It = global.Itinera || (global.Itinera = {});
 
   function esc(str) {
     if (str == null) return "";

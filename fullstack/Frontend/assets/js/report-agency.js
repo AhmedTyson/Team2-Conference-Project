@@ -5,7 +5,7 @@
 (function(global) {
   'use strict';
 
-  var It = global.Itinari;
+  var It = global.Itinera;
   if (!It) return;
 
   function el(id) { return document.getElementById(id); }
@@ -72,7 +72,7 @@
     }
   }
 
-  document.addEventListener("itinari:ready", boot);
+  document.addEventListener("itinera:ready", boot);
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", boot);
   } else {

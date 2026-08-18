@@ -6,7 +6,7 @@
 (function (global) {
   "use strict";
 
-  var It = global.Itinari || (global.Itinari = {});
+  var It = global.Itinera || (global.Itinera = {});
 
   var TAB = "destinations";
   var SEARCH = "";
@@ -271,8 +271,8 @@
     
     var name = item.name || item.flight_number || (item.airline ? item.airline + " Flight" : "Experience");
     var country = (item.country && item.country.name) || item.country || "";
-    var unsplashFallback = (global.Itinari && global.Itinari.getUnsplashImage) 
-      ? global.Itinari.getUnsplashImage(name, type, country) 
+    var unsplashFallback = (global.Itinera && global.Itinera.getUnsplashImage) 
+      ? global.Itinera.getUnsplashImage(name, type, country) 
       : "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80";
     var img = item.image_url || item.image || unsplashFallback;
 

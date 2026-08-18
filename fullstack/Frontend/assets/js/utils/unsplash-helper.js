@@ -5,7 +5,7 @@
 (function (global) {
   "use strict";
 
-  var It = global.Itinari || (global.Itinari = {});
+  var It = global.Itinera || (global.Itinera = {});
 
   var HOTEL_IMAGES = [
     "https://images.unsplash.com/photo-1566073171639-4d8ef58f4a13?auto=format&fit=crop&w=800&q=80",

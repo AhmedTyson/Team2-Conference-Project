@@ -12,7 +12,7 @@
 (function (global) {
   "use strict";
 
-  const It = global.Itinari;
+  const It = global.Itinera;
 
   const MODULES = {
     destinations: {
@@ -1353,14 +1353,14 @@
       load();
     }
 
-    document.addEventListener("itinari:ready", function(e) {
+    document.addEventListener("itinera:ready", function(e) {
       boot(e.detail);
     });
 
     function tryDirectBoot() {
       if (isBooted) return;
-      if (global.Itinari && global.Itinari.session && global.Itinari.session.hasToken()) {
-        global.Itinari.session.currentUser().then(function (user) {
+      if (global.Itinera && global.Itinera.session && global.Itinera.session.hasToken()) {
+        global.Itinera.session.currentUser().then(function (user) {
           if (user) boot(user);
         });
       }

@@ -7,7 +7,7 @@
 (function (global) {
   "use strict";
 
-  const It = global.Itinari;
+  const It = global.Itinera;
   const SC = It && It.surveysCore;
   if (!SC) return;
 

@@ -18,7 +18,7 @@ class FlagPolicy
         return $user->id === $flag->reporter_id ||
             $user->id === $flag->reviewed_by ||
             $user->hasAnyRole(['admin', 'super_admin']) ||
-            $user->email === 'admin@itinari.com' ||
+            $user->email === 'admin@itinera.com' ||
             $user->email === 'admin@threedos.com';
     }
 
@@ -31,7 +31,7 @@ class FlagPolicy
         return $user->id === $assignment->customer_id ||
             $user->id === $assignment->agency_user_id ||
             $user->hasAnyRole(['admin', 'super_admin']) ||
-            $user->email === 'admin@itinari.com' ||
+            $user->email === 'admin@itinera.com' ||
             $user->email === 'admin@threedos.com';
     }
 
@@ -42,7 +42,7 @@ class FlagPolicy
         }
 
         return $user->hasAnyRole(['admin', 'super_admin']) ||
-            $user->email === 'admin@itinari.com' ||
+            $user->email === 'admin@itinera.com' ||
             $user->email === 'admin@threedos.com';
     }
 

@@ -4,7 +4,7 @@
 (function (global) {
   "use strict";
 
-  var It = global.Itinari || (global.Itinari = {});
+  var It = global.Itinera || (global.Itinera = {});
   var Svc = It.services || (It.services = {});
 
   Svc.commerce = {

@@ -26,12 +26,12 @@
     ];
 
     /* ================= SESSION ================= */
-    /* Session delegates to the canonical Itinari stack (config.js/api.js/
-       session.js → window.Itinari, key `itinera_token`) so the trip planner
+    /* Session delegates to the canonical Itinera stack (config.js/api.js/
+       session.js → window.Itinera, key `itinera_token`) so the trip planner
        shares one login across the whole app. `tp_user` stays as a display
        cache; `tp_token` remains a read-only fallback for pre-migration logins. */
     function getToken() {
-        if (window.Itinari && Itinari.readToken) return Itinari.readToken();
+        if (window.Itinera && Itinera.readToken) return Itinera.readToken();
         return localStorage.getItem('tp_token');
     }
 
@@ -40,12 +40,12 @@
     }
 
     function setSession(token, user) {
-        if (window.Itinari && Itinari.storeToken) Itinari.storeToken(token);
+        if (window.Itinera && Itinera.storeToken) Itinera.storeToken(token);
         localStorage.setItem('tp_user', JSON.stringify(user || {}));
     }
 
     function clearSession() {
-        if (window.Itinari && Itinari.clearToken) Itinari.clearToken();
+        if (window.Itinera && Itinera.clearToken) Itinera.clearToken();
         localStorage.removeItem('tp_token');
         localStorage.removeItem('tp_user');
         localStorage.removeItem('tp_active_trip');

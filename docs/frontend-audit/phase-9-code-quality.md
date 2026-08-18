@@ -40,6 +40,6 @@
 | Dimension | Rating | Observations |
 | :--- | :---: | :--- |
 | **Modularity** | **8.5 / 10** | Core platform services are cleanly decoupled into standalone, single-responsibility modules in `assets/js/core/`. |
-| **Extensibility**| **9.0 / 10** | Adding a new catalog entity or admin workspace requires only standard HTML markup and binding to `Itinari.apiGet`. |
+| **Extensibility**| **9.0 / 10** | Adding a new catalog entity or admin workspace requires only standard HTML markup and binding to `Itinera.apiGet`. |
 | **Token Discipline**| **9.5 / 10** | CSS custom properties in `tokens.css` govern all visual themes with zero arbitrary hardcoded colors in core components. |
 | **Script Hygiene**| **8.5 / 10** | All scripts pass `node --check` syntax validation with zero errors. |

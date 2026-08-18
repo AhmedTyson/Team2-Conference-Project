@@ -50,7 +50,7 @@ blur ≤16px default (≤32px max), no nested glass, no vars inside
 dark.
 ```
 
-## Itinari-specific notes
+## Itinera-specific notes
 - Tokens: `frontend/assets/css/tokens.css` — HSL triplets, `hsl(var(--x))` wrapper, `.dark` override block.
 - Glass system: `frontend/assets/css/glass.css` — `.glass`, `.glass--sm/md/xl/3xl`, `.glass--soft/mid/strong`, `.glass--tint-blue/sky/teal/sun/coral/violet`, `.shadow-*`, `.glass-stack`.
 - Import chain: `auth.css` → `tokens.css` + `glass.css`; `admin.css` → `auth.css` (inherits both); `app.css` → `glass.css`.

@@ -1,5 +1,5 @@
 @extends('emails.layouts.main')
-@section('title', 'Welcome to ' . config('app.name', 'Itinari'))
+@section('title', 'Welcome to ' . config('app.name', 'Itinera'))
 
 @section('content')
 <div class="headline">
@@ -7,7 +7,7 @@
     <h2 style="margin-top: 0;">Welcome aboard, {{ $user->name }}</h2>
 </div>
 
-<p>Thank you for joining <strong>{{ config('app.name', 'Itinari') }}</strong> — a platform built to turn travel ideas into carefully planned journeys.</p>
+<p>Thank you for joining <strong>{{ config('app.name', 'Itinera') }}</strong> — a platform built to turn travel ideas into carefully planned journeys.</p>
 
 <div class="callout">
     <span class="label">Good to know</span>
@@ -47,6 +47,6 @@
 <hr class="divider">
 <p style="font-size: 13px; color: #7A756E; margin: 0;">
     Warm regards,<br>
-    <strong style="color: #056676;">The {{ config('app.name', 'Itinari') }} Team</strong>
+    <strong style="color: #056676;">The {{ config('app.name', 'Itinera') }} Team</strong>
 </p>
 @endsection

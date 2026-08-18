@@ -8,7 +8,7 @@
 (function (global) {
   "use strict";
 
-  const It = global.Itinari;
+  const It = global.Itinera;
 
   function el(id) { return document.getElementById(id); }
   function esc(s) {
@@ -397,7 +397,7 @@
     load();
   }
 
-  global.document.addEventListener("itinari:ready", init);
+  global.document.addEventListener("itinera:ready", init);
 
   if (global.document.readyState === "loading") {
     global.document.addEventListener("DOMContentLoaded", init);

@@ -5,7 +5,7 @@
 (function (global) {
   "use strict";
 
-  var It = global.Itinari || (global.Itinari = {});
+  var It = global.Itinera || (global.Itinera = {});
 
   var list = document.getElementById("trip-list");
   var filterPills = document.getElementById("trip-filter-pills");

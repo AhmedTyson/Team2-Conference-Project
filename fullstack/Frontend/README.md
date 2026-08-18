@@ -1,4 +1,4 @@
-# Itinari — Frontend
+# Itinera — Frontend
 
 Boarding-pass themed travel platform. Static frontend + Laravel API (`Team2-Conference-Project`).
 
@@ -43,9 +43,9 @@ Shared: `admin-shell.js` (sidebar/nav), `admin-chrome.js` (topbar, theme toggle,
 
 ### Phase 17 — shadcnspace-inspired refinement (vanilla ports)
 
-- **Dark theme**: `.dark` token block in `tokens.css`; toggle in topbar (`#theme-toggle`), persisted in `localStorage` (`itinari_theme`), no flash, `aria-pressed` synced.
+- **Dark theme**: `.dark` token block in `tokens.css`; toggle in topbar (`#theme-toggle`), persisted in `localStorage` (`itinera_theme`), no flash, `aria-pressed` synced.
 - **Topbar**: sticky glass strip on all 10 admin pages with global search (`admin:search` custom event), theme toggle, collapsed brand.
-- **Sidebar**: active-link pill + left indicator; collapse button shrinks 264px → 82px icon rail (`itinari_sidebar`), labels/`nav-section` hidden, persisted.
+- **Sidebar**: active-link pill + left indicator; collapse button shrinks 264px → 82px icon rail (`itinera_sidebar`), labels/`nav-section` hidden, persisted.
 - **Datatable** (`admin-crud.js`): search + sortable headers (aria-sort) + pagination footer. Query contract `?page&per_page&search&sort_by&sort_order`; normalizes `{data:{data,links,meta}}` (server-paged) vs bare array (client-paged). Search also filters users/trips/reviews custom tables.
 - **Empty states**: icon + title + hint (+ optional action) on zero rows and on no-match.
 - **Dialogs**: ESC closes (focus + scroll-lock release), backdrop blur, internal scroll region, close button.
@@ -56,7 +56,7 @@ Shared: `admin-shell.js` (sidebar/nav), `admin-chrome.js` (topbar, theme toggle,
 
 ### Auth & RBAC
 
-- Token stored in `localStorage` under `itinari_token` (admin gate re-uses the user token).
+- Token stored in `localStorage` under `itinera_token` (admin gate re-uses the user token).
 - Admin check: `session.isAdminRole(session.roleOf(user))`; non-admin or missing token → `session.redirectToLogin()`.
 - Test creds: `admin@threedos.com` / `password` (seed from backend).
 
@@ -76,6 +76,6 @@ Shared: `admin-shell.js` (sidebar/nav), `admin-chrome.js` (topbar, theme toggle,
 
 - **Mobile Drawer**: Fixed off-canvas sidebar (<1024px) with backdrop, escape/click-out dismiss.
 - **Motion**: Hand-tuned bezier curves (--dur-base, --ease-out) globally applied without stock \ase\ defaults.
-- **Theming & Tokens**: Tri-state theme (light/dark/system) stored in itinari_theme. Centralized status colors (ok/warn/danger) in 	okens.css.
+- **Theming & Tokens**: Tri-state theme (light/dark/system) stored in itinera_theme. Centralized status colors (ok/warn/danger) in 	okens.css.
 - **Data Vis**: Vanilla JS bar charts with shimmer skeletons, aria-live tooltips, and calculated grid ticks.
 - **A11y**: Skip links, ARIA labels on icon buttons, SVG ria-hidden, and keyboard focus verification.

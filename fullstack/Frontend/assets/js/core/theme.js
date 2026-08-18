@@ -1,12 +1,12 @@
 /**
- * core/theme.js — Canonical Itinari theme engine.
+ * core/theme.js — Canonical Itinera theme engine.
  * @date    2026-08-14
  * @purpose Single source of truth for dark/light mode across ALL pages.
  *
  * Exposed API: window.ItTheme = { set(mode), toggle(), current(), mode() }
  *
  * Rules:
- *  - Canonical localStorage key: "itinari_theme"
+ *  - Canonical localStorage key: "itinera_theme"
  *  - Default is always "dark" unless explicitly set to "light" by the user.
  *  - Public pages stay dark by default and resist accidental light shifts.
  *  - Always applies BOTH html.dark class AND data-theme="dark" attribute.
@@ -14,7 +14,7 @@
 (function (global) {
   "use strict";
 
-  var THEME_KEY = "itinari_theme";
+  var THEME_KEY = "itinera_theme";
   var doc = global.document;
   var html = doc && doc.documentElement;
 

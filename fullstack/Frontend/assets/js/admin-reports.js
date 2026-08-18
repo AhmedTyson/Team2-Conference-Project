@@ -5,7 +5,7 @@
 (function(global) {
   'use strict';
   
-  var It = global.Itinari;
+  var It = global.Itinera;
   if (!It) return;
 
   var state = {
@@ -264,7 +264,7 @@
     var ext = (format || 'pdf').toLowerCase() === 'csv' ? 'csv' : 'pdf';
     var defaultFilename = 'report-' + id + '.' + ext;
 
-    var token = (It.readToken && It.readToken()) || localStorage.getItem('itinari_token');
+    var token = (It.readToken && It.readToken()) || localStorage.getItem('itinera_token');
     
     var apiBase = 'http://127.0.0.1:8000/api';
     if (It.CONFIG && It.CONFIG.apiBase) {
@@ -396,7 +396,7 @@
     fetchReports();
   }
 
-  document.addEventListener("itinari:ready", boot);
+  document.addEventListener("itinera:ready", boot);
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", boot);
