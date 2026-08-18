@@ -76,14 +76,40 @@
             global.alert("Thanks for subscribing!");
           }
         };
+        var showError = function () {
+          if (global.Itinera && global.Itinera.toast) {
+            global.Itinera.toast("Couldn't subscribe right now. Please try again later.", "error");
+          } else if (global.ItineraToast && global.ItineraToast.error) {
+            global.ItineraToast.error("Couldn't subscribe right now. Please try again later.");
+          } else {
+            global.alert("Subscription failed. Please try again later.");
+          }
+        };
+        var showAlready = function () {
+          if (global.Itinera && global.Itinera.toast) {
+            global.Itinera.toast("You're already subscribed to our newsletter!", "info");
+          } else if (global.ItineraToast && global.ItineraToast.success) {
+            global.ItineraToast.success("You're already subscribed to our newsletter!");
+          } else {
+            global.alert("You're already subscribed to our newsletter!");
+          }
+        };
         if (global.Itinera && typeof global.Itinera.apiPost === "function") {
           global.Itinera.apiPost("/newsletter/subscribe", { email: email })
-            .then(function () { done(); })
-            .catch(function () { done(); });
+            .then(function (res) {
+              if (res && res.ok) {
+                done();
+                if (input) input.value = "";
+              } else if (res && res.status === 409) {
+                showAlready();
+              } else {
+                showError();
+              }
+            })
+            .catch(showError);
         } else {
           done();
         }
-        if (input) input.value = "";
       });
     }
   }

@@ -16,6 +16,8 @@ final class StatusCode
 
     const HTTP_404 = 404;
 
+    const HTTP_409 = 409;
+
     const HTTP_422 = 422;
 
     const HTTP_500 = 500;

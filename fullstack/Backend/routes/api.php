@@ -37,6 +37,7 @@ use App\Http\Controllers\System\ContactController;
 use App\Http\Controllers\System\ContactMessageController;
 use App\Http\Controllers\System\DashboardController;
 use App\Http\Controllers\System\FlagController;
+use App\Http\Controllers\System\NewsletterController;
 use App\Http\Controllers\System\NotificationController;
 use App\Http\Controllers\System\ReportController;
 use App\Http\Controllers\System\SettingController;
@@ -408,6 +409,7 @@ Route::middleware(['auth:api', 'verified'])->prefix('admin')->name('admin.')->gr
 
 // ---- Public contacts & weather
 Route::post('/contacts', [ContactController::class, 'store'])->middleware('throttle:contacts');
+Route::post('/newsletter/subscribe', [NewsletterController::class, 'store'])->middleware('throttle:newsletter');
 Route::get('/weather', [WeatherController::class, 'show'])->middleware('throttle:weather');
 
 // ---- Surveys (authenticated)

@@ -139,6 +139,12 @@ class AppServiceProvider extends ServiceProvider
             return Limit::perMinute(5)->by($request->ip());
         });
 
+        // NEWS-01: public newsletter subscription — bound per user id when
+        // authenticated, else per IP (mirrors checkout SEC-08).
+        RateLimiter::for('newsletter', function (Request $request) {
+            return Limit::perMinute(5)->by($request->user('api')?->id ?? $request->ip());
+        });
+
         // SEC-16: general authenticated API requests - 60 per minute
         RateLimiter::for('api_authenticated', function (Request $request) {
             return Limit::perMinute(60)->by($request->user('api')?->id ?? $request->ip());
