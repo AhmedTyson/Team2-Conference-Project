@@ -40,12 +40,14 @@
     usagePct = Math.max(0, Math.min(100, usagePct));
 
     let expiryText = subObj.formatted_expiration;
-    if (!expiryText) {
+    if (expiryText) {
+      expiryText = String(expiryText).replace(/^renews:\s*/i, "");
+    } else {
       const rawExpiry = subObj.expires_at || subObj.ends_at || subObj.renews_at;
       if (rawExpiry) {
         try {
           const d = new Date(rawExpiry);
-          if (!isNaN(d.getTime())) expiryText = "Renews: " + d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+          if (!isNaN(d.getTime())) expiryText = d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
         } catch (e) { /* keep raw below */ }
       }
       if (!expiryText) expiryText = String(rawExpiry || "");
@@ -59,22 +61,17 @@
     const availText = el("ai-quota-avail-text");
     const barEl = el("ai-quota-bar");
     const expiryEl = el("ai-plan-expiry-text");
-    const priceSubEl = el("ai-plan-pricing-sub");
 
     if (planBadge) planBadge.textContent = planName;
-    if (quotaVal) quotaVal.textContent = remainingQuota + " Available";
+    if (quotaVal) quotaVal.textContent = remainingQuota;
     if (usedCountEl) usedCountEl.textContent = usedQuota;
     if (totalCountEl) totalCountEl.textContent = totalQuota;
     if (usedText && !usedCountEl) {
-      usedText.innerHTML = '<i class="fas fa-chart-pie text-purple-400 mr-1"></i> <strong class="text-amber-400">' + usedQuota + '</strong> / ' + totalQuota + ' used';
+      usedText.innerHTML = '<strong class="text-white/90 font-bold">' + usedQuota + '</strong> of ' + totalQuota + ' used';
     }
-    if (availText) availText.textContent = remainingQuota + " available";
+    if (availText) availText.textContent = remainingQuota + " left";
     if (barEl) barEl.style.width = usagePct + "%";
     if (expiryEl) expiryEl.textContent = expiryText;
-    if (priceSubEl && subObj.price_cents) {
-      const priceStr = new Intl.NumberFormat("en-US", { style: "currency", currency: subObj.currency || "EGP" }).format(toInt(subObj.price_cents, 0) / 100);
-      priceSubEl.textContent = priceStr + " / month · Shared Quota Pool";
-    }
   }
 
   function setStat(id, value) {
