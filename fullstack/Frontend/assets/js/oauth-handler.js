@@ -113,6 +113,13 @@
         const modal = document.getElementById("oauth-phone-modal");
         if (modal) modal.remove();
         toast("Welcome to Itinera — registration complete.", "success");
+
+        setTimeout(function () {
+          var dest = It.session && It.session.getRedirectPath
+            ? It.session.getRedirectPath("customer")
+            : (It.CONFIG && It.CONFIG.dashboardUrl) || "/app/dashboard.html";
+          global.location.href = dest;
+        }, 600);
       })
       .catch(function (err) {
         submit.disabled = false;
