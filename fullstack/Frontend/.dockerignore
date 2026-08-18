@@ -1,0 +1,13 @@
+.git
+.gitignore
+.gitattributes
+.github
+docs
+node_modules
+npm-debug.log
+yarn-error.log
+*.log
+.DS_Store
+.idea
+.vscode
+README.md
