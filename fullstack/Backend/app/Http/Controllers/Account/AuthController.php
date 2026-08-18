@@ -17,6 +17,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
@@ -348,4 +349,121 @@ class AuthController extends Controller
             ? 'Profile updated successfully. A verification link was sent to your new email address.'
             : 'Profile updated successfully.');
     }
+
+public function googleRegister()
+{
+
+    try {
+        return Socialite::driver('google')
+            ->stateless()
+            ->redirect();
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+
+}
+public function googleCallback()
+{
+    try {
+        $googleUser = Socialite::driver('google')
+            ->stateless()
+            ->user();
+
+        $user = User::updateOrCreate(
+            [
+                'email' => $googleUser->getEmail(),
+            ],
+            [
+                'name' => $googleUser->getName(),
+                'google_id' => $googleUser->getId(),
+                'avatar' => $googleUser->getAvatar(),
+                'password' => Hash::make(str()->random(32)),
+            ]
+        );
+
+        if (! $user->hasRole('user')) {
+            $role = Role::firstOrCreate(['name' => 'user']);
+            $user->assignRole($role);
+        }
+
+        $token = auth('api')
+            ->claims([
+                'roles' => $user->getRoleNames()->toArray(),
+            ])
+            ->login($user);
+
+        return redirect(
+            'http://127.0.0.1:8080/Team2-Conference-Project/fullstack/Frontend/admin/index.html?token=' . urlencode($token)
+        );
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+    public function facebookRedirect(){
+
+            try {
+        return Socialite::driver('facebook')
+            ->stateless()
+            ->redirect();
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+
+    }
+
+   public function facebookCallback(): JsonResponse
+{
+    try {
+        $facebookUser = Socialite::driver('facebook')
+            ->stateless()
+            ->user();
+
+        $user = User::updateOrCreate(
+            [
+                'email' => $facebookUser->getEmail(),
+            ],
+            [
+                'name' => $facebookUser->getName(),
+                'facebook_id' => $facebookUser->getId(),
+                'avatar' => $facebookUser->getAvatar(),
+                'password' => Hash::make(str()->random(32)),
+            ]
+        );
+
+        if (! $user->hasRole('user')) {
+            $role = Role::firstOrCreate(['name' => 'user']);
+            $user->assignRole($role);
+        }
+
+        $token = auth('api')
+            ->claims([
+                'roles' => $user->getRoleNames()->toArray(),
+            ])
+            ->login($user);
+
+        return ApiResponse::success([
+            'token' => $token,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'roles' => $user->getRoleNames(),
+                'phone' => $user->phone,
+            ],
+        ], 'Facebook login successful');
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage(),
+            'line' => $e->getLine(),
+        ], 500);
+    }
+}
 }

@@ -79,42 +79,42 @@ class GroqService
 
             $interestString = is_array($interests) ? implode(', ', $interests) : (string) $interests;
 
-            $prompt = "
-Generate a comprehensive luxury master travel itinerary in strict valid JSON format.
+        $prompt = "
+            Generate a comprehensive luxury master travel itinerary in strict valid JSON format.
 
-Destination / City: {$city}
-Country: {$countryName}
-Budget: \${$budget}
-Days: {$noOfDays}
-Travelers: {$noOfTravelers} ({$travelParty})
-Travel Style / Tier: {$travelStyle}
-Interests: {$interestString}
+            Destination / City: {$city}
+            Country: {$countryName}
+            Budget: \${$budget}
+            Days: {$noOfDays}
+            Travelers: {$noOfTravelers} ({$travelParty})
+            Travel Style / Tier: {$travelStyle}
+            Interests: {$interestString}
 
 Return only a valid JSON object matching this exact schema:
-{
-  \"title\": \"{$noOfDays}-Day {$travelStyle} {$city} Experience\",
-  \"meta\": \"{$noOfDays} Days • {$city} • {$travelParty} • {$travelStyle}\",
-  \"description\": \"Editorial luxury summary describing the curated experience, access, dining, and culture in 2-3 sentences.\",
-  \"estimated_budget\": {$budget},
-  \"planned_items_count\": ".($noOfDays * 5).',
-  "osrm_waypoints": "Verified",
-  "days": [
-    {
-      "day_number": 1,
-      "title": "Theme or landmark highlight for day 1",
-      "items": [
-        {
-          "time": "09:30 AM",
-          "title": "Private VIP Tour",
-          "description": "Detailed description of exclusive experience.",
-          "price": 600,
-          "type": "ATTRACTION"
-        }
-      ]
-    }
-  ]
-}
-Return pure JSON only. No markdown fences, no explanatory text.';
+            {
+            \"title\": \"{$noOfDays}-Day {$travelStyle} {$city} Experience\",
+            \"meta\": \"{$noOfDays} Days • {$city} • {$travelParty} • {$travelStyle}\",
+            \"description\": \"Editorial luxury summary describing the curated experience, access, dining, and culture in 2-3 sentences.\",
+            \"estimated_budget\": {$budget},
+            \"planned_items_count\": " . ($noOfDays * 5) . ",
+            \"osrm_waypoints\": \"Verified\",
+            \"days\": [
+                {
+                \"day_number\": 1,
+                \"title\": \"Theme or landmark highlight for day 1\",
+                \"items\": [
+                    {
+                    \"time\": \"09:30 AM\",
+                    \"title\": \"Private VIP Tour\",
+                    \"description\": \"Detailed description of exclusive experience.\",
+                    \"price\": 600,
+                    \"type\": \"ATTRACTION\"
+                    }
+                ]
+                }
+            ]
+            }
+            Return pure JSON only. No markdown fences, no explanatory text.";
 
             $cacheKey = 'ai:generate_itinerary:'.md5(json_encode([$city, $budget, $noOfDays, $noOfTravelers, $travelStyle, $interestString]));
 
@@ -216,14 +216,16 @@ Return pure JSON only. No markdown fences, no explanatory text.';
         try {
             $itinerary = [];
             foreach ($trip_items as $item) {
-                $itinerary[] = [
-                    'day' => $item->day_number,
-                    'order' => $item->visit_order,
-                    'item_type' => class_basename($item->itemable_type),
-                    'item_name' => $item->itemable->name ?? 'N/A',
-                    'estimated_date' => $item->estimated_date,
-                    'notes' => $item->notes,
-                ];
+               $itinerary[] = [
+    'day' => $item->day_number,
+    'order' => $item->item_order,
+    'item_type' => $item->itemable
+        ? class_basename($item->itemable_type)
+        : 'N/A',
+    'item_name' => $item->itemable?->name ?? 'N/A',
+    'time_slot' => $item->time_slot,
+    'notes' => $item->notes,
+];
             }
 
             $prompt = "  
@@ -272,11 +274,18 @@ Return pure JSON only. No markdown fences, no explanatory text.';
                 }
             });
 
-        } catch (\Throwable $e) {
+    }catch (\Throwable $e) {
+    Log::error('Error reviewing trip', [
+        'message' => $e->getMessage(),
+        'class' => get_class($e),
+        'code' => $e->getCode(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString(),
+    ]);
 
-            Log::error('Error reviewing trip: '.$e->getMessage());
-            throw new \RuntimeException('Service unavailable. Please try again later.');
-        }
+    throw new \RuntimeException('Service unavailable. Please try again later.');
+}
 
         return $response['choices'][0]['message']['content'] ?? 'No review available.';
     }

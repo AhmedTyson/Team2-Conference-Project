@@ -5,7 +5,7 @@ namespace App\Services\Trips;
 use App\Models\Account\User;
 use Exception;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Support\Facades\Log;
 class AiUsageService
 {
     /**
@@ -14,6 +14,14 @@ class AiUsageService
      */
     public function consumeQuota(User $user): void
     {
+        Log::info('AI QUOTA REQUEST DEBUG', [
+    'user_id' => $user->id,
+    'db' => DB::connection()->getDatabaseName(),
+    'active_sub_id' => $user->subscriptions()
+        ->where('status', 'active')
+        ->latest()
+        ->first()?->id,
+]);
         // 1. Check if the user has an active plan that gives quota
         $hasSubscriptions = $user->subscriptions()->exists();
         $activeSub = $user->subscriptions()->where('status', 'active')->latest()->first();
@@ -39,6 +47,21 @@ class AiUsageService
                 'ai_generations_count' => 0,
                 'ai_reset_at' => now()->addMonth(),
             ])->save();
+        }
+
+Log::info('AI Quota Debug', [
+    'user_id' => $user->id,
+    'active_subscription_id' => $activeSub?->id,
+    'subscription_status' => $activeSub?->status,
+    'plan_id' => $activeSub?->plan_id,
+    'plan_exists' => (bool) $activeSub?->plan,
+    'monthly_limit' => $monthlyLimit,
+    'generations_count' => $user->ai_generations_count,
+    'ai_reset_at' => $user->ai_reset_at,
+]);
+
+        if ($monthlyLimit <= 0) {
+            throw new Exception('You need an active subscription with an AI quota to generate itineraries.');
         }
 
         // 3. Atomically increment the usage counter to prevent race conditions
