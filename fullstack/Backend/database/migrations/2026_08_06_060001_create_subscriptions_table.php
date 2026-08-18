@@ -49,17 +49,49 @@ return new class extends Migration
                 .'ON subscriptions (user_id) '
                 ."WHERE status = '".SubscriptionStatus::ACTIVE->value."'"
             ),
-            'mysql' => DB::statement(
-                'ALTER TABLE subscriptions '
-                .'ADD COLUMN active_user_id INT GENERATED ALWAYS AS '
-                .'(CASE WHEN status = ? THEN user_id ELSE NULL END) STORED'
-                .', ADD UNIQUE KEY subscriptions_active_user_unique (active_user_id)',
-                [SubscriptionStatus::ACTIVE->value]
-            ),
+            'mysql' => $this->addActiveSubscriptionConstraintForMysql(),
             default => throw new RuntimeException(
                 "DB-02 constraint does not support driver: {$driver}. Expected sqlite or mysql."
             ),
         };
+    }
+
+    /**
+     * MySQL / MariaDB path.
+     *
+     * A generated column cannot be used here: both engines reject certain
+     * expressions (e.g. CASE) inside generated column definitions, and the
+     * accepted subset differs between MySQL and MariaDB. Instead a plain
+     * nullable column + unique index keeps the "one ACTIVE subscription per
+     * user" invariant (NULLs never collide), and a BEFORE trigger keeps the
+     * column in sync with `status` on every INSERT/UPDATE. Trigger bodies may
+     * use CASE on both engines, so this is dialect-safe.
+     */
+    private function addActiveSubscriptionConstraintForMysql(): void
+    {
+        DB::statement(
+            'ALTER TABLE subscriptions '
+            .'ADD COLUMN active_user_id BIGINT UNSIGNED NULL AFTER status, '
+            .'ADD UNIQUE KEY subscriptions_active_user_unique (active_user_id)'
+        );
+
+        DB::statement(
+            'CREATE TRIGGER subscriptions_sync_active_user_id '
+            .'BEFORE INSERT ON subscriptions '
+            .'FOR EACH ROW '
+            .'SET NEW.active_user_id = CASE '
+            ."WHEN NEW.status = '".SubscriptionStatus::ACTIVE->value."' THEN NEW.user_id "
+            .'ELSE NULL END'
+        );
+
+        DB::statement(
+            'CREATE TRIGGER subscriptions_sync_active_user_id_update '
+            .'BEFORE UPDATE ON subscriptions '
+            .'FOR EACH ROW '
+            .'SET NEW.active_user_id = CASE '
+            ."WHEN NEW.status = '".SubscriptionStatus::ACTIVE->value."' THEN NEW.user_id "
+            .'ELSE NULL END'
+        );
     }
 
     private function dropActiveSubscriptionConstraint(): void
@@ -68,8 +100,16 @@ return new class extends Migration
 
         match ($driver) {
             'sqlite' => DB::statement('DROP INDEX IF EXISTS subscriptions_active_user_unique'),
-            'mysql' => DB::statement('ALTER TABLE subscriptions DROP INDEX subscriptions_active_user_unique'),
+            'mysql' => DB::statement(
+                "DROP TRIGGER IF EXISTS subscriptions_sync_active_user_id_update"
+            ),
             default => null,
         };
+        // MySQL requires dropping triggers separately from the table DROP.
+        if ($driver === 'mysql') {
+            DB::statement("DROP TRIGGER IF EXISTS subscriptions_sync_active_user_id");
+            DB::statement('ALTER TABLE subscriptions DROP INDEX subscriptions_active_user_unique');
+            DB::statement('ALTER TABLE subscriptions DROP COLUMN active_user_id');
+        }
     }
 };
