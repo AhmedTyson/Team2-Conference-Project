@@ -340,6 +340,30 @@
   It.parseMeta = parseMeta;
   It.refreshToken = refreshToken;
 
+  /* Self-contained toast for pages without a toast component. */
+  function toastFn(message, type) {
+    var host = document.getElementById("itinari-toast-host");
+    if (!host) {
+      host = document.createElement("div");
+      host.id = "itinari-toast-host";
+      host.style.cssText = "position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:2147483000;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;";
+      document.body.appendChild(host);
+    }
+    var t = document.createElement("div");
+    var bg = ({ info: "rgba(59,130,246,0.96)", success: "rgba(16,185,129,0.96)", warning: "rgba(245,158,11,0.98)", error: "rgba(239,68,68,0.96)" })[type] || "rgba(59,130,246,0.96)";
+    t.style.cssText = "padding:12px 22px;border-radius:9999px;background:" + bg + ";color:#fff;font-size:12px;font-weight:700;font-family:Inter,system-ui,sans-serif;box-shadow:0 12px 32px rgba(0,0,0,0.35);max-width:90vw;text-align:center;transition:opacity .3s ease, transform .3s ease;";
+    t.textContent = message;
+    host.appendChild(t);
+    setTimeout(function () {
+      t.style.opacity = "0";
+      t.style.transform = "translateY(10px)";
+      setTimeout(function () { if (t.parentNode) t.parentNode.removeChild(t); }, 320);
+    }, 3200);
+  }
+
+  It.toast = toastFn;
+  if (!global.ItinariToast) global.ItinariToast = toastFn;
+
   It.api = {
     get: apiGet,
     post: apiPost,

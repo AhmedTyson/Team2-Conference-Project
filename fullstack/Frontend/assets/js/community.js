@@ -165,6 +165,12 @@
     }
   ];
 
+// Curated demos are fake/offline data; they have no real backend record,
+  // so live preview redirects must be blocked with a toast instead.
+  CURATED_COMMUNITY_TRIPS.forEach(function (t) {
+    t.previewable = false;
+  });
+
   var CITY_IMAGES = {
     "Cairo": "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?auto=format&fit=crop&w=800&q=80",
     "Alexandria": "https://images.unsplash.com/photo-1568322445389-f64ac2515020?auto=format&fit=crop&w=800&q=80",
@@ -260,6 +266,7 @@
 
           return {
             id: t.id,
+            previewable: true,
             title: t.title || (destName + " Experience"),
             country: countryName !== "International" ? countryName : destName,
             region: (t.region || "europe").toLowerCase(),
@@ -394,6 +401,8 @@
       });
     });
 
+    bindPreviewTriggers(grid);
+
     grid.querySelectorAll(".card-fork-btn").forEach(function (btn) {
       btn.addEventListener("click", function (ev) {
         ev.stopPropagation();
@@ -407,6 +416,20 @@
       selectedTrip = filtered[0];
     }
     renderSpotlight(selectedTrip);
+  }
+
+  function bindPreviewTriggers(root) {
+    (root || document).querySelectorAll(".preview-trigger").forEach(function (link) {
+      link.addEventListener("click", function (ev) {
+        var id = Number(link.getAttribute("data-id"));
+        var targetTrip = communityTrips.find(function (x) { return Number(x.id) === id; });
+        if (targetTrip && targetTrip.previewable === false) {
+          ev.preventDefault();
+          ev.stopPropagation();
+          if (global.ItinariToast) global.ItinariToast("Live preview is not available for this demo itinerary.", "warning");
+        }
+      });
+    });
   }
 
   function renderTripCard(trip) {
@@ -432,7 +455,7 @@
       '<div class="flex items-center justify-between text-xs pt-1 border-t border-gray-200/60 dark:border-white/10">' +
         '<span class="font-extrabold text-gray-900 dark:text-white">$' + Number(trip.estimated_cost).toLocaleString() + ' <small class="text-gray-400 font-normal">/ ' + esc(trip.duration) + '</small></span>' +
         '<div class="flex items-center gap-1.5">' +
-          '<a href="trip-preview.html?id=' + trip.id + '" class="p-1.5 rounded-full bg-gray-100 dark:bg-white/10 hover:bg-amber-500 hover:text-black text-gray-600 dark:text-white/80 transition text-xs border border-gray-300 dark:border-white/10" title="Inspect Full Item Breakdown"><i class="fas fa-eye"></i></a>' +
+          '<a href="trip-preview.html?id=' + trip.id + '" data-id="' + trip.id + '" class="preview-trigger p-1.5 rounded-full bg-gray-100 dark:bg-white/10 hover:bg-amber-500 hover:text-black text-gray-600 dark:text-white/80 transition text-xs border border-gray-300 dark:border-white/10" title="Inspect Full Item Breakdown"><i class="fas fa-eye"></i></a>' +
           '<button type="button" class="card-fork-btn px-3 py-1.5 rounded-full bg-amber-500/15 hover:bg-amber-500 text-amber-700 dark:text-amber-300 hover:text-black font-extrabold text-[11px] transition flex items-center gap-1 border border-amber-500/30" data-id="' + trip.id + '">' +
             '<i class="fas fa-code-branch text-[10px]"></i> Fork' +
           '</button>' +
@@ -519,7 +542,7 @@
           '<i class="fas fa-code-branch"></i>' +
           '<span>Fork & Customize Itinerary</span>' +
         '</button>' +
-        '<a href="trip-preview.html?id=' + trip.id + '" class="w-full py-3 rounded-full bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-900 dark:text-white font-bold text-xs transition border border-gray-300 dark:border-white/10 flex items-center justify-center gap-2">' +
+        '<a href="trip-preview.html?id=' + trip.id + '" data-id="' + trip.id + '" class="preview-trigger w-full py-3 rounded-full bg-gray-100 dark:bg-white/5 hover:bg-gray-200 dark:hover:bg-white/10 text-gray-900 dark:text-white font-bold text-xs transition border border-gray-300 dark:border-white/10 flex items-center justify-center gap-2">' +
           '<i class="fas fa-eye text-amber-500"></i>' +
           '<span>Inspect Full Item Breakdown</span>' +
         '</a>' +
@@ -532,6 +555,8 @@
         forkTrip(trip.id);
       };
     }
+
+    bindPreviewTriggers(panel);
   }
 
   function forkTrip(tripId) {

@@ -72,10 +72,10 @@
         currentTripData = raw;
         renderFullTripPreview(raw);
       } else {
-        renderError("Trip Not Found", "The requested community itinerary could not be loaded.");
+        renderError("Trip Not Found", "The requested community itinerary could not be loaded by the server.");
       }
     }).catch(function () {
-      renderError("Trip Not Found", "The requested community itinerary could not be loaded.");
+      renderError("Preview Unavailable", "The server or route failed to respond. Please check the backend service and try again.");
     });
   }
 
