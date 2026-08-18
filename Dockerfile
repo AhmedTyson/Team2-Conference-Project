@@ -39,6 +39,13 @@ WORKDIR /app
 # Copy backend code
 COPY fullstack/Backend .
 
+# Copy static frontend into Laravel's public/ so both are served
+# same-origin by `php artisan serve` (matches config.js production logic:
+# frontend pages live at /, API at /api). Backend files (index.php,
+# robots.txt, storage/, uploads/, images/) are preserved — the frontend
+# only brings index.html, *.html pages, assets/, public/, favicon.ico.
+COPY fullstack/Frontend ./public/
+
 # Install PHP dependencies
 RUN composer install --optimize-autoloader --no-dev --no-interaction --no-scripts
 
