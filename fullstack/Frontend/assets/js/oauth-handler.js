@@ -148,6 +148,14 @@
 
     if (pending) {
       setTimeout(openPhoneModal, 350);
+      return;
+    }
+
+    // Returning OAuth user (phone already set): token stored, params stripped —
+    // reload once so the page renders in its logged-in state. The token is no
+    // longer in the URL, so this cannot loop.
+    if (token) {
+      setTimeout(function () { global.location.reload(); }, 150);
     }
   }
 
