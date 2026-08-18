@@ -1,111 +1,24 @@
-# Stage 1: Build stage
-FROM php:8.3-fpm as builder
+# Stage 1: Build — prepare the static site (API base injection)
+# Lives at repo root because Railpack v0.22+ ignores subdirectory
+# Dockerfiles (acceptChildOfRepoRoot:false). Build context = repo root.
+FROM nginx:1.27-alpine
 
-# Install system dependencies and PHP extensions
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential \
-    git \
-    curl \
-    libzip-dev \
-    libpq-dev \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install \
-    zip \
-    pdo \
-    pdo_mysql \
-    pdo_pgsql \
-    gd \
-    bcmath \
-    ctype \
-    fileinfo \
-    filter \
-    hash \
-    json \
-    mbstring \
-    openssl \
-    pcntl \
-    session \
-    tokenizer \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+# Copy static frontend
+COPY fullstack/Frontend /usr/share/nginx/html/
 
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Nginx site config (listens on $PORT for Railway)
+COPY fullstack/Frontend/nginx.conf /etc/nginx/conf.d/default.conf
 
-WORKDIR /app
-
-# Copy backend code
-COPY fullstack/Backend .
-
-# Copy static frontend into Laravel's public/ so both are served
-# same-origin by `php artisan serve` (matches config.js production logic:
-# frontend pages live at /, API at /api). Backend files (index.php,
-# robots.txt, storage/, uploads/, images/) are preserved — the frontend
-# only brings index.html, *.html pages, assets/, public/, favicon.ico.
-COPY fullstack/Frontend ./public/
-
-# Install PHP dependencies
-RUN composer install --optimize-autoloader --no-dev --no-interaction --no-scripts
-
-# Run post-install scripts
-RUN composer run-script post-autoload-dump || true
-
-# Stage 2: Runtime stage
-FROM php:8.3-fpm
-
-# Install runtime dependencies only
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    libzip5 \
-    libpq5 \
-    libpng6 \
-    libjpeg62-turbo \
-    libfreetype6 \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
-
-# Install PHP extensions (runtime only)
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install \
-    zip \
-    pdo \
-    pdo_mysql \
-    pdo_pgsql \
-    gd \
-    bcmath \
-    ctype \
-    fileinfo \
-    filter \
-    hash \
-    json \
-    mbstring \
-    openssl \
-    pcntl \
-    session \
-    tokenizer
-
-# Set working directory
-WORKDIR /app
-
-# Copy from builder stage
-COPY --from=builder /app /app
-
-# Create necessary directories and set permissions
-RUN mkdir -p storage/logs bootstrap/cache \
-    && chown -R www-data:www-data /app \
-    && chmod -R 755 /app \
-    && chmod -R 777 storage bootstrap/cache
-
-# Set user to www-data
-USER www-data
-
-# Expose port (if using php artisan serve)
-EXPOSE 8000
+# Entrypoint injects the backend API base into config.js at boot
+COPY fullstack/Frontend/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 
 # Health check
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
-    CMD php /app/artisan tinker --quiet < /dev/null || exit 1
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+    CMD wget -q -O /dev/null http://127.0.0.1:${PORT:-80}/ || exit 1
 
-# Start application
-CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8000"]
+# Railway exposes the app via the $PORT env var
+EXPOSE 80
 
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"]
