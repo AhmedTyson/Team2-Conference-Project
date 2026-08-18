@@ -9,6 +9,17 @@
   const Itinera = global.Itinera = global.Itinera || {};
   const It = global.It = global.Itinera;
 
+  // Docker/Railway: the entrypoint replaces the __API_BASE__ marker with
+  // the real backend URL at container boot (via sed). Left untouched
+  // locally, so normal resolution below applies. The sentinel is assembled
+  // from parts so the placeholder survives plain vendoring.
+  try {
+    var injectedApiBase = "__API_BASE__";
+    if (injectedApiBase && injectedApiBase !== "__API_" + "BASE__") {
+      global.ITINERA_API_BASE = injectedApiBase;
+    }
+  } catch (e) {}
+
   function resolveApiBase() {
     if (global.ITINERA_API_BASE) return global.ITINERA_API_BASE;
     try {
