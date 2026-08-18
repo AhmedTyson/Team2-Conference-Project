@@ -284,7 +284,7 @@ const Ui = (() => {
         const target = window.location.pathname.split('/').pop() + window.location.search;
         sessionStorage.setItem('itinera_redirect', target);
         Ui.toast('Log in to save favourites.', 'error');
-        window.location.href = 'login.html';
+        window.location.href = '/auth/login.html';
         return null;
       }
       const t = normalizeType(type);
@@ -593,7 +593,7 @@ const Ui = (() => {
         logoutBtn.addEventListener('click', async () => {
           await Auth.logout();
           Ui.toast('You have been logged out.');
-          window.location.href = 'login.html';
+          window.location.href = '/auth/login.html';
         });
         menuNav.appendChild(logoutBtn);
       }

@@ -38,7 +38,7 @@
 
   It.app.boot(function(user, role) {
     if (role !== 'agency') {
-      window.location.href = '../login.html';
+      window.location.href = '/auth/login.html';
       return;
     }
 
