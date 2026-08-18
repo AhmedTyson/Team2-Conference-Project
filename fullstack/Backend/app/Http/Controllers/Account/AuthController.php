@@ -364,6 +364,7 @@ public function googleRegister()
     }
 
 }
+
 public function googleCallback()
 {
     try {
@@ -371,39 +372,14 @@ public function googleCallback()
             ->stateless()
             ->user();
 
-        $user = User::updateOrCreate(
-            [
-                'email' => $googleUser->getEmail(),
-            ],
-            [
-                'name' => $googleUser->getName(),
-                'google_id' => $googleUser->getId(),
-                'avatar' => $googleUser->getAvatar(),
-                'password' => Hash::make(str()->random(32)),
-            ]
-        );
-
-        if (! $user->hasRole('user')) {
-            $role = Role::firstOrCreate(['name' => 'user']);
-            $user->assignRole($role);
-        }
-
-        $token = auth('api')
-            ->claims([
-                'roles' => $user->getRoleNames()->toArray(),
-            ])
-            ->login($user);
-
-        return redirect(
-            'http://127.0.0.1:8080/Team2-Conference-Project/fullstack/Frontend/admin/index.html?token=' . urlencode($token)
-        );
+        return $this->handleSocialLogin($googleUser, 'google');
 
     } catch (\Exception $e) {
-        return response()->json([
-            'error' => $e->getMessage(),
-        ], 500);
+        $frontend = $this->frontendBaseUrl();
+        return redirect()->away($frontend.'?oauth_error='.urlencode($e->getMessage()));
     }
 }
+
     public function facebookRedirect(){
 
             try {
@@ -418,22 +394,52 @@ public function googleCallback()
 
     }
 
-   public function facebookCallback(): JsonResponse
+   public function facebookCallback()
 {
     try {
         $facebookUser = Socialite::driver('facebook')
             ->stateless()
             ->user();
 
-        $user = User::updateOrCreate(
+        return $this->handleSocialLogin($facebookUser, 'facebook');
+
+    } catch (\Exception $e) {
+        $frontend = $this->frontendBaseUrl();
+        return redirect()->away($frontend.'?oauth_error='.urlencode($e->getMessage()));
+    }
+}
+
+    // ------------------------------------------------------------------
+    // Shared OAuth pipeline
+    // ------------------------------------------------------------------
+
+    /**
+     * First-time social sign-in: the user has no phone yet, so they must
+     * complete registration (phone number) before using the platform.
+     * Return the user to the homepage with a token + oauth_pending=1 flag;
+     * the frontend shows the phone step, calls completeSocialRegistration()
+     * and then drops the user onto the homepage.
+     */
+    private function handleSocialLogin($socialUser, string $provider)
+    {
+        $email = $socialUser->getEmail();
+
+        if (! $email) {
+            $frontend = $this->frontendBaseUrl();
+            return redirect()->away($frontend.'?oauth_error='.urlencode('Provider did not return an email address.'));
+        }
+
+        $exists = \App\Models\Account\User::where('email', $email)->exists();
+
+        $user = \App\Models\Account\User::updateOrCreate(
             [
-                'email' => $facebookUser->getEmail(),
+                'email' => $email,
             ],
             [
-                'name' => $facebookUser->getName(),
-                'facebook_id' => $facebookUser->getId(),
-                'avatar' => $facebookUser->getAvatar(),
-                'password' => Hash::make(str()->random(32)),
+                'name' => $socialUser->getName() ?: $email,
+                $provider.'_id' => $socialUser->getId(),
+                'avatar' => $socialUser->getAvatar(),
+                'password' => \Illuminate\Support\Facades\Hash::make(str()->random(32)),
             ]
         );
 
@@ -448,22 +454,58 @@ public function googleCallback()
             ])
             ->login($user);
 
+        $frontend = $this->frontendBaseUrl();
+
+        // First time (or phone still missing): complete registration first.
+        if (! $exists || empty($user->phone)) {
+            return redirect()->away($frontend.'/?token='.urlencode($token).'&oauth_pending=1&provider='.$provider);
+        }
+
+        return redirect()->away($frontend.'/?token='.urlencode($token));
+    }
+
+    /**
+     * Finish the phone registration step for a fresh OAuth account.
+     */
+    public function completeSocialRegistration(\Illuminate\Http\Request $request): JsonResponse
+    {
+        $request->validate([
+            'phone' => ['required', 'string', 'max:20', 'regex:/^[0-9+\-\s()]{5,20}$/'],
+        ]);
+
+        $user = auth('api')->user();
+
+        if (! $user) {
+            return ApiResponse::fail('Authentication required.', 'unauthenticated', 401);
+        }
+
+        if (! empty($user->phone)) {
+            return ApiResponse::success(['user' => $user->only(['id', 'name', 'email', 'phone', 'roles'])], 'Phone already set.');
+        }
+
+        $user->phone = $request->phone;
+        $user->save();
+
+        $token = auth('api')
+            ->claims(['roles' => $user->getRoleNames()->toArray()])
+            ->login($user);
+
         return ApiResponse::success([
             'token' => $token,
             'user' => [
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'roles' => $user->getRoleNames(),
                 'phone' => $user->phone,
+                'roles' => $user->getRoleNames(),
+                'email_verified_at' => $user->email_verified_at,
             ],
-        ], 'Facebook login successful');
-
-    } catch (\Exception $e) {
-        return response()->json([
-            'error' => $e->getMessage(),
-            'line' => $e->getLine(),
-        ], 500);
+        ], 'Registration completed successfully.');
     }
-}
+
+    private function frontendBaseUrl(): string
+    {
+        return rtrim(env('FRONTEND_URL', url('/')), '/');
+    }
+
 }

@@ -429,7 +429,17 @@ form.addEventListener("submit", async function (e) {
       googleBtn.addEventListener("click", function (e) {
         e.preventDefault();
         const apiBase = It.resolveApiBase ? It.resolveApiBase() : "/api";
-        global.location.href = apiBase + "/auth/google/redirect";
+        global.location.href = apiBase + "/auth/google";
+      });
+    }
+
+    // Facebook OAuth button listener
+    const facebookBtn = document.getElementById("btn-facebook-login") || document.getElementById("btn-facebook-signup");
+    if (facebookBtn) {
+      facebookBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        const apiBase = It.resolveApiBase ? It.resolveApiBase() : "/api";
+        global.location.href = apiBase + "/auth/facebook";
       });
     }
 

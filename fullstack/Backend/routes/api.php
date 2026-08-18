@@ -68,23 +68,8 @@ Route::post('/login', [AuthController::class, 'login'])->middleware(['throttle:l
 Route::post('/forgot-password', [AuthController::class, 'forgetPassword'])->middleware(['throttle:3,10']);
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->middleware(['throttle:5,1'])->name('password.reset');
 
-// ---- Google OAuth ----
-Route::get('/auth/google/redirect', function () {
-    return response()->json([
-        'status' => 'success',
-        'message' => 'Google OAuth redirect route ready',
-        'data' => [
-            'redirect_url' => 'https://accounts.google.com/o/oauth2/v2/auth',
-        ],
-    ]);
-})->name('auth.google.redirect');
-
-Route::get('/auth/google/callback', function () {
-    return response()->json([
-        'status' => 'success',
-        'message' => 'Google OAuth callback route ready',
-    ]);
-})->name('auth.google.callback');
+// ---- OAuth first-time completion: phone number step (token from OAuth callback)
+Route::post('/auth/social/complete', [AuthController::class, 'completeSocialRegistration'])->middleware(['auth:api']);
 
 // ---- Email verification (signed link)
 Route::get('/email/verify/{id}/{hash}', [AuthController::class, 'verifyEmail'])
