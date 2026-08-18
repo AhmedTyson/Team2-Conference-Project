@@ -34,7 +34,7 @@ return new class extends Migration
             $table->foreignId('parent_trip_id')->nullable()->constrained('trips')->nullOnDelete();
             $table->foreignId('original_trip_id')->nullable()->constrained('trips')->nullOnDelete();
             $table->boolean('is_fork')->default(false);
-            $table->boolean('is_public')->default(false)->after('is_fork');
+            $table->boolean('is_public')->default(false);
             $table->string('source_version_id')->nullable();
             $table->string('confirmation_code', 8)->unique()->nullable();
             $table->softDeletes();
@@ -51,3 +51,4 @@ return new class extends Migration
         Schema::dropIfExists('trips');
     }
 };
+
