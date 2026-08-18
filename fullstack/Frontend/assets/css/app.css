@@ -3,6 +3,7 @@
  */
 @import url("tokens.css");
 @import url("glass.css?v=1");
+@import url("loader.css?v=1");
 
 .app {
   min-height: 100vh;
