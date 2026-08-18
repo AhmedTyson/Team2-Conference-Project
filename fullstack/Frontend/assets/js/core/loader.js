@@ -17,30 +17,42 @@
   function buildOverlay() {
     if (_overlay) return _overlay;
 
-    const div = document.createElement("div");
-    div.id = "itinera-global-loader";
-    div.className = "itinera-loader-overlay";
-    div.setAttribute("aria-live", "polite");
-    div.setAttribute("aria-busy", "true");
+    let div = document.getElementById("itinera-global-loader");
+    if (!div) {
+      div = document.createElement("div");
+      div.id = "itinera-global-loader";
+      div.className = "itinera-loader-overlay";
+      div.setAttribute("aria-live", "polite");
+      div.setAttribute("aria-busy", "true");
 
-    div.innerHTML = `
-      <div class="itinera-loader-card">
-        <div class="itinera-loader-glow"></div>
-        <div class="itinera-compass-stage">
-          <div class="itinera-orbit-outer"></div>
-          <div class="itinera-orbit-inner"></div>
-          <div class="itinera-compass-core">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width: 28px; height: 28px;">
-              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-            </svg>
+      div.innerHTML = `
+        <div class="itinera-loader-card">
+          <div class="itinera-loader-glow"></div>
+          <div class="itinera-compass-stage">
+            <div class="itinera-orbit-outer"></div>
+            <div class="itinera-orbit-inner"></div>
+            <div class="itinera-compass-core">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width: 28px; height: 28px;">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              </svg>
+            </div>
           </div>
+          <div class="itinera-loader-title" id="itinera-loader-title-text">Crafting Your Luxury Experience</div>
+          <div class="itinera-loader-subtitle" id="itinera-loader-sub-text">Connecting to AI Concierge • Curating Destinations</div>
         </div>
-        <div class="itinera-loader-title" id="itinera-loader-title-text">Crafting Your Luxury Experience</div>
-        <div class="itinera-loader-subtitle" id="itinera-loader-sub-text">Connecting to AI Concierge • Curating Destinations</div>
-      </div>
-    `;
+      `;
 
-    document.body.appendChild(div);
+      if (document.body) {
+        document.body.appendChild(div);
+      } else {
+        document.addEventListener("DOMContentLoaded", function () {
+          if (!document.getElementById("itinera-global-loader")) {
+            document.body.appendChild(div);
+          }
+        });
+      }
+    }
+
     _overlay = div;
     _titleEl = document.getElementById("itinera-loader-title-text");
     _subtitleEl = document.getElementById("itinera-loader-sub-text");
@@ -49,11 +61,6 @@
   }
 
   const LoaderController = {
-    /**
-     * Show the global luxury loader overlay.
-     * @param {string} [title] - Custom main title (e.g. "Generating Itinerary...")
-     * @param {string} [subtitle] - Optional context subtitle
-     */
     show: function (title, subtitle) {
       if (_hideTimer) {
         clearTimeout(_hideTimer);
@@ -73,15 +80,10 @@
       }
 
       requestAnimationFrame(function () {
-        overlay.classList.add("is-active");
+        if (overlay) overlay.classList.add("is-active");
       });
     },
 
-    /**
-     * Update the active loader message dynamically.
-     * @param {string} title
-     * @param {string} [subtitle]
-     */
     update: function (title, subtitle) {
       if (_titleEl && title) _titleEl.textContent = title;
       if (_subtitleEl && subtitle !== undefined) {
@@ -90,25 +92,16 @@
       }
     },
 
-    /**
-     * Hide the global luxury loader with a smooth fade.
-     * @param {number} [delayMs=200] - Optional delay before hiding
-     */
     hide: function (delayMs) {
+      if (!_overlay) _overlay = document.getElementById("itinera-global-loader");
       if (!_overlay) return;
-      const ms = typeof delayMs === "number" ? delayMs : 150;
+      const ms = typeof delayMs === "number" ? delayMs : 250;
 
       _hideTimer = setTimeout(function () {
-        _overlay.classList.remove("is-active");
+        if (_overlay) _overlay.classList.remove("is-active");
       }, ms);
     },
 
-    /**
-     * Create an inline glass loader inside a target container.
-     * @param {HTMLElement|string} target - Container element or selector
-     * @param {string} [title="Loading details..."]
-     * @returns {HTMLElement} - Built inline loader node for easy removal
-     */
     showInline: function (target, title) {
       const container = typeof target === "string" ? document.querySelector(target) : target;
       if (!container) return null;
@@ -138,13 +131,35 @@
 
   It.loader = LoaderController;
 
-  // Auto-wire loader to window unload / navigation transitions
-  document.addEventListener("DOMContentLoaded", function () {
-    // If page had pre-existing active loader, dismiss on ready
-    const existing = document.getElementById("itinera-global-loader");
-    if (existing && existing.classList.contains("is-active")) {
-      LoaderController.hide(300);
-    }
+  // Auto-show loader overlay immediately on page load
+  if (document.readyState !== "complete") {
+    buildOverlay();
+    requestAnimationFrame(function () {
+      if (_overlay) _overlay.classList.add("is-active");
+    });
+  }
+
+  function handlePageReady() {
+    LoaderController.hide(400);
+  }
+
+  if (document.readyState === "complete") {
+    handlePageReady();
+  } else {
+    window.addEventListener("load", handlePageReady);
+    document.addEventListener("DOMContentLoaded", function () {
+      setTimeout(handlePageReady, 500);
+    });
+  }
+
+  // Intercept internal page link clicks to show luxury transition loader
+  document.addEventListener("click", function (e) {
+    const anchor = e.target.closest("a");
+    if (!anchor) return;
+    const href = anchor.getAttribute("href");
+    if (!href || href.startsWith("#") || href.startsWith("javascript:") || anchor.target === "_blank" || e.ctrlKey || e.metaKey) return;
+
+    LoaderController.show("Navigating Luxury Destination...", "Preparing View");
   });
 
 })(window);
