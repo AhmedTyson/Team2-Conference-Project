@@ -229,59 +229,11 @@
    * then calls callback(user, role) once ready. Redirects to login when
    * unauthenticated (RequiresAuth equivalent).
    */
-  function initFooter() {
-    var footer = document.querySelector("footer.app__footer") || document.querySelector("footer");
-    if (!footer) return;
-
-    footer.className = "footer";
-    footer.innerHTML = 
-      '<div class="footer__container">' +
-        '<div class="footer__grid">' +
-          '<div>' +
-            '<a href="/home.html" class="footer__brand-link">' +
-              '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" class="footer__brand-logo" aria-hidden="true">' +
-                '<path d="M12 2C12 2 13 8 18 12C13 16 12 22 12 22C12 22 11 16 6 12C11 8 12 2 12 2Z" fill="currentColor" />' +
-              '</svg>' +
-              '<span>Itinera</span>' +
-            '</a>' +
-            '<p class="footer__desc">' +
-              'Plan it. Live it. From iconic cities to hidden gems — expert-crafted journeys with 24/7 support.' +
-            '</p>' +
-          '</div>' +
-          '<div>' +
-            '<h5 class="footer__title"><i class="fas fa-compass" aria-hidden="true"></i>Explore</h5>' +
-            '<ul class="footer__list">' +
-              '<li class="footer__list-item"><a href="/about.html" class="footer__link"><i class="fas fa-chevron-right" aria-hidden="true"></i>About Us</a></li>' +
-              '<li class="footer__list-item"><a href="/explore.html" class="footer__link"><i class="fas fa-chevron-right" aria-hidden="true"></i>Explore</a></li>' +
-              '<li class="footer__list-item"><a href="/booking.html" class="footer__link"><i class="fas fa-chevron-right" aria-hidden="true"></i>Booking</a></li>' +
-            '</ul>' +
-          '</div>' +
-          '<div>' +
-            '<h5 class="footer__title"><i class="fas fa-phone" aria-hidden="true"></i>Contact</h5>' +
-            '<ul class="footer__contact-list">' +
-              '<li class="footer__contact-item"><i class="fas fa-envelope" aria-hidden="true"></i>help@itinera.travel</li>' +
-              '<li class="footer__contact-item"><i class="fas fa-phone" aria-hidden="true"></i>+1 (555) 123-4567</li>' +
-              '<li class="footer__contact-item"><i class="fas fa-map-marker-alt" aria-hidden="true"></i>Cairo, Egypt</li>' +
-            '</ul>' +
-            '<div class="footer__socials">' +
-              '<a href="#" class="footer__social-btn" title="X" aria-label="X"><i class="fab fa-x-twitter" aria-hidden="true"></i></a>' +
-              '<a href="#" class="footer__social-btn" title="Instagram" aria-label="Instagram"><i class="fab fa-instagram" aria-hidden="true"></i></a>' +
-              '<a href="#" class="footer__social-btn" title="Facebook" aria-label="Facebook"><i class="fab fa-facebook-f" aria-hidden="true"></i></a>' +
-            '</div>' +
-          '</div>' +
-        '</div>' +
-        '<div class="footer__bottom">' +
-          '<span class="footer__copy">&copy; ' + new Date().getFullYear() + ' Itinera &middot; Team 2 Conference Project</span>' +
-          '<span class="footer__copy">Made with <i class="fas fa-heart footer__heart" aria-hidden="true"></i> in Egypt</span>' +
-        '</div>' +
-      '</div>';
-  }
 
   function boot(callback) {
     It.session.bootAuth().then(function (session) {
       if (session.redirected) return;
       initHeader(session.user);
-      initFooter();
       document.body.classList.remove("is-booting");
       document.dispatchEvent(new CustomEvent("itinera:ready", { detail: session.user }));
       if (callback) callback(session.user, session.role);
