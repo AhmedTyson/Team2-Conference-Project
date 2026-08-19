@@ -1103,6 +1103,16 @@
         global.location.replace(It.session.getRedirectPath(role));
         return;
       }
+      if (!user.phone || String(user.phone).trim() === "") {
+        const banner = el("site-banner");
+        const bannerMsg = el("site-banner-msg");
+        if (banner && bannerMsg) {
+          banner.classList.add("is-show", "is-info");
+          bannerMsg.innerHTML = 'Complete your profile with a <a href="profile.html" class="underline font-bold hover:text-amber-400 transition-colors">phone number</a> for booking confirmations and AI concierge support. <button type="button" id="site-banner-dismiss" class="ml-1 font-bold opacity-60 hover:opacity-100 transition-opacity" aria-label="Dismiss">✕</button>';
+          const dismiss = el("site-banner-dismiss");
+          if (dismiss) dismiss.onclick = function () { banner.classList.remove("is-show"); };
+        }
+      }
       load(user);
     });
   }

@@ -111,7 +111,8 @@
       align-items: center;
       gap: var(--space-4);
       box-shadow: var(--shadow-sm);
-      min-width: 260px;
+      min-width: 0;
+      width: 100%;
     }
 
     .weather-card-glass__icon {
@@ -255,7 +256,7 @@
     /* --- Showcase Grid (Trips & Favorites) --- */
     .dash-showcase-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr));
       gap: var(--space-6);
     }
 
@@ -316,6 +317,8 @@
       border-radius: var(--radius-md, 12px);
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       margin-bottom: var(--space-2);
+      min-width: 0;
+      overflow: hidden;
     }
 
     .feed-card:last-child {
@@ -508,7 +511,7 @@
           </a>
 
           <!-- AI Generation Quota Card -->
-          <div class="stat-card-glass flex-col items-start justify-between gap-3.5 col-span-full md:col-span-2 lg:col-span-1 p-5 rounded-2xl bg-slate-900/60 dark:bg-white/[0.04] border border-amber-500/20 shadow-xl backdrop-blur-xl transition-all duration-300 hover:border-amber-400/40" id="stat-ai-quota" style="grid-column: span 2 / span 2;">
+          <div class="stat-card-glass flex-col items-start justify-between gap-3.5 col-span-full md:col-span-2 lg:col-span-1 p-5 rounded-2xl bg-slate-900/60 dark:bg-white/[0.04] border border-amber-500/20 shadow-xl backdrop-blur-xl transition-all duration-300 hover:border-amber-400/40" id="stat-ai-quota">
             <div class="flex items-start justify-between w-full gap-3">
               <div class="flex items-center gap-2.5">
                 <div class="w-9 h-9 rounded-xl bg-purple-500/15 text-amber-400 flex items-center justify-center shrink-0 border border-purple-500/30">
@@ -657,7 +660,7 @@
   </div>
 
   <!-- Core Scripts -->
-  <script src="../assets/js/core/config.js"></script>`n  
+  <script src="../assets/js/core/config.js"></script>
   <script src="../assets/js/core/api.js"></script>
   <script src="../assets/js/core/session.js"></script>
   <script src="../assets/js/core/nav-config.js"></script>

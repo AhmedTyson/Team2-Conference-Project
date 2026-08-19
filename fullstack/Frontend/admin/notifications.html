@@ -11,6 +11,10 @@
       border-collapse: collapse;
       font-size: var(--text-small);
     }
+    .log-table-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
     .log-table th, .log-table td {
       padding: var(--space-3) var(--space-4);
       text-align: left;
@@ -80,7 +84,8 @@
           <p class="label-eyebrow" style="margin: 0 0 0.25rem;">ADMIN · NOTIFICATION LOG</p>
           <h2 style="margin: 0;">Global Notifications Log</h2>
         </div>
-        <div class="panel-body" style="padding: 0; overflow-x: auto;">
+        <div class="panel-body" style="padding: 0;">
+          <div class="log-table-scroll">
           <table class="log-table">
             <thead>
               <tr>
@@ -97,6 +102,7 @@
               </tr>
             </tbody>
           </table>
+          </div>
         </div>
         <span class="ticket-edge" aria-hidden="true"></span>
         <div class="ticket-stub" style="margin-top: 0; padding-top: calc(var(--space-3) + var(--motif-perf)); padding-bottom: var(--space-3); padding-left: var(--space-5); padding-right: var(--space-5);">

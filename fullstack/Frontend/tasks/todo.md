@@ -250,3 +250,54 @@ Port design patterns only to vanilla (no framework/deps). Verify on `localhost:8
 - Fixed scroll lock bug where hidden command palette was triggering `is-modal-open`.
 - Refined User Menu Chip layout: stripped nested borders, lightened role weight, hidden on mobile.
 - Added separator and increased gap between topbar command icons and user menu.
+
+---
+
+# UI/UX & Legacy Cleanup — 5-Item Spec (2026-08-19) — COMPLETE
+
+Source spec: 5 items (2 questions, 1 investigation, 2 fixes). Status: all done, awaiting review.
+
+## Task 1: Decide footer auth-required links (remove or keep?) — DONE
+
+**Decision: KEEP.** Footer (`components/footer.html`) links to auth-gated pages (`app/dashboard.html`, `app/favourites.html`). Guest click → `guardRoute()` in `core/session.js` redirects to login = standard luxury-brochure UX, drives signup conversion. Removal = zero security gain (pages already token-guarded). No code change.
+
+## Task 2: Modernization assessment — legacy vs. no-framework modern stack — DONE
+
+- [x] 2000–5000 words, structured with headings — **2,851 words**
+- [x] Grounded in repo facts (118 HTML pages, 17 CSS files ≈12k lines, ~119 JS files, Tailwind Play CDN, `It.*` namespace, components/ partials, footer sync trap)
+- [x] Ends with concrete recommendation + phased plan, explicit "no code written" note
+- [x] Saved as `docs/modernization-assessment.md`
+- **Verdict:** No framework. Tailwind CLI build (drop Play CDN) + Web Components for presentational primitives + Alpine.js (15 KB) for interactive islands. Phased: Phase 0 baseline → 1 CSS consolidation → 2 component extraction (trip modal = pilot) → 3 Alpine islands → 4 hygiene. 45–85 hrs total, reversible.
+
+## Task 3: Corrupted search icon sweep — DONE
+
+- [x] Grep sweep: `rg "fa-search absolute"` → 16 files, 20 hits
+- [x] Classification: only `app/trip.html:105` orphaned (no `relative` parent); 15 others fine
+- [x] Fixed in Task 5 redesign (icon inside `relative` wrapper, `pointer-events-none`, vertically centered)
+
+## Task 4: Remove `auth/complete-profile.html` — DONE
+
+- [x] `auth/complete-profile.html` deleted (92 lines)
+- [x] Zero references remain: `rg "complete-profile|needsProfileCompletion|cp-success-note"` → only tasks/todo.md
+- [x] `session.js`: `needsProfileCompletion()` + redirect branch removed from `getRedirectPath()`
+- [x] `auth.js`: `"complete-profile"` form route removed
+- [x] Soft prompt: dashboard shows dismissible banner (is-show/is-info) → `profile.html` phone field when user lacks phone
+- [x] Bonus fix: corrupted `</script>`+literal backtick-n at dashboard.html:663
+- [x] Verified: banner shows, link + dismiss wired (harness stub w/o phone); `node --check` all 5 JS files pass
+- Note: user's premise "modal already exists on homepage" was **wrong** — no profile-completion modal existed; soft banner + existing profile.html/register phone fields cover it.
+
+## Task 5: Redesign "Quick Itinerary Attachment" modal in `app/trip.html` — DONE
+
+- [x] Orphan `fa-search absolute` icon (line 105) removed — now inside `relative` wrapper, `pointer-events-none`
+- [x] Header: gradient icon tile + eyebrow + title + description + close button (`#close-add-modal-btn`)
+- [x] Controls bar: tabs kept (JS rewires exact class strings), day select (label + focus ring), search `relative` group with `lg:w-64`
+- [x] `trip.js`: loading/error/empty states polished (spinner, icon, guidance), item cards + attach buttons enhanced (hover lift, shadow, truncate)
+- [x] JS contract intact: `#add-item-modal`, `#modal-category-tabs` (+`data-cat`), `#modal-day-select`, `#modal-search-input`, `#modal-catalog-list`, `.attach-item-modal-btn` data attrs
+- [x] Verified live: modal opens, 4 tabs, 7 day options rebuilt, 20 hotel items render, search "meur" → 1 result (Le Meurice), attach button wired; no overflow
+
+## Checkpoint (open items — need backend e2e + human review)
+
+- [ ] Auth flows regression-checked against real backend (login → profile soft-banner, guest redirect)
+- [ ] trip.html modal visually reviewed at 375px (markup-level verification done; screenshot taken but model couldn't view it)
+- [ ] Human review of `docs/modernization-assessment.md` before any refactor work
+

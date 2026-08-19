@@ -240,24 +240,16 @@
           </div>
 
           <!-- Status Filter Pills -->
-          <div class="flex items-center gap-1 text-xs font-extrabold" id="statusFilterPills">
-            <button type="button" data-status="all" class="status-pill active px-3.5 py-1.5 rounded-full bg-amber-500 text-black shadow-sm transition">All</button>
-            <button type="button" data-status="upcoming" class="status-pill px-3.5 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition">Upcoming</button>
-            <button type="button" data-status="ongoing" class="status-pill px-3.5 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition">Ongoing</button>
-            <button type="button" data-status="completed" class="status-pill px-3.5 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition">Completed</button>
-            <button type="button" data-status="canceled" class="status-pill px-3.5 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition">Canceled</button>
+          <div class="flex items-center gap-1 text-xs font-extrabold overflow-x-auto pb-2 scrollbar-none" id="statusFilterPills">
+            <button type="button" data-status="all" class="status-pill active px-3.5 py-1.5 rounded-full bg-amber-500 text-black shadow-sm transition flex-shrink-0 whitespace-nowrap">All</button>
+            <button type="button" data-status="upcoming" class="status-pill px-3.5 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition flex-shrink-0 whitespace-nowrap">Upcoming</button>
+            <button type="button" data-status="ongoing" class="status-pill px-3.5 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition flex-shrink-0 whitespace-nowrap">Ongoing</button>
+            <button type="button" data-status="completed" class="status-pill px-3.5 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition flex-shrink-0 whitespace-nowrap">Completed</button>
+            <button type="button" data-status="canceled" class="status-pill px-3.5 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition flex-shrink-0 whitespace-nowrap">Canceled</button>
           </div>
         </div>
 
-        <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
-          <select id="styleFilterSelect" class="px-3.5 py-2 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs font-bold text-gray-700 dark:text-white/80 focus:outline-none">
-            <option value="all">All Styles</option>
-            <option value="cultural">Cultural</option>
-            <option value="adventure">Adventure</option>
-            <option value="luxury">Luxury</option>
-            <option value="relaxation">Relaxation</option>
-          </select>
-
+        <div class="flex flex-wrap items-center gap-2.5 w-full md:w-auto justify-between md:justify-end">
           <button type="button" id="clear-filters-btn" class="text-xs font-bold text-amber-500 hover:underline cursor-pointer">
             <i class="fas fa-rotate-left mr-1"></i> Clear Filters
           </button>
@@ -327,7 +319,7 @@
             </div>
 
             <!-- Month Selectors & View Switcher -->
-            <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+            <div class="flex flex-wrap items-center gap-2.5 w-full sm:w-auto justify-between sm:justify-end">
               <div class="flex items-center gap-1 text-xs">
                 <select id="monthSelect" class="px-3 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs font-bold text-gray-700 dark:text-white/80 focus:outline-none">
                   <option value="0">January</option>
@@ -352,7 +344,7 @@
               </div>
 
               <!-- View Switcher -->
-              <div class="flex items-center gap-1 p-1 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs font-bold" id="viewSwitcher">
+              <div class="flex items-center gap-1 p-1 rounded-full bg-gray-100 dark:bg-white/5 border border-gray-200 dark:border-white/10 text-xs font-bold flex-shrink-0" id="viewSwitcher">
                 <button type="button" data-view="month" class="view-btn active px-3 py-1 rounded-full bg-amber-500 text-black font-extrabold shadow-sm transition">Month</button>
                 <button type="button" data-view="week" class="view-btn px-3 py-1 rounded-full text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition">Week</button>
                 <button type="button" data-view="list" class="view-btn px-3 py-1 rounded-full text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition">List</button>

@@ -3171,3 +3171,22 @@ html.dark .pager-btn:disabled {
 
 
 
+
+/* =============================================================
+   Responsive hardening: global footer + topbar (legacy layouts)
+   ============================================================= */
+
+/* Global footer injected into legacy pages carries Tailwind-only classes.
+   Constrain the brand anchor + media so a dead utility stack cannot explode layout. */
+footer.app-footer .flex.items-center.gap-3.no-underline.group { flex-wrap: wrap; }
+footer.app-footer img { max-width: 100%; height: auto; }
+
+@media (max-width: 480px) {
+  .topbar-right { gap: var(--space-2); }
+  .guest-auth-wrap { gap: var(--space-2); }
+  .guest-auth-wrap .btn,
+  .topbar-right .btn--signup-nav { padding-inline: 0.65rem; font-size: 0.75rem; white-space: nowrap; }
+  .topbar-right .palette-trigger,
+  .topbar-right .cmd-trigger-btn { display: none !important; }
+}
+

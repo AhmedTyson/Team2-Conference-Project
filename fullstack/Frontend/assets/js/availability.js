@@ -14,7 +14,7 @@
   var currentMonth = 7; // 0 = Jan, 7 = August (Default August 2026 per spec)
   var currentView = "month"; // 'month' | 'week' | 'list'
   var activeStatusFilter = "all";
-  var activeStyleFilter = "all";
+  var activeStatusFilter = "all";
   var searchQuery = "";
   var allTrips = [];
   var selectedTripForDrawer = null;
@@ -336,15 +336,6 @@
       });
     }
 
-    // Style Filter Select
-    var styleSelect = el("styleFilterSelect");
-    if (styleSelect) {
-      styleSelect.onchange = function () {
-        activeStyleFilter = styleSelect.value;
-        renderCalendar();
-      };
-    }
-
     // Search Input
     var searchInput = el("calendar-search");
     if (searchInput) {
@@ -360,10 +351,8 @@
     if (clearBtn) {
       clearBtn.onclick = function () {
         activeStatusFilter = "all";
-        activeStyleFilter = "all";
         searchQuery = "";
         if (searchInput) searchInput.value = "";
-        if (styleSelect) styleSelect.value = "all";
         if (statusPills) {
           statusPills.querySelectorAll(".status-pill").forEach(function (p) {
             p.className = "status-pill px-3.5 py-1.5 rounded-full bg-gray-100 dark:bg-white/5 text-gray-600 dark:text-white/70 hover:text-gray-900 dark:hover:text-white transition cursor-pointer";
@@ -439,11 +428,6 @@
       if (activeStatusFilter !== "all") {
         var st = (t.status || "upcoming").toLowerCase();
         if (st !== activeStatusFilter) return false;
-      }
-      // Style Filter
-      if (activeStyleFilter !== "all") {
-        var style = (t.travel_style || "cultural").toLowerCase();
-        if (style !== activeStyleFilter) return false;
       }
       // Search Query
       if (searchQuery) {

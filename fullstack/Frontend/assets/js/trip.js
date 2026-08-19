@@ -226,14 +226,14 @@
     var list = el("modal-catalog-list");
     if (!list) return;
 
-    list.innerHTML = '<div class="py-12 text-center text-white/50 text-xs"><i class="fas fa-spinner fa-spin text-amber-400 text-xl block mb-2"></i> Loading ' + category + '...</div>';
+    list.innerHTML = '<div class="py-14 text-center text-white/50 text-xs space-y-3"><i class="fas fa-spinner fa-spin text-amber-400 text-2xl block mx-auto"></i><span class="block">Loading ' + category + '…</span></div>';
 
     It.apiGet("/" + category).then(function (res) {
       var raw = res.data !== undefined ? res.data : (res.body ? (res.body.data || res.body) : res);
       MODAL_CATALOG_ITEMS = Array.isArray(raw) ? raw : (raw && Array.isArray(raw.data) ? raw.data : []);
       renderModalCatalogItems(MODAL_CATALOG_ITEMS);
     }).catch(function () {
-      list.innerHTML = '<div class="py-12 text-center text-white/50 text-xs">Could not load ' + category + '.</div>';
+      list.innerHTML = '<div class="py-14 text-center text-white/50 text-xs space-y-3"><i class="fas fa-triangle-exclamation text-rose-400 text-xl block mx-auto"></i><span class="block">Could not load ' + category + '.</span></div>';
     });
   }
 
@@ -242,7 +242,7 @@
     if (!list) return;
 
     if (!items || !items.length) {
-      list.innerHTML = '<div class="py-12 text-center text-white/50 text-xs">No items found in this category.</div>';
+      list.innerHTML = '<div class="py-14 text-center text-white/50 text-xs space-y-3"><i class="fas fa-suitcase text-white/20 text-2xl block mx-auto"></i><span class="block font-semibold text-white/60">No items found in this category.</span><span class="block">Try another category or clear your search.</span></div>';
       return;
     }
 
@@ -251,17 +251,17 @@
       var sub = item.city_name || item.flight_number || item.category_name || "Experience Item";
       var iconCls = TYPE_ICON[MODAL_CATEGORY] || "fa-bookmark";
 
-      return '<div class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-amber-400/40 transition flex items-center justify-between gap-4 group">' +
-        '<div class="flex items-center gap-3.5">' +
+      return '<div class="p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-amber-400/40 hover:bg-white/[0.07] transition-all duration-200 flex items-center justify-between gap-4 group">' +
+        '<div class="flex items-center gap-3.5 min-w-0">' +
           '<div class="w-10 h-10 rounded-xl bg-amber-400/10 text-amber-400 border border-amber-400/20 flex items-center justify-center text-base flex-shrink-0">' +
             '<i class="fas ' + iconCls + '"></i>' +
           '</div>' +
-          '<div>' +
-            '<h4 class="text-sm font-bold text-white group-hover:text-amber-400 transition leading-snug">' + esc(name) + '</h4>' +
-            '<span class="text-xs text-white/40">' + esc(sub) + '</span>' +
+          '<div class="min-w-0">' +
+            '<h4 class="text-sm font-bold text-white group-hover:text-amber-400 transition leading-snug truncate">' + esc(name) + '</h4>' +
+            '<span class="text-xs text-white/40 truncate block">' + esc(sub) + '</span>' +
           '</div>' +
         '</div>' +
-        '<button type="button" class="attach-item-modal-btn px-4 py-2 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-extrabold text-xs shadow-md transition flex items-center gap-1.5 flex-shrink-0 cursor-pointer" data-cat="' + MODAL_CATEGORY + '" data-item-id="' + item.id + '" data-item-name="' + esc(name) + '">' +
+        '<button type="button" class="attach-item-modal-btn px-4 py-2 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-black font-extrabold text-xs shadow-md shadow-amber-500/10 hover:shadow-amber-500/25 transition flex items-center gap-1.5 flex-shrink-0 cursor-pointer" data-cat="' + MODAL_CATEGORY + '" data-item-id="' + item.id + '" data-item-name="' + esc(name) + '">' +
           '<i class="fas fa-plus"></i> Attach' +
         '</button>' +
       '</div>';

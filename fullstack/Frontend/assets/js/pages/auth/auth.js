@@ -118,29 +118,6 @@
         }
       },
     },
-
-    "complete-profile": {
-      route: "profile",
-      fields: {
-        phone: { on: "blur", rules: [R.required, R.phone] },
-      },
-      successNote: "cp-success-note",
-      onSuccess: function (body, form) {
-        const user = (It.session && It.session.extractUser ? It.session.extractUser(body) : null) || (body && body.data && body.data.user) || (body && body.user) || (body && body.data);
-        if (user && typeof user === "object") {
-          if (It.storeUser) It.storeUser(user);
-          else {
-            try { localStorage.setItem("itinera_user", JSON.stringify(user)); } catch (e) {}
-          }
-        }
-        fb.banner("Profile completed — taking you to your dashboard…", "is-ok");
-        setTimeout(function () {
-          const role = It.session ? It.session.roleOf(user) : "customer";
-          const destination = It.session ? It.session.getRedirectPath(role) : "/app/dashboard.html";
-          global.location.href = destination;
-        }, 900);
-      },
-    },
   };
 
   /* ------------------------------------------------------------------ */
