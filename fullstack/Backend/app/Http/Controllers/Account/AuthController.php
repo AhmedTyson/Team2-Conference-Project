@@ -11,6 +11,7 @@ use App\Http\Requests\Account\Auth\UpdateProfileRequest;
 use App\Models\Account\Role;
 use App\Models\Account\User;
 use App\Notifications\WelcomeNotification;
+use App\Services\Commerce\PlanService;
 use App\Support\ApiResponse;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\JsonResponse;
@@ -102,13 +103,11 @@ class AuthController extends Controller
         $formattedAddress = $addrRecord ? $addrRecord->line1 : $user->getAttribute('address');
 
         $activeSub = $user->subscriptions()->where('status', 'active')->latest()->first();
-        $plan = $activeSub ? $activeSub->plan : null;
+        $plan = app(PlanService::class)->resolveQuotaPlan($user);
 
-        $planName = $plan ? $plan->name : 'Free Explorer';
-        $totalQuota = $plan ? (int) $plan->ai_quota_monthly : (int) config('ai.rate_limit_per_day', 500);
-        if ($totalQuota <= 0) {
-            $totalQuota = 500;
-        }
+        $planName = $plan->name;
+        $totalQuota = (int) $plan->ai_quota_monthly;
+
         $usedQuota = (int) ($user->ai_generations_count ?? 0);
         $remainingQuota = max(0, $totalQuota - $usedQuota);
 
@@ -137,7 +136,7 @@ class AuthController extends Controller
                     : null,
                 'email_verified_at' => $user->email_verified_at,
                 'subscription' => [
-                    'plan_id' => $plan ? $plan->id : null,
+                    'plan_id' => $plan->id,
                     'plan_name' => $planName,
                     'status' => $activeSub ? $activeSub->status : 'active',
                     'ai_quota_total' => $totalQuota,

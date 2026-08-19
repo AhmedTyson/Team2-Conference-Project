@@ -144,4 +144,58 @@ class AiQuotaIntegrationTest extends TestCase
 
         $service->consumeQuota($user);
     }
+
+    public function test_free_user_without_subscription_resolves_to_seeded_free_plan(): void
+    {
+        Plan::create([
+            'name' => 'Free',
+            'slug' => 'free',
+            'price_cents' => 0,
+            'currency' => 'EGP',
+            'ai_quota_monthly' => 5,
+            'features' => ['3 active trips', '5 AI generations / month', 'Standard catalog access'],
+        ]);
+
+        $user = User::factory()->create(['ai_generations_count' => 2]);
+        $user->assignRole('user');
+
+        $this->actingAs($user, 'api')->getJson('/api/me')
+            ->assertStatus(200)
+            ->assertJsonPath('data.user.subscription.plan_name', 'Free')
+            ->assertJsonPath('data.user.subscription.ai_quota_total', 5)
+            ->assertJsonPath('data.user.subscription.ai_quota_used', 2)
+            ->assertJsonPath('data.user.subscription.ai_quota_remaining', 3);
+
+        $this->actingAs($user, 'api')->getJson('/api/me/ai-quota')
+            ->assertStatus(200)
+            ->assertJsonPath('data.plan_name', 'Free')
+            ->assertJsonPath('data.ai_quota_total', 5)
+            ->assertJsonPath('data.ai_quota_used', 2)
+            ->assertJsonPath('data.ai_quota_remaining', 3)
+            ->assertJsonPath('data.usage_percentage', 40);
+    }
+
+    public function test_free_plan_quota_governs_ai_usage_service_consumption(): void
+    {
+        Plan::create([
+            'name' => 'Free',
+            'slug' => 'free',
+            'price_cents' => 0,
+            'currency' => 'EGP',
+            'ai_quota_monthly' => 5,
+            'features' => [],
+        ]);
+
+        $user = User::factory()->create(['ai_generations_count' => 4]);
+
+        $service = app(AiUsageService::class);
+
+        $service->consumeQuota($user);
+        $this->assertEquals(5, $user->fresh()->ai_generations_count);
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('You have exhausted your monthly AI quota');
+
+        $service->consumeQuota($user);
+    }
 }

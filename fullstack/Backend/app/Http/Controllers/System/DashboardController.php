@@ -11,7 +11,7 @@ use App\Models\Catalog\Hotel;
 use App\Models\Catalog\Restaurant;
 use App\Models\Commerce\Order;
 use App\Models\Commerce\Payment;
-use App\Models\Commerce\Plan;
+use App\Services\Commerce\PlanService;
 use App\Models\Trips\Favourite;
 use App\Models\Trips\Trip;
 use App\Support\ApiResponse;
@@ -49,16 +49,10 @@ class DashboardController extends Controller
 
         // Active Subscription & Shared AI Quota details
         $activeSub = $user->subscriptions()->where('status', 'active')->latest()->first();
-        $plan = $activeSub ? $activeSub->plan : null;
-        if (! $plan) {
-            $plan = Plan::where('name', 'Jetsetter')->first() ?: Plan::find(2);
-        }
+        $plan = app(PlanService::class)->resolveQuotaPlan($user);
 
-        $planName = $plan ? $plan->name : 'Jetsetter';
-        $totalQuota = $plan ? (int) $plan->ai_quota_monthly : 100;
-        if ($totalQuota <= 0) {
-            $totalQuota = 100;
-        }
+        $planName = $plan->name;
+        $totalQuota = (int) $plan->ai_quota_monthly;
 
         $usedQuota = (int) ($user->ai_generations_count ?? 0);
         $remainingQuota = max(0, $totalQuota - $usedQuota);
@@ -67,7 +61,7 @@ class DashboardController extends Controller
         $expiresAt = $activeSub ? ($activeSub->ends_at ? $activeSub->ends_at->toIso8601String() : $renewsAt) : null;
 
         if (! $expiresAt) {
-            $baseDate = $user->created_at ?: now();
+            $baseDate = $user->ai_reset_at ?: ($user->created_at ?: now());
             $expiresAt = $baseDate->copy()->addMonth()->toIso8601String();
             $renewsAt = $expiresAt;
         }
@@ -100,26 +94,20 @@ class DashboardController extends Controller
     {
         $user = $request->user();
         $activeSub = $user->subscriptions()->where('status', 'active')->latest()->first();
-        $plan = $activeSub ? $activeSub->plan : null;
-        if (! $plan) {
-            $plan = Plan::where('name', 'Jetsetter')->first() ?: Plan::find(2);
-        }
+        $plan = app(PlanService::class)->resolveQuotaPlan($user);
 
-        $planName = $plan ? $plan->name : 'Jetsetter';
-        $totalQuota = $plan ? (int) $plan->ai_quota_monthly : 100;
-        if ($totalQuota <= 0) {
-            $totalQuota = 100;
-        }
+        $planName = $plan->name;
+        $totalQuota = (int) $plan->ai_quota_monthly;
 
         $usedQuota = (int) ($user->ai_generations_count ?? 0);
         $remainingQuota = max(0, $totalQuota - $usedQuota);
-        $usagePct = min(100, (int) round(($usedQuota / $totalQuota) * 100));
+        $usagePct = $totalQuota > 0 ? min(100, (int) round(($usedQuota / $totalQuota) * 100)) : 0;
 
         $renewsAt = $activeSub ? ($activeSub->renews_at ? $activeSub->renews_at->toIso8601String() : null) : null;
         $endsAt = $activeSub ? ($activeSub->ends_at ? $activeSub->ends_at->toIso8601String() : $renewsAt) : null;
 
         if (! $endsAt) {
-            $baseDate = $user->created_at ?: now();
+            $baseDate = $user->ai_reset_at ?: ($user->created_at ?: now());
             $endsAt = $baseDate->copy()->addMonth()->toIso8601String();
             $renewsAt = $endsAt;
         }
@@ -127,16 +115,16 @@ class DashboardController extends Controller
         $formattedExp = 'Renews: '.Carbon::parse($endsAt)->format('M d, Y');
 
         return ApiResponse::success([
-            'plan_id' => $plan ? $plan->id : null,
+            'plan_id' => $plan->id,
             'plan_name' => $planName,
             'status' => $activeSub ? $activeSub->status : 'active',
             'ai_quota_total' => $totalQuota,
             'ai_quota_used' => $usedQuota,
             'ai_quota_remaining' => $remainingQuota,
             'usage_percentage' => $usagePct,
-            'billing_cycle' => $plan ? $plan->billing_cycle : 'monthly',
-            'price_cents' => $plan ? (int) $plan->price_cents : 19900,
-            'currency' => $plan ? ($plan->currency ?: 'EGP') : 'EGP',
+            'billing_cycle' => $plan->billing_cycle ?: 'monthly',
+            'price_cents' => (int) $plan->price_cents,
+            'currency' => $plan->currency ?: 'EGP',
             'renews_at' => $renewsAt,
             'expires_at' => $endsAt,
             'formatted_expiration' => $formattedExp,

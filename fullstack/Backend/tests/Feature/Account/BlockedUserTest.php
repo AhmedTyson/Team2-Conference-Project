@@ -4,6 +4,7 @@ namespace Tests\Feature\Account;
 
 use App\Models\Account\Role;
 use App\Models\Account\User;
+use App\Models\Commerce\Plan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -11,6 +12,20 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 class BlockedUserTest extends TestCase
 {
     use RefreshDatabase;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Plan::create([
+            'name' => 'Free',
+            'slug' => 'free',
+            'price_cents' => 0,
+            'currency' => 'EGP',
+            'ai_quota_monthly' => 5,
+            'features' => [],
+        ]);
+    }
 
     private function makeUser(array $attributes = []): User
     {

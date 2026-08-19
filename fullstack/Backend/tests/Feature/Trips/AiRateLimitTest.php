@@ -3,6 +3,7 @@
 namespace Tests\Feature\Trips;
 
 use App\Models\Account\User;
+use App\Models\Commerce\Plan;
 use App\Models\Trips\Trip;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use LucianoTonet\GroqLaravel\Facades\Groq;
@@ -19,6 +20,15 @@ class AiRateLimitTest extends TestCase
 
         config(['groq.api_key' => 'test-key']);
         config(['ai.rate_limit_per_day' => 3]);
+
+        Plan::create([
+            'name' => 'Free',
+            'slug' => 'free',
+            'price_cents' => 0,
+            'currency' => 'EGP',
+            'ai_quota_monthly' => 5,
+            'features' => [],
+        ]);
 
         $this->user = User::factory()->create();
     }

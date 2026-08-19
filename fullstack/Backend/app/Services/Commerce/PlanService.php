@@ -4,7 +4,9 @@ namespace App\Services\Commerce;
 
 use App\Interfaces\Commerce\PlanRepositoryInterface;
 use App\Models\Account\User;
+use App\Models\Commerce\Plan;
 use App\Models\Commerce\Subscription;
+use Exception;
 use Illuminate\Support\Carbon;
 
 class PlanService
@@ -24,6 +26,28 @@ class PlanService
     public function getPlan(int $id)
     {
         return $this->planRepository->findPlan($id);
+    }
+
+    /**
+     * Resolve the plan that governs a user's AI quota.
+     * Active subscription wins; otherwise the Free row from the plans table
+     * (single source of truth — no config/hardcoded fallbacks).
+     */
+    public function resolveQuotaPlan(User $user): Plan
+    {
+        $activeSub = $user->subscriptions()->where('status', 'active')->latest()->first();
+
+        if ($activeSub && $activeSub->plan) {
+            return $activeSub->plan;
+        }
+
+        $free = Plan::where('name', 'Free')->first() ?: Plan::find(1);
+
+        if (! $free) {
+            throw new Exception('Free quota plan is not configured. Run the PlanSeeder.');
+        }
+
+        return $free;
     }
 
     public function setPlans(array $plans)

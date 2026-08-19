@@ -3,6 +3,7 @@
 namespace Tests\Feature\Account;
 
 use App\Models\Account\User;
+use App\Models\Commerce\Plan;
 use App\Models\Trips\Trip;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -22,6 +23,15 @@ class EmailVerificationGateTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
+
+        Plan::create([
+            'name' => 'Free',
+            'slug' => 'free',
+            'price_cents' => 0,
+            'currency' => 'EGP',
+            'ai_quota_monthly' => 5,
+            'features' => [],
+        ]);
 
         $this->verified = User::factory()->create();
         $this->unverified = User::factory()->unverified()->create();

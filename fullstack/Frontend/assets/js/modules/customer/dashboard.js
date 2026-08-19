@@ -29,8 +29,8 @@
   }
 
   function renderAiQuota(subObj, user) {
-    const planName = subObj.plan_name || (subObj.plan ? subObj.plan.name : "Jetsetter");
-    const totalQuota = toInt(subObj.ai_quota_total, toInt(subObj.plan && subObj.plan.ai_quota_monthly, 100));
+    const planName = subObj.plan_name || (subObj.plan ? subObj.plan.name : "Free");
+    const totalQuota = toInt(subObj.ai_quota_total, toInt(subObj.plan && subObj.plan.ai_quota_monthly, 5));
     const usedQuota = toInt(subObj.ai_quota_used, toInt(user && user.ai_generations_count, 0));
     const remainingQuota = toInt(subObj.ai_quota_remaining, Math.max(0, totalQuota - usedQuota));
     let usagePct = toInt(subObj.usage_percentage, -1);
@@ -72,6 +72,8 @@
     if (availText) availText.textContent = remainingQuota + " left";
     if (barEl) barEl.style.width = usagePct + "%";
     if (expiryEl) expiryEl.textContent = expiryText;
+    const upgradeEl = el("ai-upgrade-link");
+    if (upgradeEl) upgradeEl.style.display = /free/i.test(planName) ? "inline-flex" : "none";
   }
 
   function setStat(id, value) {
