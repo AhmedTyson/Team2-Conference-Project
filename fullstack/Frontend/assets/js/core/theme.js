@@ -8,7 +8,8 @@
  * Rules:
  *  - Canonical localStorage key: "itinera_theme"
  *  - Default is always "dark" unless explicitly set to "light" by the user.
- *  - Public pages stay dark by default and resist accidental light shifts.
+ *  - Public pages honor an explicit user choice; "system" follows the OS
+ *    preference on every page (LM-01 Phase 1: soften "resist light" path).
  *  - Always applies BOTH html.dark class AND data-theme="dark" attribute.
  */
 (function (global) {
@@ -21,10 +22,6 @@
   /* ── Helpers ── */
   function systemPrefersDark() {
     return !!(global.matchMedia && global.matchMedia("(prefers-color-scheme: dark)").matches);
-  }
-
-  function isPublicPage() {
-    return !!(doc && doc.body && doc.body.getAttribute("data-layout") === "public");
   }
 
   function storedMode() {
@@ -68,10 +65,7 @@
   function resolve(mode) {
     if (mode === "dark") return true;
     if (mode === "light") return false;
-    if (mode === "system") {
-      if (isPublicPage()) return true;
-      return systemPrefersDark();
-    }
+    if (mode === "system") return systemPrefersDark();
     // Default fallback: dark
     return true;
   }
@@ -101,8 +95,7 @@
   /* ── Boot ── */
   function boot() {
     var saved = storedMode();
-    var effectiveMode = saved || (isPublicPage() ? "dark" : "dark");
-    applyDark(resolve(effectiveMode));
+    applyDark(resolve(saved || "dark"));
 
     /* Listen to OS changes if system mode explicitly chosen */
     var mql = global.matchMedia && global.matchMedia("(prefers-color-scheme: dark)");
