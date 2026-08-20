@@ -1,3 +1,16 @@
 .git
+.gitignore
+.github
+
 **/node_modules
-fullstack/Backend
+**/vendor
+**/.env
+**/.venv
+**/dist
+
+**/storage/framework/cache
+**/storage/logs/*.log
+
+*.log
+.DS_Store
+README.md

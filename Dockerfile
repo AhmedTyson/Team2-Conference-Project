@@ -1,24 +1,104 @@
-# Stage 1: Build — prepare the static site (API base injection)
-# Lives at repo root because Railpack v0.22+ ignores subdirectory
-# Dockerfiles (acceptChildOfRepoRoot:false). Build context = repo root.
-FROM nginx:1.27-alpine
+# ============================================================
+# Monorepo root Dockerfile
+# Builds EITHER the static frontend (SERVICE_ROLE=frontend) or
+# the Laravel API backend (SERVICE_ROLE=backend).
+# Railway exposes each service's SERVICE_ROLE variable as a
+# build ARG (see docs.railway.com/builds/dockerfiles).
+# ============================================================
+ARG SERVICE_ROLE=frontend
 
-# Copy static frontend
+# ── Frontend variant: static site on nginx ──────────────────
+FROM nginx:1.27-alpine AS frontend
+ARG SERVICE_ROLE
+
 COPY fullstack/Frontend /usr/share/nginx/html/
-
-# Nginx site config (listens on $PORT for Railway)
 COPY fullstack/Frontend/nginx.conf /etc/nginx/conf.d/default.conf
-
-# Entrypoint injects the backend API base into config.js at boot
 COPY fullstack/Frontend/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
-# Health check
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
     CMD wget -q -O /dev/null http://127.0.0.1:${PORT:-80}/ || exit 1
 
-# Railway exposes the app via the $PORT env var
 EXPOSE 80
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]
+
+# ── Backend variant: Laravel API (php-fpm + nginx + queue) ──
+# Stage 1: Composer dependencies
+FROM composer:2.8 AS vendor
+ARG SERVICE_ROLE
+
+WORKDIR /app
+COPY fullstack/Backend/composer.json fullstack/Backend/composer.lock ./
+RUN composer install \
+    --no-dev \
+    --no-interaction \
+    --no-progress \
+    --prefer-dist \
+    --optimize-autoloader
+
+# Stage 2: Runtime
+FROM php:8.5-fpm-alpine AS backend
+ARG SERVICE_ROLE
+
+RUN apk add --no-cache \
+        nginx \
+        supervisor \
+        curl \
+        libpng-dev \
+        libjpeg-turbo-dev \
+        freetype-dev \
+        libzip-dev \
+        libxml2-dev \
+        oniguruma-dev \
+        gettext \
+    && docker-php-ext-configure gd \
+        --with-freetype \
+        --with-jpeg \
+    && docker-php-ext-install -j"$(nproc)" \
+        pdo_mysql \
+        mbstring \
+        zip \
+        exif \
+        pcntl \
+        bcmath \
+        gd \
+        xml \
+        opcache \
+    && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
+    && pecl install redis \
+    && docker-php-ext-enable redis \
+    && apk del .build-deps \
+    && rm -rf /tmp/pear
+
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
+COPY fullstack/Backend/docker/php.ini "$PHP_INI_DIR/conf.d/app.ini"
+
+WORKDIR /var/www/html
+
+COPY --from=vendor /app/vendor ./vendor
+
+COPY fullstack/Backend/ .
+
+RUN mkdir -p storage/framework/{cache,sessions,views} \
+             storage/logs \
+             bootstrap/cache \
+    && chown -R www-data:www-data storage bootstrap/cache \
+    && chmod -R 775 storage bootstrap/cache
+
+COPY fullstack/Backend/docker/nginx.conf /etc/nginx/nginx.conf
+COPY fullstack/Backend/docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY fullstack/Backend/docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+EXPOSE 8080
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -sf http://localhost:8080/up | grep -q '"status":"ok"' || curl -sf http://localhost:8080/up || exit 1
+
+ENTRYPOINT ["/entrypoint.sh"]
+
+# ── Final stage selected by SERVICE_ROLE ────────────────────
+FROM ${SERVICE_ROLE}
