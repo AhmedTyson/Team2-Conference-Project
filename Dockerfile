@@ -25,9 +25,22 @@ ENTRYPOINT ["/entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]
 
 # ── Backend variant: Laravel API (php-fpm + nginx + queue) ──
-# Stage 1: Composer dependencies
-FROM composer:2.8 AS vendor
+# Stage 1: Composer dependencies (PHP 8.5 to match composer.json platform req)
+FROM php:8.5-fpm-alpine AS vendor
 ARG SERVICE_ROLE
+
+RUN apk add --no-cache git curl unzip libzip-dev libpng-dev libjpeg-turbo-dev freetype-dev \
+    libxml2-dev oniguruma-dev \
+    && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j"$(nproc)" \
+        zip \
+        mbstring \
+        pdo_mysql \
+        bcmath \
+        gd \
+        exif \
+        pcntl
 
 WORKDIR /app
 COPY fullstack/Backend/composer.json fullstack/Backend/composer.lock ./
