@@ -87,6 +87,9 @@ COPY . .
 RUN mkdir -p storage/framework/{cache,sessions,views} \
              storage/logs \
              bootstrap/cache \
+             /var/log/supervisor \
+             /var/log/nginx \
+             /run \
     && chown -R www-data:www-data storage bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
