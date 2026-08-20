@@ -147,7 +147,10 @@
     var mobileHubAccordion = el("mobile-drawer-hub-accordion");
 
     if (user) {
-      if (guestCta) guestCta.classList.add("hidden");
+      if (guestCta) {
+        guestCta.classList.add("hidden");
+        guestCta.classList.remove("sm:flex");
+      }
       if (userMenu) userMenu.classList.remove("hidden");
       if (userHub) userHub.classList.remove("hidden");
       if (bellWrap) bellWrap.classList.remove("hidden");
@@ -221,7 +224,9 @@
       }
 
     } else {
-      if (guestCta) guestCta.classList.remove("hidden");
+      if (guestCta) {
+        guestCta.classList.add("hidden", "sm:flex");
+      }
       if (userMenu) userMenu.classList.add("hidden");
       if (userHub) userHub.classList.add("hidden");
       if (bellWrap) bellWrap.classList.add("hidden");
