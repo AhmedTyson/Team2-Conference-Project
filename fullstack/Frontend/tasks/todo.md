@@ -10,11 +10,15 @@ Scans: ✅ = checklist item · 🔬 = verification run at end of each phase.
 
 **Description:** Materialize light token layer in `assets/css/public.css`, add shared utility classes used by the page recipe, audit current hardcoded dark-first classes.
 
-- [ ] Define `:root` (light) token block: `--background`, `--foreground`, `--muted-foreground`, `--border`, `--card`, `--card-foreground` (hsl) aligned with existing `html.dark` overrides
-- [ ] Add shared recipe classes: `.lm-card`, `.lm-btn`, `.lm-input`, `.lm-muted`, `.lm-chip` (bg-white/slate-900 + `dark:` overrides), keep amber accent untouched
-- [ ] Audit pass: `rg "bg-black/|text-white|border-white/" *.html public/*.html auth/*.html app/*.html admin/*.html agency/*.html` → export per-page hit list (`tasks/lm-audit.txt`) as the phase scope source
-- [ ] Confirm no duplicate/competing theme layers (only `core/theme.js` + tailwind CDN)
-- 🔬 `node --check` all touched CSS-adjacent JS (theme.js); build-less (static) — visual check on `index.html` light toggle
+- [x] Define `:root` (light) token block: `--background`, `--foreground`, `--muted-foreground`, `--border`, `--card`, `--card-foreground` (hsl) aligned with existing `html.dark` overrides
+      → ALREADY PRESENT in `assets/css/tokens.css` (`:root` = full warm-stone light set; `:root[data-theme="dark"]` = obsidian overrides). Home: tokens.css, imported by public.css + auth.css + admin.css.
+- [x] Add shared recipe classes: `.lm-card`, `.lm-btn`, `.lm-input`, `.lm-muted`, `.lm-chip` (bg-white/slate-900 + `dark:` overrides), keep amber accent untouched
+      → Done in tokens.css end (~line 1369): `.lm-card .lm-btn .lm-btn--ghost .lm-btn--accent .lm-input .lm-muted .lm-chip .lm-chip--gold`. Theme-agnostic (token-driven, works both modes). Recipe targets pages via phases 1–7.
+- [x] Audit pass: `rg "bg-black/|text-white|border-white/" *.html …` → export per-page hit list (`tasks/lm-audit.txt`) as the phase scope source
+      → 50/104 pages carry literal dark classes: root 17, public/ 11, app 22. auth 0, admin 0, agency 0 (token-driven). admin.css holds 74 hex hardcodes (Phase 6). Full per-file counts in `tasks/lm-audit.txt`.
+- [x] Confirm no duplicate/competing theme layers (only `core/theme.js` + tailwind CDN)
+      → Confirmed single engine. Note: index.html body hardcodes `bg-[#0a0a0a] text-white` (Phase 2 top item).
+- [x] 🔬 `node --check` all touched CSS-adjacent JS (theme.js); build-less (static) — visual check on `index.html` light toggle (Phase 1 puppeteer)
 
 **Files:** `assets/css/public.css`, `tasks/lm-audit.txt`
 **Estimated scope:** M
@@ -120,11 +124,12 @@ Scans: ✅ = checklist item · 🔬 = verification run at end of each phase.
 
 **Description:** User-space (dashboard, trips, surveys, chat, planner, reports, receipts, maps). Recipe + any `app/`-specific shell classes.
 
-- [ ] app/dashboard.html · app/trips.html · app/trip.html · app/trip-map.html · app/trip-form.html
-- [ ] app/surveys.html · app/survey.html · app/survey-form.html · app/survey-create.html · app/survey-answer.html
-- [ ] app/chat.html · app/report-user.html · app/report-agency.html · app/receipt.html
-- [ ] app/settings.html · app/profile.html · app/notifications.html · app/favourites.html (if present)
-- [ ] remaining app/* from lm-audit.txt (28 total)
+- [ ] app/dashboard.html · trips.html · trip.html · trip-map.html · trip-form.html · itinerary.html
+- [ ] app/surveys.html · survey.html · survey-form.html · survey-create.html · survey-answer.html
+- [ ] app/chat.html · report-user.html · report-agency.html · receipt.html
+- [ ] app/profile.html · notifications.html · favourites.html · planner.html · copy-wizard.html
+- [ ] app/payments.html · payment-success.html · payment-history.html · booking.html · bookings.html · availability.html · flight-booking.html · my-reviews.html
+- [ ] remaining app/* from lm-audit.txt (28 total; 22 dark-hit, 6 clean)
 - 🔬 Light screenshots 1440+390; authenticated API calls still render (puppeteer with token)
 
 **Dependencies:** 1 (parallel after 4) · **Files:** `app/*.html` · **Scope:** L (4 chunks)

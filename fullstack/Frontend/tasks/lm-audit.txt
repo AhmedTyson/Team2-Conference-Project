@@ -1,0 +1,105 @@
+LIGHT-MODE REFINEMENT (LM-01) — PHASE 0 DARK-FIRST AUDIT
+=========================================================
+Generated: 2026-08-20 (Phase 0) — authoritative "every page has a phase" checklist.
+Pattern: `bg-black|text-white|bg-zinc-950|bg-gray-950|bg-[#0a0a0a]` hits per file.
+Totals: 50 of 104 pages carry literal dark-first classes (auth/admin/agency = 0).
+
+GROUP TOTALS
+------------
+root    : 17 / 28
+public/ : 11 / 23
+auth/   :  0 /  6  (token-driven)
+app/    : 22 / 28
+admin/  :  0 / 19  (token-driven; hardcodes live in admin.css — Phase 6)
+agency/ :  0 /  7  (token-driven via admin.css — Phase 7)
+
+ROOT (28) — Phase 2 scope
+-------------------------
+[50] index.html          [12] overview.html CLEAN
+[28] explore.html        [ 3] 404.html CLEAN
+[28] contact.html        [ 3] 403.html CLEAN
+[26] countries.html      [ 3] 500.html CLEAN
+[25] weather.html        [ 3] errors/404.html CLEAN
+[24] plan-compare.html   [ 3] errors/403.html CLEAN
+[18] about.html          [ 3] errors/500.html CLEAN
+[17] help.html           [ 0] home.html CLEAN
+[ 9] search.html         [ 0] hotel-details.html CLEAN
+[ 7] attractions.html    [ 0] restaurant-details.html CLEAN
+[ 7] destinations.html   [ 0] attraction-details.html CLEAN
+[ 7] flights.html        [ 0] destination-details.html CLEAN
+[ 7] hotels.html         [ 0] trip-form.html CLEAN
+[ 7] restaurants.html    [ 0] trip.html CLEAN
+[ 6] plans.html
+[ 3] flight-details.html
+[ 2] entity.html
+
+PUBLIC/ (23) — Phase 3 scope
+----------------------------
+[50] public/index.html        [ 1] public/trip-preview.html
+[27] public/community.html    [ 0] public/hotel-details.html CLEAN
+[27] public/contact.html      [ 0] public/restaurant-details.html CLEAN
+[24] public/plan-compare.html [ 0] public/attraction-details.html CLEAN
+[23] public/weather.html      [ 0] public/destination-details.html CLEAN
+[21] public/plans.html        [ 0] public/overview.html CLEAN
+[17] public/help.html         [ 0] public/home.html CLEAN
+[16] public/about.html        [ 0] public/trip.html CLEAN
+[ 9] public/search.html       [ 0] public/home.html CLEAN
+[ 2] public/entity.html       [ 0] public/trip.html CLEAN
+
+APP/ (28) — Phase 5 scope
+-------------------------
+[70] app/trip.html            [ 7] app/report-agency.html
+[44] app/surveys.html         [ 7] app/survey-answer.html
+[41] app/availability.html    [ 7] app/survey-create.html
+[37] app/trip-form.html       [ 6] app/survey-form.html
+[29] app/chat.html            [ 5] app/dashboard.html
+[22] app/payments.html        [ 5] app/notifications.html
+[19] app/payment-success.html [ 4] app/my-reviews.html
+[18] app/flight-booking.html  [ 4] app/receipt.html
+[13] app/report-user.html     [ 3] app/profile.html
+[10] app/booking.html         [ 8] app/favourites.html
+[ 8] app/trips.html
+[ 7] app/bookings.html        [ 0] app/survey.html CLEAN
+                              [ 0] app/trip-map.html CLEAN
+                              [ 0] app/itinerary.html CLEAN
+                              [ 0] app/copy-wizard.html CLEAN
+                              [ 0] app/planner.html CLEAN
+                              [ 0] app/payment-history.html CLEAN
+
+AUTH/ (6) — Phase 4 scope (no literal dark hits; verify via screenshots only)
+----------------------------------------------------------------------------
+login.html · register.html · forgot.html · reset.html · verify.html · email-notice.html
+
+ADMIN/ (19) — Phase 6 scope (no literal dark hits in HTML)
+----------------------------------------------------------
+index · users · user-details · trips · hotels · flights · restaurants ·
+attractions · destinations · countries · categories · reviews · flags ·
+contacts · reports · analytics · notifications · settings · agency-requests
+CSS: assets/css/admin.css = 74 hex hardcodes (Phase 6 target; not token-driven)
+
+AGENCY/ (7) — Phase 7 scope (no literal dark hits in HTML)
+----------------------------------------------------------
+index · assignments · create-trip · proposals · inquiries · earnings · settings
+
+INFRASTRUCTURE STATUS (Phase 0)
+-------------------------------
+- :root light token block: ALREADY PRESENT in tokens.css (:root = warm stone/alabaster
+  light full set; :root[data-theme="dark"] = obsidian overrides). No work needed.
+- Recipe classes: ADDED tokens.css end — .lm-card .lm-btn .lm-btn--ghost .lm-btn--accent
+  .lm-input .lm-muted .lm-chip .lm-chip--gold (theme-agnostic token-driven).
+- Import chain: tokens.css imported by public.css + auth.css + admin.css → recipe global.
+- Theme engines: single — core/theme.js + tailwind CDN darkMode:class. No duplicates.
+- index.html body hardcodes `bg-[#0a0a0a] text-white` → Phase 2 top priority (hero-adjacent).
+- hero-wrapper `:not([style*="url"])` light override already exists in public.css end.
+
+EXEMPTIONS POLICY
+-----------------
+- Hero overlays: may stay dark-glass in BOTH modes where text contrast would break
+  (photo-URL heroes). Recorded per page during its phase.
+- Chart/analytics surfaces in admin may keep dark panels (deliberate data-viz contrast).
+
+CHECKOFF RULE
+-------------
+A phase is only closed when every page NAME above (or its CLEAN twin) is verified in
+light mode via puppeteer screenshots 1440+390. Pages not listed here that surface
+light breakage go to the governing phase + record here.

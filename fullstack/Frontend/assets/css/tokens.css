@@ -1362,3 +1362,88 @@ html.dark .theme-toggle .icon-moon,
   #nav-guest-cta a { padding-inline: 0.75rem; }
 }
 
+
+/* =====================================================================
+   LIGHT-MODE RECIPE — shared `.lm-*` classes (LM-01 Phase 0)
+   Theme-agnostic; drive off tokens so they work in BOTH modes.
+   Pages swap dark-first utility classes for these during phases 1-7.
+   ===================================================================== */
+
+.lm-card {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius-lg);
+  color: hsl(var(--card-foreground));
+  box-shadow: var(--shadow-sm);
+}
+
+.lm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  transition: opacity 0.2s var(--ease-out), transform 0.2s var(--ease-out), border-color 0.2s, background-color 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+.lm-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.lm-btn:active { opacity: 1; transform: translateY(0); }
+.lm-btn:focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 2px; }
+
+.lm-btn--ghost {
+  background: transparent;
+  color: hsl(var(--muted-foreground));
+  border-color: hsl(var(--border));
+}
+.lm-btn--ghost:hover { color: hsl(var(--foreground)); border-color: hsl(var(--ring)); }
+
+.lm-btn--accent {
+  background: hsl(var(--accent));
+  color: hsl(var(--accent-foreground));
+}
+
+.lm-input {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  border: 1px solid hsl(var(--input));
+  border-radius: var(--radius-md);
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  font-size: 0.875rem;
+  font-family: var(--font-body, inherit);
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s, color 0.2s;
+}
+.lm-input::placeholder { color: hsl(var(--muted-foreground)); }
+.lm-input:focus {
+  outline: none;
+  border-color: hsl(var(--ring));
+  box-shadow: 0 0 0 3px hsl(var(--ring) / 0.15);
+}
+
+.lm-muted { color: hsl(var(--muted-foreground)); font-size: 0.875rem; }
+
+.lm-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--secondary));
+  color: hsl(var(--secondary-foreground));
+  font-size: 0.8125rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.lm-chip--gold {
+  border-color: hsl(var(--accent) / 0.4);
+  color: hsl(var(--accent-foreground));
+}
