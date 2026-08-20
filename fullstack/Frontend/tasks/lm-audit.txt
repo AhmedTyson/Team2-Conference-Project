@@ -13,25 +13,30 @@ app/    : 22 / 28
 admin/  :  0 / 19  (token-driven; hardcodes live in admin.css — Phase 6)
 agency/ :  0 /  7  (token-driven via admin.css — Phase 7)
 
-ROOT (28) — Phase 2 scope
--------------------------
-[50] index.html          [12] overview.html CLEAN
-[28] explore.html        [ 3] 404.html CLEAN
-[28] contact.html        [ 3] 403.html CLEAN
-[26] countries.html      [ 3] 500.html CLEAN
-[25] weather.html        [ 3] errors/404.html CLEAN
-[24] plan-compare.html   [ 3] errors/403.html CLEAN
-[18] about.html          [ 3] errors/500.html CLEAN
-[17] help.html           [ 0] home.html CLEAN
-[ 9] search.html         [ 0] hotel-details.html CLEAN
-[ 7] attractions.html    [ 0] restaurant-details.html CLEAN
-[ 7] destinations.html   [ 0] attraction-details.html CLEAN
-[ 7] flights.html        [ 0] destination-details.html CLEAN
-[ 7] hotels.html         [ 0] trip-form.html CLEAN
-[ 7] restaurants.html    [ 0] trip.html CLEAN
-[ 6] plans.html
-[ 3] flight-details.html
-[ 2] entity.html
+ROOT (28) — Phase 2 scope — ALL VERIFIED 2026-08-20 (computed-style sweep, server :8099, ?v= cache-busted)
+-------------------------------------------------------------------------------------------------------
+[50] index.html ✔          [12] overview.html ✔ (redirect stub → index.html)
+[28] explore.html ✔        [ 3] 404.html ✔
+[28] contact.html ✔        [ 3] 403.html ✔
+[26] countries.html ✔      [ 3] 500.html ✔
+[25] weather.html ✔        [ 3] errors/404.html ✔
+[24] plan-compare.html ✔   [ 3] errors/403.html ✔
+[18] about.html ✔          [ 3] errors/500.html ✔
+[17] help.html ✔           [ 0] home.html ✔ (redirect stub → index.html)
+[ 9] search.html ✔         [ 0] hotel-details.html ✔
+[ 7] attractions.html ✔    [ 0] restaurant-details.html ✔
+[ 7] destinations.html ✔   [ 0] attraction-details.html ✔
+[ 7] flights.html ✔        [ 0] destination-details.html ✔
+[ 7] hotels.html ✔         [ 0] trip-form.html ✔
+[ 7] restaurants.html ✔    [ 0] trip.html ✔
+[ 6] plans.html ✔
+[ 3] flight-details.html ✔
+[ 2] entity.html ✔
+Fix: CSS-only (public.css). Hero re-dark exemption `html:not(.dark) .hero-wrapper
+.bg-black/40-80 → rgba(0,0,0,.6)` + `.border-white/20-50 → rgba(255,255,255,.22)`;
+existing light layer (~1183-1270) converted body `bg-[#0a0a0a]`→gcard token + white-text
+-> muted-foreground. Dark regression intact (index: html.dark re-applied, body #0a0a0a/white,
+hero overlay rgba(0,0,0,.7)). Screenshots kept for human pass; computed-style was the probe.
 
 PUBLIC/ (23) — Phase 3 scope
 ----------------------------

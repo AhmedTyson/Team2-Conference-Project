@@ -1227,6 +1227,23 @@ html:not(.dark) .bg-black\/80 {
   background-color: rgba(255, 255, 255, 0.85) !important;
 }
 
+/* LM-01 Phase 2: hero photo overlays keep DARK glass in light mode
+   (exemption policy — text stays white over photo; re-darken after
+   the generic bg-black/40-80 → white/85 conversion above) */
+html:not(.dark) .hero-wrapper .bg-black\/40,
+html:not(.dark) .hero-wrapper .bg-black\/50,
+html:not(.dark) .hero-wrapper .bg-black\/55,
+html:not(.dark) .hero-wrapper .bg-black\/60,
+html:not(.dark) .hero-wrapper .bg-black\/70,
+html:not(.dark) .hero-wrapper .bg-black\/80 {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+}
+html:not(.dark) .hero-wrapper .border-white\/20,
+html:not(.dark) .hero-wrapper .border-white\/40,
+html:not(.dark) .hero-wrapper .border-white\/50 {
+  border-color: rgba(255, 255, 255, 0.22) !important;
+}
+
 /* Border adaptations in light mode */
 html:not(.dark) .border-white\/5,
 html:not(.dark) .border-white\/10,
