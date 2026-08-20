@@ -61,9 +61,10 @@ RUN apk add --no-cache \
         exif \
         pcntl \
         bcmath \
-        gd \
-        xml \
-        opcache
+        gd
+
+# xml/opcache ship compiled into the alpine php:fpm image (core),
+# so they are intentionally NOT passed to docker-php-ext-install.
 
 # NOTE: preds/predis (pure PHP) is required via composer.json, so the
 # php-redis extension is intentionally NOT compiled (pecl redis fails
