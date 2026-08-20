@@ -108,6 +108,23 @@
     return Math.abs(hash);
   }
 
+  var DESTINATION_IMAGES = [
+    "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1514890547357-a9ee288728e0?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1583422409516-2895a77efded?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1560969184-10fe8719e047?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=800&q=80"
+  ];
+
   function getUnsplashImage(name, type, country) {
     var strName = String(name || "");
     var strType = String(type || "").toLowerCase();
@@ -122,6 +139,9 @@
 
     var seed = hashString(strName + strCountry + strType);
 
+    if (strType === "destinations" || strType === "destination" || query.indexOf("travel") !== -1 || query.indexOf("city") !== -1) {
+      return DESTINATION_IMAGES[seed % DESTINATION_IMAGES.length];
+    }
     if (strType === "hotels" || strType === "hotel" || query.indexOf("resort") !== -1 || query.indexOf("stay") !== -1 || query.indexOf("villas") !== -1) {
       return HOTEL_IMAGES[seed % HOTEL_IMAGES.length];
     }
@@ -135,7 +155,7 @@
       return ATTRACTION_IMAGES[seed % ATTRACTION_IMAGES.length];
     }
 
-    return UNSPLASH_IMAGES.paris;
+    return DESTINATION_IMAGES[seed % DESTINATION_IMAGES.length];
   }
 
   It.getUnsplashImage = getUnsplashImage;

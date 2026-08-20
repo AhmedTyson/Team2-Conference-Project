@@ -5,6 +5,154 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Settings · Itinera Admin</title>
   <link rel="stylesheet" href="../assets/css/admin.css?v=15" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    /* ── Settings layout ──────────────────────────────────────────── */
+    .settings-layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    @media (max-width: 760px) {
+      .settings-layout { grid-template-columns: 1fr; }
+      .settings-nav { flex-direction: row; overflow-x: auto; }
+    }
+
+    /* ── Section nav ──────────────────────────────────────────────── */
+    .settings-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      position: sticky;
+      top: 1rem;
+    }
+    .settings-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.65rem 1rem;
+      border-radius: var(--radius-md, 10px);
+      color: hsl(var(--muted-foreground));
+      font-weight: 600;
+      font-size: 0.875rem;
+      text-decoration: none;
+      border: 1px solid transparent;
+      transition: all 0.18s ease;
+      cursor: pointer;
+    }
+    .settings-nav-item svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      opacity: 0.7;
+    }
+    .settings-nav-item:hover {
+      background: rgba(255,255,255,0.05);
+      color: hsl(var(--foreground));
+      border-color: rgba(255,255,255,0.08);
+    }
+    .settings-nav-item.is-active {
+      background: rgba(251,191,36,0.1);
+      border-color: rgba(251,191,36,0.3);
+      color: #fbbf24;
+    }
+    .settings-nav-item.is-active svg { opacity: 1; color: #fbbf24; }
+
+    /* ── Panels ───────────────────────────────────────────────────── */
+    .settings-panels { display: flex; flex-direction: column; gap: 1.5rem; }
+    .settings-section { display: block; }
+
+    /* ── Summary grid ─────────────────────────────────────────────── */
+    .settings-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.75rem;
+      padding: 1.25rem 1.5rem;
+    }
+    .settings-summary-card {
+      background: rgba(251,191,36,0.06);
+      border: 1px solid rgba(251,191,36,0.18);
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .settings-summary-label {
+      font-family: var(--font-mono, monospace);
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: rgba(255,255,255,0.45);
+    }
+    .settings-summary-value {
+      font-size: 1rem;
+      font-weight: 800;
+      color: #fbbf24;
+    }
+
+    /* ── Form fields ─────────────────────────────────────────────── */
+    .settings-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding: 1.25rem 1.5rem;
+    }
+    .settings-form .kit-field { display: flex; flex-direction: column; gap: 0.35rem; }
+    .settings-form label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: hsl(var(--foreground));
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .settings-hint {
+      font-size: 0.72rem;
+      color: hsl(var(--muted-foreground));
+      font-weight: 400;
+    }
+    .settings-form-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding-top: 0.5rem;
+    }
+    .settings-save-status {
+      font-size: 0.8rem;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+
+    /* ── KPI strip ───────────────────────────────────────────────── */
+    .settings-kpi-strip {
+      display: flex;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid rgba(255,255,255,0.07);
+      flex-wrap: wrap;
+    }
+    .settings-kpi-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+    .settings-kpi-label {
+      font-family: monospace;
+      font-size: 0.6rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.4);
+    }
+    .settings-kpi-value {
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: #fbbf24;
+    }
+  </style>
   <script>/* FOUC prevention — default dark */
     (function(){var k="itinera_theme",s;try{s=localStorage.getItem(k);}catch(e){}
     if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
@@ -41,8 +189,9 @@
         </span>
       </header>
 
-      <!-- Split-screen layout: section nav (left) + form panels (right) -->
+      <!-- Settings layout: section nav (left) + panels (right) -->
       <div class="settings-layout">
+
         <!-- Section nav -->
         <nav class="settings-nav" aria-label="Settings sections">
           <a href="#section-pricing" class="settings-nav-item is-active" data-section="pricing">
@@ -61,24 +210,45 @@
 
         <!-- Form panels -->
         <div class="settings-panels">
+
           <!-- Pricing section -->
           <section class="ticket ticket-panel settings-section" id="section-pricing" aria-label="Pricing settings">
+            <!-- KPI summary strip -->
+            <div class="settings-kpi-strip">
+              <div class="settings-kpi-item">
+                <span class="settings-kpi-label">Trip Fork Price</span>
+                <span class="settings-kpi-value" id="kpi-fork-price">—</span>
+              </div>
+              <div class="settings-kpi-item">
+                <span class="settings-kpi-label">Commission Rate</span>
+                <span class="settings-kpi-value" id="kpi-commission">—</span>
+              </div>
+            </div>
             <div class="panel-head">
               <p class="label-eyebrow" style="margin: 0 0 0.25rem;">PRICING · FARE CONFIGURATION</p>
               <h2 style="margin: 0;">Pricing &amp; commission</h2>
               <p style="margin: 0.5rem 0 0; color: hsl(var(--muted-foreground)); font-size: 0.85rem;">Controls trip fork price and platform booking commission rate.</p>
             </div>
-            <form class="panel-body settings-form" id="form-pricing" data-group="pricing">
+            <form class="settings-form" id="form-pricing" data-group="pricing">
               <div class="kit-field">
-                <label for="set-trip_fork_price_cents">Trip fork price <span class="settings-hint">(cents — e.g. 50000 = 500 EGP)</span></label>
+                <label for="set-trip_fork_price_cents">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>
+                  Trip fork price <span class="settings-hint">(cents — e.g. 50000 = 500 EGP)</span>
+                </label>
                 <input id="set-trip_fork_price_cents" data-key="trip_fork_price_cents" type="number" min="0" step="100" placeholder="50000" />
               </div>
               <div class="kit-field">
-                <label for="set-platform_booking_commission_rate">Booking commission rate <span class="settings-hint">(decimal — e.g. 0.05 = 5%)</span></label>
+                <label for="set-platform_booking_commission_rate">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                  Booking commission rate <span class="settings-hint">(decimal — e.g. 0.05 = 5%)</span>
+                </label>
                 <input id="set-platform_booking_commission_rate" data-key="platform_booking_commission_rate" type="number" min="0" max="1" step="0.01" placeholder="0.05" />
               </div>
               <div class="settings-form-actions">
-                <button type="submit" class="btn-primary" id="save-pricing">Save pricing</button>
+                <button type="submit" class="btn-primary" id="save-pricing">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                  Save pricing
+                </button>
                 <span class="settings-save-status" aria-live="polite"></span>
               </div>
             </form>
@@ -95,8 +265,13 @@
               <h2 style="margin: 0;">Platform settings</h2>
               <p style="margin: 0.5rem 0 0; color: hsl(var(--muted-foreground)); font-size: 0.85rem;">Platform-wide keys surfaced from the settings store.</p>
             </div>
-            <div class="panel-body" id="panel-platform">
-              <div class="kit-empty settings-loading">Loading…</div>
+            <div id="panel-platform">
+              <div class="settings-summary-grid">
+                <div class="settings-summary-card" style="animation: pulse 1.5s ease infinite; background: rgba(255,255,255,0.04);">
+                  <span class="settings-summary-label">Loading…</span>
+                  <span class="settings-summary-value">—</span>
+                </div>
+              </div>
             </div>
             <span class="ticket-edge" aria-hidden="true"></span>
             <div class="ticket-stub">
@@ -111,10 +286,13 @@
               <h2 style="margin: 0;">Additional keys</h2>
               <p style="margin: 0.5rem 0 0; color: hsl(var(--muted-foreground)); font-size: 0.85rem;">Any remaining keys not assigned to a specific section.</p>
             </div>
-            <form class="panel-body settings-form" id="form-other" data-group="other">
+            <form class="settings-form" id="form-other" data-group="other">
               <div id="other-fields"></div>
               <div class="settings-form-actions" id="other-actions" hidden>
-                <button type="submit" class="btn-primary">Save other</button>
+                <button type="submit" class="btn-primary">
+                  <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                  Save other
+                </button>
                 <span class="settings-save-status" aria-live="polite"></span>
               </div>
             </form>
@@ -139,8 +317,20 @@
   <script src="../assets/js/session.js"></script>
   <script src="../assets/js/nav-config.js"></script>
   <script src="../assets/js/admin-chrome.js?v=12"></script>
-  <script src="../assets/js/admin-settings.js?v=3"></script>
+  <script src="../assets/js/admin-settings.js?v=4"></script>
   <script src="../assets/js/core/topbar.js"></script>
   <script src="../assets/js/core/theme.js"></script>
+  <!-- KPI strip auto-fill from loaded settings data -->
+  <script>
+    document.addEventListener("itinera:settings-loaded", function(e) {
+      var data = e.detail || {};
+      var forkEl = document.getElementById("kpi-fork-price");
+      var commEl = document.getElementById("kpi-commission");
+      if (forkEl && data.trip_fork_price_cents != null)
+        forkEl.textContent = (Number(data.trip_fork_price_cents) / 100).toLocaleString() + " EGP";
+      if (commEl && data.platform_booking_commission_rate != null)
+        commEl.textContent = (Number(data.platform_booking_commission_rate) * 100).toFixed(1) + "%";
+    });
+  </script>
 </body>
 </html>

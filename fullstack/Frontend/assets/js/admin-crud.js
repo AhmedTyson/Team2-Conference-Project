@@ -961,7 +961,7 @@
       }
       const req = f.required ? ' <span class="field-hint">· required</span>' : "";
       const desc = f.required ? ' aria-describedby="fe-' + f.key + '"' : "";
-      const opts = (selectOptions && selectOptions[f.key]) || undefined;
+      const opts = (selectOptions && selectOptions[f.key]) || f.options || undefined;
       return '<div class="kit-field" data-field="' + f.key + '"><label for="f-' + f.key + '">' + f.label + req + "</label>" +
         fieldInput(f, value, { options: opts, desc: desc }) +
         '<p class="field-error" id="fe-' + f.key + '" role="alert" hidden></p></div>';

@@ -225,6 +225,7 @@
       .then(function (res) {
         const apiRes = res[1];
         state.allRows = It.unwrapData(apiRes) || [];
+        document.dispatchEvent(new CustomEvent("agency-requests:loaded", { detail: state.allRows }));
         applyFilter();
       })
       .catch(function () {

@@ -592,7 +592,7 @@
     editBtn.title = "Edit " + mod.singular;
     editBtn.setAttribute("aria-label", "Edit " + mod.singular);
     editBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>';
-    editBtn.addEventListener("click", function () { openModal("edit", row); });
+    editBtn.addEventListener("click", function () { openEdit(row); });
 
     const delBtn = document.createElement("button");
     delBtn.type = "button";
@@ -894,7 +894,7 @@
       }
       const req = f.required ? ' <span class="field-hint">· required</span>' : "";
       const desc = f.required ? ' aria-describedby="fe-' + f.key + '"' : "";
-      const opts = (selectOptions && selectOptions[f.key]) || undefined;
+      const opts = (selectOptions && selectOptions[f.key]) || f.options || undefined;
       return '<div class="kit-field" data-field="' + f.key + '"><label for="f-' + f.key + '">' + f.label + req + "</label>" +
         fieldInput(f, value, { options: opts, desc: desc }) +
         '<p class="field-error" id="fe-' + f.key + '" role="alert" hidden></p></div>';
@@ -1088,6 +1088,17 @@
         const map = {};
         pairs.forEach(function (p) { map[p[0]] = p[1]; });
         openModal("new", null, map);
+      });
+  }
+
+  function openEdit(row) {
+    const needed = module().fields.filter(function (f) { return f.optionsUrl; });
+    if (!needed.length) { openModal("edit", row, {}); return; }
+    Promise.all(needed.map(function (f) { return fetchOptions(f).then(function (o) { return [f.key, o]; }); }))
+      .then(function (pairs) {
+        const map = {};
+        pairs.forEach(function (p) { map[p[0]] = p[1]; });
+        openModal("edit", row, map);
       });
   }
 

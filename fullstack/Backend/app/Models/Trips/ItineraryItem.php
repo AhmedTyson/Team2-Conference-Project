@@ -14,6 +14,7 @@ class ItineraryItem extends Model
     protected $fillable = [
         'trip_id', 'itemable_id', 'itemable_type', 'day_number', 'item_order',
         'type', 'time_slot', 'title', 'notes', 'estimated_cost',
+        'latitude', 'longitude', 'location_label',
     ];
 
     public function trip(): BelongsTo

@@ -30,8 +30,10 @@
   function renderProfile(user) {
     const chip = el("user-chip");
     if (!chip) return;
-    el("chip-name").textContent = user.name || "";
-    el("chip-role").textContent = It.session.roleOf(user) || "admin";
+    const nameEl = el("chip-name");
+    const roleEl = el("chip-role");
+    if (nameEl) nameEl.textContent = user.name || "";
+    if (roleEl) roleEl.textContent = It.session.roleOf(user) || "admin";
     chip.hidden = false;
   }
 
@@ -55,18 +57,22 @@
   function setDelta(id, delta, baselineLabel) {
     const card = el(id);
     if (!card) return;
-    if (card.dataset.deltaSet) return;
-    card.dataset.deltaSet = "1";
-    let chip;
+    let chip = card.querySelector(".kpi-delta");
+    if (!chip) {
+      chip = document.createElement("span");
+      const v = card.querySelector(".kpi-value");
+      if (v) v.insertAdjacentElement("afterend", chip);
+    }
     if (delta === null || delta === undefined) {
-      chip = deltaChip("—", null);
+      chip.className = "kpi-delta is-neutral";
+      chip.textContent = "—";
     } else {
       const n = Number(delta);
       const trend = n >= 0 ? "up" : "down";
-      chip = deltaChip(Math.abs(n).toLocaleString() + " " + (baselineLabel || ""), trend);
+      chip.className = "kpi-delta " + (trend === "up" ? "is-up" : "is-down");
+      const sign = trend === "up" ? "\u2191 +" : "\u2193 ";
+      chip.textContent = sign + Math.abs(n).toLocaleString() + "% " + (baselineLabel || "");
     }
-    const v = card.querySelector(".kpi-value");
-    if (v) v.insertAdjacentElement("afterend", chip);
   }
 
   function money(n) {
@@ -581,8 +587,15 @@
         renderDestinationSplit(PERIOD_DATASETS.destination[period] || PERIOD_DATASETS.destination["30d"]);
       });
     } else if (chartType === "peakhours") {
-      const ds = PERIOD_DATASETS.peakhours[period] || PERIOD_DATASETS.peakhours["30d"];
-      renderPeakHoursChart(ds);
+      It.apiGet("/admin/analytics/revenue?period=" + encodeURIComponent(period), { auth: true }).then(function (res) {
+        let peakData = null;
+        if (res.ok && res.body && res.body.data && res.body.data.peak_hours) {
+          peakData = res.body.data.peak_hours;
+        }
+        renderPeakHoursChart((peakData && peakData.length) ? peakData : PERIOD_DATASETS.peakhours[period] || PERIOD_DATASETS.peakhours["30d"]);
+      }).catch(function () {
+        renderPeakHoursChart(PERIOD_DATASETS.peakhours[period] || PERIOD_DATASETS.peakhours["30d"]);
+      });
     }
   }
 
@@ -610,12 +623,12 @@
         extra = results[1].body.data;
       }
 
-      setKpi("kpi-users", usersMeta && usersMeta.total_users != null ? usersMeta.total_users : "1,420");
+      setKpi("kpi-users", usersMeta && usersMeta.total_users != null ? Number(usersMeta.total_users).toLocaleString() : "1,420");
       const rev = (revenueMeta && revenueMeta.total_revenue != null)
         ? revenueMeta.total_revenue
         : (extra && extra.total_revenue != null ? extra.total_revenue : 152800);
       setKpi("kpi-revenue", money(rev));
-      setKpi("kpi-bookings", extra && extra.total_bookings != null ? extra.total_bookings : "845");
+      setKpi("kpi-bookings", extra && extra.total_bookings != null ? Number(extra.total_bookings).toLocaleString() : "845");
 
       // Set catalog KPI
       const destList = It.unwrapData(results[2]);
@@ -633,7 +646,7 @@
       renderChart("chart-revenue", revenueMeta && revenueMeta.chart ? revenueMeta.chart : PERIOD_DATASETS.revenue["30d"], "emerald");
       renderStyleSplit((extra && extra.revenue_by_travel_style) || PERIOD_DATASETS.style["30d"]);
       renderDestinationSplit((extra && extra.top_destinations) || PERIOD_DATASETS.destination["30d"]);
-      renderPeakHoursChart(PERIOD_DATASETS.peakhours["30d"]);
+      renderPeakHoursChart((extra && extra.peak_hours) || PERIOD_DATASETS.peakhours["30d"]);
     }).catch(function () {
       setKpi("kpi-users", "1,420");
       setKpi("kpi-revenue", "$152,800");

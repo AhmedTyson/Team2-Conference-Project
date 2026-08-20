@@ -446,23 +446,29 @@
       });
     });
 
-    // 6. Merge generic itinerary_items if present
+    // 6. Merge generic itinerary_items if present (including AI-generated items with no itemable)
     (trip.itinerary_items || []).forEach(function (it) {
       var raw = it.itemable;
       var type = (it.itemable_type || "attraction").toLowerCase().replace(/s$/, "");
-      var key = type + ":" + (it.itemable_id || it.id);
+      // For AI-generated items with no itemable_id, use the item id itself as key to avoid deduplication conflicts
+      var key = it.itemable_id ? (type + ":" + it.itemable_id) : ("item:" + it.id);
       if (!seen[key]) {
         seen[key] = true;
+        // Read coordinates: first from item row (AI-generated), fallback to itemable relation
+        var itemLat = (it.latitude != null && it.latitude !== "" && isFinite(Number(it.latitude))) ? Number(it.latitude) : null;
+        var itemLng = (it.longitude != null && it.longitude !== "" && isFinite(Number(it.longitude))) ? Number(it.longitude) : null;
+        var rawLat = raw && Number(raw.latitude);
+        var rawLng = raw && Number(raw.longitude);
         all.push({
           id: it.id,
           itemable_type: type,
-          itemable_id: it.itemable_id || it.id,
+          itemable_id: it.itemable_id || null,
           title: it.title || (raw && raw.name) || "Itinerary Item",
           city: (raw && raw.city) || "",
           country: (raw && (raw.country_name || raw.country)) || "",
-          address: (raw && raw.address) || "",
-          latitude: raw && Number(raw.latitude),
-          longitude: raw && Number(raw.longitude),
+          address: (raw && raw.address) || it.location_label || it.title || "",
+          latitude: itemLat || rawLat || null,
+          longitude: itemLng || rawLng || null,
           day_number: Number(it.day_number) || 1,
           time_slot: it.time_slot || "",
           notes: it.notes || "",

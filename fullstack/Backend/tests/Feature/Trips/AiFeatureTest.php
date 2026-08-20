@@ -67,21 +67,58 @@ class AiFeatureTest extends TestCase
         $user = $this->subscription->user;
         $user->givePermissionTo('generate ai itineraries');
 
-        $this->mockGroq($this->generatedJson);
-
-        $response = $this->actingAs($user, 'api')->postJson('/api/review', [
-            'destination_country_id' => Country::first()->id,
-            'no_of_days' => 3,
-            'budget' => 5000,
-            'interests' => ['culture', 'food'],
-            'no_of_travelers' => 2,
-            'travel_style' => 'adventure',
+        // Supply a valid days array so the generate endpoint saves a Trip + items
+        $this->generatedJson = json_encode([
+            'title'            => '3-Day Adventure',
+            'description'      => 'An adventure trip',
+            'estimated_budget' => 5000,
+            'days'             => [
+                [
+                    'day_number' => 1,
+                    'title'      => 'Day 1: Arrive and explore',
+                    'items'      => [
+                        [
+                            'time'  => '09:00 AM',
+                            'title' => 'City tour',
+                            'desc'  => 'Explore the city',
+                            'price' => 80,
+                            'type'  => 'ATTRACTION',
+                        ],
+                    ],
+                ],
+            ],
         ]);
 
-        $response->assertStatus(200)
-            ->assertJsonPath('itinerary', 'Day 1: Arrive and explore');
+        $this->mockGroq($this->generatedJson);
 
-        $this->assertEquals(1, $user->fresh()->ai_generations_count);
+        $response = $this->actingAs($user, 'api')->postJson('/api/trips/generate-ai', [
+            'destination_country_id' => Country::first()->id,
+            'city'                   => 'Cairo, Egypt',
+            'no_of_days'             => 3,
+            'budget'                 => 5000,
+            'interests'              => ['culture', 'food'],
+            'no_of_travelers'        => 2,
+            'travel_style'           => 'adventure',
+        ]);
+
+        $response->assertStatus(200);
+
+        // Debug: dump actual response to see what's returned
+        $json = $response->json();
+        if (!($json['data']['saved'] ?? false)) {
+            $this->fail('Trip not saved. Response: ' . json_encode($json, JSON_PRETTY_PRINT));
+        }
+
+        $response->assertStatus(200)
+            ->assertJsonPath('data.saved', true);
+
+        $this->assertNotEmpty($response->json('data.days.0.title'));
+
+        // Trip and ItineraryItem were created in the DB
+        $this->assertNotNull($response->json('data.trip_id'));
+        $tripId = $response->json('data.trip_id');
+        $this->assertDatabaseHas('trips', ['id' => $tripId, 'user_id' => $user->id]);
+        $this->assertDatabaseHas('itinerary_items', ['trip_id' => $tripId]);
     }
 
     public function test_ai_review_route_enforces_request_validation(): void

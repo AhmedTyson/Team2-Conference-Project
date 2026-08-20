@@ -20,8 +20,9 @@ class DestinationCardResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'city_name' => $this->city_name,
-            'image' => $this->image ?: 'https://image.pollinations.ai/prompt/'.urlencode(($this->name ?: $this->city_name ?: 'travel').' destination luxury photography').'?width=800&height=600&nologo=true',
+            'image' => ($this->image && ! str_contains($this->image, 'photo-1488646953014'))
+                ? $this->image
+                : 'https://images.unsplash.com/photo-'.(1500000000000 + (abs(crc32(($this->name ?: $this->city_name ?: 'destination').$this->id)) % 900000000)).'?auto=format&fit=crop&w=800&q=80',
             'latitude' => $this->latitude ? (float) $this->latitude : null,
             'longitude' => $this->longitude ? (float) $this->longitude : null,
             'country_id' => $this->country_id,

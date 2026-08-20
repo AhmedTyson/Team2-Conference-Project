@@ -273,8 +273,9 @@
     var country = (item.country && item.country.name) || item.country || "";
     var unsplashFallback = (global.Itinera && global.Itinera.getUnsplashImage) 
       ? global.Itinera.getUnsplashImage(name, type, country) 
-      : "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80";
-    var img = item.image_url || item.image || unsplashFallback;
+    var rawImg = item.image_url || item.image || "";
+    var isGenericPlaceholder = !rawImg || rawImg.indexOf("photo-1488646953014") !== -1;
+    var img = isGenericPlaceholder ? unsplashFallback : rawImg;
 
     var favKey = singularType + "_" + item.id;
     var isFav = Boolean(USER_FAV_KEYS[favKey] || USER_FAV_KEYS[type + "_" + item.id]);
@@ -502,6 +503,39 @@
     return false;
   }
 
+  var SORT = "featured";
+
+  function sortCatalogItems(items) {
+    if (!Array.isArray(items)) return [];
+    var list = items.slice();
+    if (SORT === "name_asc") {
+      list.sort(function (a, b) {
+        var na = (a.name || a.airline || "").toLowerCase();
+        var nb = (b.name || b.airline || "").toLowerCase();
+        return na.localeCompare(nb);
+      });
+    } else if (SORT === "name_desc") {
+      list.sort(function (a, b) {
+        var na = (a.name || a.airline || "").toLowerCase();
+        var nb = (b.name || b.airline || "").toLowerCase();
+        return nb.localeCompare(na);
+      });
+    } else if (SORT === "reviews") {
+      list.sort(function (a, b) {
+        var ra = Number(a.reviews_count || a.hotels_count || a.trips_count || 0);
+        var rb = Number(b.reviews_count || b.hotels_count || b.trips_count || 0);
+        return rb - ra;
+      });
+    } else if (SORT === "featured") {
+      list.sort(function (a, b) {
+        var ra = Number(a.rating || a.stars || 4.9);
+        var rb = Number(b.rating || b.stars || 4.9);
+        return rb - ra;
+      });
+    }
+    return list;
+  }
+
   function loadCatalog() {
     if (!grid) return;
     grid.innerHTML = '<div class="col-span-full py-16 text-center text-white/50 space-y-3"><i class="fas fa-circle-notch fa-spin text-2xl text-amber-400"></i><p class="text-sm font-semibold">Loading luxury experiences...</p></div>';
@@ -509,7 +543,8 @@
     fetchUserFavourites().then(function () {
       return It.apiGet("/" + TAB, { skipNotification: true });
     }).then(function (res) {
-      var raw = res.data !== undefined ? res.data : (res.body ? (res.body.data || res.body) : res);
+      var body = (res && res.body) ? res.body : res;
+      var raw = (body && body.data !== undefined) ? body.data : body;
       var items = Array.isArray(raw) ? raw : (raw && Array.isArray(raw.data) ? raw.data : []);
 
       if (SEARCH) {
@@ -527,6 +562,8 @@
           return matchItemRegion(i, SELECTED_REGION);
         });
       }
+
+      items = sortCatalogItems(items);
 
       var totalItems = items.length;
       var totalPages = Math.ceil(totalItems / PER_PAGE) || 1;
@@ -614,6 +651,15 @@
           CURRENT_PAGE = 1;
           loadCatalog();
         }, 300);
+      });
+    }
+
+    var sortSelect = el("catalog-sort");
+    if (sortSelect) {
+      sortSelect.addEventListener("change", function () {
+        SORT = sortSelect.value;
+        CURRENT_PAGE = 1;
+        loadCatalog();
       });
     }
 

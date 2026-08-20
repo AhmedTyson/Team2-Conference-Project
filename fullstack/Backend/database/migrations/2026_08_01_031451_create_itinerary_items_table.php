@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('trip_id')->constrained()->cascadeOnDelete();
-            $table->morphs('itemable');
+            $table->nullableMorphs('itemable');
 
             $table->decimal('day_number');
             $table->decimal('item_order');

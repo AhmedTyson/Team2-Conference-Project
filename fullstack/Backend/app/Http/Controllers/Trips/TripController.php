@@ -73,7 +73,113 @@ class TripController extends Controller
             'is_public' => $data['is_public'] ?? false,
         ]);
 
+        $this->syncTripItineraryAndItems($trip, $request);
+
+        $trip->load(['itineraryItems.itemable', 'destinations', 'hotels', 'attractions', 'restaurants']);
+
         return ApiResponse::success(new TripResource($trip), 'Trip created successfully', 201);
+    }
+
+    protected function syncTripItineraryAndItems(Trip $trip, Request $request): void
+    {
+        // 1. Attach Destination if city or destination_id passed
+        $destinationId = $request->input('destination_id');
+        $cityName = $request->input('city') ?? $request->input('destination');
+
+        if ($destinationId) {
+            $dest = \App\Models\Catalog\Destination::find($destinationId);
+            if ($dest && ! $trip->destinations()->where('destinations.id', $dest->id)->exists()) {
+                $trip->destinations()->attach($dest->id, ['day_number' => 1, 'visit_order' => 1]);
+            }
+        } elseif ($cityName) {
+            $destName = trim(explode(',', $cityName)[0]);
+            $dest = \App\Models\Catalog\Destination::where('name', 'LIKE', "%{$destName}%")
+                ->orWhere('city_name', 'LIKE', "%{$destName}%")
+                ->first();
+            if ($dest && ! $trip->destinations()->where('destinations.id', $dest->id)->exists()) {
+                $trip->destinations()->attach($dest->id, ['day_number' => 1, 'visit_order' => 1]);
+            }
+        }
+
+        // 2. Attach Plan Days / Items if provided
+        $planDays = $request->input('days') ?? ($request->input('plan.days') ?? []);
+        $directItems = $request->input('items') ?? [];
+
+        $allItemsToProcess = [];
+
+        if (is_array($planDays) && count($planDays) > 0) {
+            foreach ($planDays as $day) {
+                $dayNum = (int) ($day['day_number'] ?? 1);
+                $dayItems = $day['items'] ?? [];
+                foreach ($dayItems as $orderIdx => $item) {
+                    $item['day_number'] = $dayNum;
+                    $item['item_order'] = $orderIdx + 1;
+                    $allItemsToProcess[] = $item;
+                }
+            }
+        } elseif (is_array($directItems) && count($directItems) > 0) {
+            foreach ($directItems as $orderIdx => $item) {
+                $item['item_order'] = $orderIdx + 1;
+                $allItemsToProcess[] = $item;
+            }
+        }
+
+        foreach ($allItemsToProcess as $item) {
+            $type = strtolower($item['type'] ?? $item['itemable_type'] ?? 'attraction');
+            $type = rtrim($type, 's');
+            $dayNum = (int) ($item['day_number'] ?? 1);
+            $itemOrder = (int) ($item['item_order'] ?? 1);
+            $title = $item['title'] ?? $item['name'] ?? 'Experience Item';
+            $notes = $item['description'] ?? $item['desc'] ?? $item['notes'] ?? '';
+            $timeSlot = $item['time'] ?? $item['time_slot'] ?? '10:00 AM';
+            $cost = (float) ($item['price'] ?? $item['estimated_cost'] ?? 0);
+
+            $itemableId = $item['itemable_id'] ?? $item['id'] ?? null;
+            $itemableType = null;
+            $itemModel = null;
+
+            if ($itemableId && is_numeric($itemableId)) {
+                $modelClass = match ($type) {
+                    'hotel' => \App\Models\Catalog\Hotel::class,
+                    'restaurant' => \App\Models\Catalog\Restaurant::class,
+                    'attraction' => \App\Models\Catalog\Attraction::class,
+                    'flight' => \App\Models\Catalog\Flight::class,
+                    'destination' => \App\Models\Catalog\Destination::class,
+                    default => null,
+                };
+
+                if ($modelClass && class_exists($modelClass)) {
+                    $itemModel = $modelClass::find($itemableId);
+                    if ($itemModel) {
+                        $itemableType = $type;
+                        $relation = $type === 'destination' ? 'destinations' : $type . 's';
+                        if (method_exists($trip, $relation) && ! $trip->$relation()->where($itemModel->getTable() . '.id', $itemModel->id)->exists()) {
+                            if ($type === 'destination') {
+                                $trip->destinations()->attach($itemModel->id, ['day_number' => $dayNum, 'visit_order' => 1]);
+                            } else {
+                                $trip->$relation()->attach($itemModel->id);
+                            }
+                        }
+                    }
+                }
+            }
+
+            ItineraryItem::create([
+                'trip_id'        => $trip->id,
+                'itemable_type'  => $itemableType ?? $type,
+                'itemable_id'    => $itemableType && $itemModel ? $itemModel->id : null,
+                'day_number'     => $dayNum,
+                'item_order'     => $itemOrder,
+                'type'           => $type,
+                'time_slot'      => $timeSlot,
+                'title'          => $title,
+                'notes'          => $notes,
+                'estimated_cost' => $cost,
+                'latitude'       => isset($item['latitude'])  ? (float) $item['latitude']  : null,
+                'longitude'      => isset($item['longitude']) ? (float) $item['longitude'] : null,
+                'location_label' => $item['location_label'] ?? $item['title'] ?? null,
+            ]);
+        }
     }
 
     public function show(Request $request, Trip $trip): JsonResponse

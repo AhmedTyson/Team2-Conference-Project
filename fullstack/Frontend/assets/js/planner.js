@@ -252,13 +252,13 @@
 
   // AI Master Plan Generation Execution
   async function generateAiMasterPlan() {
-    const step2 = el("planner-step-2");
-    const modal = el("synthesis-modal");
-    const output = el("master-plan-output");
+    const step2      = el("planner-step-2");
+    const modal      = el("synthesis-modal");
+    const output     = el("master-plan-output");
     const statusText = el("synthesis-status-text");
 
-    step2.style.display = "none";
-    modal.style.display = "block";
+    step2.style.display  = "none";
+    modal.style.display  = "block";
     output.style.display = "none";
     updateProgressStep(4);
 
@@ -266,176 +266,350 @@
       "Analyzing destination landmarks & topography...",
       "Curating Michelin culinary pairings & reservations...",
       "Verifying OSRM logistics waypoints & transit...",
-      "Synthesizing bespoke luxury master plan..."
+      "Synthesizing bespoke luxury master plan...",
+      "Saving itinerary to your account..."
     ];
 
     let stepIdx = 0;
     const interval = setInterval(() => {
       stepIdx = (stepIdx + 1) % steps.length;
       if (statusText) statusText.textContent = steps[stepIdx];
-    }, 600);
+    }, 700);
 
     const payload = {
-      city: plannerState.city,
-      destination: plannerState.city,
-      no_of_days: plannerState.duration,
-      start_date: plannerState.startDate,
-      travel_party: plannerState.travelParty,
-      travel_style: plannerState.budgetTier,
-      budget_tier: plannerState.budgetTier,
-      budget: plannerState.budgetAmount,
-      interests: plannerState.interests
+      city:           plannerState.city,
+      destination:    plannerState.city,
+      no_of_days:     plannerState.duration,
+      start_date:     plannerState.startDate,
+      travel_party:   plannerState.travelParty,
+      travel_style:   plannerState.budgetTier,
+      budget_tier:    plannerState.budgetTier,
+      budget:         plannerState.budgetAmount,
+      interests:      plannerState.interests
     };
 
-    let planData = null;
+    let planData    = null;
+    let backendOk   = false;
+    let usedFallback = false;
+    let saveError    = null;
 
+    // ── 1. Try backend AI generate (waits for full response) ──
     try {
-      // Use Itinera transport layer to route to local backend API with Bearer auth token
       const apiPostFunc = (window.Itinera && window.Itinera.apiPost) || (window.Api && window.Api.post);
       if (apiPostFunc) {
         const res = await apiPostFunc("/trips/generate-ai", payload, { auth: true });
+
         if (res && res.ok) {
-          planData = (window.Itinera && window.Itinera.unwrapData) ? window.Itinera.unwrapData(res) : (res.body ? (res.body.data || res.body) : res);
-          // Force refresh user session so quota count is updated immediately across dashboard
+          // Unwrap ApiResponse: { success: true, data: { days: [...], trip_id: N, ... } }
+          const body = res.body || res;
+          const raw  = body.data || body;
+
+          if (raw && raw.days && raw.days.length > 0) {
+            planData     = raw;
+            backendOk    = true;
+            usedFallback = !!(raw.used_fallback || raw.fallback);
+            saveError    = raw.save_error || null;
+          }
+
+          // Quota refresh
           if (window.Itinera && window.Itinera.session && window.Itinera.session.currentUser) {
-            try { await window.Itinera.session.currentUser(true); } catch (e) {}
+            try { await window.Itinera.session.currentUser(true); } catch (_) {}
           }
         }
       }
     } catch (e) {
-      console.warn("Backend AI fetch note:", e);
+      console.warn("Backend AI error:", e);
     }
 
-    // Fallback if backend returned string or wasn't structured
-    if (!planData || !planData.days) {
-      planData = generateDeterministicPlan(plannerState);
+    // ── 2. Pure JS fallback if backend failed or returned no days ──
+    if (!planData || !planData.days || planData.days.length === 0) {
+      planData     = generateDeterministicPlan(plannerState);
+      usedFallback = true;
+      backendOk    = false;
     }
 
     clearInterval(interval);
     consumeQuota();
 
-    modal.style.display = "none";
+    // ── 3. If backend saved it, store trip_id immediately ──
+    if (planData.trip_id) {
+      plannerState.savedTripId = planData.trip_id;
+    }
+
+    // ── 4. If fallback plan was generated locally, save it to backend now ──
+    if (!planData.trip_id) {
+      try {
+        const saved = await savePlanToMyTrips(false);
+        if (saved && saved.id) {
+          plannerState.savedTripId = saved.id;
+          planData.trip_id = saved.id;
+        }
+      } catch (e) {
+        console.warn("Auto-save notice:", e);
+      }
+    }
+
+    // ── 5. Show result banners ──
+    modal.style.display  = "none";
     output.style.display = "block";
     plannerState.currentPlan = planData;
 
+    if (saveError) {
+      showToast("⚠️ Plan generated but could not be saved: " + saveError);
+    } else if (usedFallback && backendOk) {
+      showToast("ℹ️ AI used smart luxury fallback — full itinerary generated & saved.");
+    } else if (usedFallback) {
+      showToast("ℹ️ AI offline — generated & saved using local luxury engine.");
+    } else {
+      showToast("✅ AI itinerary generated and saved successfully!");
+    }
+
     renderMasterPlan(planData);
     window.scrollTo({ top: output.offsetTop - 80, behavior: "smooth" });
+
+    // ── 6. Auto-redirect to trip editor after short delay if saved ──
+    if (plannerState.savedTripId && !saveError) {
+      setTimeout(() => {
+        window.location.href = "trip.html?id=" + plannerState.savedTripId;
+      }, 2200);
+    }
   }
 
-  // Deterministic Luxury Synthesis Engine
+  // Advanced Multi-City Deterministic Luxury Synthesis Engine
   function generateDeterministicPlan(state) {
-    const cityName = state.city || "Rome, Italy";
-    const daysCount = state.duration || 4;
+    const rawCity = state.city || "Rome, Italy";
+    const daysCount = parseInt(state.duration, 10) || 10;
     const party = state.travelParty || "Couple / Romantic";
     const tier = state.budgetTier || "Luxury";
-    const budget = state.budgetAmount || 7900;
+    const budget = state.budgetAmount || (1500 * daysCount);
 
-    const isRome = cityName.toLowerCase().includes("rome");
-    const isTokyo = cityName.toLowerCase().includes("tokyo");
-    const isZurich = cityName.toLowerCase().includes("zurich");
-
-    let daysTemplates = [];
-
-    if (isRome) {
-      daysTemplates = [
-        {
-          title: "Imperial Glory & Rooftop Views",
-          items: [
-            { time: "09:30 AM", title: "Private VIP Colosseum & Roman Forum Tour", desc: "Includes fast-track underground access with a private archeologist guide.", price: 600, type: "ATTRACTION" },
-            { time: "01:30 PM", title: "Armando al Pantheon", desc: "Classic Roman cuisine in an intimate setting; reservations are essential months in advance.", price: 180, type: "RESTAURANT" },
-            { time: "04:00 PM", title: "Private Fountain & Piazza Walking Tour", desc: "Guided exploration of the Trevi Fountain and Spanish Steps with a focus on Baroque history.", price: 300, type: "ATTRACTION" },
-            { time: "08:00 PM", title: "Aroma Restaurant", desc: "Michelin-starred dining with a direct, unobstructed view of the Colosseum.", price: 550, type: "RESTAURANT" }
-          ]
-        },
-        {
-          title: "The Holy See & High Fashion",
-          items: [
-            { time: "08:00 AM", title: "Vatican Museums Private Early Access", desc: "Exclusive entry before the general public to view the Sistine Chapel in near silence.", price: 950, type: "ATTRACTION" },
-            { time: "01:00 PM", title: "Pierluigi", desc: "Rome's premier spot for luxury seafood dining; request a table in the historic piazza.", price: 250, type: "RESTAURANT" },
-            { time: "03:30 PM", title: "Via dei Condotti Personal Shopping", desc: "A dedicated fashion consultant will facilitate private viewings at flagship luxury boutiques.", price: 400, type: "ATTRACTION" },
-            { time: "08:30 PM", title: "La Pergola", desc: "Rome's only three-Michelin-starred restaurant, offering an unparalleled tasting menu.", price: 900, type: "RESTAURANT" }
-          ]
-        },
-        {
-          title: "Renaissance Art & Secret Alleys",
-          items: [
-            { time: "10:00 AM", title: "Galleria Borghese Private Docent Tour", desc: "An in-depth look at Bernini's and Caravaggio's masterpieces with an art historian.", price: 450, type: "ATTRACTION" },
-            { time: "01:00 PM", title: "Casina Valadier", desc: "High-end dining on Pincian Hill with panoramic views of the city skyline.", price: 220, type: "RESTAURANT" },
-            { time: "03:30 PM", title: "Private Vintage Vespa Tour", desc: "Discover hidden Roman gems and the Aventine Hill's secret keyhole on a classic Vespa.", price: 500, type: "ATTRACTION" },
-            { time: "08:00 PM", title: "Imàgo", desc: "Sophisticated Michelin-starred Italian dining at the top of the Spanish Steps.", price: 600, type: "RESTAURANT" }
-          ]
-        },
-        {
-          title: "Roman Relaxation & Culinary Mastery",
-          items: [
-            { time: "10:30 AM", title: "Luxury Wellness at De Russie Spa", desc: "A morning of hydrotherapy and Mediterranean-inspired treatments in a serene setting.", price: 600, type: "ATTRACTION" },
-            { time: "01:30 PM", title: "Roscioli Salumeria con Cucina", desc: "The city's most elite deli-restaurant; the carbonara is world-famous.", price: 150, type: "RESTAURANT" },
-            { time: "04:00 PM", title: "Private Pasta & Tiramisu Masterclass", desc: "Hosted in a private loft with a professional chef; includes premium wine pairing.", price: 500, type: "ATTRACTION" },
-            { time: "08:30 PM", title: "Il Pagliaccio", desc: "A refined two-Michelin-starred farewell dinner featuring innovative fusion-Italian cuisine.", price: 750, type: "RESTAURANT" }
-          ]
-        }
-      ];
-    } else if (isTokyo) {
-      daysTemplates = [
-        {
-          title: "Ancient Sanctuaries & Modern Neon",
-          items: [
-            { time: "09:00 AM", title: "Meiji Jingu Private Shinto Blessing", desc: "Private ceremonial entrance through the sacred forest with an English-speaking priest.", price: 450, type: "ATTRACTION" },
-            { time: "01:00 PM", title: "Sukiyabashi Jiro Roppongi", desc: "Master Edomae omakase sushi experience prepared before your eyes.", price: 350, type: "RESTAURANT" },
-            { time: "03:30 PM", title: "Ginza Luxury Haute Horlogerie & Couture", desc: "VIP private salon access in Ginza's premier luxury design houses.", price: 400, type: "ATTRACTION" },
-            { time: "07:30 PM", title: "Narisawa Gastronomy Experience", desc: "Innovative two-Michelin-starred 'Satoyama' sustainable culinary journey.", price: 650, type: "RESTAURANT" }
-          ]
-        },
-        {
-          title: "Traditional Arts & Culinary Precision",
-          items: [
-            { time: "10:00 AM", title: "Private Kintsugi & Tea Ceremony Master", desc: "Exclusive session in a centuries-old tea house with a 15th-generation master.", price: 550, type: "ATTRACTION" },
-            { time: "01:30 PM", title: "Tempura Kondo", desc: "Two-Michelin-starred delicate tempura mastery using seasonal rare ingredients.", price: 220, type: "RESTAURANT" },
-            { time: "04:00 PM", title: "teamLab Borderless VIP Private Viewing", desc: "Curated digital art museum experience with skip-the-line private docent.", price: 350, type: "ATTRACTION" },
-            { time: "08:00 PM", title: "L'Effervescence", desc: "Three-Michelin-starred French-Japanese harmonic culinary masterpiece.", price: 800, type: "RESTAURANT" }
-          ]
-        }
-      ];
+    // Split multi-city stops (e.g. "Rome, Italy -> Cairo, Egypt -> Alexandria")
+    let rawStops = [];
+    if (/(?:->|→|\s+-\s+)/.test(rawCity)) {
+      rawStops = rawCity.split(/\s*(?:->|→|\s+-\s+)\s*/);
+    } else if (rawCity.includes(";")) {
+      rawStops = rawCity.split(";");
     } else {
-      daysTemplates = [
-        {
-          title: "Heritage Landmarks & Skyline Gastronomy",
-          items: [
-            { time: "09:30 AM", title: `Private VIP ${cityName.split(",")[0]} Highlights Tour`, desc: "Fast-track access to premier historical monuments with an expert historian.", price: 550, type: "ATTRACTION" },
-            { time: "01:00 PM", title: "Grand Historic Piazza Lunch", desc: "Curated regional tasting menu in an iconic heritage location.", price: 200, type: "RESTAURANT" },
-            { time: "03:30 PM", title: "Private Chauffeur & Scenic Viewpoints", desc: "Curated private transportation covering secret gems and iconic vistas.", price: 400, type: "ATTRACTION" },
-            { time: "08:00 PM", title: "Panoramic Michelin-Starred Dinner", desc: "Haute cuisine tasting menu paired with grand cru vintage wines.", price: 650, type: "RESTAURANT" }
-          ]
-        },
-        {
-          title: "Artistry, Culture & Private Salons",
-          items: [
-            { time: "10:00 AM", title: "Exclusive Fine Art Gallery Access", desc: "Private early morning gallery docent tour before public opening.", price: 480, type: "ATTRACTION" },
-            { time: "01:30 PM", title: "Waterfront Gourmet Dining", desc: "Refined culinary specialties featuring fresh organic farm-to-table dining.", price: 240, type: "RESTAURANT" },
-            { time: "04:00 PM", title: "Boutique Artisan & Fashion Experience", desc: "Private appointments with premier local craftsmen and designers.", price: 420, type: "ATTRACTION" },
-            { time: "08:30 PM", title: "Celebrated Master Chef Degustation", desc: "Multi-course culinary journey crafted by the country’s leading culinary figure.", price: 780, type: "RESTAURANT" }
-          ]
-        }
-      ];
+      rawStops = rawCity.split(/(?:\s*,\s*(?=[A-Z][a-z]+)|\s+to\s+)/i);
+    }
+    const cities = rawStops.map(s => s.trim()).filter(s => s.length > 0);
+    const cityList = cities.length > 0 ? cities : ["Rome", "Cairo", "Alexandria"];
+
+    const cityCatalogs = {
+      rome: {
+        name: "Rome, Italy",
+        days: [
+          {
+            title: "Imperial Glory & Colosseum Underground",
+            items: [
+              { time: "09:30 AM", title: "Private VIP Colosseum & Roman Forum Tour", desc: "Includes fast-track underground access with a private archeologist guide.", price: 600, type: "ATTRACTION" },
+              { time: "01:30 PM", title: "Armando al Pantheon", desc: "Classic Roman cuisine in an intimate setting near the Pantheon.", price: 180, type: "RESTAURANT" },
+              { time: "04:00 PM", title: "Private Trevi & Spanish Steps Walking Tour", desc: "Guided exploration of Rome Baroque fountains and iconic piazza monuments.", price: 300, type: "ATTRACTION" },
+              { time: "08:00 PM", title: "Aroma Restaurant", desc: "Michelin-starred dining with a direct, unobstructed view of the Colosseum.", price: 550, type: "RESTAURANT" }
+            ]
+          },
+          {
+            title: "The Holy See & Vatican Masterpieces",
+            items: [
+              { time: "08:00 AM", title: "Vatican Museums Private Early Access", desc: "Exclusive entry before the general public to view the Sistine Chapel in near silence.", price: 950, type: "ATTRACTION" },
+              { time: "01:00 PM", title: "Pierluigi Piazza Seafood", desc: "Rome premier spot for luxury seafood dining; private table in the historic piazza.", price: 250, type: "RESTAURANT" },
+              { time: "03:30 PM", title: "Via dei Condotti Personal Shopping", desc: "A dedicated fashion consultant facilitates private viewings at flagship luxury boutiques.", price: 400, type: "ATTRACTION" },
+              { time: "08:30 PM", title: "La Pergola 3-Star Michelin Degustation", desc: "Rome only three-Michelin-starred restaurant offering an unparalleled tasting menu.", price: 900, type: "RESTAURANT" }
+            ]
+          },
+          {
+            title: "Renaissance Art & Borghese Villa",
+            items: [
+              { time: "10:00 AM", title: "Galleria Borghese Private Docent Tour", desc: "An in-depth look at Bernini and Caravaggio masterpieces with an art historian.", price: 450, type: "ATTRACTION" },
+              { time: "01:00 PM", title: "Casina Valadier Hilltop Lunch", desc: "High-end dining on Pincian Hill with panoramic views of the city skyline.", price: 220, type: "RESTAURANT" },
+              { time: "03:30 PM", title: "Private Vintage Vespa Tour", desc: "Discover hidden Roman gems and the Aventine Hill secret keyhole on a classic Vespa.", price: 500, type: "ATTRACTION" },
+              { time: "08:00 PM", title: "Imàgo at Hassler", desc: "Sophisticated Michelin-starred Italian dining at the top of the Spanish Steps.", price: 600, type: "RESTAURANT" }
+            ]
+          },
+          {
+            title: "Roman Relaxation & Culinary Mastery",
+            items: [
+              { time: "10:30 AM", title: "Luxury Wellness at De Russie Spa", desc: "A morning of hydrotherapy and Mediterranean-inspired treatments in a serene setting.", price: 600, type: "ATTRACTION" },
+              { time: "01:30 PM", title: "Roscioli Salumeria con Cucina", desc: "The city most elite deli-restaurant; the carbonara is world-famous.", price: 150, type: "RESTAURANT" },
+              { time: "04:00 PM", title: "Private Pasta & Tiramisu Masterclass", desc: "Hosted in a private loft with a professional chef; includes premium wine pairing.", price: 500, type: "ATTRACTION" },
+              { time: "08:30 PM", title: "Il Pagliaccio Two-Star Farewell Dinner", desc: "A refined two-Michelin-starred farewell dinner featuring innovative fusion-Italian cuisine.", price: 750, type: "RESTAURANT" }
+            ]
+          }
+        ]
+      },
+      cairo: {
+        name: "Cairo, Egypt",
+        days: [
+          {
+            title: "Pharaonic Wonders & Giza Plateau",
+            items: [
+              { time: "08:30 AM", title: "Private VIP Great Pyramids & Sphinx Tour", desc: "Fast-track access into the Great Pyramid inner chambers with an Egyptologist.", price: 550, type: "ATTRACTION" },
+              { time: "01:00 PM", title: "9 Pyramids Lounge", desc: "Gourmet dining with unobstructed panoramic views directly facing the 9 pyramids.", price: 160, type: "RESTAURANT" },
+              { time: "03:30 PM", title: "Grand Egyptian Museum (GEM) Private Viewing", desc: "Exclusive docent tour of the complete King Tutankhamun royal collection.", price: 450, type: "ATTRACTION" },
+              { time: "08:00 PM", title: "The Grill at Semiramis InterContinental", desc: "French haute cuisine overlooking the illuminated River Nile.", price: 320, type: "RESTAURANT" }
+            ]
+          },
+          {
+            title: "Islamic Cairo & Khan el-Khalili Bazaar",
+            items: [
+              { time: "09:30 AM", title: "Citadel of Saladin & Alabaster Mosque", desc: "Explore the medieval fortress and Ottoman architecture with private historian.", price: 350, type: "ATTRACTION" },
+              { time: "01:00 PM", title: "Naguib Mahfouz Cafe Khan el-Khalili", desc: "Authentic palace dining inside the historic 14th-century souk.", price: 120, type: "RESTAURANT" },
+              { time: "03:30 PM", title: "Private Artisan Goldsmith & Perfume Tour", desc: "Curated shopping session for antique brass, handwoven kilims, and rare oils.", price: 250, type: "ATTRACTION" },
+              { time: "08:00 PM", title: "Zitouni at Four Seasons Nile Plaza", desc: "Luxurious Egyptian banquet with views over the Nile bridges.", price: 280, type: "RESTAURANT" }
+            ]
+          },
+          {
+            title: "Coptic Cairo & Sunset Nile Felucca",
+            items: [
+              { time: "10:00 AM", title: "Hanging Church & Coptic Museum", desc: "Discover ancient Roman Babylon fortress and early Christian treasures.", price: 300, type: "ATTRACTION" },
+              { time: "01:30 PM", title: "Crimson Zamalek Waterfront Terrace", desc: "Refined Mediterranean dining on the Nile riverfront island in Zamalek.", price: 180, type: "RESTAURANT" },
+              { time: "04:30 PM", title: "Private Nile Felucca Sunset Sailing", desc: "Traditional sailboat charter with champagne and live acoustic oud music.", price: 400, type: "ATTRACTION" },
+              { time: "08:30 PM", title: "Revolving Restaurant Grand Nile Tower", desc: "360-degree rotating skyline dining on the 41st floor.", price: 350, type: "RESTAURANT" }
+            ]
+          }
+        ]
+      },
+      alexandria: {
+        name: "Alexandria, Egypt",
+        days: [
+          {
+            title: "Mediterranean Pearl & Citadel of Qaitbay",
+            items: [
+              { time: "09:00 AM", title: "Citadel of Qaitbay & Ancient Lighthouse Site", desc: "Fortress tour on the exact location of the Pharos Lighthouse.", price: 350, type: "ATTRACTION" },
+              { time: "01:00 PM", title: "Greek Club Alexandria Seaside Lunch", desc: "Waterfront terrace dining with fresh Mediterranean seafood & harbor views.", price: 160, type: "RESTAURANT" },
+              { time: "03:30 PM", title: "Bibliotheca Alexandrina Private Tour", desc: "VIP guided access to the rare manuscript museum and modern cultural complex.", price: 300, type: "ATTRACTION" },
+              { time: "08:00 PM", title: "Fish Market Alexandria Corniche Dinner", desc: "Iconic seafood institution with panoramic views of the Mediterranean coastline.", price: 220, type: "RESTAURANT" }
+            ]
+          },
+          {
+            title: "Catacombs & Royal Montaza Palace",
+            items: [
+              { time: "09:30 AM", title: "Catacombs of Kom El Shoqafa Tour", desc: "Descend into Roman-Egyptian underground tombs blending classical cultures.", price: 350, type: "ATTRACTION" },
+              { time: "01:00 PM", title: "Delices Patisserie & Tea Salon since 1922", desc: "Heritage salon lunch in Alexandria downtown district.", price: 110, type: "RESTAURANT" },
+              { time: "03:30 PM", title: "Montaza Palace Royal Gardens & Farouk Residence", desc: "Private stroll through royal gardens overlooking Mediterranean coves.", price: 300, type: "ATTRACTION" },
+              { time: "08:00 PM", title: "San Giovanni Mediterranean Terrace", desc: "Classic fine dining under Stanley Bridge with live classical piano.", price: 260, type: "RESTAURANT" }
+            ]
+          }
+        ]
+      },
+      tokyo: {
+        name: "Tokyo, Japan",
+        days: [
+          {
+            title: "Ancient Sanctuaries & Modern Neon",
+            items: [
+              { time: "09:00 AM", title: "Meiji Jingu Private Shinto Blessing", desc: "Private ceremonial entrance through the sacred forest with an English-speaking priest.", price: 450, type: "ATTRACTION" },
+              { time: "01:00 PM", title: "Sukiyabashi Jiro Roppongi", desc: "Master Edomae omakase sushi experience prepared before your eyes.", price: 350, type: "RESTAURANT" },
+              { time: "03:30 PM", title: "Ginza Luxury Haute Horlogerie & Couture", desc: "VIP private salon access in Ginza premier luxury design houses.", price: 400, type: "ATTRACTION" },
+              { time: "07:30 PM", title: "Narisawa Gastronomy Experience", desc: "Innovative two-Michelin-starred Satoyama sustainable culinary journey.", price: 650, type: "RESTAURANT" }
+            ]
+          },
+          {
+            title: "Traditional Arts & Culinary Precision",
+            items: [
+              { time: "10:00 AM", title: "Private Kintsugi & Tea Ceremony Master", desc: "Exclusive session in a centuries-old tea house with a 15th-generation master.", price: 550, type: "ATTRACTION" },
+              { time: "01:30 PM", title: "Tempura Kondo", desc: "Two-Michelin-starred delicate tempura mastery using seasonal rare ingredients.", price: 220, type: "RESTAURANT" },
+              { time: "04:00 PM", title: "teamLab Borderless VIP Private Viewing", desc: "Curated digital art museum experience with skip-the-line private docent.", price: 350, type: "ATTRACTION" },
+              { time: "08:00 PM", title: "L'Effervescence", desc: "Three-Michelin-starred French-Japanese harmonic culinary masterpiece.", price: 800, type: "RESTAURANT" }
+            ]
+          }
+        ]
+      }
+    };
+
+    // Allocate days across destination cities
+    const numCities = cityList.length;
+    const baseDays = Math.floor(daysCount / numCities);
+    const remainder = daysCount % numCities;
+    const daysPerCity = [];
+
+    for (let c = 0; c < numCities; c++) {
+      daysPerCity[c] = baseDays + (c < remainder ? 1 : 0);
     }
 
     const generatedDays = [];
     let plannedCount = 0;
+    let currentDayNum = 1;
 
-    for (let i = 1; i <= daysCount; i++) {
-      const template = daysTemplates[(i - 1) % daysTemplates.length];
-      generatedDays.push({
-        day_number: i,
-        title: template.title,
-        items: template.items
-      });
-      plannedCount += template.items.length;
+    // Generic fallback for any destination not in cityCatalogs
+    function buildGenericCatalog(name) {
+      return {
+        name,
+        days: [
+          {
+            title: `Iconic Monuments & VIP ${name} Highlights`,
+            items: [
+              { time: "09:30 AM", title: `Private VIP ${name} Highlights Tour`, desc: "Fast-track access to premier historical monuments with an expert local historian.", price: 550, type: "ATTRACTION" },
+              { time: "01:00 PM", title: `Grand Historic Dining in ${name}`, desc: "Curated regional tasting menu in an iconic heritage location.", price: 200, type: "RESTAURANT" },
+              { time: "03:30 PM", title: "Private Chauffeur & Scenic Viewpoints", desc: "Curated private transportation covering secret gems and iconic vistas.", price: 400, type: "ATTRACTION" },
+              { time: "08:00 PM", title: "Panoramic Michelin-Starred Skyline Dinner", desc: "Haute cuisine multi-course tasting menu paired with grand cru vintage wines.", price: 650, type: "RESTAURANT" }
+            ]
+          },
+          {
+            title: "Cultural Heritage & Fine Artistry",
+            items: [
+              { time: "10:00 AM", title: "Exclusive Fine Art Gallery Access", desc: "Private early morning gallery docent tour before public opening.", price: 480, type: "ATTRACTION" },
+              { time: "01:30 PM", title: "Waterfront Gourmet Specialty Dining", desc: "Refined culinary specialties featuring fresh organic farm-to-table dining.", price: 240, type: "RESTAURANT" },
+              { time: "04:00 PM", title: "Boutique Artisan & Couture Experience", desc: "Private appointments with premier local craftsmen and designers.", price: 420, type: "ATTRACTION" },
+              { time: "08:30 PM", title: "Celebrated Master Chef Degustation", desc: "Multi-course culinary journey crafted by the country's leading culinary figure.", price: 780, type: "RESTAURANT" }
+            ]
+          },
+          {
+            title: "Scenic Countryside Estate & Wine Terroir",
+            items: [
+              { time: "09:30 AM", title: "Private Country Estate & Botanical Gardens", desc: "Chauffeured excursion to royal aristocratic grounds and private villas.", price: 500, type: "ATTRACTION" },
+              { time: "01:00 PM", title: "Vineyard Villa Terrace Lunch", desc: "Sommelier wine pairing lunch overlooking sunlit vineyard hills.", price: 220, type: "RESTAURANT" },
+              { time: "03:30 PM", title: "Artisanal & Terroir Masterclass", desc: "Guided tasting with master producers in a historic stone mill.", price: 300, type: "ATTRACTION" },
+              { time: "08:00 PM", title: "Grand Farewell Gala Dining", desc: "Sophisticated seasonal menu in an illuminated palace courtyard.", price: 600, type: "RESTAURANT" }
+            ]
+          }
+        ]
+      };
+    }
+
+    for (let c = 0; c < numCities; c++) {
+      const rawCityName = cityList[c];
+      const cityNameLower = rawCityName.toLowerCase();
+      let cat = null;
+
+      for (const k of Object.keys(cityCatalogs)) {
+        if (cityNameLower.includes(k)) {
+          cat = cityCatalogs[k];
+          break;
+        }
+      }
+
+      // Unknown destination → generic luxury catalog
+      if (!cat) cat = buildGenericCatalog(rawCityName.trim());
+
+      const catDays = cat.days;
+      const allocated = daysPerCity[c];
+
+      for (let d = 0; d < allocated; d++) {
+        const templateIndex = d % catDays.length;
+        const template = catDays[templateIndex];
+        const cycle = Math.floor(d / catDays.length);
+        const dayTitle = `[${cat.name}] ${template.title}${cycle > 0 ? ` (Part ${cycle + 1})` : ""}`;
+
+        const items = template.items.map(item => ({
+          ...item,
+          title: cycle > 0 ? `${item.title} • Session ${cycle + 1}` : item.title
+        }));
+
+        generatedDays.push({
+          day_number: currentDayNum,
+          title: dayTitle,
+          items
+        });
+        plannedCount += items.length;
+        currentDayNum++;
+      }
     }
 
     return {
-      title: `${daysCount}-Day ${tier} ${cityName} Experience`,
-      meta: `${daysCount} Days • ${cityName} • ${party} • ${tier}`,
-      description: `This curated ${cityName.split(",")[0]} holiday offers unparalleled access to the city's most iconic treasures. From private, after-hours tours of landmark museums to personal shopping sessions in the fashion district and dining at Michelin-starred institutions, every detail is designed for discerning travelers seeking history, art, and world-class gastronomy at a balanced pace.`,
+      title: `${daysCount}-Day ${tier} ${rawCity} Experience`,
+      meta: `${daysCount} Days • ${rawCity} • ${party} • ${tier}`,
+      description: `An extraordinary ${daysCount}-day luxury journey across ${rawCity}. Each stage is curated with private landmark access, Michelin-starred dining, personal shopping, and bespoke chauffeur logistics tailored to discerning travelers.`,
       estimated_budget: budget,
       planned_items_count: plannedCount,
       osrm_waypoints: "Verified",
@@ -509,7 +683,16 @@
     // Wire Actions
     const btnSave = el("btn-save-master-plan");
     if (btnSave) {
-      btnSave.onclick = savePlanToMyTrips;
+      const realId = plannerState.savedTripId || plan.trip_id;
+      if (realId) {
+        btnSave.innerHTML = '<i class="fas fa-circle-check text-emerald-400"></i> Saved to Database — Edit Itinerary →';
+        btnSave.className = "btn-save-trips bg-emerald-500/20 border-emerald-500/40 text-emerald-300";
+        btnSave.onclick = function () {
+          window.location.href = "trip.html?id=" + realId;
+        };
+      } else {
+        btnSave.onclick = savePlanToMyTrips;
+      }
     }
 
     const btnBook = el("btn-book-paymob");
@@ -610,23 +793,30 @@
     }
   }
 
-  // Save Plan to User's Account & Database
-  async function savePlanToMyTrips() {
+  // Save Plan to Database (redirectNow=true navigates to trip.html after saving)
+  async function savePlanToMyTrips(redirectNow = true) {
     const plan = plannerState.currentPlan;
     if (!plan) return null;
 
+    // If already saved by backend (auto-save during generate), just redirect
+    if (plannerState.savedTripId && redirectNow) {
+      window.location.href = "trip.html?id=" + plannerState.savedTripId;
+      return { id: plannerState.savedTripId };
+    }
+
     const btn = el("btn-save-master-plan");
     if (btn) {
-      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving to Database...';
       btn.disabled = true;
     }
 
     let createdRecord = null;
+    let localTrip = null;
 
-    // Save locally (customer flow only — agency plans attach to the assignment instead)
+    // Save locally for offline support
     if (!agencyCtx.assignmentId) {
       const savedTrips = JSON.parse(localStorage.getItem("itinera_my_trips") || "[]");
-      const localTrip = {
+      localTrip = {
         id: "trip_" + Date.now(),
         title: plan.title,
         city: plannerState.city,
@@ -639,57 +829,60 @@
       };
       savedTrips.unshift(localTrip);
       localStorage.setItem("itinera_my_trips", JSON.stringify(savedTrips));
-
-      // Update Nav counter badge
       const badge = el("my-trips-count-badge");
       if (badge) badge.textContent = savedTrips.length;
     }
 
-    // Persist to backend database if logged in
+    // Persist to backend database
     const token = (It.readToken && It.readToken()) || localStorage.getItem("itinera_token");
     if (token) {
       try {
-        const rawBudget = plan.estimated_budget;
-        const cleanBudget = typeof rawBudget === "number" ? rawBudget : (parseFloat(String(rawBudget || "").replace(/[^0-9.]/g, "")) || 15000);
-        const startDate = plannerState.startDate || new Date().toISOString().split("T")[0];
-        const days = Number(plannerState.duration) || 3;
+        const rawBudget  = plan.estimated_budget;
+        const cleanBudget = typeof rawBudget === "number"
+          ? rawBudget
+          : (parseFloat(String(rawBudget || "").replace(/[^0-9.]/g, "")) || 15000);
+        const startDate  = plannerState.startDate || new Date().toISOString().split("T")[0];
+        const numDays    = Number(plannerState.duration) || 3;
         const endDateObj = new Date(startDate);
-        endDateObj.setDate(endDateObj.getDate() + days);
+        endDateObj.setDate(endDateObj.getDate() + numDays);
         const endDate = endDateObj.toISOString().split("T")[0];
 
         const payload = {
-          title: plan.title || ("Trip to " + (plannerState.city || "Destination")),
-          status: "planned",
-          travel_style: plannerState.budgetTier || "cultural",
-          interests: Array.isArray(plannerState.interests) ? plannerState.interests : [plannerState.interests || "culture"],
+          title:          plan.title || ("Trip to " + (plannerState.city || "Destination")),
+          city:           plannerState.city,
+          destination:    plannerState.city,
+          status:         "planned",
+          travel_style:   plannerState.budgetTier || "cultural",
+          interests:      Array.isArray(plannerState.interests) ? plannerState.interests : [plannerState.interests || "culture"],
           no_of_travelers: 2,
-          budget: cleanBudget,
-          no_of_days: days,
-          start_date: startDate,
-          end_date: endDate
+          budget:         cleanBudget,
+          no_of_days:     numDays,
+          start_date:     startDate,
+          end_date:       endDate,
+          days:           plan.days || []
         };
 
         let resJson;
         if (agencyCtx.assignmentId) {
-          // Agency flow: attach the plan to the assigned customer via the agency endpoint
           const agPayload = {
-            title: plan.title || ("Trip to " + (plannerState.city || "Destination")),
-            description: String(plan.description || "").slice(0, 2000),
-            price: cleanBudget,
-            capacity: 1,
+            title:           plan.title || ("Trip to " + (plannerState.city || "Destination")),
+            description:     String(plan.description || "").slice(0, 2000),
+            price:           cleanBudget,
+            capacity:        1,
             no_of_travelers: 2,
-            start_date: startDate,
-            end_date: endDate,
-            currency: "USD"
+            start_date:      startDate,
+            end_date:        endDate,
+            currency:        "USD",
+            days:            plan.days || []
           };
           if (typeof It.apiPost === "function") {
             resJson = await It.apiPost("/agency/assignments/" + agencyCtx.assignmentId + "/trips", agPayload, { auth: true });
           }
         } else if (typeof It.apiPost === "function") {
-          resJson = await It.apiPost("/trips", payload);
+          resJson = await It.apiPost("/trips", payload, { auth: true });
         } else {
           const apiBase = (window.ITINERA_CONFIG && window.ITINERA_CONFIG.apiBase) || "/api";
-          const fetchRes = await fetch(apiBase + "/trips", {
+          const raw = await fetch(apiBase + "/trips", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -698,12 +891,16 @@
             },
             body: JSON.stringify(payload)
           });
-          resJson = await fetchRes.json();
+          resJson = await raw.json();
         }
+
         if (resJson) {
-          createdRecord = resJson.data || resJson.body?.data || resJson;
-          if (createdRecord && createdRecord.id) {
-            plannerState.savedTripId = createdRecord.id;
+          // Handle both {data: {id}} and flat {id} response shapes
+          createdRecord = resJson.data || (resJson.body && resJson.body.data) || resJson;
+          const savedId = createdRecord && (createdRecord.id || (createdRecord.data && createdRecord.data.id));
+          if (savedId) {
+            plannerState.savedTripId = savedId;
+            createdRecord.id = savedId;
           }
         }
       } catch (err) {
@@ -711,14 +908,26 @@
       }
     }
 
-    showToast(agencyCtx.assignmentId
-      ? "Master Plan attached to the customer's assignment successfully!"
-      : "Master Plan saved to My Trips successfully!");
+    const finalId = plannerState.savedTripId;
+
     if (btn) {
-      btn.innerHTML = agencyCtx.assignmentId
-        ? '<i class="fas fa-check"></i> Saved to Customer\'s Assignment'
-        : '<i class="fas fa-check"></i> Saved to My Trips';
+      if (finalId) {
+        btn.innerHTML = '<i class="fas fa-circle-check"></i> Saved — Open in Trip Editor →';
+        btn.className = btn.className.replace("bg-amber", "bg-emerald") + " opacity-90";
+      } else {
+        btn.innerHTML = '<i class="fas fa-check"></i> Saved Locally';
+      }
       btn.disabled = false;
+    }
+
+    showToast(agencyCtx.assignmentId
+      ? "Master Plan attached to customer assignment!"
+      : finalId
+        ? "Plan saved to database! Opening trip editor..."
+        : "Plan saved locally.");
+
+    if (redirectNow && finalId && !isNaN(Number(finalId))) {
+      setTimeout(() => { window.location.href = "trip.html?id=" + finalId; }, 900);
     }
 
     return createdRecord || localTrip;

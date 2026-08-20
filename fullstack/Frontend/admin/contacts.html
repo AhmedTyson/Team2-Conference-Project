@@ -5,13 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Contacts · Itinera Admin</title>
   <link rel="stylesheet" href="../assets/css/admin.css?v=15" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <script>/* FOUC prevention — default dark */
     (function(){var k="itinera_theme",s;try{s=localStorage.getItem(k);}catch(e){}
     if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
       document.documentElement.classList.add("dark","fouc-ready");
     else document.documentElement.classList.add("fouc-ready");
     })();
-  </script></head>
+  </script>
+</head>
 <body data-page="admin" data-module="contacts" data-layout="admin">
   <a href="#main" class="skip-link">Skip to main content</a>
   <div class="shell">
@@ -31,9 +33,9 @@
       </div>
       <header class="content-head">
         <div class="right">
-          <p class="label-eyebrow" style="margin: 0 0 0.35rem;">GATE M-01 · CONTACTS</p>
-          <h1>Contacts</h1>
-          <p class="view-sub">Inbox, read and resolve customer messages</p>
+          <p class="label-eyebrow" style="margin: 0 0 0.35rem;">GATE C-01 · CUSTOMER INBOX</p>
+          <h1>Contact Messages</h1>
+          <p class="view-sub">Review, action, and resolve customer support inquiries and feedback</p>
         </div>
         <span id="user-chip" class="chip" hidden>
           <span id="chip-name"></span>
@@ -41,16 +43,55 @@
         </span>
       </header>
 
-      <div class="kit-toolbar" style="margin-bottom: var(--space-4);">
-        <label class="table-search-group">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
-  <input id="global-search" class="table-search" type="search" placeholder="Search..." autocomplete="off" aria-label="Search records" />
-</label>
+      <!-- KPI Summary Strip -->
+      <section class="kpi-grid" aria-label="Contacts KPIs" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+        <article class="ticket kpi-ticket" id="kpi-contacts-total">
+          <p class="label-eyebrow">TOTAL MESSAGES</p>
+          <div class="kpi-value">—</div>
+          <span class="ticket-edge" aria-hidden="true"></span>
+        </article>
+        <article class="ticket kpi-ticket" id="kpi-contacts-unread">
+          <p class="label-eyebrow">UNREAD</p>
+          <div class="kpi-value" style="color: #f43f5e;">—</div>
+          <span class="ticket-edge" aria-hidden="true"></span>
+        </article>
+        <article class="ticket kpi-ticket" id="kpi-contacts-resolved">
+          <p class="label-eyebrow">RESOLVED</p>
+          <div class="kpi-value" style="color: #10b981;">—</div>
+          <span class="ticket-edge" aria-hidden="true"></span>
+        </article>
+      </section>
+
+      <!-- Toolbar -->
+      <div class="kit-toolbar" style="display: flex; gap: 0.75rem; margin-bottom: var(--space-4); align-items: center; flex-wrap: wrap;">
+        <label class="table-search-group" style="flex: 1; min-width: 220px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
+          <input id="global-search" class="table-search" type="search" placeholder="Search name, email, subject, message..." autocomplete="off" aria-label="Search contacts" />
+        </label>
+        <select id="status-filter" class="ctl-select" style="min-width: 150px;" aria-label="Filter by status">
+          <option value="">All Statuses</option>
+          <option value="unread">Unread</option>
+          <option value="read">Read</option>
+          <option value="resolved">Resolved</option>
+        </select>
       </div>
 
+      <!-- Contacts Table Panel -->
       <section class="ticket ticket-panel" aria-label="Contacts">
-        <div id="contacts-table" class="panel-body"></div>
+        <div class="panel-head" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+          <div>
+            <p class="label-eyebrow" style="margin: 0 0 0.25rem;">ADMIN · SUPPORT DESK</p>
+            <h2 style="margin: 0;">Inbound Customer Messages</h2>
+          </div>
+        </div>
+        <div id="contacts-table" class="panel-body" style="padding: 0;"></div>
         <div id="contacts-pager" class="kit-pager" hidden></div>
+        <span class="ticket-edge" aria-hidden="true"></span>
+        <div class="ticket-stub" style="padding: var(--space-3) var(--space-5);">
+          <span class="label-eyebrow">ITN · MSG · 08-2026</span>
+          <span class="dash" style="flex: 1; margin: 0 var(--space-4);"></span>
+          <span class="sil" aria-hidden="true" style="height: 2rem;"><span></span><span></span><span></span></span>
+        </div>
       </section>
     </main>
   </div>
@@ -68,8 +109,20 @@
   <script src="../assets/js/session.js"></script>
   <script src="../assets/js/nav-config.js"></script>
   <script src="../assets/js/admin-chrome.js?v=12"></script>
-  <script src="../assets/js/admin-contacts.js"></script>
+  <script src="../assets/js/admin-contacts.js?v=2"></script>
   <script src="../assets/js/core/topbar.js"></script>
   <script src="../assets/js/core/theme.js"></script>
+  <script>
+    document.addEventListener("contacts:loaded", function(e) {
+      var rows = e.detail || [];
+      var totalEl = document.querySelector("#kpi-contacts-total .kpi-value");
+      var unreadEl = document.querySelector("#kpi-contacts-unread .kpi-value");
+      var resolvedEl = document.querySelector("#kpi-contacts-resolved .kpi-value");
+
+      if (totalEl) totalEl.textContent = rows.length;
+      if (unreadEl) unreadEl.textContent = rows.filter(function(r) { return r.status === 'unread'; }).length;
+      if (resolvedEl) resolvedEl.textContent = rows.filter(function(r) { return r.status === 'resolved'; }).length;
+    });
+  </script>
 </body>
 </html>

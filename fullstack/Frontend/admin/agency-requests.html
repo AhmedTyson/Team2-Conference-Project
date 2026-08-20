@@ -5,13 +5,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Agency Requests · Itinera Admin</title>
   <link rel="stylesheet" href="../assets/css/admin.css?v=15" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <script>/* FOUC prevention — default dark */
     (function(){var k="itinera_theme",s;try{s=localStorage.getItem(k);}catch(e){}
     if(!s||s==="dark"||(s==="system"&&window.matchMedia&&window.matchMedia("(prefers-color-scheme:dark)").matches))
       document.documentElement.classList.add("dark","fouc-ready");
     else document.documentElement.classList.add("fouc-ready");
     })();
-  </script></head>
+  </script>
+</head>
 <body data-page="admin" data-module="agency-requests" data-layout="admin">
   <a href="#main" class="skip-link">Skip to main content</a>
   <div class="shell">
@@ -32,8 +34,8 @@
       <header class="content-head">
         <div class="right">
           <p class="label-eyebrow" style="margin: 0 0 0.35rem;">GATE M-01 · AGENCY REQUESTS</p>
-          <h1>Agency requests</h1>
-          <p class="view-sub">Assign a customer's request to an agency</p>
+          <h1>Agency Requests</h1>
+          <p class="view-sub">Review customer itinerary requests and assign them to verified partner agencies</p>
         </div>
         <span id="user-chip" class="chip" hidden>
           <span id="chip-name"></span>
@@ -41,12 +43,31 @@
         </span>
       </header>
 
+      <!-- KPI Summary Strip -->
+      <section class="kpi-grid" aria-label="Agency Requests KPIs" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+        <article class="ticket kpi-ticket" id="kpi-req-total">
+          <p class="label-eyebrow">TOTAL REQUESTS</p>
+          <div class="kpi-value">—</div>
+          <span class="ticket-edge" aria-hidden="true"></span>
+        </article>
+        <article class="ticket kpi-ticket" id="kpi-req-pending">
+          <p class="label-eyebrow">PENDING ASSIGNMENT</p>
+          <div class="kpi-value" style="color: #fbbf24;">—</div>
+          <span class="ticket-edge" aria-hidden="true"></span>
+        </article>
+        <article class="ticket kpi-ticket" id="kpi-req-assigned">
+          <p class="label-eyebrow">ASSIGNED</p>
+          <div class="kpi-value" style="color: #10b981;">—</div>
+          <span class="ticket-edge" aria-hidden="true"></span>
+        </article>
+      </section>
+
       <div class="kit-toolbar" style="display: flex; gap: 0.75rem; margin-bottom: var(--space-4); align-items: center; flex-wrap: wrap;">
-        <label class="table-search-group" style="flex: 1; min-width: 200px;">
+        <label class="table-search-group" style="flex: 1; min-width: 220px;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg>
           <input id="global-search" class="table-search" type="search" placeholder="Search customer, budget level, ID..." autocomplete="off" aria-label="Search records" />
         </label>
-        <select id="status-filter" class="ctl-select" style="min-width: 150px;" aria-label="Filter by status">
+        <select id="status-filter" class="ctl-select" style="min-width: 160px;" aria-label="Filter by status">
           <option value="">All Statuses</option>
           <option value="pending">Pending</option>
           <option value="assigned">Assigned</option>
@@ -54,7 +75,19 @@
       </div>
 
       <section class="ticket ticket-panel" aria-label="Agency requests">
-        <div id="agency-requests-table" class="panel-body"></div>
+        <div class="panel-head" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+          <div>
+            <p class="label-eyebrow" style="margin: 0 0 0.25rem;">ADMIN · AGENCY DISPATCH</p>
+            <h2 style="margin: 0;">Pending &amp; Assigned Requests</h2>
+          </div>
+        </div>
+        <div id="agency-requests-table" class="panel-body" style="padding: 0;"></div>
+        <span class="ticket-edge" aria-hidden="true"></span>
+        <div class="ticket-stub" style="padding: var(--space-3) var(--space-5);">
+          <span class="label-eyebrow">ITN · REQ · 08-2026</span>
+          <span class="dash" style="flex: 1; margin: 0 var(--space-4);"></span>
+          <span class="sil" aria-hidden="true" style="height: 2rem;"><span></span><span></span><span></span></span>
+        </div>
       </section>
     </main>
   </div>
@@ -72,8 +105,20 @@
   <script src="../assets/js/session.js"></script>
   <script src="../assets/js/nav-config.js"></script>
   <script src="../assets/js/admin-chrome.js?v=12"></script>
-  <script src="../assets/js/admin-agency-requests.js"></script>
+  <script src="../assets/js/admin-agency-requests.js?v=2"></script>
   <script src="../assets/js/core/topbar.js"></script>
   <script src="../assets/js/core/theme.js"></script>
+  <script>
+    document.addEventListener("agency-requests:loaded", function(e) {
+      var rows = e.detail || [];
+      var totalEl = document.querySelector("#kpi-req-total .kpi-value");
+      var pendingEl = document.querySelector("#kpi-req-pending .kpi-value");
+      var assignedEl = document.querySelector("#kpi-req-assigned .kpi-value");
+
+      if (totalEl) totalEl.textContent = rows.length;
+      if (pendingEl) pendingEl.textContent = rows.filter(function(r) { return !r.agency_id && r.status !== 'assigned'; }).length;
+      if (assignedEl) assignedEl.textContent = rows.filter(function(r) { return r.agency_id || r.status === 'assigned'; }).length;
+    });
+  </script>
 </body>
 </html>

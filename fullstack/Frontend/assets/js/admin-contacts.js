@@ -6,7 +6,8 @@
     page: 1,
     rows: [],
     meta: null,
-    query: ""
+    query: "",
+    statusFilter: ""
   };
 
   var STATUS_LABELS = { unread: "Unread", read: "Read", resolved: "Resolved" };
@@ -82,7 +83,8 @@
 
       var statusTd = document.createElement("td");
       var chip = document.createElement("span");
-      chip.className = "chip";
+      var statusCls = c.status === "unread" ? "badge-danger" : (c.status === "resolved" ? "badge-ok" : "badge-warn");
+      chip.className = "badge " + statusCls;
       chip.textContent = STATUS_LABELS[c.status] || c.status || "\u2014";
       statusTd.appendChild(chip);
       tr.appendChild(statusTd);
@@ -162,6 +164,7 @@
     It.apiGet("/admin/contacts?page=" + page, { auth: true }).then(function (res) {
       state.rows = It.unwrapData(res) || [];
       state.meta = It.parseMeta(res);
+      document.dispatchEvent(new CustomEvent("contacts:loaded", { detail: state.rows }));
       applyFilter();
     }).catch(function () {
       It.feedback.banner("Could not load contacts.", "is-error");
@@ -170,6 +173,7 @@
 
   function applyFilter() {
     var q = state.query.trim().toLowerCase();
+    var sf = state.statusFilter.trim().toLowerCase();
     var rows = state.rows;
     if (q) {
       rows = rows.filter(function (c) {
@@ -177,6 +181,11 @@
           (c.email || "").toLowerCase().indexOf(q) !== -1 ||
           (c.subject || "").toLowerCase().indexOf(q) !== -1 ||
           (c.message || "").toLowerCase().indexOf(q) !== -1;
+      });
+    }
+    if (sf) {
+      rows = rows.filter(function (c) {
+        return (c.status || "").toLowerCase() === sf;
       });
     }
     renderTable(rows);
@@ -221,6 +230,13 @@
       if (search) {
         search.addEventListener("input", function () {
           state.query = search.value;
+          applyFilter();
+        });
+      }
+      var statusFilter = document.getElementById("status-filter");
+      if (statusFilter) {
+        statusFilter.addEventListener("change", function () {
+          state.statusFilter = statusFilter.value;
           applyFilter();
         });
       }
