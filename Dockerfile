@@ -49,7 +49,8 @@ RUN composer install \
     --no-interaction \
     --no-progress \
     --prefer-dist \
-    --optimize-autoloader
+    --optimize-autoloader \
+    --no-scripts
 
 # Stage 2: Runtime
 FROM php:8.5-fpm-alpine AS backend

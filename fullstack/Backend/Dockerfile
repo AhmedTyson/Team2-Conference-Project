@@ -24,13 +24,17 @@ WORKDIR /app
 
 COPY composer.json composer.lock ./
 
-# Install production deps only (no dev, optimised autoloader)
+# Install production deps only (no dev, optimised autoloader).
+# --no-scripts: composer's post-autoload-dump runs `php artisan
+# package:discover`, which needs the full app source (not present
+# in the vendor stage). Laravel regenerates packages.php at boot.
 RUN composer install \
     --no-dev \
     --no-interaction \
     --no-progress \
     --prefer-dist \
-    --optimize-autoloader
+    --optimize-autoloader \
+    --no-scripts
 
 # ── Stage 2: Runtime ─────────────────────────────────────────
 FROM php:8.5-fpm-alpine
