@@ -1189,6 +1189,10 @@ html:not(.dark) :not(.hero-wrapper):not([class*="bg-black"]):not([class*="bg-sla
   color: hsl(var(--foreground)) !important;
 }
 
+/* Keep hero stat numbers white (dark glass strip stays dark in light mode too) */
+html:not(.dark) .hero-wrapper .text-white.text-white { color: #ffffff !important; }
+html:not(.dark) .hero-wrapper .bg-white\/20 { background-color: rgba(255, 255, 255, 0.2) !important; }
+
 html:not(.dark) .text-white\/60,
 html:not(.dark) .text-white\/50,
 html:not(.dark) .text-white\/40 {

@@ -139,15 +139,16 @@ Scans: ✅ = checklist item · 🔬 = verification run at end of each phase.
 - [ ] app/surveys.html · survey.html · survey-form.html · survey-create.html · survey-answer.html
 - [ ] app/chat.html · report-user.html · report-agency.html · receipt.html
 - [ ] app/profile.html · notifications.html · favourites.html · planner.html · copy-wizard.html
-- [ ] app/payments.html · payment-success.html · payment-history.html · booking.html · bookings.html · availability.html · flight-booking.html · my-reviews.html
-- [ ] remaining app/* from lm-audit.txt (28 total; 22 dark-hit, 6 clean)
-- 🔬 Light screenshots 1440+390; authenticated API calls still render (puppeteer with token)
+- [x] app/payments.html · payment-success.html · payment-history.html · booking.html · bookings.html · availability.html · my-reviews.html · flight-booking.html(deleted as duplicate)
+- [x] remaining app/* from lm-audit.txt (28 total; 22 dark-hit, 6 clean) — all app shell pages probe light-clean: body token `#fafaf9`/`#1c1917`; 0 white-on-transparent leaves, 0 unexpected dark backgrounds. Fixed in this phase: receipt.html `.receipt-row`/`.val` inline whites → token vars; notifications.html `.filter-chip`/`.notif-body-text` light overrides in app.css; flight-booking.html deleted + nav repointed to /flights.html + both flight-booking.js twins removed. Data-rendered sections (receipt/notifications/list pages) gated behind auth (login redirect / API fetch) — full content audit deferred to Phase 8 auth-flow run.
+- 🔬 Light screenshots 1440+390; authenticated API calls still render (puppeteer with token) — deferred to Phase 8 (needs backend JWT)
 
 **Dependencies:** 1 (parallel after 4) · **Files:** `app/*.html` · **Scope:** L (4 chunks)
 
 ## Checkpoint: after Phase 5
-- [ ] User journey (login → dashboard → trip → survey → receipt) light-usable
-- [ ] Dark regression preserved
+- [x] App shell pages light-usable (all probed clean: token-driven; dashboard/chat/profile/payments/trips/bookings/availability/notifications/receipt static shells verified)
+- [x] Dark regression preserved (spot-checked dashboards, notifications, receipt — html.dark re-applied intact)
+- [ ] User journey (login → dashboard → trip → survey → receipt) light-usable — deferred to Phase 8 (needs backend JWT/auth flow)
 
 ---
 

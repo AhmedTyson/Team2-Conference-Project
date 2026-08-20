@@ -1647,3 +1647,180 @@ html.dark .slide-content {
 .anim-rise {
   animation: slide-up-fade 0.5s var(--ease-out) backwards;
 }
+
+
+/* ============ LM-01 LIGHT-MODE ADAPTATION (app pages) ============
+ * App shell pages load app.css instead of public.css, so the
+ * public.css light layer does not reach them. App pages carry
+ * Tailwind dark-first literals on <body> (bg-[#0a0a0a], bg-[#0b0c10],
+ * bg-neutral-950) plus text-white / dark-glass leaves. Under light
+ * mode convert them to design tokens; dark mode leaves as-is.
+ */
+html:not(.dark) body.bg-\[#0a0a0a\],
+html:not(.dark) body.bg-\[#0b0c10\],
+html:not(.dark) body.bg-neutral-950,
+html:not(.dark) body.bg-neutral-900 {
+  background-color: hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+html:not(.dark) body.bg-\[#0a0a0a\] *,
+html:not(.dark) body.bg-\[#0b0c10\] *,
+html:not(.dark) body.bg-neutral-950 *,
+html:not(.dark) body.bg-neutral-900 * {
+  border-color: hsl(var(--border));
+}
+
+html:not(.dark) [class~="bg-\[#0a0a0a\]"],
+html:not(.dark) [class~="bg-\[#0b0c10\]"],
+html:not(.dark) [class~="bg-neutral-950"],
+html:not(.dark) [class~="bg-neutral-900"] {
+  background-color: hsl(var(--background)) !important;
+}
+
+html:not(.dark) [class~="bg-zinc-950"],
+html:not(.dark) [class~="bg-zinc-900"],
+html:not(.dark) [class~="bg-\[#111\]"] {
+  background-color: hsl(var(--background)) !important;
+}
+
+html:not(.dark) [class~="bg-neutral-900"] {
+  background-color: hsl(var(--card)) !important;
+}
+html:not(.dark) [class~="bg-\[#121212\]"],
+html:not(.dark) [class~="bg-\[#141414\]"],
+html:not(.dark) [class~="bg-neutral-900/80"],
+html:not(.dark) [class~="bg-black/60"],
+html:not(.dark) [class~="bg-black/70"],
+html:not(.dark) [class~="bg-black/80"] {
+  background-color: rgba(255, 255, 255, 0.85) !important;
+}
+
+html:not(.dark) [class~="bg-black/40"],
+html:not(.dark) [class~="bg-black/50"] {
+  background-color: rgba(255, 255, 255, 0.72) !important;
+}
+
+html:not(.dark) [class~="bg-black/20"],
+html:not(.dark) [class~="bg-black/30"],
+html:not(.dark) [class~="bg-black/5"],
+html:not(.dark) [class~="bg-white/5"] {
+  background-color: hsl(var(--secondary)) !important;
+}
+
+html:not(.dark) [class~="bg-white/10"],
+html:not(.dark) [class~="bg-white/15"] {
+  background-color: hsl(var(--card) / 0.6) !important;
+}
+
+html:not(.dark) [class~="bg-white/20"] {
+  background-color: rgba(255, 255, 255, 0.75) !important;
+}
+
+html:not(.dark) [class~="text-white"] {
+  color: hsl(var(--foreground)) !important;
+}
+
+html:not(.dark) [class~="text-white/90"] {
+  color: hsl(var(--foreground)) !important;
+}
+
+html:not(.dark) [class~="text-white/80"],
+html:not(.dark) [class~="text-white/70"],
+html:not(.dark) [class~="text-white/60"] {
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+html:not(.dark) [class~="text-white/50"],
+html:not(.dark) [class~="text-white/40"],
+html:not(.dark) [class~="text-white/30"] {
+  color: hsl(var(--muted-foreground) / 0.85) !important;
+}
+
+html:not(.dark) [class~="text-white/20"],
+html:not(.dark) [class~="text-white/10"] {
+  color: hsl(var(--muted-foreground) / 0.6) !important;
+}
+
+html:not(.dark) [class~="border-white/10"],
+html:not(.dark) [class~="border-white/20"],
+html:not(.dark) [class~="border-white/30"],
+html:not(.dark) [class~="border-white/40"],
+html:not(.dark) [class~="border-white/50"] {
+  border-color: hsl(var(--border)) !important;
+}
+
+html:not(.dark) [class~="divide-white/10"],
+html:not(.dark) [class~="divide-white/20"] {
+  border-color: hsl(var(--border)) !important;
+}
+
+html:not(.dark) ::selection {
+  color: hsl(var(--foreground)) !important;
+  background: hsl(var(--primary) / 0.2) !important;
+}
+
+html:not(.dark) input,
+html:not(.dark) select,
+html:not(.dark) textarea {
+  color-scheme: light;
+}
+
+html:not(.dark) input::placeholder,
+html:not(.dark) textarea::placeholder {
+  color: hsl(var(--muted-foreground) / 0.8) !important;
+}
+
+html:not(.dark) label,
+html:not(.dark) .label {
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+html:not(.dark) .chip,
+html:not(.dark) .doc-chip,
+html:not(.dark) .tag-pill {
+  color: hsl(var(--foreground)) !important;
+}
+
+html:not(.dark) .chip:hover,
+html:not(.dark) .chip--on,
+html:not(.dark) .doc-chip--on,
+html:not(.dark) .tag-pill--on {
+  color: hsl(var(--primary-foreground)) !important;
+}
+
+/* accent-bg elements keep white text (brand buttons) even in light */
+html:not(.dark) [class~="text-white"][class~="bg-rose-500"],
+html:not(.dark) [class~="text-white"][class~="bg-rose-600"],
+html:not(.dark) [class~="text-white"][class~="bg-amber-500"],
+html:not(.dark) [class~="text-white"][class~="bg-amber-600"],
+html:not(.dark) [class~="text-white"][class~="bg-emerald-500"],
+html:not(.dark) [class~="text-white"][class~="bg-emerald-600"],
+html:not(.dark) [class~="text-white"][class~="bg-sky-500"],
+html:not(.dark) [class~="text-white"][class~="bg-sky-600"],
+html:not(.dark) [class~="text-white"][class~="bg-indigo-500"],
+html:not(.dark) [class~="text-white"][class~="bg-blue-600"],
+html:not(.dark) [class~="text-white"][class~="bg-primary"] {
+  color: #fff !important;
+}
+
+html:not(.dark) [class~="bg-rose-500"] [class~="text-white"],
+html:not(.dark) [class~="bg-amber-500"] [class~="text-white"],
+html:not(.dark) [class~="bg-emerald-500"] [class~="text-white"],
+html:not(.dark) [class~="bg-sky-500"] [class~="text-white"],
+html:not(.dark) [class~="bg-indigo-500"] [class~="text-white"] {
+  color: #fff !important;
+}
+
+html:not(.dark) [class~="bg-gradient-to-br"] [class~="text-white"],
+html:not(.dark) [class~="bg-gradient-to-tr"] [class~="text-white"],
+html:not(.dark) [class~="bg-gradient-to-r"] [class~="text-white"] {
+  color: #fff !important;
+}
+
+
+
+html:not(.dark) .filter-chip { color: hsl(var(--muted-foreground)) !important; }
+html:not(.dark) .filter-chip:hover { color: hsl(var(--foreground)) !important; }
+html:not(.dark) .notif-body-text { color: hsl(var(--muted-foreground)) !important; }
+

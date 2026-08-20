@@ -1009,3 +1009,98 @@ body.planner-body {
     justify-content: space-between;
   }
 }
+
+/* ============ LM-01 LIGHT MODE (planner) ============
+ * planner.css is a dark-first stylesheet. Under light mode remap to tokens.
+ * Scoped under body.planner-body (only the planner page) + html:not(.dark).
+ */
+html:not(.dark) body.planner-body {
+  --itinera-bg: hsl(var(--background));
+  --itinera-text: hsl(var(--foreground));
+  --itinera-muted: hsl(var(--muted-foreground));
+  --itinera-card-border: hsl(var(--border));
+  background: radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.10) 0%, transparent 60%), hsl(var(--background)) !important;
+  color: hsl(var(--foreground)) !important;
+}
+
+/* white text -> foreground */
+html:not(.dark) body.planner-body .planner-progress-title,
+html:not(.dark) body.planner-body .progress-step-item.active .progress-step-label,
+html:not(.dark) body.planner-body .itinera-logo,
+html:not(.dark) body.planner-body .itinera-nav-link:hover,
+html:not(.dark) body.planner-body .itinera-nav-link.active,
+html:not(.dark) body.planner-body .search-command-btn:hover,
+html:not(.dark) body.planner-body .topbar-icon-btn:hover,
+html:not(.dark) body.planner-body .dest-card__title,
+html:not(.dark) body.planner-body .luxury-input,
+html:not(.dark) body.planner-body .luxury-select,
+html:not(.dark) body.planner-body .luxury-select option,
+html:not(.dark) body.planner-body .tier-title,
+html:not(.dark) body.planner-body .exp-chip:hover,
+html:not(.dark) body.planner-body .synthesis-status-text,
+html:not(.dark) body.planner-body .master-plan-title,
+html:not(.dark) body.planner-body .stat-val-number,
+html:not(.dark) body.planner-body .day-title-text,
+html:not(.dark) body.planner-body .activity-name,
+html:not(.dark) body.planner-body .itinera-toast,
+html:not(.dark) body.planner-body .btn-save-trips {
+  color: hsl(var(--foreground)) !important;
+}
+
+/* dimmed white text -> muted */
+html:not(.dark) body.planner-body .itinera-nav-link,
+html:not(.dark) body.planner-body .search-command-btn,
+html:not(.dark) body.planner-body .topbar-icon-btn,
+html:not(.dark) body.planner-body .dest-card__country,
+html:not(.dark) body.planner-body .field-label,
+html:not(.dark) body.planner-body .exp-chip,
+html:not(.dark) body.planner-body .master-plan-desc,
+html:not(.dark) body.planner-body .activity-category-badge,
+html:not(.dark) body.planner-body .search-command-btn kbd {
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+/* dark glass panels -> subtle cards */
+html:not(.dark) body.planner-body .itinera-topbar,
+html:not(.dark) body.planner-body .itinera-nav-pills,
+html:not(.dark) body.planner-body .search-command-btn,
+html:not(.dark) body.planner-body .topbar-icon-btn,
+html:not(.dark) body.planner-body .luxury-input,
+html:not(.dark) body.planner-body .luxury-select,
+html:not(.dark) body.planner-body .tier-card,
+html:not(.dark) body.planner-body .tier-card:hover,
+html:not(.dark) body.planner-body .exp-chip,
+html:not(.dark) body.planner-body .btn-save-trips,
+html:not(.dark) body.planner-body .btn-save-trips:hover,
+html:not(.dark) body.planner-body .master-plan-stats-box,
+html:not(.dark) body.planner-body .timeline-activity-card,
+html:not(.dark) body.planner-body .timeline-activity-card:hover,
+html:not(.dark) body.planner-body .progress-step-bar {
+  background-color: rgba(0, 0, 0, 0.045) !important;
+}
+
+/* white borders -> token border */
+html:not(.dark) body.planner-body .itinera-topbar,
+html:not(.dark) body.planner-body .itinera-nav-pills,
+html:not(.dark) body.planner-body .search-command-btn,
+html:not(.dark) body.planner-body .search-command-btn:hover,
+html:not(.dark) body.planner-body .topbar-icon-btn,
+html:not(.dark) body.planner-body .dest-card,
+html:not(.dark) body.planner-body .form-card-container,
+html:not(.dark) body.planner-body .luxury-input,
+html:not(.dark) body.planner-body .luxury-select,
+html:not(.dark) body.planner-body .tier-card,
+html:not(.dark) body.planner-body .exp-chip,
+html:not(.dark) body.planner-body .master-plan-card,
+html:not(.dark) body.planner-body .master-plan-stats-box,
+html:not(.dark) body.planner-body .day-card,
+html:not(.dark) body.planner-body .day-card-header,
+html:not(.dark) body.planner-body .timeline-activity-card,
+html:not(.dark) body.planner-body .btn-save-trips,
+html:not(.dark) body.planner-body .btn-save-trips:hover {
+  border-color: hsl(var(--border)) !important;
+}
+
+html:not(.dark) body.planner-body .timeline-node-dot {
+  border-color: hsl(var(--foreground)) !important;
+}

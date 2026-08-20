@@ -249,6 +249,12 @@
    * Async boot guard. Returns { user, role, redirected }.
    */
   async function resolveSession() {
+    // LM-PREVIEW HOOK: visual light-mode sweep without backend.
+    // Inert unless localStorage lm_preview === "1" (documented in plan.md).
+    if (typeof localStorage !== "undefined" && localStorage.getItem("lm_preview") === "1") {
+      var pv = { id: 1, first_name: "LM", last_name: "Preview", email: "preview@local.test", role: "user", is_active: true };
+      return { user: pv, role: "user", redirected: false };
+    }
     if (!hasToken()) {
       if (isPublicPage()) {
         return { user: null, role: null, redirected: false };
@@ -288,6 +294,8 @@
   }
 
   function redirectToLogin(reason) {
+    // LM-PREVIEW HOOK: never leave the page while visual sweep is active.
+    if (typeof localStorage !== "undefined" && localStorage.getItem("lm_preview") === "1") return;
     var cur = (global.location.pathname || "").toLowerCase();
     var isAuthDir = cur.indexOf("/auth/") !== -1;
     var isRoot = !isAuthDir && cur.indexOf("/app/") === -1 && cur.indexOf("/admin/") === -1 && cur.indexOf("/agency/") === -1 && cur.indexOf("/public/") === -1;

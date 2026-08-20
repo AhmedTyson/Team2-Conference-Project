@@ -105,7 +105,7 @@
           { to: "/app/trips.html", label: "My Trips", icon: "trips" },
           { to: "/public/community.html", label: "Traveler Community & Shared Trips", icon: "trips" },
           { to: "/app/bookings.html", label: "My Bookings", icon: "bookings" },
-          { to: "/app/flight-booking.html", label: "Flight Search", icon: "bookings" },
+          { to: "/flights.html", label: "Flight Search", icon: "bookings" },
           { to: "/app/favourites.html", label: "Saved Places", icon: "favourites" },
           { to: "/app/my-reviews.html", label: "My Reviews", icon: "myreviews" },
           { to: "/app/chat.html", label: "AI Concierge", icon: "reviews" },
