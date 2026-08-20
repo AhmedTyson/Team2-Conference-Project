@@ -79,12 +79,11 @@ RUN apk add --no-cache \
         bcmath \
         gd \
         xml \
-        opcache \
-    && apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
-    && pecl install redis \
-    && docker-php-ext-enable redis \
-    && apk del .build-deps \
-    && rm -rf /tmp/pear
+        opcache
+
+# NOTE: preds/predis (pure PHP) is required via composer.json, so the
+# php-redis extension is intentionally NOT compiled (pecl redis fails
+# to build against PHP 8.5).
 
 RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
 
