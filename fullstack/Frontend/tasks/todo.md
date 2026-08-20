@@ -100,14 +100,15 @@ Scans: ✅ = checklist item · 🔬 = verification run at end of each phase.
 
 **Description:** Same recipe for the `public/` route set (legacy catalog + community). Identity of `public/index.html`, `public/home.html` vs root versions confirmed (both tree; only `public/` in this phase).
 
-- [ ] public/index.html · home.html · search.html · weather.html
-- [ ] public/flights.html · flight-details.html · hotels.html · hotel-details.html
-- [ ] public/restaurants.html · restaurant-details.html · attractions.html · attraction-details.html
-- [ ] public/destinations.html · destination-details.html · entity.html · overview.html
-- [ ] public/plans.html · plan-compare.html · trip-preview.html
-- [ ] public/contact.html · about.html · help.html · community.html
-- [ ] public/ (any remaining from lm-audit.txt)
-- 🔬 Puppeteer light 1440 screenshots ×23; node --check inline scripts
+- [x] public/index.html · home.html · search.html · weather.html
+- [x] public/flights.html · flight-details.html · hotels.html · hotel-details.html
+- [x] public/restaurants.html · restaurant-details.html · attractions.html · attraction-details.html
+- [x] public/destinations.html · destination-details.html · entity.html · overview.html
+- [x] public/plans.html · plan-compare.html · trip-preview.html
+- [x] public/contact.html · about.html · help.html · community.html
+- [x] public/ (any remaining from lm-audit.txt) — all 23 verified light (body `#fafaf9`, 0 non-hero white leaves). public/home.html + public/overview.html = redirect stubs → root index.html (verified). flights/flight-details = transparent body on default white canvas, clean. plans needed 2 public.css fixes: add `bg-[#0a0a0c]` to dark-bg conversion list + widen `.text-white` leaf conversion from direct-child (`>`) to descendant (deep cards). Dark regression: plans → html.dark re-applied, body `#0a0a0a`/white intact.
+- [x] 🔬 Puppeteer light 1440 screenshots ×23; node --check inline scripts
+      → computed-style probe per page (model lacks image input; screenshots kept for human pass). CSS force-reload (`v=` query link swap) needed mid-session — python http.server memory-caches CSS unless cache-busted.
 
 **Dependencies:** 2 · **Files:** `public/*.html` · **Scope:** L (3 chunks + 🔬 each)
 

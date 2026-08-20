@@ -38,18 +38,20 @@ existing light layer (~1183-1270) converted body `bg-[#0a0a0a]`→gcard token + 
 -> muted-foreground. Dark regression intact (index: html.dark re-applied, body #0a0a0a/white,
 hero overlay rgba(0,0,0,.7)). Screenshots kept for human pass; computed-style was the probe.
 
-PUBLIC/ (23) — Phase 3 scope
-----------------------------
-[50] public/index.html        [ 1] public/trip-preview.html
-[27] public/community.html    [ 0] public/hotel-details.html CLEAN
-[27] public/contact.html      [ 0] public/restaurant-details.html CLEAN
-[24] public/plan-compare.html [ 0] public/attraction-details.html CLEAN
-[23] public/weather.html      [ 0] public/destination-details.html CLEAN
-[21] public/plans.html        [ 0] public/overview.html CLEAN
-[17] public/help.html         [ 0] public/home.html CLEAN
-[16] public/about.html        [ 0] public/trip.html CLEAN
-[ 9] public/search.html       [ 0] public/home.html CLEAN
-[ 2] public/entity.html       [ 0] public/trip.html CLEAN
+PUBLIC/ (23) — Phase 3 scope — ALL VERIFIED 2026-08-20 (computed-style sweep, fresh CSS via v= link swap)
+-------------------------------------------------------------------------------------------------------
+[50] public/index.html ✔        [ 1] public/trip-preview.html ✔
+[27] public/community.html ✔    [ 0] public/hotel-details.html ✔
+[27] public/contact.html ✔      [ 0] public/restaurant-details.html ✔
+[24] public/plan-compare.html ✔ [ 0] public/attraction-details.html ✔
+[23] public/weather.html ✔      [ 0] public/destination-details.html ✔
+[21] public/plans.html ✔ (fix)  [ 0] public/overview.html ✔ (redirect stub → root index)
+[17] public/help.html ✔         [ 0] public/home.html ✔ (redirect stub → root index)
+[16] public/about.html ✔        [ 0] public/trip.html ✔
+[ 9] public/search.html ✔       [ 0] public/entity.html ✔
+Fix: plans.html — public.css needs `bg-[#0a0a0c]` added to dark-bg conversion
+list + `.text-white` leaf conversion widened from direct-child to descendant.
+flights + flight-details = transparent body on default white canvas — clean.
 
 APP/ (28) — Phase 5 scope
 -------------------------
