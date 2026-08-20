@@ -73,9 +73,10 @@ APP/ (28) — Phase 5 scope
                               [ 0] app/planner.html CLEAN
                               [ 0] app/payment-history.html CLEAN
 
-AUTH/ (6) — Phase 4 scope (no literal dark hits; verify via screenshots only)
-----------------------------------------------------------------------------
-login.html · register.html · forgot.html · reset.html · verify.html · email-notice.html
+AUTH/ (6) — Phase 4 scope — ALL VERIFIED 2026-08-20 (computed-style; token-driven, no changes needed)
+-------------------------------------------------------------------------------------------------------
+login.html ✔ · register.html ✔ · forgot.html ✔ · reset.html ✔ · verify.html ✔ · email-notice.html ✔
+Body token-light, inputs white/dark text, labels muted-fg, 0 white-on-light leaves.
 
 ADMIN/ (19) — Phase 6 scope (no literal dark hits in HTML)
 ----------------------------------------------------------

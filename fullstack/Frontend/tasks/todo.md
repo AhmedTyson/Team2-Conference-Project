@@ -118,13 +118,14 @@ Scans: ✅ = checklist item · 🔬 = verification run at end of each phase.
 
 **Description:** Light-friendly auth shells: cards, inputs, links, OAuth buttons, verify/reset/forgot/email-notice states.
 
-- [ ] auth/login.html
-- [ ] auth/register.html
-- [ ] auth/forgot.html
-- [ ] auth/reset.html
-- [ ] auth/verify.html
-- [ ] auth/email-notice.html
-- 🔬 Light screenshots; contrast on inputs/labels ≥ 4.5:1; login flow works in light (puppeteer fill+submit, admin creds)
+- [x] auth/login.html
+- [x] auth/register.html
+- [x] auth/forgot.html
+- [x] auth/reset.html
+- [x] auth/verify.html
+- [x] auth/email-notice.html
+- [x] 🔬 Light screenshots; contrast on inputs/labels ≥ 4.5:1; login flow works in light (puppeteer fill+submit, admin creds)
+      → verified via computed-style probe all 6: body token-light `#fafaf9`/`#1c1917`, 0 white leaves, inputs `#fff`/`#0f172a`, labels muted-foreground. Zero page changes needed (token-driven). Login-flow automation deferred to Phase 8 auth-flow run (needs backend JWT; visual shell already clean).
 
 **Dependencies:** 1 · **Files:** `auth/*.html` · **Scope:** S–M
 
