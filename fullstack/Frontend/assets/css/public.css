@@ -80,6 +80,8 @@ main {
   background-repeat: no-repeat;
   background-attachment: scroll;
   transition: background-image 0.8s ease;
+  overflow: hidden;
+  overflow-x: clip;
 }
 
 .hero-wrapper::before {
@@ -114,6 +116,8 @@ main {
   justify-content: center;
   pointer-events: none;
   padding-bottom: 6rem;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .giant-text h1 {
