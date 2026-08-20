@@ -16,8 +16,9 @@ echo "[entrypoint] Caching routes..."
 php artisan route:cache --no-interaction
 
 # ── 3. View cache ────────────────────────────────────────────
+# API-only app may ship without blade views — tolerating failure.
 echo "[entrypoint] Caching views..."
-php artisan view:cache --no-interaction
+php artisan view:cache --no-interaction 2>/dev/null || true
 
 # ── 4. Storage link ──────────────────────────────────────────
 echo "[entrypoint] Linking storage..."
