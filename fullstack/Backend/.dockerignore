@@ -1,0 +1,60 @@
+# Ignore everything that doesn't belong in the Docker image
+
+# Version control
+.git
+.gitignore
+.gitattributes
+
+# Dev tooling
+.editorconfig
+.vscode
+.idea
+.phpactor.json
+.phpunit.result.cache
+.phpunit.cache
+phpunit.xml
+gitleaks.toml
+
+# Dev dependencies (installed fresh in Docker)
+/vendor
+/node_modules
+/public/build
+/public/hot
+
+# Test files
+/tests
+
+# Local env (Railway injects real env vars)
+.env
+.env.backup
+.env.production
+.env*.example
+
+# Docs and reports
+/docs
+/reports
+/tasks
+/scripts
+*.pdf
+*.md
+postman_collection.json
+PLAN-clean-code.md
+
+# Storage (mounted as volume or re-created at runtime)
+/storage/logs
+/storage/framework
+/storage/pail
+/storage/*.key
+
+# AI tool directories
+.claude/
+.opencode/
+.windsurf/
+.aider/
+.continue/
+CLAUDE.md
+AGENTS.md
+
+# OS junk
+.DS_Store
+Thumbs.db
