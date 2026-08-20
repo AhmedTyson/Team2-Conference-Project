@@ -271,8 +271,9 @@
     
     var name = item.name || item.flight_number || (item.airline ? item.airline + " Flight" : "Experience");
     var country = (item.country && item.country.name) || item.country || "";
-    var unsplashFallback = (global.Itinera && global.Itinera.getUnsplashImage) 
-      ? global.Itinera.getUnsplashImage(name, type, country) 
+    var unsplashFallback = (global.Itinera && global.Itinera.getUnsplashImage)
+      ? global.Itinera.getUnsplashImage(name, type, country)
+      : ""; 
     var rawImg = item.image_url || item.image || "";
     var isGenericPlaceholder = !rawImg || rawImg.indexOf("photo-1488646953014") !== -1;
     var img = isGenericPlaceholder ? unsplashFallback : rawImg;
