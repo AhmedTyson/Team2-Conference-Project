@@ -1,0 +1,86 @@
+{
+  "version": "2026-08-23",
+  "last_commit": "0c14fa542969fa533c969f2337082ca634b85418",
+  "generator": "repowiki-full-generation",
+  "wiki_items": [
+    {
+      "id": "system-overview",
+      "title": "System Overview",
+      "path": ".repowiki/en/content/System Overview.md",
+      "category": "root",
+      "order": 1
+    },
+    {
+      "id": "getting-started-guide",
+      "title": "Getting Started Guide",
+      "path": ".repowiki/en/content/Getting Started Guide.md",
+      "category": "onboarding",
+      "order": 2
+    },
+    {
+      "id": "development-guidelines",
+      "title": "Development Guidelines",
+      "path": ".repowiki/en/content/Development Guidelines.md",
+      "category": "process",
+      "order": 3
+    },
+    {
+      "id": "architecture",
+      "title": "Architecture Overview",
+      "path": ".repowiki/en/content/Architecture/Architecture.md",
+      "category": "architecture",
+      "order": 4
+    },
+    {
+      "id": "technology-stack",
+      "title": "Technology Stack & Architecture",
+      "path": ".repowiki/en/content/Architecture/Technology Stack & Architecture.md",
+      "category": "architecture",
+      "order": 5
+    },
+    {
+      "id": "backend-services",
+      "title": "Backend Services",
+      "path": ".repowiki/en/content/Backend Services/Backend Services.md",
+      "category": "backend",
+      "order": 6
+    },
+    {
+      "id": "frontend-application",
+      "title": "Frontend Application",
+      "path": ".repowiki/en/content/Frontend Application.md",
+      "category": "frontend",
+      "order": 7
+    },
+    {
+      "id": "infrastructure",
+      "title": "Infrastructure",
+      "path": ".repowiki/en/content/Infrastructure.md",
+      "category": "infrastructure",
+      "order": 8
+    },
+    {
+      "id": "api-reference",
+      "title": "API Reference",
+      "path": ".repowiki/en/content/API Reference.md",
+      "category": "reference",
+      "order": 9
+    }
+  ],
+  "knowledge_relations": [
+    { "parent": "system-overview", "children": ["getting-started-guide", "development-guidelines", "architecture", "technology-stack", "backend-services", "frontend-application", "infrastructure", "api-reference"] },
+    { "parent": "architecture", "children": ["technology-stack", "backend-services"] },
+    { "parent": "technology-stack", "children": ["infrastructure"] },
+    { "parent": "getting-started-guide", "children": ["development-guidelines"] },
+    { "parent": "backend-services", "children": ["api-reference"] },
+    { "parent": "frontend-application", "children": ["api-reference"] }
+  ],
+  "stats": {
+    "routes_documented": 213,
+    "migrations": 44,
+    "seeders": 34,
+    "test_classes": 52,
+    "frontend_pages_approx": 35,
+    "frontend_js_modules": 33
+  }
+}

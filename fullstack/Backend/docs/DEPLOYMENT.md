@@ -1,19 +1,49 @@
 # Deployment — Queue, Cache & Backup
 
-## 1. Queue Worker (`GenerateReportJob` + notifications)
+> **Operations guide** for queue workers, cache driver migration, and backup/DR.
 
-Report generation is async: `POST /v1/admin/reports/generate` returns `202` with a
-`pending` report; the PDF is rendered by the queue worker. Poll progress via
-`GET /me/reports`, then download when `status = completed`.
+> **References**
+> - [app/Jobs/GenerateReportJob.php](file://app/Jobs/GenerateReportJob.php#L1-L40)
+> - [config/queue.php](file://config/queue.php#L1-L40)
+> - [config/cache.php](file://config/cache.php#L1-L30)
+> - [database/seeders/SettingsSeeder.php](file://database/seeders/SettingsSeeder.php#L1-L30)
+> - [Dockerfile — supervisor](file://../../Dockerfile#L56-L110)
+> - [.env.example](file://../../.env.example#L1-L60)
 
-```bash
-# Run one worker (dev)
-php artisan queue:work --queue=default --tries=3 --timeout=300
+## Table of Contents
 
-# Production: supervisor keeps it alive
+1. [Queue Worker — Async Report Generation](#1-queue-worker-async-report-generation)
+2. [Cache Driver: database → Redis](#2-cache-driver-database--redis)
+3. [Backup Policy](#3-backup-policy)
+4. [Env-Driven Site Settings](#4-env-driven-site-settings)
+
+## 1. Queue Worker — Async Report Generation
+
+Report generation is async: `POST /v1/admin/reports/generate` returns `202` with a `pending` report; the PDF is rendered by the queue worker. Poll progress via `GET /me/reports`, then download when `status = completed`.
+
+```mermaid
+sequenceDiagram
+    participant Admin as Admin UI
+    participant API as POST /v1/admin/reports/generate
+    participant Q as Queue (database/redis)
+    participant W as Worker — GenerateReportJob
+    participant S as Storage public/reports/*
+    Admin->>API: generate (filters)
+    API->>Q: dispatch GenerateReportJob
+    Q->>W: pop job
+    W->>W: DomPDF render (>256M)
+    W->>S: write PDF (uniqid)
+    Admin->>API: GET /me/reports (poll)
+    Admin->>API: GET /reports/{id}/download
 ```
 
-Supervisor config sample (`/etc/supervisor/conf.d/app-worker.conf`):
+```bash
+# dev — single worker
+php artisan queue:work --queue=default --tries=3 --timeout=300
+# production: supervisor keeps it alive
+```
+
+Supervisor sample (`/etc/supervisor/conf.d/app-worker.conf`):
 
 ```ini
 [program:app-worker]
@@ -27,16 +57,17 @@ redirect_stderr=true
 stdout_logfile=/var/log/app-worker.log
 ```
 
-- `--timeout=300` must stay >= the job `$timeout` (dompdf uses >256M memory).
-- Deploy flow: `php artisan config:cache` AFTER editing `.env`, then `php artisan
-  queue:restart` so workers pick up new code.
+* `--timeout=300` must stay ≥ job `$timeout` (DomPDF >256M). Deploy: `php artisan config:cache` **after** editing `.env`, then `php artisan queue:restart`.
 
-## 2. Cache Driver: database → redis (scale-out)
+**Section sources:** [app/Jobs/GenerateReportJob.php](file://app/Jobs/GenerateReportJob.php#L1-L30) · [Dockerfile supervisor](file://../../Dockerfile#L108-L110)
 
-Currently `CACHE_STORE=database` (shared table — correct for a single app
-instance; survives multi-instance). To switch when you need faster reads:
+**Diagram sources:** Queue flow derived from `routes/api.php` report routes + `GenerateReportJob`.
 
-1. `composer require predis/predis` (or enable php-redis).
+## 2. Cache Driver: database → Redis
+
+Current `CACHE_STORE=database` (shared table — correct for single instance; survives multi-instance). To switch for faster reads:
+
+1. `composer require predis/predis` (or enable `php-redis`).
 2. `.env`:
    ```env
    CACHE_STORE=redis
@@ -45,24 +76,27 @@ instance; survives multi-instance). To switch when you need faster reads:
    REDIS_PORT=6379
    REDIS_PASSWORD=
    ```
-3. `php artisan cache:clear` once (flush stale DB entries), then
-   `php artisan config:cache`.
+3. `php artisan cache:clear` (flush stale DB entries), then `php artisan config:cache`.
 
-Key facts with `database` driver today: every `Cache::remember` key lives in the
-`cache` table (`weather_*` 30 min, OSM place lookups 8–24 h, route 60 min,
-AI-attractions 24 h). Failures are never cached. TTL-based expiry is fine at this
-size; move to Redis when cache table exceeds ~100k rows.
+| Driver | Where keys live | TTL examples |
+|---|---|---|
+| `database` | `cache` table | `weather_*` 30 min, OSM 8–24 h, route 60 min, AI-attractions 24 h |
+| `redis` | Redis (predis, no ext needed on PHP 8.5) | same TTLs, ~10× read latency win |
+
+Failures are never cached. Move to Redis when `cache` table exceeds ~100k rows.
+
+**Section sources:** [config/cache.php](file://config/cache.php#L15-L30) · [app/Services/OpenMeteoService.php](file://app/Services/OpenMeteoService.php#L10-L30) · [Dockerfile](file://../../Dockerfile#L85-L87) (predis note)
 
 ## 3. Backup Policy
 
 | Scope | What | Frequency | Retention |
 |---|---|---|---|
-| Database | `php artisan db:dump` (mysqldump via backup tool) | daily 03:00 | 14 days |
-| Storage `public/reports/*` | generated PDFs | daily, after job queue drained | 14 days |
-| Storage `public/uploads/*` (media) | user media | daily | 30 days |
-| `.env` + config | secrets & params | on every change (commit via vault) | indefinite |
+| Database | `mysqldump --single-transaction` | daily 03:00 | 14 days |
+| `storage/app/public/reports/*` | generated PDFs (immutable `uniqid()` names) | daily, after queue drained | 14 days |
+| `storage/app/public/uploads/*` | user media | daily | 30 days |
+| `.env` + config | secrets & params | on every change (vault) | indefinite |
 
-Sample cron (nightly 03:00):
+Cron (nightly):
 
 ```cron
 0 3 * * * mysqldump --single-transaction -u $DB_USER -p$DB_PASS app > /backup/db_$(date +\%F).sql
@@ -70,12 +104,11 @@ Sample cron (nightly 03:00):
 0 5 * * * find /backup -name "*.sql" -mtime +14 -delete -o -name "report*" -mtime +30 -delete
 ```
 
-- Reports are immutable once written (`uniqid()` names) — offsite copy (S3/SFTP)
-  is sufficient; no snapshotting needed.
-- DR restore order: restore DB → restore `storage/app/public` → run
-  `php artisan migrate` (playback any pending migrations after the dump time).
+*Reports are immutable — offsite S3/SFTP copy suffices. DR restore order: DB → `storage/app/public` → `php artisan migrate` (playback pending migrations after dump time).*
 
-## 4. Env-driven site settings
+**Section sources:** `storage/app/public` layout · `app/Jobs/GenerateReportJob.php` (uniqid naming)
+
+## 4. Env-Driven Site Settings
 
 `SettingsSeeder` reads from env instead of hardcoded values (Phase 9):
 
@@ -84,5 +117,6 @@ SITE_FORK_PRICE_CENTS=50000      # trip fork price (EGP cents)
 PLATFORM_COMMISSION_RATE=0.05    # platform booking commission rate
 ```
 
-`php artisan db:seed --class=SettingsSeeder` re-syncs (idempotent
-`updateOrCreate`).
+`php artisan db:seed --class=SettingsSeeder` re-syncs idempotently (`updateOrCreate`).
+
+**Section sources:** [database/seeders/SettingsSeeder.php](file://database/seeders/SettingsSeeder.php#L1-L30) · [.env.example](file://../../.env.example#L80-L85)

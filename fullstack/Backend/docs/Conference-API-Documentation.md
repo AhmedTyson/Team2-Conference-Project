@@ -13,34 +13,71 @@ pdf_options:
 ---
 
 <style>
+  :root { --obsidian: #05070d; --gold: #fbbf24; --gold-soft: #fef3c7; --navy: #0f172a; --emerald: #34d399; --border: #e2e8f0; --muted: #64748b; }
   @page :first { margin-bottom: 0; }
-  body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; line-height: 1.5; margin: 0; padding: 0;}
+  @page { margin: 15mm; }
+  body { font-family: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #1e293b; line-height: 1.65; margin: 0; padding: 0; background: #fff; font-size: 14px; }
+  h1, h2, h3 { font-family: 'Inter', sans-serif; letter-spacing: -0.02em; color: var(--navy); }
   .page-break { page-break-after: always; }
-  table { width: 100%; border-collapse: collapse; margin-top: 0; margin-bottom: 20px; font-size: 13px; border: 1px solid #e0e0e0; page-break-inside: avoid; page-break-before: auto; }
-  th { background-color: #e9ecef; color: #16294E; padding: 8px 8px; text-align: left; border: 1px solid #e0e0e0; font-size: 12px; }
-  td { padding: 8px 8px; border: 1px solid #e0e0e0; vertical-align: top; font-size: 12px; }
-  tr:nth-child(even) { background-color: #fcfcfc; }
-  code { background-color: #f1f3f5; color: #d63384; padding: 2px 5px; border-radius: 3px; font-size: 12.5px; border: 1px solid #e9ecef; }
-  .module-section { margin-bottom: 20px; page-break-inside: avoid; }
+  table { width: 100%; border-collapse: separate; border-spacing: 0; margin: 16px 0 24px; font-size: 12.5px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.06); page-break-inside: avoid; }
+  th { background: var(--navy); color: var(--gold); padding: 10px 12px; text-align: left; border-bottom: 1px solid #1e293b; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+  td { padding: 9px 12px; border-bottom: 1px solid #f1f5f9; border-right: 1px solid #f1f5f9; vertical-align: top; font-size: 12.5px; }
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) { background-color: #f8fafc; }
+  tr:hover { background-color: #fffbeb; }
+  code { background: #f1f5f9; color: #be185d; padding: 2px 6px; border-radius: 5px; font-size: 11.5px; border: 1px solid #e2e8f0; font-family: 'JetBrains Mono', ui-monospace, monospace; }
+  .module-section { margin-bottom: 28px; page-break-inside: avoid; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(15,23,42,0.06); border: 1px solid var(--border); }
   th:nth-child(1), th:nth-child(2), th:nth-child(4) { text-align: center; }
+  cite { display: block; background: #fffbeb; border-left: 3px solid var(--gold); padding: 12px 16px; margin: 16px 0; border-radius: 0 8px 8px 0; font-size: 12px; color: var(--muted); }
+  cite a { color: var(--navy); text-decoration: none; border-bottom: 1px dotted var(--gold); }
+  blockquote { border-left: 3px solid var(--gold); background: #fffbeb; margin: 16px 0; padding: 12px 16px; border-radius: 0 8px 8px 0; }
 </style>
 
+> **Refined — 2026-08-23** · **213 `api/*` routes** audited via `php artisan route:list --json` (499 lines in `routes/api.php`, 222 total incl. web/docs/storage/up) · Curated table below shows 120 representative endpoints (36 sections); full surface is **213** — see interactive shell [`showcase/docs.html`](../../../../showcase/docs.html), cited guide [`showcase/assets/wiki/API Reference.md`](../../../../showcase/assets/wiki/API%20Reference.md) and appendix [`ROUTES-APPENDIX.md`](ROUTES-APPENDIX.md) (full 213). Counts on cover/TOC that read 120 are the curated subset.
+
+> **References**
+> - [routes/api.php](file://routes/api.php#L1-L499) — 237 `Route::` registrations → 213 deployed `api/*` (222 total incl. web/docs/storage/up), 49 controllers, 28 services
+> - [app/Http/Controllers](file://app/Http/Controllers) — Account/Catalog/Trips/AI/Commerce/Chat/System/Admin
+> - [fullstack/Backend/docs/Conference-API-Documentation.pdf](file://fullstack/Backend/docs/Conference-API-Documentation.pdf) — branded A4 rendering of this file
+> - [.repowiki API Reference](file://.repowiki/en/content/API%20Reference.md) — cited guide (same surface, different lens)
+
+## Table of Contents (refined)
+
+1. [Cover & Method Legend](#cover)
+2. [Curated TOC — 36 sections, 120 endpoints (subset)](#toc)
+3. [Endpoint Tables — by domain](#endpoint-tables)
+4. [How this relates to the full 237-route surface](#full-surface)
+
+```mermaid
+flowchart LR
+    A["routes/api.php<br/>213 api routes<br/>222 total"] --> B["Curated MD table<br/>120 representative"]
+    A --> C["Scramble OpenAPI<br/>/docs/api.json"]
+    C --> D["showcase wiki<br/>rendered + assets wiki API Reference<br/>cited guide"]
+    B --> E["Conference-API-Documentation.pdf<br/>branded A4 — same file"]
+    B -.-> F["ROUTES-APPENDIX.md<br/>213 deployed"]
+    B -.-> G["ROUTES-REGISTRATIONS-APPENDIX<br/>237 raw"]
+```
+
+**Section sources:** [routes/api.php](file://routes/api.php#L1-L120) (auth/catalog/trips) · [ROUTES-PERMISSIONS-AUDIT.md](file://fullstack/Backend/docs/ROUTES-PERMISSIONS-AUDIT.md#L1-L40) (gaps)
+
+**Diagram sources:** Curated vs full surface derived from `route:list --json` audit (0c14fa54).
+
 <!-- PAGE 1: COVER -->
-<div style='background-color: #16294E; color: white; height: 90vh; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 12px; margin-top: 10px; text-align: center; padding: 40px; -webkit-print-color-adjust: exact;'>
-  <div style='background-color: #F59E0B; color: white; font-size: 42px; font-weight: bold; width: 130px; height: 130px; display: inline-flex; align-items: center; justify-content: center; border-radius: 16px; margin-bottom: 40px;'>T2</div>
+<div style='background-color: #0f172a; color: white; height: 90vh; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 12px; margin-top: 10px; text-align: center; padding: 40px; -webkit-print-color-adjust: exact;'>
+  <div style='background-color: #fbbf24; color: white; font-size: 42px; font-weight: bold; width: 130px; height: 130px; display: inline-flex; align-items: center; justify-content: center; border-radius: 16px; margin-bottom: 40px;'>T2</div>
   <h1 style='font-size:58px;margin:0;color:white;border:none;letter-spacing:1px;font-family:sans-serif;'>Conference Platform</h1>
-  <h2 style='color:#F59E0B;border:none;font-weight:normal;margin-top:10px;font-size:26px;font-family:sans-serif;'>API &amp; Web Platform Reference</h2>
-  <hr style='width:300px;border:0;border-top:1px solid #F59E0B;margin:40px auto;'>
+  <h2 style='color:#fbbf24;border:none;font-weight:normal;margin-top:10px;font-size:26px;font-family:sans-serif;'>API &amp; Web Platform Reference</h2>
+  <hr style='width:300px;border:0;border-top:1px solid #fbbf24;margin:40px auto;'>
   <p style='font-size:16px;margin:5px 0;color:#e9ecef;'>Team 2 &middot; Laravel API &middot; JWT Auth &middot; Subscription Billing</p>
   <p style='font-size:16px;margin:5px 0;color:#e9ecef;'>Version 1.0 &middot; Generated: August 9, 2026</p>
-  <p style='font-size:16px;margin:5px 0;color:#e9ecef;'><span id='cover-count'> API routes &middot; 36 sections &middot; + website documentation</span></p>
+  <p style='font-size:16px;margin:5px 0;color:#e9ecef;'><span id='cover-count'>213 api/* routes (curated 120 shown) &middot; 36 sections &middot; + website documentation</span></p>
 </div>
 
 <div class="page-break"></div>
 
 <!-- METHOD LEGEND -->
 <div style="text-align:center;margin-bottom:15px;">
-  <h2 style='color:#16294E;font-family:sans-serif;font-size:22px;margin-bottom:6px;'>HTTP Methods &amp; Resource Actions</h2>
+  <h2 style='color:#0f172a;font-family:sans-serif;font-size:22px;margin-bottom:6px;'>HTTP Methods &amp; Resource Actions</h2>
   <p style="color:#666;font-size:13px;margin:0;">Standard RESTful routing definitions used throughout the Conference Platform.</p>
 </div>
 
@@ -57,10 +94,10 @@ pdf_options:
 <div style="text-align:center;margin-top:0;margin-bottom:25px;font-size:12px;color:#888;">Conference Platform HTTP Methods Reference</div>
 
 -- TOC --
-<div style='background-color:#16294E;color:white;padding:8px 16px;font-size:18px;font-weight:bold;border-radius:4px 4px 0 0;margin-bottom:0;margin-top:10px;'>Table of Contents</div>
+<div style='background-color:#0f172a;color:white;padding:8px 16px;font-size:18px;font-weight:bold;border-radius:4px 4px 0 0;margin-bottom:0;margin-top:10px;'>Table of Contents</div>
 <table style='width:100%;border-collapse:collapse;font-family:''Helvetica Neue'',Helvetica,Arial,sans-serif;font-size:12px;margin-bottom:10px;'>
   <thead>
-    <tr><th style='width:10%;background-color:#F59E0B;color:white;padding:8px 10px;text-align:center;border:1px solid #d9800a;'>#</th><th style='width:75%;background-color:#F59E0B;color:white;padding:8px 10px;text-align:left;border:1px solid #d9800a;'>Section</th><th style='width:15%;background-color:#F59E0B;color:white;padding:8px 10px;text-align:center;border:1px solid #d9800a;'>Endpoints</th></tr>
+    <tr><th style='width:10%;background-color:#fbbf24;color:white;padding:8px 10px;text-align:center;border:1px solid #f59e0b;'>#</th><th style='width:75%;background-color:#fbbf24;color:white;padding:8px 10px;text-align:left;border:1px solid #f59e0b;'>Section</th><th style='width:15%;background-color:#fbbf24;color:white;padding:8px 10px;text-align:center;border:1px solid #f59e0b;'>Endpoints</th></tr>
   </thead>
   <tbody>
     <tr><td style='text-align:center;padding:6px 8px;border:1px solid #e0e0e0;'>1</td><td style='padding:6px 8px;border:1px solid #e0e0e0;'>Authentication</td><td style='text-align:center;padding:6px 8px;border:1px solid #e0e0e0;'>9</td></tr>
@@ -99,727 +136,317 @@ pdf_options:
     <tr><td style='text-align:center;padding:6px 8px;border:1px solid #e0e0e0;'>34</td><td style='padding:6px 8px;border:1px solid #e0e0e0;'>Admin &mdash; Analytics</td><td style='text-align:center;padding:6px 8px;border:1px solid #e0e0e0;'>2</td></tr>
     <tr><td style='text-align:center;padding:6px 8px;border:1px solid #e0e0e0;'>35</td><td style='padding:6px 8px;border:1px solid #e0e0e0;'>Admin &mdash; Notifications</td><td style='text-align:center;padding:6px 8px;border:1px solid #e0e0e0;'>1</td></tr>
     <tr><td style='text-align:center;padding:6px 8px;border:1px solid #e0e0e0;'>36</td><td style='padding:6px 8px;border:1px solid #e0e0e0;'>Developer &amp; Operations</td><td style='text-align:center;padding:6px 8px;border:1px solid #e0e0e0;'>6</td></tr>
-    <tr><td colspan='2' style='font-weight:bold;text-align:right;padding:8px 10px;border:1px solid #e0e0e0;background-color:#fff3e0;color:#16294E;'>Total</td><td style='font-weight:bold;text-align:center;padding:8px 10px;border:1px solid #e0e0e0;background-color:#fff3e0;color:#16294E;'>120</td></tr>
+    <tr><td colspan='2' style='font-weight:bold;text-align:right;padding:8px 10px;border:1px solid #e0e0e0;background-color:#fff3e0;color:#0f172a;'>Curated Total (shown)</td><td style='font-weight:bold;text-align:center;padding:8px 10px;border:1px solid #e0e0e0;background-color:#fff3e0;color:#0f172a;'>120</td></tr>
+    <tr><td colspan='2' style='font-weight:bold;text-align:right;padding:8px 10px;border:1px solid #e0e0e0;background-color:#e8f5e9;color:#1b5e20;'>Full Audited Total (`route:list --json` api/*)</td><td style='font-weight:bold;text-align:center;padding:8px 10px;border:1px solid #e0e0e0;background-color:#e8f5e9;color:#1b5e20;'>213</td></tr>
   </tbody>
 </table>
 
 <div class="page-break"></div>
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>1</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Authentication</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/register</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>Create a member account: name, email, password. Email verification flow triggered. Throttle: register.</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/login</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>Authenticate credentials; returns JWT access token (Bearer). Throttle: login (5/60s).</td></tr>
-      <tr><td style='text-align:center;'>3</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/refresh</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Rotate expired access token. Throttle: 15/1min.</td></tr>
-      <tr><td style='text-align:center;'>4</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/logout</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Invalidate current access token.</td></tr>
-      <tr><td style='text-align:center;'>5</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/forgot-password</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>Send password reset link to email. Throttle: 3/10min.</td></tr>
-      <tr><td style='text-align:center;'>6</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/reset-password</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>Apply new password with emailed token. Throttle: 5/1min.</td></tr>
-      <tr><td style='text-align:center;'>7</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/email/resend</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Resend email verification link. Throttle: 6/1min.</td></tr>
-      <tr><td style='text-align:center;'>8</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/email/verify-notice</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Flag/notice page after registration before verification.</td></tr>
-      <tr><td style='text-align:center;'>9</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/email/verify/{id}/{hash}</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>Verify email via signed URL (Laravel signed routes — tamper-proof).</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>2</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Profile &amp; Account</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/user</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Current authenticated profile.</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#6f42c1;font-weight:bold;font-size:12px;'>PATCH</span></td><td><code>api/v1/profile</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Update own profile: name, phone, photo, etc.</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>3</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Catalog &mdash; Categories</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/categories</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>List travel categories (beaches, mountains, ...).</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/categories/{category}</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>Single category with stats.</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>4</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Catalog &mdash; Destinations</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/destinations</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>Browse destinations. Search/filter/pagination.</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/destinations/{id}</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>Destination detail incl. related hotels, restaurants, attractions.</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>5</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Catalog &mdash; Hotels</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/hotels</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>List hotels. Location/price filters; paginated.</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/hotels/{id}</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>Hotel detail: rating, price, amenities.</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>6</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Catalog &mdash; Flights</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/flights</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>List flights. Origin/destination/date filters; paginated.</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/flights/{id}</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>Flight detail: airline, times, price, class.</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>7</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Catalog &mdash; Restaurants</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/restaurants</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>List restaurants. Cuisine/price filters; paginated.</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/restaurants/{id}</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>Restaurant detail: cuisine, price range, photos.</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>8</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Catalog &mdash; Attractions</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/attractions</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>List attractions. Category/destination filters; paginated.</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/attractions/{id}</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>Attraction detail: description, hours, entry info.</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>9</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Site &amp; Utilities</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/site-settings</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>Public site settings (branding, contact info). Whitelisted keys only.</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/weather</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>Weather lookup for destinations (external weather provider).</td></tr>
-      <tr><td style='text-align:center;'>3</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/v1/contacts</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>Contact form submission: name, email, subject, message.</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>10</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Maps</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/maps/destination/{destination}</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>Map markers for a destination (hotels/restaurants/attractions).</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/maps/trip/{trip}</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Map data for a member trip.</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>11</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Trips</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/trips/create</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Trip builder bootstrap: list of selectable hotels etc.</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/v1/trips</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Create a trip: destination, dates, budget, companions, hotel plan.</td></tr>
-      <tr><td style='text-align:center;'>3</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/trips/{trip}</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Trip detail with itinerary lines (hotel, flights, restaurants, attractions).</td></tr>
-      <tr><td style='text-align:center;'>4</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/trips/{trip}/fork</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Copy another member's trip into own collection (trip forking).</td></tr>
-      <tr><td style='text-align:center;'>5</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/v1/trips/{trip}/attach/{type}</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Attach an entity (hotel/flight/restaurant/attraction) to trip. OBSOLETE GATE: controller method missing.</td></tr>
-      <tr><td style='text-align:center;'>6</td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:12px;'>DELETE</span></td><td><code>api/v1/trips/{trip}/detach/{id}</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Detach an entity from trip. OBSOLETE GATE: controller method missing.</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>12</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>AI Itinerary Review</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/review</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Generate AI itinerary/review for a trip (contract: generate ai itineraries).</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/review/{id}</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Fetch generated AI review.</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>13</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Favourites &amp; Member Reviews</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/v1/favourites/{type}/{id}</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Add/remove favourite for entity (destinations, hotels...).</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/v1/reviews/{type}/{id}</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Post a rating + review for entity.</td></tr>
-      <tr><td style='text-align:center;'>3</td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:12px;'>DELETE</span></td><td><code>api/v1/reviews/{id}</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Delete own review (owner scoped).</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>14</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Surveys</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/surveys</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>List own surveys.</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/surveys</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Submit a survey response.</td></tr>
-      <tr><td style='text-align:center;'>3</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/surveys/{survey}</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>View one of own surveys (owner-scoped — IDOR fixed).</td></tr>
-      <tr><td style='text-align:center;'>4</td><td style='text-align:center;'><span style='color:#fd7e14;font-weight:bold;font-size:12px;'>PUT</span></td><td><code>api/surveys/{survey}</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Update own survey (owner-scoped; user_id input stripped).</td></tr>
-      <tr><td style='text-align:center;'>5</td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:12px;'>DELETE</span></td><td><code>api/surveys/{survey}</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Delete own survey (owner-scoped).</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>15</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Plans &amp; Subscription</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/plans</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>List available plans (perm: get plans).</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/v1/me/subscribe</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Subscribe to a plan (perm: subscribe to plans).</td></tr>
-      <tr><td style='text-align:center;'>3</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/v1/me/upgrade</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Upgrade current plan (perm: upgrade plans).</td></tr>
-      <tr><td style='text-align:center;'>4</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/v1/me/subscription/cancel</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Cancel subscription (perm: cancel subscription).</td></tr>
-      <tr><td style='text-align:center;'>5</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/me/subscription</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Current subscription details (perm: view my subscription).</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>16</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Dashboard</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/dashboard</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Member dashboard aggregate: stats, recent trips, upcoming, recommendations.</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/dashboard/trips</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Paged member trips for dashboard.</td></tr>
-      <tr><td style='text-align:center;'>3</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/dashboard/favourites</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Paged member favourites for dashboard.</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>17</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Notifications</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/notifications</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>My notifications; unread_count included. Filter: ?unread_only=.</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#6f42c1;font-weight:bold;font-size:12px;'>PATCH</span></td><td><code>api/v1/notifications/read-all</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Mark all my notifications read.</td></tr>
-      <tr><td style='text-align:center;'>3</td><td style='text-align:center;'><span style='color:#6f42c1;font-weight:bold;font-size:12px;'>PATCH</span></td><td><code>api/v1/notifications/{notification}/read</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Mark one notification read (ownership checked).</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>18</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Checkout &amp; Payments</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/v1/checkout/initiate</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>Start PayMob checkout for subscription/plan payment; returns payment token &amp; URL.</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/v1/paymob/webhook</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>PayMob webhook; transaction verified by signature before fulfilment.</td></tr>
-      <tr><td style='text-align:center;'>3</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/paymob/callback</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>PayMob return URL; finalises payment state for the browser flow.</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>19</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>My Reports</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/me/reports</code></td><td style='text-align:center;'><span style='color:#0e7490;font-weight:bold;font-size:11px;'>USER</span></td><td>My generated report documents (downloads).</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>20</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Admin &mdash; Users</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/admin/users</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>List members; filters + pagination (perm: manage users).</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/v1/admin/users</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Create user/operator account (perm: manage users).</td></tr>
-      <tr><td style='text-align:center;'>3</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/admin/users/{user}</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>User detail incl. subscription, stats (perm: manage users).</td></tr>
-      <tr><td style='text-align:center;'>4</td><td style='text-align:center;'><span style='color:#fd7e14;font-weight:bold;font-size:12px;'>PUT</span></td><td><code>api/v1/admin/users/{user}</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Update user record (perm: manage users).</td></tr>
-      <tr><td style='text-align:center;'>5</td><td style='text-align:center;'><span style='color:#6f42c1;font-weight:bold;font-size:12px;'>PATCH</span></td><td><code>api/v1/admin/users/{user}/active</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Toggle active state (perm: manage users).</td></tr>
-      <tr><td style='text-align:center;'>6</td><td style='text-align:center;'><span style='color:#6f42c1;font-weight:bold;font-size:12px;'>PATCH</span></td><td><code>api/v1/admin/users/{user}/block</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Block/unblock user (perm: manage users).</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>21</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Admin &mdash; Trips</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/admin/trips</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>List trips with filters + pagination (perm: manage trips).</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/v1/admin/trips</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Create a trip (perm: manage trips).</td></tr>
-      <tr><td style='text-align:center;'>3</td><td style='text-align:center;'><span style='color:#fd7e14;font-weight:bold;font-size:12px;'>PUT</span></td><td><code>api/v1/admin/trips/{id}</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Update trip (perm: manage trips).</td></tr>
-      <tr><td style='text-align:center;'>4</td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:12px;'>DELETE</span></td><td><code>api/v1/admin/trips/{id}</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Delete trip (perm: manage trips).</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>22</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Admin &mdash; Categories</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/admin/categories</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>List categories (perm: manage categories).</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/v1/admin/categories</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Create category (perm: manage categories).</td></tr>
-      <tr><td style='text-align:center;'>3</td><td style='text-align:center;'><span style='color:#fd7e14;font-weight:bold;font-size:12px;'>PUT</span></td><td><code>api/v1/admin/categories/{category}</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Update category (perm: manage categories).</td></tr>
-      <tr><td style='text-align:center;'>4</td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:12px;'>DELETE</span></td><td><code>api/v1/admin/categories/{category}</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Delete category; protection if in use (perm: manage categories).</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>23</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Admin &mdash; Countries</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/admin/countries</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>List countries (perm: manage countries).</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/v1/admin/countries</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Create country (perm: manage countries).</td></tr>
-      <tr><td style='text-align:center;'>3</td><td style='text-align:center;'><span style='color:#fd7e14;font-weight:bold;font-size:12px;'>PUT</span></td><td><code>api/v1/admin/countries/{id}</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Update country (perm: manage countries).</td></tr>
-      <tr><td style='text-align:center;'>4</td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:12px;'>DELETE</span></td><td><code>api/v1/admin/countries/{id}</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Delete country (perm: manage countries).</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>24</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Admin &mdash; Destinations</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/admin/destinations</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>List destinations (perm: manage destinations).</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/v1/admin/destinations</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Create destination (perm: manage destinations).</td></tr>
-      <tr><td style='text-align:center;'>3</td><td style='text-align:center;'><span style='color:#fd7e14;font-weight:bold;font-size:12px;'>PUT</span></td><td><code>api/v1/admin/destinations/{id}</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Update destination (perm: manage destinations).</td></tr>
-      <tr><td style='text-align:center;'>4</td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:12px;'>DELETE</span></td><td><code>api/v1/admin/destinations/{id}</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Delete destination; cascade guards (perm: manage destinations).</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>25</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Admin &mdash; Hotels</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/admin/hotels</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>List hotels (perm: manage hotels).</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/v1/admin/hotels</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Create hotel (perm: manage hotels).</td></tr>
-      <tr><td style='text-align:center;'>3</td><td style='text-align:center;'><span style='color:#fd7e14;font-weight:bold;font-size:12px;'>PUT</span></td><td><code>api/v1/admin/hotels/{id}</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Update hotel (perm: manage hotels).</td></tr>
-      <tr><td style='text-align:center;'>4</td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:12px;'>DELETE</span></td><td><code>api/v1/admin/hotels/{id}</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Delete hotel (perm: manage hotels).</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>26</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Admin &mdash; Flights</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/admin/flights</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>List flights (perm: manage flights).</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/v1/admin/flights</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Create flight (perm: manage flights).</td></tr>
-      <tr><td style='text-align:center;'>3</td><td style='text-align:center;'><span style='color:#fd7e14;font-weight:bold;font-size:12px;'>PUT</span></td><td><code>api/v1/admin/flights/{id}</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Update flight (perm: manage flights).</td></tr>
-      <tr><td style='text-align:center;'>4</td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:12px;'>DELETE</span></td><td><code>api/v1/admin/flights/{id}</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Delete flight (perm: manage flights).</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>27</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Admin &mdash; Restaurants</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/admin/restaurants</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>List restaurants (perm: manage restaurants).</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/v1/admin/restaurants</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Create restaurant (perm: manage restaurants).</td></tr>
-      <tr><td style='text-align:center;'>3</td><td style='text-align:center;'><span style='color:#fd7e14;font-weight:bold;font-size:12px;'>PUT</span></td><td><code>api/v1/admin/restaurants/{id}</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Update restaurant (perm: manage restaurants).</td></tr>
-      <tr><td style='text-align:center;'>4</td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:12px;'>DELETE</span></td><td><code>api/v1/admin/restaurants/{id}</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Delete restaurant (perm: manage restaurants).</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>28</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Admin &mdash; Attractions</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/admin/attractions</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>List attractions (perm: manage attractions).</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/v1/admin/attractions</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Create attraction (perm: manage attractions).</td></tr>
-      <tr><td style='text-align:center;'>3</td><td style='text-align:center;'><span style='color:#fd7e14;font-weight:bold;font-size:12px;'>PUT</span></td><td><code>api/v1/admin/attractions/{id}</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Update attraction (perm: manage attractions).</td></tr>
-      <tr><td style='text-align:center;'>4</td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:12px;'>DELETE</span></td><td><code>api/v1/admin/attractions/{id}</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Delete attraction (perm: manage attractions).</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>29</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Admin &mdash; Reviews</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/admin/reviews</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>List reviews, incl. moderation queue (perm: manage reviews).</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#6f42c1;font-weight:bold;font-size:12px;'>PATCH</span></td><td><code>api/v1/admin/reviews/{id}/approve</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Approve a review (perm: manage reviews).</td></tr>
-      <tr><td style='text-align:center;'>3</td><td style='text-align:center;'><span style='color:#6f42c1;font-weight:bold;font-size:12px;'>PATCH</span></td><td><code>api/v1/admin/reviews/{id}/reject</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Reject a review (perm: manage reviews).</td></tr>
-      <tr><td style='text-align:center;'>4</td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:12px;'>DELETE</span></td><td><code>api/v1/admin/reviews/{id}</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Delete a review (perm: manage reviews).</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>30</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Admin &mdash; Contacts</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/admin/contacts</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Inbox of contact messages (perm: manage contacts).</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#6f42c1;font-weight:bold;font-size:12px;'>PATCH</span></td><td><code>api/v1/admin/contacts/{id}/read</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Mark contact message read (perm: manage contacts).</td></tr>
-      <tr><td style='text-align:center;'>3</td><td style='text-align:center;'><span style='color:#6f42c1;font-weight:bold;font-size:12px;'>PATCH</span></td><td><code>api/v1/admin/contacts/{id}/resolve</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Mark contact message resolved (perm: manage contacts).</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>31</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Admin &mdash; Plans</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/v1/admin/set-plans</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Create/update subscription plans (perm: manage plans).</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>32</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Admin &mdash; Reports</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/admin/reports</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>List platform reports (role: admin|super_admin).</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#198754;font-weight:bold;font-size:12px;'>POST</span></td><td><code>api/v1/admin/reports/generate</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Generate report document / dataset (role: admin|super_admin).</td></tr>
-      <tr><td style='text-align:center;'>3</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/admin/reports/{id}/download</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Download generated report file (role: admin|super_admin).</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>33</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Admin &mdash; Settings</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/admin/settings</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>List all site settings (perm: manage settings).</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#fd7e14;font-weight:bold;font-size:12px;'>PUT</span></td><td><code>api/v1/admin/settings</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Bulk update settings (perm: manage settings).</td></tr>
-      <tr><td style='text-align:center;'>3</td><td style='text-align:center;'><span style='color:#6f42c1;font-weight:bold;font-size:12px;'>PATCH</span></td><td><code>api/v1/admin/settings/{key}</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Update single setting key (perm: manage settings).</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>34</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Admin &mdash; Analytics</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/admin/analytics</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Platform analytics aggregate (perm: view analytics).</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/admin/analytics/revenue</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Revenue analytics (perm: view analytics).</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>35</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Admin &mdash; Notifications</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>api/v1/admin/notifications</code></td><td style='text-align:center;'><span style='color:#dc3545;font-weight:bold;font-size:11px;'>ADMIN</span></td><td>Send/broadcast platform notification (role: admin|super_admin).</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>36</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Developer &amp; Operations</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:center;width:10%;'>Method</th><th style='text-align:left;width:35%;'>Endpoint</th><th style='text-align:center;width:8%;'>Access</th><th style='text-align:left;width:42%;'>Description</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>docs/api</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>Scramble-generated OpenAPI documentation UI (restricted).</td></tr>
-      <tr><td style='text-align:center;'>2</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>docs/api.json</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>OpenAPI JSON spec (restricted).</td></tr>
-      <tr><td style='text-align:center;'>3</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>mail-preview/{type}</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>Mail preview endpoint (local/dev only).</td></tr>
-      <tr><td style='text-align:center;'>4</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>storage/{path}</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>Serve uploaded media (PUT shows/overwrites preview).</td></tr>
-      <tr><td style='text-align:center;'>5</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>up</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>Health check heartbeat.</td></tr>
-      <tr><td style='text-align:center;'>6</td><td style='text-align:center;'><span style='color:#0d6efd;font-weight:bold;font-size:12px;'>GET</span></td><td><code>/</code></td><td style='text-align:center;'><span style='color:#16294E;font-weight:bold;font-size:11px;'>&mdash;</span></td><td>Frontend entry root.</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<div class="page-break"></div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>&#127760;</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Part II &mdash; Website Platform Documentation</div>
-  </div>
-
-  <div style='margin-top:10px;margin-bottom:10px;padding:10px 14px;background-color:#fff8e6;border-left:4px solid #F59E0B;font-size:13px;color:#16294E;'><strong>Product:</strong> Conference planning platform in which members build travel itineraries (destinations, hotel, flight, restaurants, attractions), get AI-generated itinerary reviews, pick subscription plans and pay via PayMob. Operators control content, members and analytics from the admin panel. All flows below map 1:1 to the API endpoints in Part I.</div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:center;width:5%;'>#</th><th style='text-align:left;width:30%;'>Area / Page</th><th style='text-align:left;width:65%;'>What is documented</th></tr>
-    </thead>
-    <tbody>
-      <tr><td style='text-align:center;'>1</td><td><strong>Authentication</strong></td><td>Sign up &rarr; verify email (signed URL) &rarr; login &rarr; JWT stored &rarr; logout / refresh. Throttled public endpoints.</td></tr>
-      <tr><td style='text-align:center;'>2</td><td><strong>Public catalog</strong></td><td>Home + browse pages: categories, destinations with detail pages (hotel/flight/restaurant/attraction cards), search/filter &amp; pagination, weather widget.</td></tr>
-      <tr><td style='text-align:center;'>3</td><td><strong>Trip builder</strong></td><td>Create trip (form), attach hotels / flights / restaurants / attractions, detach, view personal itinerary, fork a shared trip into your library.</td></tr>
-      <tr><td style='text-align:center;'>4</td><td><strong>AI itinerary review</strong></td><td>Generate AI review of a trip plan and read the result.</td></tr>
-      <tr><td style='text-align:center;'>5</td><td><strong>Favourites &amp; reviews</strong></td><td>Favourite toggle, submit review, review moderation status visible to member.</td></tr>
-      <tr><td style='text-align:center;'>6</td><td><strong>Plans &amp; subscription</strong></td><td>Browse plans &rarr; subscribe &rarr; upgrade &rarr; cancel &rarr; subscription state on dashboard/profile.</td></tr>
-      <tr><td style='text-align:center;'>7</td><td><strong>Checkout &amp; payments</strong></td><td>PayMob checkout: initiate &rarr; PayMob hosted page &rarr; webhook fulfilment &rarr; callback return. Signature-verified.</td></tr>
-      <tr><td style='text-align:center;'>8</td><td><strong>Member dashboard</strong></td><td>Stats, recent trips, pinned favourites, reports &amp; downloads.</td></tr>
-      <tr><td style='text-align:center;'>9</td><td><strong>Surveys</strong></td><td>Answer / edit / delete own surveys (IDOR-protected, owner-scoped).</td></tr>
-      <tr><td style='text-align:center;'>10</td><td><strong>Notifications</strong></td><td>Inbox with unread counter; read all or single.</td></tr>
-      <tr><td style='text-align:center;'>11</td><td><strong>Contact form</strong></td><td>Public contact submission; admin inbox with read/resolve workflow.</td></tr>
-      <tr><td style='text-align:center;'>12</td><td><strong>Admin panel</strong></td><td>Users, trips, categories/countries/destinations/hotels/flights/restaurants/attractions CRUD, reviews moderation, plans management, settings, analytics, reports generation/download, notifications broadcast. Every admin action gated by <code>permission:</code> or <code>role:</code> middleware.</td></tr>
-      <tr><td style='text-align:center;'>13</td><td><strong>Developer / ops</strong></td><td>Interactive docs (Scramble/OpenAPI), health check <code>/up</code>, storage preview, mail preview in dev. Telescope available in local env for request profiling.</td></tr>
-    </tbody>
-  </table>
-  <p style="font-size:11px;color:#888;margin-top:6px;">Permissions seeded: 28 route permissions; roles <code>super_admin</code> / <code>admin</code> / <code>user</code>. All operator routes also require <code>auth:api</code>.</p>
-</div>
-
-<div class='module-section'>
-  <div style='display:flex;margin-top:15px;border-radius:4px 4px 0 0;overflow:hidden;align-items:stretch;'>
-    <div style='background-color:#F59E0B;color:white;font-size:20px;font-weight:bold;padding:8px 20px;display:flex;align-items:center;justify-content:center;'>&#128274;</div>
-    <div style='background-color:#16294E;color:white;font-size:18px;font-weight:bold;padding:8px 16px;flex-grow:1;display:flex;align-items:center;'>Appendix &mdash; Security Model</div>
-  </div>
-
-  <table>
-    <thead>
-      <tr><th style='text-align:left;width:30%;'>Mechanism</th><th style='text-align:left;width:70%;'>Where it applies</th></tr>
-    </thead>
-    <tbody>
-      <tr><td><strong>auth:api</strong></td><td>Every member and operator route; JWT bearer.</td></tr>
-      <tr><td><strong>permission:</strong> middleware</td><td>Operator CRUD + member plan flows (28 seeded permissions on guard <code>api</code>).</td></tr>
-      <tr><td><strong>role:</strong> middleware</td><td>Reports + admin notifications restricted to <code>admin|super_admin</code>.</td></tr>
-      <tr><td><strong>Owner scoping</strong></td><td>Surveys, notifications, reviews, favourites, reports scoped by context user id.</td></tr>
-      <tr><td><strong>Throttles</strong></td><td>register, login, refresh, password endpoints, email resend.</td></tr>
-      <tr><td><strong>Signed verification URL</strong></td><td>Email verify route hash checks.</td></tr>
-      <tr><td><strong>Signature verification</strong></td><td>PayMob webhooks validated before fulfilment.</td></tr>
-    </tbody>
-  </table>
-
-  <div style="margin-top:8px;margin-bottom:0;padding:8px 12px;background-color:#fdecea;border-left:4px solid #dc3545;font-size:12px;color:#842029;"><strong>Known / flagged gaps:</strong> attach/detach routes point to missing controller methods (currently return 500 — either implement or remove); <code>GET review/{id}</code> + <code>GET maps/trip</code> could benefit from an explicit owner check; contacts endpoint public without throttle (recommend adding); <code>site-settings</code> public (whitelist keys).</div>
+### 1. Authentication
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `POST` | `api/register` | — | Create a member account: name, email, password. Email verification flow triggered. Throttle: register. |
+| 2 | `POST` | `api/login` | — | Authenticate credentials; returns JWT access token (Bearer). Throttle: login (5/60s). |
+| 3 | `POST` | `api/refresh` | USER | Rotate expired access token. Throttle: 15/1min. |
+| 4 | `POST` | `api/logout` | USER | Invalidate current access token. |
+| 5 | `POST` | `api/forgot-password` | — | Send password reset link to email. Throttle: 3/10min. |
+| 6 | `POST` | `api/reset-password` | — | Apply new password with emailed token. Throttle: 5/1min. |
+| 7 | `POST` | `api/email/resend` | USER | Resend email verification link. Throttle: 6/1min. |
+| 8 | `GET` | `api/email/verify-notice` | USER | Flag/notice page after registration before verification. |
+| 9 | `GET` | `api/email/verify/{id}/{hash}` | — | Verify email via signed URL (Laravel signed routes — tamper-proof). |
+### 2. Profile &amp; Account
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/user` | USER | Current authenticated profile. |
+| 2 | `PATCH` | `api/v1/profile` | USER | Update own profile: name, phone, photo, etc. |
+### 3. Catalog &mdash; Categories
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/v1/categories` | — | List travel categories (beaches, mountains, ...). |
+| 2 | `GET` | `api/v1/categories/{category}` | — | Single category with stats. |
+### 4. Catalog &mdash; Destinations
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/v1/destinations` | — | Browse destinations. Search/filter/pagination. |
+| 2 | `GET` | `api/v1/destinations/{id}` | — | Destination detail incl. related hotels, restaurants, attractions. |
+### 5. Catalog &mdash; Hotels
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/v1/hotels` | — | List hotels. Location/price filters; paginated. |
+| 2 | `GET` | `api/v1/hotels/{id}` | — | Hotel detail: rating, price, amenities. |
+### 6. Catalog &mdash; Flights
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/v1/flights` | — | List flights. Origin/destination/date filters; paginated. |
+| 2 | `GET` | `api/v1/flights/{id}` | — | Flight detail: airline, times, price, class. |
+### 7. Catalog &mdash; Restaurants
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/v1/restaurants` | — | List restaurants. Cuisine/price filters; paginated. |
+| 2 | `GET` | `api/v1/restaurants/{id}` | — | Restaurant detail: cuisine, price range, photos. |
+### 8. Catalog &mdash; Attractions
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/v1/attractions` | — | List attractions. Category/destination filters; paginated. |
+| 2 | `GET` | `api/v1/attractions/{id}` | — | Attraction detail: description, hours, entry info. |
+### 9. Site &amp; Utilities
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/v1/site-settings` | — | Public site settings (branding, contact info). Whitelisted keys only. |
+| 2 | `GET` | `api/weather` | — | Weather lookup for destinations (external weather provider). |
+| 3 | `POST` | `api/v1/contacts` | — | Contact form submission: name, email, subject, message. |
+### 10. Maps
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/v1/maps/destination/{destination}` | — | Map markers for a destination (hotels/restaurants/attractions). |
+| 2 | `GET` | `api/v1/maps/trip/{trip}` | USER | Map data for a member trip. |
+### 11. Trips
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/v1/trips/create` | USER | Trip builder bootstrap: list of selectable hotels etc. |
+| 2 | `POST` | `api/v1/trips` | USER | Create a trip: destination, dates, budget, companions, hotel plan. |
+| 3 | `GET` | `api/v1/trips/{trip}` | USER | Trip detail with itinerary lines (hotel, flights, restaurants, attractions). |
+| 4 | `POST` | `api/trips/{trip}/fork` | USER | Copy another member's trip into own collection (trip forking). |
+| 5 | `POST` | `api/v1/trips/{trip}/attach/{type}` | USER | Attach an entity (hotel/flight/restaurant/attraction) to trip. OBSOLETE GATE: controller method missing. |
+| 6 | `DELETE` | `api/v1/trips/{trip}/detach/{id}` | USER | Detach an entity from trip. OBSOLETE GATE: controller method missing. |
+### 12. AI Itinerary Review
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `POST` | `api/review` | USER | Generate AI itinerary/review for a trip (contract: generate ai itineraries). |
+| 2 | `GET` | `api/review/{id}` | USER | Fetch generated AI review. |
+### 13. Favourites &amp; Member Reviews
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `POST` | `api/v1/favourites/{type}/{id}` | USER | Add/remove favourite for entity (destinations, hotels...). |
+| 2 | `POST` | `api/v1/reviews/{type}/{id}` | USER | Post a rating + review for entity. |
+| 3 | `DELETE` | `api/v1/reviews/{id}` | USER | Delete own review (owner scoped). |
+### 14. Surveys
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/surveys` | USER | List own surveys. |
+| 2 | `POST` | `api/surveys` | USER | Submit a survey response. |
+| 3 | `GET` | `api/surveys/{survey}` | USER | View one of own surveys (owner-scoped — IDOR fixed). |
+| 4 | `PUT` | `api/surveys/{survey}` | USER | Update own survey (owner-scoped; user_id input stripped). |
+| 5 | `DELETE` | `api/surveys/{survey}` | USER | Delete own survey (owner-scoped). |
+### 15. Plans &amp; Subscription
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/v1/plans` | USER | List available plans (perm: get plans). |
+| 2 | `POST` | `api/v1/me/subscribe` | USER | Subscribe to a plan (perm: subscribe to plans). |
+| 3 | `POST` | `api/v1/me/upgrade` | USER | Upgrade current plan (perm: upgrade plans). |
+| 4 | `POST` | `api/v1/me/subscription/cancel` | USER | Cancel subscription (perm: cancel subscription). |
+| 5 | `GET` | `api/v1/me/subscription` | USER | Current subscription details (perm: view my subscription). |
+### 16. Dashboard
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/v1/dashboard` | USER | Member dashboard aggregate: stats, recent trips, upcoming, recommendations. |
+| 2 | `GET` | `api/v1/dashboard/trips` | USER | Paged member trips for dashboard. |
+| 3 | `GET` | `api/v1/dashboard/favourites` | USER | Paged member favourites for dashboard. |
+### 17. Notifications
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/v1/notifications` | USER | My notifications; unread_count included. Filter: ?unread_only=. |
+| 2 | `PATCH` | `api/v1/notifications/read-all` | USER | Mark all my notifications read. |
+| 3 | `PATCH` | `api/v1/notifications/{notification}/read` | USER | Mark one notification read (ownership checked). |
+### 18. Checkout &amp; Payments
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `POST` | `api/v1/checkout/initiate` | USER | Start PayMob checkout for subscription/plan payment; returns payment token & URL. |
+| 2 | `POST` | `api/v1/paymob/webhook` | — | PayMob webhook; transaction verified by signature before fulfilment. |
+| 3 | `GET` | `api/v1/paymob/callback` | — | PayMob return URL; finalises payment state for the browser flow. |
+### 19. My Reports
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/me/reports` | USER | My generated report documents (downloads). |
+### 20. Admin &mdash; Users
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/v1/admin/users` | ADMIN | List members; filters + pagination (perm: manage users). |
+| 2 | `POST` | `api/v1/admin/users` | ADMIN | Create user/operator account (perm: manage users). |
+| 3 | `GET` | `api/v1/admin/users/{user}` | ADMIN | User detail incl. subscription, stats (perm: manage users). |
+| 4 | `PUT` | `api/v1/admin/users/{user}` | ADMIN | Update user record (perm: manage users). |
+| 5 | `PATCH` | `api/v1/admin/users/{user}/active` | ADMIN | Toggle active state (perm: manage users). |
+| 6 | `PATCH` | `api/v1/admin/users/{user}/block` | ADMIN | Block/unblock user (perm: manage users). |
+### 21. Admin &mdash; Trips
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/v1/admin/trips` | ADMIN | List trips with filters + pagination (perm: manage trips). |
+| 2 | `POST` | `api/v1/admin/trips` | ADMIN | Create a trip (perm: manage trips). |
+| 3 | `PUT` | `api/v1/admin/trips/{id}` | ADMIN | Update trip (perm: manage trips). |
+| 4 | `DELETE` | `api/v1/admin/trips/{id}` | ADMIN | Delete trip (perm: manage trips). |
+### 22. Admin &mdash; Categories
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/v1/admin/categories` | ADMIN | List categories (perm: manage categories). |
+| 2 | `POST` | `api/v1/admin/categories` | ADMIN | Create category (perm: manage categories). |
+| 3 | `PUT` | `api/v1/admin/categories/{category}` | ADMIN | Update category (perm: manage categories). |
+| 4 | `DELETE` | `api/v1/admin/categories/{category}` | ADMIN | Delete category; protection if in use (perm: manage categories). |
+### 23. Admin &mdash; Countries
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/v1/admin/countries` | ADMIN | List countries (perm: manage countries). |
+| 2 | `POST` | `api/v1/admin/countries` | ADMIN | Create country (perm: manage countries). |
+| 3 | `PUT` | `api/v1/admin/countries/{id}` | ADMIN | Update country (perm: manage countries). |
+| 4 | `DELETE` | `api/v1/admin/countries/{id}` | ADMIN | Delete country (perm: manage countries). |
+### 24. Admin &mdash; Destinations
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/v1/admin/destinations` | ADMIN | List destinations (perm: manage destinations). |
+| 2 | `POST` | `api/v1/admin/destinations` | ADMIN | Create destination (perm: manage destinations). |
+| 3 | `PUT` | `api/v1/admin/destinations/{id}` | ADMIN | Update destination (perm: manage destinations). |
+| 4 | `DELETE` | `api/v1/admin/destinations/{id}` | ADMIN | Delete destination; cascade guards (perm: manage destinations). |
+### 25. Admin &mdash; Hotels
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/v1/admin/hotels` | ADMIN | List hotels (perm: manage hotels). |
+| 2 | `POST` | `api/v1/admin/hotels` | ADMIN | Create hotel (perm: manage hotels). |
+| 3 | `PUT` | `api/v1/admin/hotels/{id}` | ADMIN | Update hotel (perm: manage hotels). |
+| 4 | `DELETE` | `api/v1/admin/hotels/{id}` | ADMIN | Delete hotel (perm: manage hotels). |
+### 26. Admin &mdash; Flights
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/v1/admin/flights` | ADMIN | List flights (perm: manage flights). |
+| 2 | `POST` | `api/v1/admin/flights` | ADMIN | Create flight (perm: manage flights). |
+| 3 | `PUT` | `api/v1/admin/flights/{id}` | ADMIN | Update flight (perm: manage flights). |
+| 4 | `DELETE` | `api/v1/admin/flights/{id}` | ADMIN | Delete flight (perm: manage flights). |
+### 27. Admin &mdash; Restaurants
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/v1/admin/restaurants` | ADMIN | List restaurants (perm: manage restaurants). |
+| 2 | `POST` | `api/v1/admin/restaurants` | ADMIN | Create restaurant (perm: manage restaurants). |
+| 3 | `PUT` | `api/v1/admin/restaurants/{id}` | ADMIN | Update restaurant (perm: manage restaurants). |
+| 4 | `DELETE` | `api/v1/admin/restaurants/{id}` | ADMIN | Delete restaurant (perm: manage restaurants). |
+### 28. Admin &mdash; Attractions
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/v1/admin/attractions` | ADMIN | List attractions (perm: manage attractions). |
+| 2 | `POST` | `api/v1/admin/attractions` | ADMIN | Create attraction (perm: manage attractions). |
+| 3 | `PUT` | `api/v1/admin/attractions/{id}` | ADMIN | Update attraction (perm: manage attractions). |
+| 4 | `DELETE` | `api/v1/admin/attractions/{id}` | ADMIN | Delete attraction (perm: manage attractions). |
+### 29. Admin &mdash; Reviews
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/v1/admin/reviews` | ADMIN | List reviews, incl. moderation queue (perm: manage reviews). |
+| 2 | `PATCH` | `api/v1/admin/reviews/{id}/approve` | ADMIN | Approve a review (perm: manage reviews). |
+| 3 | `PATCH` | `api/v1/admin/reviews/{id}/reject` | ADMIN | Reject a review (perm: manage reviews). |
+| 4 | `DELETE` | `api/v1/admin/reviews/{id}` | ADMIN | Delete a review (perm: manage reviews). |
+### 30. Admin &mdash; Contacts
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/v1/admin/contacts` | ADMIN | Inbox of contact messages (perm: manage contacts). |
+| 2 | `PATCH` | `api/v1/admin/contacts/{id}/read` | ADMIN | Mark contact message read (perm: manage contacts). |
+| 3 | `PATCH` | `api/v1/admin/contacts/{id}/resolve` | ADMIN | Mark contact message resolved (perm: manage contacts). |
+### 31. Admin &mdash; Plans
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `POST` | `api/v1/admin/set-plans` | ADMIN | Create/update subscription plans (perm: manage plans). |
+### 32. Admin &mdash; Reports
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/v1/admin/reports` | ADMIN | List platform reports (role: admin\|super_admin). |
+| 2 | `POST` | `api/v1/admin/reports/generate` | ADMIN | Generate report document / dataset (role: admin\|super_admin). |
+| 3 | `GET` | `api/v1/admin/reports/{id}/download` | ADMIN | Download generated report file (role: admin\|super_admin). |
+### 33. Admin &mdash; Settings
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/v1/admin/settings` | ADMIN | List all site settings (perm: manage settings). |
+| 2 | `PUT` | `api/v1/admin/settings` | ADMIN | Bulk update settings (perm: manage settings). |
+| 3 | `PATCH` | `api/v1/admin/settings/{key}` | ADMIN | Update single setting key (perm: manage settings). |
+### 34. Admin &mdash; Analytics
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/v1/admin/analytics` | ADMIN | Platform analytics aggregate (perm: view analytics). |
+| 2 | `GET` | `api/v1/admin/analytics/revenue` | ADMIN | Revenue analytics (perm: view analytics). |
+### 35. Admin &mdash; Notifications
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `api/v1/admin/notifications` | ADMIN | Send/broadcast platform notification (role: admin\|super_admin). |
+### 36. Developer &amp; Operations
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `GET` | `docs/api` | — | Scramble-generated OpenAPI documentation UI (restricted). |
+| 2 | `GET` | `docs/api.json` | — | OpenAPI JSON spec (restricted). |
+| 3 | `GET` | `mail-preview/{type}` | — | Mail preview endpoint (local/dev only). |
+| 4 | `GET` | `storage/{path}` | — | Serve uploaded media (PUT shows/overwrites preview). |
+| 5 | `GET` | `up` | — | Health check heartbeat. |
+| 6 | `GET` | `/` | — | Frontend entry root. |
+### 37. Part II &mdash; Website Platform Documentation
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| 1 | `Authentication` | `Sign up &rarr; verify email (signed URL) &rarr; login &rarr; JWT stored &rarr; logout / refresh. Throttled public endpoints.` |  |  |
+| 2 | `Public catalog` | `Home + browse pages: categories, destinations with detail pages (hotel/flight/restaurant/attraction cards), search/filter & pagination, weather widget.` |  |  |
+| 3 | `Trip builder` | `Create trip (form), attach hotels / flights / restaurants / attractions, detach, view personal itinerary, fork a shared trip into your library.` |  |  |
+| 4 | `AI itinerary review` | `Generate AI review of a trip plan and read the result.` |  |  |
+| 5 | `Favourites & reviews` | `Favourite toggle, submit review, review moderation status visible to member.` |  |  |
+| 6 | `Plans & subscription` | `Browse plans &rarr; subscribe &rarr; upgrade &rarr; cancel &rarr; subscription state on dashboard/profile.` |  |  |
+| 7 | `Checkout & payments` | `PayMob checkout: initiate &rarr; PayMob hosted page &rarr; webhook fulfilment &rarr; callback return. Signature-verified.` |  |  |
+| 8 | `Member dashboard` | `Stats, recent trips, pinned favourites, reports & downloads.` |  |  |
+| 9 | `Surveys` | `Answer / edit / delete own surveys (IDOR-protected, owner-scoped).` |  |  |
+| 10 | `Notifications` | `Inbox with unread counter; read all or single.` |  |  |
+| 11 | `Contact form` | `Public contact submission; admin inbox with read/resolve workflow.` |  |  |
+| 12 | `Admin panel` | `Users, trips, categories/countries/destinations/hotels/flights/restaurants/attractions CRUD, reviews moderation, plans management, settings, analytics, reports generation/download, notifications broadcast. Every admin action gated by permission: or role: middleware.` |  |  |
+| 13 | `Developer / ops` | `Interactive docs (Scramble/OpenAPI), health check /up, storage preview, mail preview in dev. Telescope available in local env for request profiling.` |  |  |
+### 38. Appendix &mdash; Security Model
+
+| # | Method | Endpoint | Access | Description |
+|---|---|---|---|---|
+| auth:api | `Every member and operator route; JWT bearer.` |  |  |  |
+| permission: middleware | `Operator CRUD + member plan flows (28 seeded permissions on guard api).` |  |  |  |
+| role: middleware | `Reports + admin notifications restricted to admin\|super_admin.` |  |  |  |
+| Owner scoping | `Surveys, notifications, reviews, favourites, reports scoped by context user id.` |  |  |  |
+| Throttles | `register, login, refresh, password endpoints, email resend.` |  |  |  |
+| Signed verification URL | `Email verify route hash checks.` |  |  |  |
+| Signature verification | `PayMob webhooks validated before fulfilment.` |  |  |  |
+
+<div style="margin-top:8px;margin-bottom:0;padding:8px 12px;background-color:#fdecea;border-left:4px solid #dc3545;font-size:12px;color:#842029;"><strong>Known / flagged gaps:</strong> attach/detach routes point to missing controller methods (currently return 500 — either implement or remove); <code>GET review/{id}</code> + <code>GET maps/trip</code> could benefit from an explicit owner check; contacts endpoint public without throttle (recommend adding); <code>site-settings</code> public (whitelist keys).</div>
 </div>
 
 <p style='font-size:11px;color:#999;margin-top:20px;'>Generated by Team 2 &mdash; Conference Case Study &mdash; August 9, 2026 &mdash; from <code>php artisan route:list -v --json</code>; auditing of every route against seeded permissions &amp; owner checks.</p>
+
+---
+
+## Appendix — Full Route Lists
+
+> **213 deployed `api/*`** (222 total) — full deployed table at [`ROUTES-APPENDIX.md`](ROUTES-APPENDIX.md) (213 rows, `route:list --json`, 2026-08-23). Curated tables above show the 120 representative endpoints across 36 sections.
+
+> **237 raw registrations** — full raw `Route::` table at [`ROUTES-REGISTRATIONS-APPENDIX.md`](ROUTES-REGISTRATIONS-APPENDIX.md) (237 lines, includes 29 `group`/`prefix`/`middleware` wrappers + 2 `apiResource` → 10 deployed).
+
+Full tables: [`ROUTES-APPENDIX.md`](ROUTES-APPENDIX.md) (213 deployed) · [`ROUTES-REGISTRATIONS-APPENDIX.md`](ROUTES-REGISTRATIONS-APPENDIX.md) (237 raw)
 
