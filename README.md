@@ -19,6 +19,7 @@ Team2-Conference-Project/
 ├── fullstack/
 │   ├── Backend/      # Laravel 12 RESTful API (PHP 8.2+, JWT, MySQL, Redis, PayMob, Groq AI)
 │   └── Frontend/     # Vanilla JS Luxury Boarding-Pass Web App (HTML5, GSAP 3.12, Tailwind, CSS3)
+├── wiki/             # 📚 Project documentation home (all guides, references & audits)
 └── README.md         # Master Repository Documentation
 ```
 
@@ -113,19 +114,19 @@ php artisan test
 
 ---
 
-## 📚 Technical Documentation Sitemap
+## 📚 Documentation
 
-- 📄 **API Reference (Updated MD, pure markdown, 213 `api/*` — curated 120 + full 213/237):** [`fullstack/Backend/docs/API-Reference.md`](fullstack/Backend/docs/API-Reference.md) — pure markdown, 36 sections (120 rep.) + full appendices [`ROUTES-APPENDIX.md`](fullstack/Backend/docs/ROUTES-APPENDIX.md) (213 deployed `api/*`, 222 total) and [`ROUTES-REGISTRATIONS-APPENDIX.md`](fullstack/Backend/docs/ROUTES-REGISTRATIONS-APPENDIX.md) (237 raw `Route::`) — *new files, replace former PDF*
-- 📄 **Deployment Guide:** [`fullstack/Backend/docs/DEPLOYMENT.md`](fullstack/Backend/docs/DEPLOYMENT.md)
-- 📄 **Environment Configuration:** [`fullstack/Backend/docs/ENVIRONMENT.md`](fullstack/Backend/docs/ENVIRONMENT.md)
-- 📄 **Frontend Details:** [`fullstack/Frontend/README.md`](fullstack/Frontend/README.md)
-- 📄 **Backend Details:** [`fullstack/Backend/README.md`](fullstack/Backend/README.md)
-- 📘 **RepoWiki (cited, 9 guides, HEAD `0c14fa54`):** source in [`.repowiki/en/meta/repowiki-metadata.json`](.repowiki/en/meta/repowiki-metadata.json) — deployed & rendered in [`showcase/wiki.html`](../showcase/wiki.html) + raw MDs:
-  - [System Overview](../showcase/assets/wiki/System%20Overview.md) · [Getting Started Guide](../showcase/assets/wiki/Getting%20Started%20Guide.md) · [Development Guidelines](../showcase/assets/wiki/Development%20Guidelines.md)
-  - Architecture: [Architecture Overview](../showcase/assets/wiki/architecture/Architecture.md) · [Technology Stack & Architecture](../showcase/assets/wiki/architecture/Technology%20Stack%20%26%20Architecture.md)
-  - [Backend Services](../showcase/assets/wiki/backend-services/Backend%20Services.md) · [Frontend Application](../showcase/assets/wiki/Frontend%20Application.md) · [Infrastructure](../showcase/assets/wiki/Infrastructure.md) · [API Reference](../showcase/assets/wiki/API%20Reference.md)
-  - Also source: [`.repowiki/en/content/System Overview.md`](.repowiki/en/content/System%20Overview.md) (and 8 siblings in `.repowiki/en/content/`)
-- 🎨 **Showcase (static, vanilla — Laravel-only):** [`showcase/README.md`](../showcase/README.md) · `showcase/wiki.html` (9 guides) · `showcase/llms.txt` (agent-ready) — file:// safe, no React/Vite
+All project documentation lives in the **[`wiki/`](wiki/Home.md)** folder:
+
+| Section | Guides |
+|---|---|
+| **Start Here** | [System Overview](wiki/System%20Overview.md) · [Getting Started Guide](wiki/Getting%20Started%20Guide.md) · [Development Guidelines](wiki/Development%20Guidelines.md) |
+| **Architecture** | [Architecture Overview](wiki/Architecture.md) · [Technology Stack & Architecture](wiki/Technology%20Stack%20%26%20Architecture.md) · [Backend Services](wiki/Backend%20Services.md) · [Frontend Application](wiki/Frontend%20Application.md) |
+| **Operations** | [Infrastructure](wiki/Infrastructure.md) · [Deployment Guide](wiki/DEPLOYMENT.md) · [Environment Configuration](wiki/ENVIRONMENT.md) · [Release Sign-off](wiki/RELEASE_SIGN_OFF.md) |
+| **API Reference** | [API Reference](wiki/API%20Reference.md) · [API Endpoints Reference](wiki/API%20Endpoints%20Reference.md) · [Routes Appendix](wiki/ROUTES-APPENDIX.md) · [Routes Registrations Appendix](wiki/ROUTES-REGISTRATIONS-APPENDIX.md) |
+| **Audits** | [Frontend Audit Report](wiki/Frontend%20Audit%20Report.md) · [Fullstack Unification Audit](wiki/Fullstack%20Unification%20Audit.md) |
+
+➡️ **Full index & migration notes:** [`wiki/Home.md`](wiki/Home.md)
 
 ---
 
