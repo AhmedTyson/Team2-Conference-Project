@@ -49,7 +49,7 @@ Each `fullstack/Backend` folder is self-contained Laravel API; `fullstack/Fronte
 | Area | Stack | Highlights |
 |------|-------|------------|
 | **Frontend** — Luxury Boarding-Pass Web App | Vanilla HTML5/CSS3/JS, GSAP 3.12, Tailwind | Onyx glassmorphism (`tokens.css`), GSAP staggered hero + 3D tilt + KPI roll-ups, carousel live weather (Open-Meteo, 17+ capitals °C/°F), 4K media (Maldives, Swiss Alps, Santorini, Paris, Tokyo, Cairo), `logo.png` branding, 10+ admin dashboards (Users/Trips/Reviews/Analytics) ~35 pages, 33 JS modules |
-| **Backend** — Laravel 12 REST API | PHP 8.2+, JWT + Spatie RBAC, MySQL/Redis, DomPDF/OpenSpout | 120+ endpoints (213 `api/*` routes, 237 registrations, `/docs/api` OpenAPI), JWT Bearer refresh rotation (`super_admin`/`admin`/`user`), PayMob hosted checkout HMAC SHA-512, Groq LLM itinerary review, executive telemetry PDF + spreadsheet (`All Time` filter), seeders: 60+ paid orders/payments, 44 migrations, 34 seeders, 52 test classes |
+| **Backend** — Laravel 12 REST API | PHP 8.2+, JWT + Spatie RBAC, MySQL/Redis, DomPDF/OpenSpout | 120+ endpoints (106 distinct `api/*` routes — 213 operations / 178 distinct URIs, 107 GET, 237 registrations, `/docs/api` OpenAPI), JWT Bearer refresh rotation (`super_admin`/`admin`/`user`), PayMob hosted checkout HMAC SHA-512, Groq LLM itinerary review, executive telemetry PDF + spreadsheet (`All Time` filter), seeders: 60+ paid orders/payments, 44 migrations, 34 seeders, 52 test classes |
 
 ---
 
@@ -129,7 +129,7 @@ All project documentation lives in the **[`wiki/`](wiki/Home.md)** folder:
 
 ## <img src="https://api.iconify.design/lucide:building-2.svg?color=%238A2BE2" width="24" align="top" /> About Conference
 
-**Conference Case Study 1 — Team 2** is a student-run fullstack initiative replicating professional software company structure. Like **ThreeDOS**, members are assigned to functional departments (backend, frontend, product) and deliver under real constraints. **Itinera** was built as the luxury travel orchestration platform case study: Laravel 12 REST API (213 `api/*` routes, 120+ documented endpoints) + vanilla JS frontend (GSAP 3.12), deployed as two Railway services with Docker dual-role image. Goal: close gap between academic learning and industry readiness — same mission as ThreeDOS, scoped to conference deliverable.
+**Conference Case Study 1 — Team 2** is a student-run fullstack initiative replicating professional software company structure. Like **ThreeDOS**, members are assigned to functional departments (backend, frontend, product) and deliver under real constraints. **Itinera** was built as the luxury travel orchestration platform case study: Laravel 12 REST API (106 distinct `api/*` routes — 213 operations / 178 distinct URIs, 107 GET, 120+ documented endpoints) + vanilla JS frontend (GSAP 3.12), deployed as two Railway services with Docker dual-role image. Goal: close gap between academic learning and industry readiness — same mission as ThreeDOS, scoped to conference deliverable.
 
 ---
 
