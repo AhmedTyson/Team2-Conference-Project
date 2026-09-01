@@ -1,51 +1,59 @@
-# ✈️ Itinera — Global Luxury Travel & Trip Planning Platform
-> **Conference Case Study 1 — Team 2 Fullstack Application Monorepo**
+<div align="center">
+  <br />
+  <img src="fullstack/Frontend/assets/img/logo.png" width="160" alt="Itinera logo" />
+  <br />
 
-[![Laravel](https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
-[![PHP](https://img.shields.io/badge/PHP-8.2%2B-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
-[![JWT Auth](https://img.shields.io/badge/Auth-JWT-000000?style=for-the-badge&logo=json-web-tokens&logoColor=white)](https://jwt.io)
-[![GSAP](https://img.shields.io/badge/Animations-GSAP_3.12-88CE02?style=for-the-badge&logo=greensock&logoColor=white)](https://greensock.com)
-[![PayMob](https://img.shields.io/badge/Payments-PayMob-0052CC?style=for-the-badge)](https://paymob.com)
-[![Groq AI](https://img.shields.io/badge/AI-Groq_Llama3-F34B21?style=for-the-badge)](https://groq.com)
+  # Itinera — Global Luxury Travel & Trip Planning Platform
+  **Conference Case Study 1 — Team 2 Fullstack Application Monorepo**
 
-Welcome to the **Conference Case Study 1 (Team 2)** project repository! **Itinera** is an end-to-end luxury travel orchestration platform featuring curated itineraries, verified 5-star accommodations, real-time global weather radar, automated executive telemetry PDF reporting, AI-powered itinerary reviews, PayMob payment checkout, and an operator admin suite.
+  <br />
+
+  [![Laravel](https://img.shields.io/badge/Laravel-12.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white)](https://laravel.com)
+  [![PHP](https://img.shields.io/badge/PHP-8.2%2B-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
+  [![JWT Auth](https://img.shields.io/badge/Auth-JWT-000000?style=for-the-badge&logo=json-web-tokens&logoColor=white)](https://jwt.io)
+  [![GSAP](https://img.shields.io/badge/Animations-GSAP_3.12-88CE02?style=for-the-badge&logo=greensock&logoColor=white)](https://greensock.com)
+  [![PayMob](https://img.shields.io/badge/Payments-PayMob-0052CC?style=for-the-badge)](https://paymob.com)
+  [![Groq AI](https://img.shields.io/badge/AI-Groq_Llama3-F34B21?style=for-the-badge)](https://groq.com)
+  ![Status](https://img.shields.io/badge/status-active-10b981?style=flat-square)
+  ![Team](https://img.shields.io/badge/team-Team_2-8A2BE2?style=flat-square)
+
+</div>
+
+<br />
 
 ---
 
-## 📁 Monorepo Structure
+<br />
+
+Welcome to the **Conference Case Study 1 (Team 2)** project repository! **Itinera** is an end-to-end luxury travel orchestration platform featuring curated itineraries, verified 5-star accommodations, real-time global weather radar, automated executive telemetry PDF reporting, AI-powered itinerary reviews, PayMob checkout, and an operator admin suite.
+
+---
+
+## <img src="https://api.iconify.design/lucide:folder-tree.svg?color=%238A2BE2" width="24" align="top" /> Structure
 
 ```text
 Team2-Conference-Project/
 ├── fullstack/
 │   ├── Backend/      # Laravel 12 RESTful API (PHP 8.2+, JWT, MySQL, Redis, PayMob, Groq AI)
-│   └── Frontend/     # Vanilla JS Luxury Boarding-Pass Web App (HTML5, GSAP 3.12, Tailwind, CSS3)
+│   └── Frontend/     # Vanilla JS Luxury Boarding-Pass Web App (HTML5, GSAP 3.12, Tailwind)
 ├── wiki/             # 📚 Project documentation home (all guides, references & audits)
 └── README.md         # Master Repository Documentation
 ```
 
----
-
-## ✨ Key Features & Highlights
-
-### 🎨 Frontend (`fullstack/Frontend`)
-- **Luxury Boarding-Pass Aesthetic**: Custom onyx glassmorphism design system (`tokens.css`, `public.css`, `admin.css`).
-- **GSAP 3.12 Animations**: Staggered hero entrance timelines, interactive 3D tilt micro-interactions on cards, and animated KPI counter roll-ups.
-- **Carousel-Driven Live Weather Radar**: Real-time temperature (°C/°F), condition badges, and wind metrics for 17+ travel capitals powered by Open-Meteo integration.
-- **4K Ultra-Res Media**: Visual photography for destinations including Maldives, Swiss Alps, Santorini, Paris, Tokyo, and Cairo.
-- **Unified Global Branding**: Official `logo.png` mark integrated into favicon synchronizer, topbar navigation, email templates, and PDF exports.
-- **Operator Admin Suite**: 10+ dedicated management dashboards (Users, Trips, Reviews, Analytics, CRUD catalog, Settings).
-
-### ⚙️ Backend (`fullstack/Backend`)
-- **Laravel 12 API Architecture**: REST API with 120+ endpoints, OpenAPI interactive documentation (`/docs/api`), and Postman collection.
-- **JWT & Spatie RBAC**: Secure JWT Bearer authentication with refresh rotation and role permissions (`super_admin`, `admin`, `user`).
-- **PayMob Payments**: Hosted checkout integration with HMAC SHA-512 webhook signature verification.
-- **AI Concierge & Itinerary Review**: Groq LLM integration providing automated feedback on travel itineraries.
-- **Executive Telemetry Reports**: Dynamic PDF generation (`DomPDF`) and spreadsheet exports (`OpenSpout`) with automatic "All Time" default filtering.
-- **Seeded Datasets**: Pre-seeded telemetry data containing 60+ paid orders, 60 payments, mapped hotels, restaurants, destinations, and test users.
+Each `fullstack/Backend` folder is self-contained Laravel API; `fullstack/Frontend` is vanilla JS app. The `wiki/` folder is the documentation home — former `docs/` merged here (see `wiki/Home.md` migration notes).
 
 ---
 
-## 🚀 Quick Start Guide
+## <img src="https://api.iconify.design/lucide:sparkles.svg?color=%238A2BE2" width="24" align="top" /> Key Features & Highlights
+
+| Area | Stack | Highlights |
+|------|-------|------------|
+| **Frontend** — Luxury Boarding-Pass Web App | Vanilla HTML5/CSS3/JS, GSAP 3.12, Tailwind | Onyx glassmorphism (`tokens.css`), GSAP staggered hero + 3D tilt + KPI roll-ups, carousel live weather (Open-Meteo, 17+ capitals °C/°F), 4K media (Maldives, Swiss Alps, Santorini, Paris, Tokyo, Cairo), `logo.png` branding, 10+ admin dashboards (Users/Trips/Reviews/Analytics) ~35 pages, 33 JS modules |
+| **Backend** — Laravel 12 REST API | PHP 8.2+, JWT + Spatie RBAC, MySQL/Redis, DomPDF/OpenSpout | 120+ endpoints (213 `api/*` routes, 237 registrations, `/docs/api` OpenAPI), JWT Bearer refresh rotation (`super_admin`/`admin`/`user`), PayMob hosted checkout HMAC SHA-512, Groq LLM itinerary review, executive telemetry PDF + spreadsheet (`All Time` filter), seeders: 60+ paid orders/payments, 44 migrations, 34 seeders, 52 test classes |
+
+---
+
+## <img src="https://api.iconify.design/lucide:rocket.svg?color=%238A2BE2" width="24" align="top" /> Quick Start Guide
 
 ### 1. Backend Setup (`fullstack/Backend/`)
 
@@ -57,7 +65,7 @@ cd fullstack/Backend
 composer install
 
 # 3. Environment configuration
-copy .env.example .env    # On Windows (or 'cp .env.example .env' on Linux/macOS)
+copy .env.example .env    # Windows (or cp .env.example .env on Linux/macOS)
 
 # 4. Generate keys & linked storage
 php artisan key:generate
@@ -71,50 +79,39 @@ php artisan migrate:fresh --seed
 npm install
 npm run build
 
-# 7. Start backend development server (http://127.0.0.1:8000)
+# 7. Start backend development server
 php artisan serve
 ```
 
-* **Backend Base API URL:** `http://127.0.0.1:8000/api`
-* **Live Interactive OpenAPI Docs:** `http://127.0.0.1:8000/docs/api`
-
----
+- **Backend Base API URL:** `http://127.0.0.1:8000/api`
+- **Live Interactive OpenAPI Docs:** `http://127.0.0.1:8000/docs/api`
 
 ### 2. Frontend Setup (`fullstack/Frontend/`)
 
 ```bash
-# 1. Navigate to frontend directory
 cd fullstack/Frontend
-
-# 2. Serve static application (Port 8080)
 python -m http.server 8080
 # or
 php -S 127.0.0.1:8080
 ```
 
-* **Landing Page:** Open `http://localhost:8080/index.html` in your browser.
-* **Admin Suite:** Open `http://localhost:8080/admin/index.html`.
-* **Login Creds (Default Admin):** `admin@threedos.com` / `password`.
+- **Landing Page:** `http://localhost:8080/index.html`
+- **Admin Suite:** `http://localhost:8080/admin/index.html`
+- **Login Creds (Default Admin):** `admin@threedos.com` / `password`
 
 ---
 
-## 🧪 Testing & Verification
-
-Run the PHPUnit backend test suite to verify core functionality (reports, auth, checkout, catalog):
+## <img src="https://api.iconify.design/lucide:flask-conical.svg?color=%238A2BE2" width="24" align="top" /> Testing & Verification
 
 ```bash
 cd fullstack/Backend
-
-# Run ReportTest suite
-php artisan test --filter=ReportTest
-
-# Run all feature & unit tests
-php artisan test
+php artisan test --filter=ReportTest   # Report suite
+php artisan test                        # All feature & unit tests (52 classes)
 ```
 
 ---
 
-## 📚 Documentation
+## <img src="https://api.iconify.design/lucide:book-open.svg?color=%238A2BE2" width="24" align="top" /> Documentation
 
 All project documentation lives in the **[`wiki/`](wiki/Home.md)** folder:
 
@@ -130,6 +127,20 @@ All project documentation lives in the **[`wiki/`](wiki/Home.md)** folder:
 
 ---
 
-## 📄 License
+## <img src="https://api.iconify.design/lucide:building-2.svg?color=%238A2BE2" width="24" align="top" /> About Conference
+
+**Conference Case Study 1 — Team 2** is a student-run fullstack initiative replicating professional software company structure. Like **ThreeDOS**, members are assigned to functional departments (backend, frontend, product) and deliver under real constraints. **Itinera** was built as the luxury travel orchestration platform case study: Laravel 12 REST API (213 `api/*` routes, 120+ documented endpoints) + vanilla JS frontend (GSAP 3.12), deployed as two Railway services with Docker dual-role image. Goal: close gap between academic learning and industry readiness — same mission as ThreeDOS, scoped to conference deliverable.
+
+---
+
+## <img src="https://api.iconify.design/lucide:users.svg?color=%238A2BE2" width="24" align="top" /> Team
+
+**Ahmed Elsayed** — Fullstack / Backend Delegate @ Conference Team 2 — [github.com/AhmedTyson](https://github.com/AhmedTyson)
+
+Conference Team 2 — Fullstack Application Monorepo · [Team2-Conference-Project](https://github.com/AhmedTyson/Team2-Conference-Project)
+
+---
+
+## <img src="https://api.iconify.design/lucide:scale.svg?color=%238A2BE2" width="24" align="top" /> License
 
 MIT — Internal Case Study Deliverable, Team 2.
