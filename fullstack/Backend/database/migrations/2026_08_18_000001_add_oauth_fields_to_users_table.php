@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->string('google_id', 128)->nullable()->after('email');
             $table->string('facebook_id', 128)->nullable()->after('google_id');
-            $table->string('avatar', 512)->nullable()->after('facebook_id');
+            $table->text('avatar')->nullable()->after('facebook_id');
         });
     }
 
