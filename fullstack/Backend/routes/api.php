@@ -497,3 +497,9 @@ Route::middleware(['auth:api'])->group(function () {
     // Plans
     Route::post('/agency-assignments/{assignment}/report', [FlagController::class, 'store'])->middleware(['auth:api']);
 });
+
+// ---- Public community reads (registered last so they win over the
+// auth-group duplicates above for guests; controller + TripPolicy keep
+// guests scoped to public trips only, fork stays auth-guarded)
+Route::get('/trips', [TripController::class, 'index']);
+Route::get('/trips/{trip}', [TripController::class, 'show']);

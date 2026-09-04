@@ -10,12 +10,13 @@ class TripPolicy
     /**
      * Determine whether the user can view the trip.
      *
-     * Owner-only — callers map denial to 404 (not 403) to avoid leaking
-     * whether the trip exists.
+     * Guests may view public trips (community hub). Owners may view
+     * their own trips regardless of visibility. Callers map denial
+     * to 404 (not 403) to avoid leaking whether the trip exists.
      */
-    public function view(User $user, Trip $trip): bool
+    public function view(?User $user, Trip $trip): bool
     {
-        return $trip->is_public || $trip->user_id === $user->id;
+        return $trip->is_public || ($user && $user->id === $trip->user_id);
     }
 
     /**
