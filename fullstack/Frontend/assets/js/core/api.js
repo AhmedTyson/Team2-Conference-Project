@@ -102,7 +102,17 @@
    * opts.headers → extra headers merged in.
    * Returns { ok, status, body }.
    */
+  // Railway/Docker: the entrypoint sed-replaces the literal __API_BASE__
+  // marker below with the real backend URL at container boot (same
+  // mechanism as config.js). Split comparison keeps the check working
+  // both before and after injection.
+  var INJECTED_API_BASE = "__API_BASE__";
+  if (typeof INJECTED_API_BASE === "string" && INJECTED_API_BASE.indexOf("__API_") !== 0) {
+    global.ITINERA_API_BASE = INJECTED_API_BASE.replace(/\/$/, "");
+  }
+
   function getApiBase() {
+    if (typeof global.ITINERA_API_BASE === "string" && global.ITINERA_API_BASE) return global.ITINERA_API_BASE.replace(/\/$/, "");
     if (It.CONFIG && It.CONFIG.apiBase) return It.CONFIG.apiBase.replace(/\/$/, "");
     if (global.location && global.location.hostname) {
       var h = global.location.hostname;
