@@ -268,11 +268,23 @@
   }
 
   // ── Continental Region Filter & Destination Grid ──
+  var DEFAULT_REGIONS = [
+    { id: "all", name: "All Regions" },
+    { id: "Europe", name: "Europe" },
+    { id: "Asia", name: "Asia" },
+    { id: "Middle East", name: "Middle East" },
+    { id: "Americas", name: "Americas" },
+    { id: "Africa", name: "Africa" }
+  ];
+
   function loadRegionsAndDestinations() {
+    renderRegionPills(DEFAULT_REGIONS);
+
     It.apiGet("/regions").then(function (res) {
       var regions = It.unwrapData(res);
-      if (!Array.isArray(regions)) return;
-      renderRegionPills(regions);
+      if (Array.isArray(regions) && regions.length > 0) {
+        renderRegionPills(regions);
+      }
     }).catch(function () {});
 
     fetchDestinations("all");
@@ -283,21 +295,21 @@
     if (!container) return;
     container.innerHTML = "";
 
-    // "All Destinations" Pill
-    var allBtn = document.createElement("button");
-    allBtn.className = "chip on";
-    allBtn.textContent = "All Continents";
-    allBtn.addEventListener("click", function () {
-      setRegionFilter("all", allBtn);
-    });
-    container.appendChild(allBtn);
-
-    regions.forEach(function (reg) {
+    regions.forEach(function (reg, index) {
       var btn = document.createElement("button");
-      btn.className = "chip";
-      btn.textContent = reg.name;
+      var regName = typeof reg === "string" ? reg : (reg.name || reg.title || "Region");
+      var regId = typeof reg === "string" ? reg : (reg.id || reg.name || "all");
+      if (index === 0 || regName === "All Regions" || regName === "All Continents" || regId === "all") {
+        regId = "all";
+        regName = "All Regions";
+      }
+
+      var isActive = (currentRegion === regId || (!currentRegion && regId === "all") || (currentRegion === "all" && regId === "all"));
+      btn.className = "chip" + (isActive ? " on" : "");
+      btn.textContent = regName;
+      btn.setAttribute("data-region", regId);
       btn.addEventListener("click", function () {
-        setRegionFilter(reg.id, btn);
+        setRegionFilter(regId, btn);
       });
       container.appendChild(btn);
     });
@@ -305,13 +317,13 @@
 
   var DEFAULT_DESTINATIONS = [
     { id: 101, name: "Paris", city: "Paris", country: { name: "France" }, image_url: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80", description: "Romantic boulevards, world-renowned gastronomy, and Eiffel Tower views.", hotels_count: 24, tours_count: 18, region_name: "Europe" },
-    { id: 102, name: "New York", city: "New York", country: { name: "United States" }, image_url: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=800&q=80", description: "The city that never sleeps — iconic skyline, endless energy, and Broadway.", hotels_count: 42, tours_count: 35, region_name: "North America" },
+    { id: 102, name: "New York", city: "New York", country: { name: "United States" }, image_url: "https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=800&q=80", description: "The city that never sleeps — iconic skyline, endless energy, and Broadway.", hotels_count: 42, tours_count: 35, region_name: "Americas" },
     { id: 103, name: "Tokyo", city: "Tokyo", country: { name: "Japan" }, image_url: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=800&q=80", description: "Ultramodern neon skylines blended with ancient shrines and Michelin dining.", hotels_count: 38, tours_count: 29, region_name: "Asia" },
     { id: 104, name: "Santorini", city: "Santorini", country: { name: "Greece" }, image_url: "https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?auto=format&fit=crop&w=800&q=80", description: "White-washed cliffside villas, azure Aegean waters, and golden sunsets.", hotels_count: 19, tours_count: 14, region_name: "Europe" },
     { id: 105, name: "Rome", city: "Rome", country: { name: "Italy" }, image_url: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?auto=format&fit=crop&w=800&q=80", description: "Ancient Colosseum grandeur, cobblestone piazzas, and authentic gelato.", hotels_count: 31, tours_count: 22, region_name: "Europe" },
     { id: 106, name: "Dubai", city: "Dubai", country: { name: "United Arab Emirates" }, image_url: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=800&q=80", description: "Futuristic skyscrapers, luxury desert safaris, and 7-star hospitality.", hotels_count: 28, tours_count: 20, region_name: "Middle East" },
     { id: 107, name: "London", city: "London", country: { name: "United Kingdom" }, image_url: "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=800&q=80", description: "Royal palaces, historic Thames riverfront, and West End theater productions.", hotels_count: 36, tours_count: 30, region_name: "Europe" },
-    { id: 108, name: "Cairo", city: "Cairo", country: { name: "Egypt" }, image_url: "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?auto=format&fit=crop&w=800&q=80", description: "The Giza Pyramids, Grand Egyptian Museum, and Nile river sunset cruises.", hotels_count: 22, tours_count: 18, region_name: "Africa & Middle East" },
+    { id: 108, name: "Cairo", city: "Cairo", country: { name: "Egypt" }, image_url: "https://images.unsplash.com/photo-1572252009286-268acec5ca0a?auto=format&fit=crop&w=800&q=80", description: "The Giza Pyramids, Grand Egyptian Museum, and Nile river sunset cruises.", hotels_count: 22, tours_count: 18, region_name: "Africa" },
   ];
 
   function setRegionFilter(regionId, targetBtn) {
@@ -334,13 +346,27 @@
     It.apiGet(path).then(function (res) {
       var items = It.unwrapData(res);
       if (!Array.isArray(items) || !items.length) {
-        renderDestinationsGrid(DEFAULT_DESTINATIONS);
+        renderFilteredDestinations(regionId);
         return;
       }
       renderDestinationsGrid(items.slice(0, 8));
     }).catch(function () {
-      renderDestinationsGrid(DEFAULT_DESTINATIONS);
+      renderFilteredDestinations(regionId);
     });
+  }
+
+  function renderFilteredDestinations(regionId) {
+    if (!regionId || regionId === "all" || regionId === "All Regions") {
+      renderDestinationsGrid(DEFAULT_DESTINATIONS);
+      return;
+    }
+    var filtered = DEFAULT_DESTINATIONS.filter(function (d) {
+      var regName = (d.country && d.country.region && d.country.region.name) || d.region_name || "";
+      var rLower = regionId.toLowerCase();
+      var regLower = regName.toLowerCase();
+      return regLower.includes(rLower) || rLower.includes(regLower);
+    });
+    renderDestinationsGrid(filtered.length ? filtered : DEFAULT_DESTINATIONS);
   }
 
   function renderDestinationsGrid(items) {
