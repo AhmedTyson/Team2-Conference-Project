@@ -297,8 +297,8 @@
 
     regions.forEach(function (reg, index) {
       var btn = document.createElement("button");
-      var regName = typeof reg === "string" ? reg : (reg.name || reg.title || "Region");
-      var regId = typeof reg === "string" ? reg : (reg.id || reg.name || "all");
+      var regName = typeof reg === "string" ? reg : (reg.label || "Region");
+      var regId = typeof reg === "string" ? reg : (reg.id || "all");
       if (index === 0 || regName === "All Regions" || regName === "All Continents" || regId === "all") {
         regId = "all";
         regName = "All Regions";
