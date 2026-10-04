@@ -152,10 +152,20 @@
     }
 
     // Returning OAuth user (phone already set): token stored, params stripped —
-    // reload once so the page renders in its logged-in state. The token is no
-    // longer in the URL, so this cannot loop.
+    // fetch user profile so itinera_user is stored in localStorage before redirecting.
     if (token) {
-      setTimeout(function () { global.location.reload(); }, 150);
+      if (It.session && typeof It.session.currentUser === "function") {
+        It.session.currentUser(true).then(function (user) {
+          var dest = It.session.getRedirectPath
+            ? It.session.getRedirectPath(It.session.roleOf(user))
+            : (It.CONFIG && It.CONFIG.dashboardUrl) || "/app/dashboard.html";
+          global.location.href = dest;
+        }).catch(function () {
+          global.location.reload();
+        });
+      } else {
+        setTimeout(function () { global.location.reload(); }, 150);
+      }
     }
   }
 

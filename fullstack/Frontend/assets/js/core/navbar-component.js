@@ -7,6 +7,7 @@
   "use strict";
 
   const doc = global.document;
+  var _fetchingUser = false;
 
   if (global.tailwind) {
     global.tailwind.config = global.tailwind.config || {};
@@ -49,6 +50,20 @@
     try {
       token = global.localStorage.getItem("itinera_token");
     } catch (e) {}
+
+    // If token exists but user profile is missing in storage, fetch user in background & update navbar
+    if (token && !user && It && It.session && typeof It.session.currentUser === "function" && !_fetchingUser) {
+      _fetchingUser = true;
+      It.session.currentUser().then(function (u) {
+        _fetchingUser = false;
+        if (u && typeof initGlobalNavbar === "function") {
+          initGlobalNavbar();
+        }
+      }).catch(function () {
+        _fetchingUser = false;
+      });
+    }
+
     return (token && user) ? user : null;
   }
 
